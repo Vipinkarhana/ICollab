@@ -1,0 +1,132 @@
+{
+	"info": {
+		"_postman_id": "ff310240-0a27-4323-9194-03cf23e4cfd8",
+		"name": "ICollab API Documentation",
+		"description": "# Introduction\n\nWelcome to the **ICollab API Documentation**!\n\nICollab is a dynamic **Research Collaboration Platform** developed under **R Cube Green Technology**, aimed at promoting collaboration between students, researchers, startups, and academia. The platform serves as a central hub where innovative research ideas, projects, and opportunities can be shared and developed collectively.\n\nThe **ICollab API** is structured to be intuitive and straightforward, enabling you to easily perform tasks like managing research projects, collaborating with other users, sharing ideas, and more. With this documentation, you'll be equipped to leverage the API effectively and contribute to the platform’s development.\n\nLet’s get started and collaborate efficiently!",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28544372",
+		"_collection_link": "https://warped-zodiac-306022.postman.co/workspace/3e00dbf7-3239-4be7-8854-aba917539859/collection/28544372-ff310240-0a27-4323-9194-03cf23e4cfd8?action=share&source=collection_link&creator=28544372"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"John Doe\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"password\": \"securepassword123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/auth/register",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registers a new user by accepting their details and sends a verification link to their email to confirm the registration."
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"john.doe@example.com\",\r\n  \"password\": \"securepassword123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/auth/login",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticates a user using their credentials and provides an access token and refresh token for secure, stateless authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/auth/verifyemail?token=",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"verifyemail"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "",
+									"description": "Verification Token Send on Email"
+								}
+							]
+						},
+						"description": "StartFragmentConfirms the user's email address using the verification link sent during registration, activating their account for full access.EndFragment"
+					},
+					"response": []
+				}
+			],
+			"description": "ICollab uses **JWT (JSON Web Tokens)** for secure user authentication. The authentication process relies on **Access Tokens** (temporary tokens for access) and **Refresh Tokens** (used to refresh the Access Token).\n\nUsers can register by manually entering their email and password, or they can use **Google** or **LinkedIn** authentication for a seamless registration or login experience. While users have the option to register or log in through these third-party providers, **authentication will depend entirely on JWT** (Access and Refresh tokens). Once authenticated, all further interactions with the API will rely on the JWT-based stateless authentication.\n\n[Refrence Article](https://medium.com/@itz.dhruv/mastering-oauth-2-0-a-guide-to-access-and-refresh-tokens-c79ab72d2df9)"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "localhost:3000",
+			"type": "default"
+		}
+	]
+}
