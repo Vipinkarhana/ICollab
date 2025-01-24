@@ -7,6 +7,8 @@ const {
   generateRefreshToken,
 } = require('../utils/GenerateToken');
 const { hashPassword, comparePassword } = require('../utils/PasswordEncoder');
+const {sendVerificationEmail} = require('../utils/VerifyMails');
+const jwt = require('jsonwebtoken');
 
 const register = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -23,9 +25,13 @@ const register = async (req, res, next) => {
       name,
       email,
       password: hashedPassword,
+      emailToken: jwt.sign({ email }, 'config.SECRET_KEY', { expiresIn: '1h' }),
     });
 
-    await newUser.save();
+    await newUser.save().then(async function () {
+      await sendVerificationEmail(newUser, newUser.emailToken);
+      res.status(200).send("Verification Mail sent");
+    });
 
     const accessToken = generateAccessToken({
       id: newUser._id,
@@ -83,4 +89,24 @@ const login = async (req, res, next) => {
     }
 };
 
-module.exports = { register, login };
+const verifyemail = async(req, res, next) => {
+  const { token } = req.query;
+  
+    try {
+      const decoded = jwt.verify(token, 'config.SECRET_KEY'); // Verify token
+      const user = await userModel.findOne({ email: decoded.email });
+  
+      if (user && !user.isVerified) {
+        user.isVerified = true;
+        user.emailToken = null; // Clear the token after verification
+        await user.save();
+        res.status(200).send("Successfully Verified");
+      } else {
+        res.status(500).send("Internal Server Error");
+      }
+    } catch (err) {
+      console.error('Error during email verification:', err);
+    }
+};
+
+module.exports = { register, login, verifyemail };
