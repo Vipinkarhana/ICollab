@@ -8,10 +8,13 @@ const config = {
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
   JWT_REFRESH_EXPIRE: process.env.JWT_REFRESH_EXPIRE,
   NODE_ENV: process.env.NODE_ENV,
+  EMAIL_ID: process.env.EMAIL_ID,
+  EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
+  SECRET_KEY: process.env.SECRET_KEY,
 
   CookieOptions: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV || 'production',
   },
 };
 
