@@ -4,12 +4,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const config = require('./config/config');
 
-
 var ApiError = require('./src/utils/ApiError');
 const connectDB = require('./config/DB');
 var indexRouter = require('./src/routes/index');
 var authRouter = require('./src/routes/authRoute');
-
 
 var app = express();
 
@@ -43,12 +41,5 @@ const errorHandler = (err, req, res, next) => {
 
 // Use the error-handling middleware
 app.use(errorHandler);
-
-
-const PORT = config.PORT;
-app.listen(PORT, () => {
-  console.log(`Server is running on PORT ${PORT}`);
-});
-
 
 module.exports = app;
