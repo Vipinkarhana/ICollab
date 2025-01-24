@@ -5,7 +5,7 @@ const HamburgerMenu = ({ isMenuOpen, toggleMenu, menuItems }) => {
   return (
     <>
       {isMenuOpen && (
-        <div className="fixed flex-col items-center top-16 right-4 w-3/4 max-w-sm bg-gray-200 text-gray-700 rounded-lg shadow-lg p-4">
+        <div className="fixed flex-col items-center top-14 right-4 w-56 max-w-sm bg-gray-200 text-gray-600 rounded-lg shadow-lg p-4">
           {menuItems.map((item, index) => (
             <Link
               key={index}
@@ -17,7 +17,9 @@ const HamburgerMenu = ({ isMenuOpen, toggleMenu, menuItems }) => {
             </Link>
           ))}
           <div className="mt-4 flex justify-center">
-            {/* <Button height="40px" width="70%" value="Join us" /> */}
+            <button className="h-10 rounded-md w-28 text-xl bg-black text-white">
+              Incubators
+            </button>
           </div>
         </div>
       )}
