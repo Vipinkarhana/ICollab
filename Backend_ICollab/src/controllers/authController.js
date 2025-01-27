@@ -77,6 +77,7 @@ const login = async (req, res, next) => {
 
 const verifyemail = async (req, res, next) => {
   const { token } = req.query;
+  console.log(token);
 
   try {
     const decoded = jwt.verify(token, config.SECRET_KEY); // Verify token

@@ -16,8 +16,7 @@ const config = {
   CookieOptions: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    domain: process.env.COOKIE_DOMAIN || 'example.com',
-    maxAge: process.env.JWT_REFRESH_EXPIRE,
+    // domain: process.env.COOKIE_DOMAIN || 'example.com',
   },
 };
 
