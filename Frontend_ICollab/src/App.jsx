@@ -6,6 +6,8 @@ import NetworkPage from "./components/Pages/NetworkPage/NetworkPage";
 import ProjectPage from "./components/Pages/ProjectsPage/ProjectsPage";
 import NotificationPage from "./components/Pages/NotificationPage/NotificationPage";
 import MessagePage from "./components/Pages/MessagePage/MessagePage";
+import Login from "./components/Pages/Login_RegistrationPages/Login";
+import Register from "./components/Pages/Login_RegistrationPages/Registration";
 import Layout from "./components/Layout/Layout";
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="/message" element={<MessagePage />} />
           <Route path="/notification" element={<NotificationPage />} />
         </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/Register" element={<Register />} />
       </Routes>
     </Router>
   );
