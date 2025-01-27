@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors');
 const config = require('./config/config');
 
 var ApiError = require('./src/utils/ApiError');
@@ -12,7 +13,8 @@ var authRouter = require('./src/routes/authRoute');
 var app = express();
 
 connectDB();
-
+console.log('Config: ', config);
+app.use(cors({ origin: config.FRONTEND_URL, credentials: true }));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

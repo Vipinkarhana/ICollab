@@ -1,6 +1,7 @@
 const userModel = require('../models/user');
 const ApiError = require('../utils/ApiError');
 const config = require('../../config/config');
+const axios = require('axios');
 
 const {
   generateAccessToken,
@@ -77,7 +78,6 @@ const login = async (req, res, next) => {
 
 const verifyemail = async (req, res, next) => {
   const { token } = req.query;
-  console.log(token);
 
   try {
     const decoded = jwt.verify(token, config.SECRET_KEY); // Verify token
@@ -88,10 +88,6 @@ const verifyemail = async (req, res, next) => {
       user.emailToken = null; // Clear the token after verification
       await user.save();
 
-      const accessToken = generateAccessToken({
-        id: user._id,
-        role: user.role,
-      });
       const refreshToken = generateRefreshToken({
         id: user._id,
         role: user.role,
@@ -108,4 +104,44 @@ const verifyemail = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, verifyemail };
+const googleAuth = async (req, res, next) => {
+  const { credential } = req.body;
+  try {
+    const response = await axios.get(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`
+    );
+    const { sub, email, name } = response.data; // `sub` is the unique user ID
+
+    let user = await userModel.findOne({ email });
+    if (!user) {
+      user = new userModel({
+        name,
+        email,
+        isVerified: true,
+      });
+      await user.save();
+    }
+
+    const accessToken = generateAccessToken({
+      id: user._id,
+      role: user.role,
+    });
+    const refreshToken = generateRefreshToken({
+      id: user._id,
+      role: user.role,
+    });
+
+    res.cookie('refreshToken', refreshToken, config.CookieOptions);
+
+    res.status(200).json({
+      message: 'Login successful',
+      status: 'success',
+      accessToken,
+      refreshToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { register, login, verifyemail, googleAuth };

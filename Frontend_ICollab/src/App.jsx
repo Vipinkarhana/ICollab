@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import HomePage from "./components/Pages/HomePage/HomePage";
 import ProfilePage from "./components/Pages/ProfilePage/ProfilePage";
 import NetworkPage from "./components/Pages/NetworkPage/NetworkPage";
@@ -11,6 +12,7 @@ import Register from "./components/Pages/Login_RegistrationPages/Registration";
 import Layout from "./components/Layout/Layout";
 function App() {
   return (
+    <GoogleOAuthProvider clientId="158006314043-jqdft8o3lrds0j62jrh5t8ir19k7b1ra.apps.googleusercontent.com">
     <Router>
       <Routes>
         <Route element={<Layout />}>
@@ -25,6 +27,7 @@ function App() {
         <Route path="/Register" element={<Register />} />
       </Routes>
     </Router>
+    </GoogleOAuthProvider>
   );
 }
 

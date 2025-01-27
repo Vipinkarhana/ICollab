@@ -4,6 +4,7 @@ const {
   register,
   login,
   verifyemail,
+  googleAuth,
   //   logout,
   //   refreshToken,
 } = require('../controllers/authController');
@@ -11,6 +12,7 @@ const {
 router.post('/register', register);
 router.post('/login', login);
 router.get('/verifyemail', verifyemail);
+router.post('/google', googleAuth);
 // router.post('/logout', logout);
 // router.post('/refresh', refreshToken);
 
