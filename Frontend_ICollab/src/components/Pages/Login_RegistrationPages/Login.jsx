@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import Logo from "../../../assets/ICollab_Logo.png";
 import { Mail, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import Google from "../../../assets/google.png"
+import Linkedin from "../../../assets/Linkedin.png"
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -75,30 +76,20 @@ const Login = () => {
           <div className="flex-grow border-t border-gray-800"></div>
         </div>
         <div className="h-32 w-[100%] flex flex-col  justify-evenly items-center">
-          <button className="flex items-center justify-evenly  bg-white text-white border border-blue-600 font-medium  rounded-lg  shadow-md  transition duration-300 h-12 w-[63%] lg:w-[34%] lg:h-10">
+          <button className="flex items-center justify-evenly  bg-white text-white border-2 border-blue-600 font-medium  rounded-lg  shadow-md  transition duration-300 h-12 w-[63%] lg:w-[31%] lg:h-10">
             <div className="w-[20%] h-full flex justify-center items-center">
-              <svg className="w-20 h-8" viewBox="0 0 48 48">
-                <path
-                  fill="#4285F4"
-                  d="M24 22.08v5.84h9.84c-.44 2.64-3.12 7.76-9.84 7.76-5.92 0-10.72-4.88-10.72-10.88s4.8-10.88 10.72-10.88c3.36 0 5.6 1.44 6.88 2.64l4.88-4.8C32.96 8 28.96 6 24 6 13.6 6 6 13.6 6 24s7.6 18 18 18c9.28 0 17.04-6.72 17.04-16.08 0-1.12-.08-1.92-.24-2.72H24z"
-                />
-              </svg>
+              <img src={Google} alt="" className="h-full w-full rounded-l-md"/>
             </div>
-            <div className="h-full bg-blue-500 w-[80%] rounded-r-lg flex justify-center items-center text-md font-semibold">
+            <div className="h-full bg-blue-500 w-[80%] rounded-r-md flex justify-center items-center text-md font-semibold">
               Sign in with Google
             </div>
           </button>
-          <button className="flex items-center justify-evenly  bg-white text-white border border-blue-600 font-medium  rounded-lg  shadow-md  transition duration-300 h-12 w-[63%] lg:w-[34%] lg:h-10">
+          <button className="flex items-center justify-evenly  bg-white text-white border-2 border-blue-600 font-medium  rounded-lg  shadow-md  transition duration-300 h-12 w-[63%] lg:w-[31%] lg:h-10">
             <div className="w-[20%] h-full flex justify-center items-center">
-              <svg className="w-full h-full" viewBox="0 0 48 48">
-                <path
-                  fill="#0077B5"
-                  d="M41.6 4H6.4C5.1 4 4 5.1 4 6.4v35.2C4 43 5.1 44 6.4 44h35.2c1.3 0 2.4-1 2.4-2.4V6.4C44 5.1 42.9 4 41.6 4zM15.6 36H10V19.2h5.6V36zm-2.8-19.2c-1.8 0-3.2-1.4-3.2-3.2S11 10.4 12.8 10.4s3.2 1.4 3.2 3.2-1.4 3.2-3.2 3.2zm24 19.2h-5.6v-8.8c0-2.1-.8-3.5-2.8-3.5-1.6 0-2.4 1-2.8 2-.2.4-.2 1-.2 1.6V36H20V19.2h5.6v2.4c.8-1.2 2.4-2.8 5.2-2.8 3.8 0 6.4 2.4 6.4 7.6V36z"
-                />
-              </svg>
+              <img src={Linkedin} alt="" className="h-full w-full rounded-l-md" />
             </div>
 
-            <div className="h-full bg-blue-500 w-[80%] rounded-r-lg flex justify-center items-center text-md font-semibold">
+            <div className="h-full bg-blue-500 w-[80%] rounded-r-md flex justify-center items-center text-md font-semibold">
               Sign in with Linked in
             </div>
           </button>
