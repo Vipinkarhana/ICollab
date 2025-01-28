@@ -10,7 +10,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
 
   return (
-    <div className="w-[99svw] flex justify-center items-center bg-gray-200 lg:bg-gray-50 py-2">
+    <div className="w-[98svw] flex justify-center items-center bg-gray-200 lg:bg-gray-50 py-2">
       <div className="h-auto w-[100%] lg:w-[50%] flex flex-col justify-center items-center rounded-lg lg:bg-gray-200">
         <div className="h-14 w-[100%] flex justify-start items-center px-4">
           <img src={Logo} alt="" className="h-[100%]" />
