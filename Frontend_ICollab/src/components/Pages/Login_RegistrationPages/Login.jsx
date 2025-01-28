@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Logo from "../../../assets/ICollab_Logo.png";
 import { Mail, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
-import Google from "../../../assets/google.png"
-import Linkedin from "../../../assets/Linkedin.png"
+import Google from "../../Common/Google";
+import Linkedin from "./LinkedinButoon";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -76,23 +76,8 @@ const Login = () => {
           <div className="flex-grow border-t border-gray-800"></div>
         </div>
         <div className="h-32 w-[100%] flex flex-col  justify-evenly items-center">
-          <button className="flex items-center justify-evenly  bg-white text-white border-2 border-blue-600 font-medium  rounded-lg  shadow-md  transition duration-300 h-12 w-[63%] lg:w-[31%] lg:h-10">
-            <div className="w-[20%] h-full flex justify-center items-center">
-              <img src={Google} alt="" className="h-full w-full rounded-l-md"/>
-            </div>
-            <div className="h-full bg-blue-500 w-[80%] rounded-r-md flex justify-center items-center text-md font-semibold">
-              Sign in with Google
-            </div>
-          </button>
-          <button className="flex items-center justify-evenly  bg-white text-white border-2 border-blue-600 font-medium  rounded-lg  shadow-md  transition duration-300 h-12 w-[63%] lg:w-[31%] lg:h-10">
-            <div className="w-[20%] h-full flex justify-center items-center">
-              <img src={Linkedin} alt="" className="h-full w-full rounded-l-md" />
-            </div>
-
-            <div className="h-full bg-blue-500 w-[80%] rounded-r-md flex justify-center items-center text-md font-semibold">
-              Sign in with Linked in
-            </div>
-          </button>
+          <Google />
+          <Linkedin />
         </div>
         <div className="text-center mt-4 h-10">
           <p className="text-md text-gray-600">
