@@ -5,7 +5,7 @@ import RightDiv from "./RightDiv/RightDiv";
 const HomePage = () => {
   return (
     <>
-      <div className="w-[89svw] h-[90svh] mt-11 flex gap-2  justify-evenly p-2">
+      <div className="w-[89svw] h-[90svh] mt-14 flex gap-2  justify-evenly p-2">
         <LeftDiv />
         <MidDiv />
         <RightDiv />
