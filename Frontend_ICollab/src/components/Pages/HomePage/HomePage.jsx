@@ -1,11 +1,17 @@
 import React from "react";
-
+import LeftDiv from "./LeftDiv/LeftDiv";
+import MidDiv from "./MidDiv/MidDiv";
+import RightDiv from "./RightDiv/RightDiv";
 const HomePage = () => {
   return (
     <>
-      <div className="text-black w-full h-svh flex justify-center items-center">homepage</div>
+      <div className="w-[89svw] h-[90svh] mt-11 flex gap-2  justify-evenly p-2">
+        <LeftDiv />
+        <MidDiv />
+        <RightDiv />
+      </div>
     </>
-  ) 
+  ); 
   
 }
 

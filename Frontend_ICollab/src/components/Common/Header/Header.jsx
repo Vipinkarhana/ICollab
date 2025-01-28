@@ -53,10 +53,10 @@ const Header = ({ id }) => {
     <div>
       <div
         id={id}
-        className="fixed w-full  flex items-center z-[1] text-black animate-navbar  border-gray-50"
+        className="fixed w-full  flex items-center z-[1] text-black bg-white  border-gray-50"
       >
         <div className="w-11/12 lg:w-full h-full flex items-center justify-between md:justify-center md:gap-4">
-          <div className="h-14 w-28 lg:h-14 lg:w-28  ml-2 lg:mr-1  lg:ml-3">
+          <div className="h-14  w-28 lg:h-14 lg:w-28  ml-2 lg:mr-1  lg:-ml-1">
             <img src={Logo} alt="Logo" className="h-[100%] w-[100%]" />
           </div>
           <div className="w-auto h-full relative flex items-center">
