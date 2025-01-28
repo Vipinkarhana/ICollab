@@ -1,10 +1,34 @@
 import React from "react";
-
+import ProfilePic from "../../../../assets/ProfilePic.png";
+import { UserPen } from "lucide-react";
+import { Link } from "react-router-dom";
 const ProfileCard = () => {
   return (
     <>
-      <div className="h-[27%] w-[85%] bg-gray-200 rounded-md">
-           
+      <div className="h-[30%] w-[85%] bg-gray-200 rounded-md flex flex-col justify-start">
+        <div className="h-[42%] w-[100%] px-2 py-1 flex justify-between">
+          <div className="h-[100%] w-[27%] rounded-full border-2 border-gray-500 shadow-xl -mt-3 overflow-hidden">
+            <img
+              src={ProfilePic}
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="py-1">
+            <Link to="/profile">
+              <UserPen size={20} />
+            </Link>
+          </div>
+        </div>
+        <div className="h-[10%]  px-2 text-xl flex justify-start items-center font-bold">
+          <p>Jhon Dews</p>
+        </div>
+        <div className="px-2 text-sm text-gray-900 h-[15%] flex justify-start items-center mt-1 font-medium">
+          <p>IT, Software Engineer</p>
+        </div>
+        <div className="text-sm h-[15%] px-2 text-gray-600">
+          <p>Lorem ipsum dicta eaque cons equatur?... <Link to="/profile" className="font-semibold text-gray-900">Read More</Link></p>
+        </div>
       </div>
     </>
   );
