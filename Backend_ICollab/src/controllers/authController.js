@@ -2,6 +2,9 @@ const userModel = require('../models/user');
 const ApiError = require('../utils/ApiError');
 const config = require('../../config/config');
 const axios = require('axios');
+const qs = require('qs');
+
+
 
 const {
   generateAccessToken,
@@ -144,4 +147,73 @@ const googleAuth = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, verifyemail, googleAuth };
+
+const linkedin = async (req, res, next) => {
+  try{
+    const authURL = `https://www.linkedin.com/oauth/v2/authorization?` + 
+       `response_type=code&` + 
+       `client_id=${config.LINKEDIN_CLIENT_ID}&` + 
+       `redirect_uri=${encodeURIComponent('http://localhost:5000/api/auth/linkedincallback')}&` + 
+       `state=foobar&` +
+       `scope=openid%20profile%20email`;
+       res.redirect(authURL);
+  }
+  catch(err){
+    console.error('Error in LinkedIn Auth URL generation:', err);
+    res.status(500).send('Internal Server Error');
+  }
+
+};
+
+const linkedinauth = async (req, res, next) => {
+  console.log("Entered Linkedin Auth");
+const {code} = req.query;
+
+if (!code) {
+  return res.status(400).send('Invalid authorization code');
+}
+
+
+try{
+  console.log('1');
+  const token = await axios.post('https://www.linkedin.com/oauth/v2/accessToken',
+    qs.stringify({
+      grant_type: 'authorization_code',
+      code: code,
+      client_id: config.LINKEDIN_CLIENT_ID,
+      client_secret: config.LINKEDIN_CLIENT_SECRET,
+      redirect_uri: 'http://localhost:5000/api/auth/linkedincallback'
+    }),
+    {
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    },
+  );
+  console.log('2');
+  console.log('Topken.data: ', token.data)
+  const {access_token: accessToken, expires_in: expiresIn} = token.data;
+  console.log('accessToken: ', accessToken);
+  const profileres = await axios.get('https://api.linkedin.com/v2/userinfo',
+    {
+      'headers': {
+        'Authorization': `Bearer ${accessToken}`
+      },
+    }
+
+  );
+  console.log('profileres: ', profileres.data)
+res.json(profileres.data);
+const userprofile = profileres.data;
+
+}
+catch(err){
+  res.status(500).send('Authentication Failed');
+  console.error('Error during LinkedIn Auth:', err.response?.data || err.message || err);
+
+}
+};
+
+
+
+
+
+module.exports = { register, login, verifyemail, googleAuth, linkedin, linkedinauth };

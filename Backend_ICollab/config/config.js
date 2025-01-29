@@ -12,6 +12,9 @@ const config = {
   EMAIL_ID: process.env.EMAIL_ID,
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
   SECRET_KEY: process.env.SECRET_KEY, //For email verification Token Secret Key
+  LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID,
+  LINKEDIN_CLIENT_SECRET: process.env.LINKEDIN_CLIENT_SECRET,
+
 
   CookieOptions: {
     httpOnly: true,
