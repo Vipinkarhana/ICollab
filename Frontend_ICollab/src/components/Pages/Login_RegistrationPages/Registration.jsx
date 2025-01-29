@@ -3,7 +3,7 @@ import Logo from "../../../assets/ICollab_Logo.png";
 import { UserRound, Mail, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import Google from "../../Common/Google";
-import Linkedin from "./LinkedinButoon";
+import Linkedin from "../../Common/LinkedinButoon";
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

@@ -13,6 +13,7 @@ const Google = () => {
 
       // Save access token to local storage
       localStorage.setItem("accessToken", res.data.accessToken);
+      
     } catch (error) {
       console.error("Google Login Error:", error);
     }
