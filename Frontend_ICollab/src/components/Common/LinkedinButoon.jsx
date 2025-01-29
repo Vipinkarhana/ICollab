@@ -1,9 +1,16 @@
 import React from "react";
-import Linkedinimg from "../../../assets/Linkedin.png";
+import Linkedinimg from "../../assets/Linkedin.png";
+import axios from "axios";
+
 const Linkedin = () => {
+
+const linkedinauth = async () => {
+  window.location.href= "http://localhost:5000/api/auth/linkedin"
+};
+
   return (
     <>
-      <button className="flex items-center justify-evenly  bg-white text-sm text-gray-700  rounded-sm    h-10 w-[50%] lg:w-[26%] lg:h-9">
+      <button onClick={linkedinauth} className="flex items-center justify-evenly  bg-white text-sm text-gray-700  rounded-sm    h-10 w-[50%] lg:w-[26%] lg:h-9">
         <div className="w-[20%] h-full flex justify-center items-center">
           <img src={Linkedinimg} alt="" className="h-8 w-8" />
         </div>

@@ -19,7 +19,7 @@ const config = {
   CookieOptions: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
+    //domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
   },
 };
 
