@@ -53,12 +53,12 @@ const Header = ({ id }) => {
     <div>
       <div
         id={id}
-        className="fixed w-full  flex items-center z-[1] text-black bg-white  border-gray-50"
+        className="fixed w-full h-[8%] flex items-center z-[1] text-black bg-white  border-gray-50"
       >
-        <div className="w-11/12 lg:w-full h-full flex items-center justify-between md:justify-center md:gap-4">
-          <div className="h-14  w-28 lg:h-14 lg:w-28  ml-2 lg:mr-1  lg:-ml-1">
+        <div className="w-11/12 lg:w-full h-[99%] flex items-center justify-between md:justify-evenly md:gap-4">
+          <Link to="/" className="h-14  w-28 lg:h-14 lg:w-28  ml-2 lg:mr-1  lg:-ml-1">
             <img src={Logo} alt="Logo" className="h-[100%] w-[100%]" />
-          </div>
+          </Link>
           <div className="w-auto h-full relative flex items-center">
             <svg
               className="absolute left-3 w-5 h-5 "
@@ -77,7 +77,7 @@ const Header = ({ id }) => {
 
             <input
               type="text"
-              className="h-10 lg:h-8 rounded-2xl w-11/12 md:w-56 placeholder:text-xl bg-gray-200 pl-10 text-center placeholder-gray-500 outline-none"
+              className="h-10 lg:h-8 rounded-2xl w-11/12 md:w-60 placeholder:text-xl bg-gray-200 pl-10 text-center placeholder-gray-500 outline-none"
               placeholder="Search"
             />
           </div>
@@ -97,7 +97,7 @@ const Header = ({ id }) => {
               <Link
                 key={index}
                 to={item.path}
-                className={`item rounded-lg w-auto flex justify-center items-center text-gray-500 font-semibold text-lg cursor-pointer relative z-20 ${
+                className={`item rounded-lg w-auto flex justify-evenly items-center text-gray-500 font-semibold text-lg cursor-pointer relative z-20 ${
                   isActive(item.path) ? "h-[100%] rounded-none" : ""
                 }`}
                 onMouseEnter={handleMouseEnter}

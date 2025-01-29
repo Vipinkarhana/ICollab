@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 const ProfileCard = () => {
   return (
     <>
-      <div className="h-[30%] w-[85%] bg-gray-200 rounded-md flex flex-col justify-evenly py-2">
+      <div className="h-[30%] w-[90%] bg-gray-200 rounded-md flex flex-col justify-evenly py-2">
         <div className="h-[30%] w-[100%] px-2 py-1 flex justify-between items-start">
-          <div className="h-14 w-[30%] rounded-full border-2 border-gray-500 shadow-xl -mt-6 overflow-hidden">
+          <div className="h-16 w-[29%] rounded-full border-2 border-gray-500 shadow-xl -mt-7 overflow-hidden">
             <img
               src={ProfilePic}
               alt=""
