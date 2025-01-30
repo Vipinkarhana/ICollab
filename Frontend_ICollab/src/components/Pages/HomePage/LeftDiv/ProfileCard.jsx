@@ -11,7 +11,7 @@ const ProfileCard = () => {
             <img
               src={ProfilePic}
               alt=""
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover "
             />
           </div>
           <div className="py-1 -mt-2">
