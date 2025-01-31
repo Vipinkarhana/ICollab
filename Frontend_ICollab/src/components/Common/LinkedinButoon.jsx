@@ -1,6 +1,5 @@
 import React from "react";
 import Linkedinimg from "../../assets/Linkedin.png";
-import axios from "axios";
 
 const Linkedin = () => {
 

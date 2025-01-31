@@ -109,9 +109,9 @@ const Header = ({ id }) => {
           </div>
 
           {!isMobile && (
-            <button className="h-10 rounded-md w-[10%] bg-black text-white">
+            <Link to="/incubators" className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center">
               Incubators
-            </button>
+            </Link>
           )}
           <div className="md:hidden">
             <button className="text-gray-800 text-4xl -mr-5" onClick={toggleMenu}>
