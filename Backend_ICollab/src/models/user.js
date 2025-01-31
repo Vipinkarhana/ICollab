@@ -30,6 +30,21 @@ let userschma = mongoose.Schema(
       default: false,
     },
     emailToken: { type: String },
+    phone_no: {
+      type: Number,
+      unique: true,
+      required: false,
+    },
+    social: {
+      type: String,
+      unique: true,
+      required: false,
+    },
+    username: {
+      type: String,
+      unique: true,
+      required: true,
+    },
   },
   {
     timestamps: true,
