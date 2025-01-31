@@ -3,6 +3,7 @@ const ApiError = require('../utils/ApiError');
 const config = require('../../config/config');
 const axios = require('axios');
 const qs = require('qs');
+const generateUsername = require('../utils/usernamegenerate');
 
 
 
@@ -24,12 +25,13 @@ const register = async (req, res, next) => {
     }
 
     const hashedPassword = await hashPassword(password);
-
+    const username = await generateUsername(email);
     const newUser = new userModel({
       name,
       email,
       password: hashedPassword,
       emailToken: jwt.sign({ email }, config.SECRET_KEY, { expiresIn: '1h' }),
+      username: username,
     });
 
     await newUser.save();
@@ -42,6 +44,14 @@ const register = async (req, res, next) => {
     next(error);
   }
 };
+
+
+/*const updateprofile = async (req, res, next) => {
+    const email = 'ayushobadola@gmail.com';
+    const user = userModel.findOne({'email':email});
+    user.role = req.body;
+    user.social = req.body;
+};*/
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -116,11 +126,13 @@ const googleAuth = async (req, res, next) => {
     const { sub, email, name } = response.data; // `sub` is the unique user ID
 
     let user = await userModel.findOne({ email });
+    const username = await generateUsername(email);
     if (!user) {
       user = new userModel({
         name,
         email,
         isVerified: true,
+        username: username,
       });
       await user.save();
     }
@@ -215,12 +227,14 @@ try{
   let user = await userModel.findOne({ email: profileres.data.email });
   const pass = Math.random().toString(36).slice(-8);
   const hashpass = await hashPassword(pass);
+  const username = await generateUsername(profileres.data.email);
   if (!user) {
     user = new userModel({
       name: profileres.data.name,
       email: profileres.data.email,
       isVerified: true,
       password: hashpass,
+      username: username,
     });
     await user.save();
   }
@@ -244,14 +258,8 @@ catch(err){
 
 
 
-
-
-
-
 };
 
 
 
-
-
-module.exports = { register, login, verifyemail, googleAuth, linkedin, linkedinauth };
+module.exports = { register, login, verifyemail, googleAuth, linkedin, linkedinauth, updateprofile };
