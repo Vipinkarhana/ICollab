@@ -63,11 +63,11 @@ function StartPostModal({ isOpen, SetIsOpen }) {
           ></textarea>
         </div>
         <div className=" h-[24%] flex flex-col">
-          <div className="h-[60%] ">
+          <div className="h-[60%] flex flex-col justify-evenly">
             <div className="h-[50%] border-t flex justify-start items-center px-2">
               <EmojiButton onSelectEmoji={addEmoji} />
             </div>
-            <div className="h-[50%]  flex justify-start items-center px-2">
+            <div className="h-auto  flex justify-start items-center ">
               <FileUpload/>
             </div>
           </div>

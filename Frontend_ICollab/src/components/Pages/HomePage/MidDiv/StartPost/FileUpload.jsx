@@ -1,26 +1,15 @@
 import React, { useState } from "react";
-import { ImageUp, Youtube} from "lucide-react"; 
+import { ImageUp, Youtube } from "lucide-react";
 
 const FileUpload = () => {
-  const [selectedFile, setSelectedFile] = useState(null); 
-  const [fileType, setFileType] = useState(""); 
-  const [height, setHeight] = useState("100px"); 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileType, setFileType] = useState("");
+  const [height, setHeight] = useState("100px");
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    setSelectedFile(file); 
-
-    setHeight(file.type.startsWith("image") ? "300px" : "400px"); 
-  };
-
-  const handlePhotoClick = () => {
-    document.getElementById("photoInput").click();
-    setFileType("photo");
-  };
-
-  const handleVideoClick = () => {
-    document.getElementById("videoInput").click();
-    setFileType("video");
+    setSelectedFile(file);
+    setHeight(file.type.startsWith("image") ? "300px" : "400px");
   };
 
   return (
@@ -33,30 +22,36 @@ const FileUpload = () => {
           overflow: "hidden",
         }}
       >
-        <button onClick={handlePhotoClick} className="">
-          <ImageUp color="gray" size={26} />
-        </button>
+        <div className="relative w-10 h-10">
+          <button className="w-10 h-10 flex justify-center items-center">
+            <ImageUp color="gray" size={26} />
+          </button>
+          <input
+            type="file"
+            accept="image/*"
+            className="absolute inset-0 opacity-0"
+            onChange={(e) => {
+              setFileType("photo");
+              handleFileChange(e);
+            }}
+          />
+        </div>
 
-        <button onClick={handleVideoClick} className="">
-          <Youtube color="gray" size={28}/>
-        </button>
+        <div className="relative w-10 h-10">
+          <button className="w-10 h-10 flex justify-center items-center">
+            <Youtube color="gray" size={28} />
+          </button>
+          <input
+            type="file"
+            accept="video/*"
+            className="absolute inset-0 opacity-0"
+            onChange={(e) => {
+              setFileType("video");
+              handleFileChange(e);
+            }}
+          />
+        </div>
       </div>
-
-      <input
-        type="file"
-        id="photoInput"
-        accept="image/*"
-        className="hidden"
-        onChange={handleFileChange}
-      />
-
-      <input
-        type="file"
-        id="videoInput"
-        accept="video/*"
-        className="hidden"
-        onChange={handleFileChange}
-      />
 
       {selectedFile && (
         <div className="mt-4">
