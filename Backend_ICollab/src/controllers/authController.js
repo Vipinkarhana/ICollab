@@ -52,6 +52,7 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
+  console.log('Login:', email, password);
 
   try {
     const user = await userModel.findOne({ email });
@@ -64,14 +65,8 @@ const login = async (req, res, next) => {
       return next(new ApiError(401, 'Please check your password'));
     }
 
-    const accessToken = generateAccessToken({
-      id: user._id,
-      role: user.role,
-    });
-    const refreshToken = generateRefreshToken({
-      id: user._id,
-      role: user.role,
-    });
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
 
     res.cookie('refreshToken', refreshToken, config.CookieOptions);
 
@@ -79,7 +74,6 @@ const login = async (req, res, next) => {
       message: 'Login successful',
       status: 'success',
       accessToken,
-      refreshToken,
     });
   } catch (error) {
     next(error);
@@ -138,14 +132,8 @@ const googleAuth = async (req, res, next) => {
       await user.save();
     }
 
-    const accessToken = generateAccessToken({
-      id: user._id,
-      role: user.role,
-    });
-    const refreshToken = generateRefreshToken({
-      id: user._id,
-      role: user.role,
-    });
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
 
     res.cookie('refreshToken', refreshToken, config.CookieOptions);
 
@@ -235,14 +223,8 @@ const linkedinauth = async (req, res, next) => {
       await user.save();
     }
 
-    const accessToken = generateAccessToken({
-      id: user._id,
-      role: user.role,
-    });
-    const refreshToken = generateRefreshToken({
-      id: user._id,
-      role: user.role,
-    });
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
 
     res.cookie('refreshToken', refreshToken, config.CookieOptions);
 
@@ -256,6 +238,44 @@ const linkedinauth = async (req, res, next) => {
   }
 };
 
+const refreshToken = async (req, res, next) => {
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    return next(new ApiError(401, 'Refresh token missing'));
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, config.JWT_REFRESH_SECRET);
+    const user = await userModel.findById(decoded.id);
+
+    if (!user) {
+      return next(new ApiError(401, 'User not found'));
+    }
+
+    const accessToken = generateAccessToken(user);
+    const newRefreshToken = generateRefreshToken(user);
+
+    res.cookie('refreshToken', newRefreshToken, config.CookieOptions);
+
+    res.status(200).json({
+      message: 'Token refreshed',
+      status: 'success',
+      accessToken,
+    });
+  } catch (error) {
+    next(new ApiError(403, 'Invalid or expired token'));
+  }
+};
+
+const logout = async (req, res, next) => {
+  res.clearCookie('refreshToken', config.CookieOptions);
+  res.status(200).json({
+    message: 'Logout successful',
+    status: 'success',
+  });
+};
+
 module.exports = {
   register,
   login,
@@ -263,5 +283,7 @@ module.exports = {
   googleAuth,
   linkedin,
   linkedinauth,
+  refreshToken,
+  logout,
   // updateprofile,
 };

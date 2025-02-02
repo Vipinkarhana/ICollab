@@ -13,7 +13,7 @@ import Layout from "./components/Layout/Layout";
 import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
 function App() {
   return (
-    <GoogleOAuthProvider clientId="158006314043-jqdft8o3lrds0j62jrh5t8ir19k7b1ra.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
     <Router>
       <Routes>
         <Route element={<Layout />}>

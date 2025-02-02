@@ -2,11 +2,24 @@ import React, { useState } from "react";
 import Logo from "../../../assets/ICollab_Logo.png";
 import { Mail, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
-import Google from "../../Common/Google";
-import Linkedin from "../../Common/LinkedinButoon";
+import Google from "./Google";
+import Linkedin from "./LinkedinButoon";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../../services/authService";
+
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleFormSubmit = async () => {
+    try {
+      const response = await login({ email, password });
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   return (
     <div className="h-[99svh] w-[99svw] flex justify-center items-center bg-gray-200 lg:bg-gray-50 py-2">
@@ -31,9 +44,8 @@ const Login = () => {
                 />
                 <label
                   htmlFor="email"
-                  className={`absolute left-3 top-3 text-gray-500 text-md px-1 transition-all duration-300 ${
-                    email ? "-top-4 text-black" : "top-3 text-lg text-black"
-                  } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-gray-200 rounded-xl flex items-center gap-2`}
+                  className={`absolute left-3 top-3 text-gray-500 text-md px-1 transition-all duration-300 ${email ? "-top-4 text-black" : "top-3 text-lg text-black"
+                    } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-gray-200 rounded-xl flex items-center gap-2`}
                 >
                   <Mail size={20} /> Email
                 </label>
@@ -52,9 +64,8 @@ const Login = () => {
                 />
                 <label
                   htmlFor="password"
-                  className={`absolute left-3 top-3 text-gray-500 text-md px-1 transition-all duration-300 ${
-                    password ? "-top-4 text-black" : "top-3 text-lg text-black"
-                  } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-gray-200 rounded-xl flex items-center gap-2`}
+                  className={`absolute left-3 top-3 text-gray-500 text-md px-1 transition-all duration-300 ${password ? "-top-4 text-black" : "top-3 text-lg text-black"
+                    } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-gray-200 rounded-xl flex items-center gap-2`}
                 >
                   <Lock size={20} /> Password
                 </label>
@@ -62,7 +73,10 @@ const Login = () => {
             </div>
 
             <div className="h-12 lg:h-10 w-[100%] flex justify-center items-center mt-2">
-              <button className="h-[100%] w-[60%] bg-black text-white rounded-md text-xl">
+              <button
+                className="h-[100%] w-[60%] bg-black text-white rounded-md text-xl"
+                onClick={handleFormSubmit}
+              >
                 Login
               </button>
             </div>

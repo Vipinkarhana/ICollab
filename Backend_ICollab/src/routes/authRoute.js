@@ -7,9 +7,8 @@ const {
   googleAuth,
   linkedin,
   linkedinauth,
-  // updateprofile,
-  //   logout,
-  //   refreshToken,
+  logout,
+  refreshToken,
 } = require('../controllers/authController');
 
 router.post('/register', register);
@@ -18,8 +17,7 @@ router.get('/verifyemail', verifyemail);
 router.post('/google', googleAuth);
 router.get('/linkedin', linkedin);
 router.get('/linkedincallback', linkedinauth);
-//router.post('/updateprofile', updateprofile);
-// router.post('/logout', logout);
-// router.post('/refresh', refreshToken);
+router.post('/logout', logout);
+router.post('/refresh', refreshToken);
 
 module.exports = router;

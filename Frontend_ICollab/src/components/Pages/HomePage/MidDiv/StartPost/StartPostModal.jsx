@@ -1,4 +1,4 @@
-import { useEffect, useRef,useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import ProfilePic from "../../../../Common/ProfilePic";
 import EmojiButton from "./EmojiButton";
@@ -73,8 +73,11 @@ function StartPostModal({ isOpen, SetIsOpen }) {
               </div>
             </div>
             <div className="h-24 mt-2 flex justify-end items-end px-2 py-1">
-              <button onClick={()=>{console.log("action");
-              }} className="px-3  bg-slate-300 rounded-lg text-lg text-gray-800">
+              <button onClick={() => {
+                console.log("action");
+              }}
+                className="px-3  bg-slate-300 rounded-lg text-lg text-gray-800"
+              >
                 Post
               </button>
             </div>
