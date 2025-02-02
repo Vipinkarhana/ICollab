@@ -2,12 +2,26 @@ import React, { useState } from "react";
 import Logo from "../../../assets/ICollab_Logo.png";
 import { UserRound, Mail, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
-import Google from "../../Common/Google";
-import Linkedin from "../../Common/LinkedinButoon";
+import Google from "./Google";
+import Linkedin from "./LinkedinButoon";
+import { register } from "../../../services/authService";
+import { useNavigate } from "react-router-dom";
+
 const Register = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleFormSubmit = async () => {
+    try {
+      const response = await register({ name, email, password });
+      console.log(response);
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   return (
     <div className="w-[98svw] flex justify-center items-center bg-gray-200 lg:bg-gray-50 py-2">
@@ -33,11 +47,10 @@ const Register = () => {
                 />
                 <label
                   htmlFor="name"
-                  className={`absolute left-3 ${
-                    name
-                      ? "-top-3 text-md px-1 bg-gray-200 peer-focus:text-black"
-                      : "top-3 text-lg"
-                  } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
+                  className={`absolute left-3 ${name
+                    ? "-top-3 text-md px-1 bg-gray-200 peer-focus:text-black"
+                    : "top-3 text-lg"
+                    } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
                 >
                   <UserRound size={20} />
                   Your Name
@@ -58,11 +71,10 @@ const Register = () => {
                 />
                 <label
                   htmlFor="email"
-                  className={`absolute left-3 ${
-                    email
-                      ? "-top-3 text-md px-1 bg-gray-200 peer-focus:text-black"
-                      : "top-3 text-lg"
-                  } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
+                  className={`absolute left-3 ${email
+                    ? "-top-3 text-md px-1 bg-gray-200 peer-focus:text-black"
+                    : "top-3 text-lg"
+                    } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
                 >
                   <Mail size={20} />
                   Email
@@ -83,11 +95,10 @@ const Register = () => {
                 />
                 <label
                   htmlFor="password"
-                  className={`absolute left-3 ${
-                    password
-                      ? "-top-3 text-md px-1 bg-gray-200 peer-focus:text-black"
-                      : "top-3 text-lg"
-                  } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
+                  className={`absolute left-3 ${password
+                    ? "-top-3 text-md px-1 bg-gray-200 peer-focus:text-black"
+                    : "top-3 text-lg"
+                    } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
                 >
                   <Lock size={20} />
                   Password
@@ -96,7 +107,10 @@ const Register = () => {
             </div>
 
             <div className="h-12 lg:h-10 w-[100%] flex justify-center items-center mt-2">
-              <button className="h-[100%] w-[60%] bg-black text-white rounded-md text-xl">
+              <button
+                className="h-[100%] w-[60%] bg-black text-white rounded-md text-xl"
+                onClick={handleFormSubmit}
+              >
                 Register
               </button>
             </div>
@@ -110,8 +124,8 @@ const Register = () => {
           <div className="flex-grow border-t border-gray-800"></div>
         </div>
         <div className="h-32 w-[100%] flex flex-col  justify-evenly items-center">
-          <Google/>
-          <Linkedin/>
+          <Google />
+          <Linkedin />
         </div>
         <div className="text-center mt-4 h-10">
           <p className="text-md text-gray-600">

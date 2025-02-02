@@ -1,6 +1,6 @@
 import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import axios from "axios";
+import { googleAuth } from "../../../services/authService";
 import { useNavigate } from "react-router-dom";
 
 const Google = () => {
@@ -8,14 +8,7 @@ const Google = () => {
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     try {
       const { credential } = credentialResponse;
-
-      // Send Google token to the backend
-      const res = await axios.post("http://localhost:5000/api/auth/google", { credential });
-      console.log("Login Success:", res.data);
-
-      // Save access token to local storage
-      localStorage.setItem("accessToken", res.data.accessToken);
-
+      const response = await googleAuth({ credential });
       console.log("Redirecting to home after google login");
       navigate("/");
     } catch (error) {

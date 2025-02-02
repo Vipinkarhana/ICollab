@@ -32,12 +32,12 @@ let userschma = mongoose.Schema(
     emailToken: { type: String },
     phone_no: {
       type: Number,
-      unique: true,
+      // unique: true, // TODO: NULL is allowed for now
       required: false,
     },
     social: {
       type: String,
-      unique: true,
+      // unique: true,
       required: false,
     },
     username: {
@@ -59,5 +59,15 @@ let userschma = mongoose.Schema(
     },
   }
 );
+
+userschma.pre('save', function (next) {
+  if (this.isModified('username')) {
+    this.username = this.username.toLowerCase();
+  }
+  if (this.isModified('email')) {
+    this.email = this.email.toLowerCase();
+  }
+  next();
+});
 
 module.exports = mongoose.model('user', userschma);
