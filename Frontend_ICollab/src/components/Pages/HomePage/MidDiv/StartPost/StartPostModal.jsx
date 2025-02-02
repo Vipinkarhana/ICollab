@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import ProfilePic from "../../../../Common/ProfilePic";
 import EmojiButton from "./EmojiButton";
 import FileUpload from "./FileUpload";
+import Name_Designation from "../../../../Common/Name&Designation";
 
 function StartPostModal({ isOpen, SetIsOpen }) {
   if (!isOpen) return null;
@@ -35,14 +36,7 @@ function StartPostModal({ isOpen, SetIsOpen }) {
         <div className="h-[13%] w-full flex px-4 justify-between bg-gray-50 rounded-t-lg">
           <div className="h-full w-auto flex justify-evenly items-center ">
             <ProfilePic />
-            <div className="flex h-16 px-4 py-2 flex-col ">
-              <div className="text-xl font-bold">
-                <p>Jhon Dews</p>
-              </div>
-              <div className="text-gray-900">
-                <p>IT, Software Engineer</p>
-              </div>
-            </div>
+            <Name_Designation/>
           </div>
           <button
             className="absolute  text-gray-600 hover:text-black hover:bg-gray-300 rounded-full p-1 top-2 right-2"

@@ -26,7 +26,7 @@ const EmojiButton = ({ onSelectEmoji }) => {
   }, []);
 
   return (
-    <div className="relative">
+    <div className="relative ">
       <button
         className="p-2"
         onClick={(e) => {
@@ -37,7 +37,7 @@ const EmojiButton = ({ onSelectEmoji }) => {
         <SmilePlus color="gray" size={26} /> 
       </button>
       {showPicker && (
-        <div ref={pickerRef} className="absolute right-7 bottom-12 shadow-lg">
+        <div ref={pickerRef} className="absolute -right-96 bottom-12 shadow-lg ">
           <EmojiPicker onEmojiClick={onEmojiClick} />
         </div>
       )}
