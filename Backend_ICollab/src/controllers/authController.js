@@ -239,7 +239,7 @@ const linkedinauth = async (req, res, next) => {
 };
 
 const refreshToken = async (req, res, next) => {
-  const { refreshToken } = req.cookies;
+  const { refreshToken } = req.signedCookies;
 
   if (!refreshToken) {
     return next(new ApiError(401, 'Refresh token missing'));

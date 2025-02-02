@@ -1,3 +1,5 @@
+const { sign } = require('jsonwebtoken');
+
 require('dotenv').config();
 
 const config = {
@@ -12,6 +14,7 @@ const config = {
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
   JWT_REFRESH_EXPIRE: process.env.JWT_REFRESH_EXPIRE,
   SECRET_KEY: process.env.SECRET_KEY, //For email verification Token Secret Key
+  COOKIE_SECRET: process.env.COOKIE_SECRET, //For cookie encryption
   // 3rd Party API Keys
   EMAIL_ID: process.env.EMAIL_ID,
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
@@ -21,6 +24,7 @@ const config = {
   CookieOptions: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
+    signed: true,
     //domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
   },
 };

@@ -8,7 +8,7 @@ router.get('/', function (req, res, next) {
   });
 });
 
-router.get('/test',isloggedin, function (req, res, next) {
+router.get('/test', isloggedin, function (req, res, next) {
   res.json({
     data: req.user,
     message: 'Test route',

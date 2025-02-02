@@ -3,6 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
+var helmet = require('helmet');
 const config = require('./config/config');
 
 var ApiError = require('./src/utils/ApiError');
@@ -14,10 +15,11 @@ var app = express();
 
 connectDB();
 app.use(cors({ origin: config.FRONTEND_URL, credentials: true }));
+app.use(helmet());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(config.COOKIE_SECRET));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
