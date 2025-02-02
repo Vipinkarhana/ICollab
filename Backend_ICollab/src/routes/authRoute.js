@@ -7,7 +7,7 @@ const {
   googleAuth,
   linkedin,
   linkedinauth,
-  updateprofile,
+  // updateprofile,
   //   logout,
   //   refreshToken,
 } = require('../controllers/authController');

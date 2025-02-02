@@ -5,8 +5,6 @@ const axios = require('axios');
 const qs = require('qs');
 const generateUsername = require('../utils/usernamegenerate');
 
-
-
 const {
   generateAccessToken,
   generateRefreshToken,
@@ -44,7 +42,6 @@ const register = async (req, res, next) => {
     next(error);
   }
 };
-
 
 /*const updateprofile = async (req, res, next) => {
     const email = 'ayushobadola@gmail.com';
@@ -123,16 +120,20 @@ const googleAuth = async (req, res, next) => {
     const response = await axios.get(
       `https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`
     );
-    const { sub, email, name } = response.data; // `sub` is the unique user ID
+    const { sub, email, name, picture } = response.data; // `sub` is the unique user ID
 
     let user = await userModel.findOne({ email });
     const username = await generateUsername(email);
+    const pass = Math.random().toString(36).slice(-8);
+    const hashpass = await hashPassword(pass);
     if (!user) {
       user = new userModel({
         name,
         email,
+        profile_pic: picture,
         isVerified: true,
         username: username,
+        password: hashpass,
       });
       await user.save();
     }
@@ -159,107 +160,108 @@ const googleAuth = async (req, res, next) => {
   }
 };
 
-
 const linkedin = async (req, res, next) => {
-  try{
-    console.log("1");
-    const authURL = `https://www.linkedin.com/oauth/v2/authorization?` + 
-       `response_type=code&` + 
-       `client_id=${config.LINKEDIN_CLIENT_ID}&` + 
-       `redirect_uri=${encodeURIComponent('http://localhost:5000/api/auth/linkedincallback')}&` + 
-       `state=foobar&` +
-       `scope=openid%20profile%20email`;
-       res.redirect(authURL);
-       console.log("2");
+  try {
+    console.log('1');
+    const authURL =
+      `https://www.linkedin.com/oauth/v2/authorization?` +
+      `response_type=code&` +
+      `client_id=${config.LINKEDIN_CLIENT_ID}&` +
+      `redirect_uri=${encodeURIComponent(`${config.PUBLIC_URL}/api/auth/linkedincallback`)}&` +
+      `state=foobar&` +
+      `scope=openid%20profile%20email`;
+    res.redirect(authURL);
+    console.log('2');
+  } catch (err) {
+    next(err);
   }
-  catch(err){
-    console.error('Error in LinkedIn Auth URL generation:', err);
-    res.status(500).send('Internal Server Error');
-  }
-
 };
 
 const linkedinauth = async (req, res, next) => {
-  console.log("Entered Linkedin Auth");
-const {code} = req.query;
+  console.log('Entered Linkedin Auth');
+  const { code } = req.query;
 
-if (!code) {
-  return res.status(400).send('Invalid authorization code');
-}
-
-let profileres;
-try{
-  console.log('1');
-  const token = await axios.post('https://www.linkedin.com/oauth/v2/accessToken',
-    qs.stringify({
-      grant_type: 'authorization_code',
-      code: code,
-      client_id: config.LINKEDIN_CLIENT_ID,
-      client_secret: config.LINKEDIN_CLIENT_SECRET,
-      redirect_uri: 'http://localhost:5000/api/auth/linkedincallback'
-    }),
-    {
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    },
-  );
-  console.log('2');
-  console.log('Topken.data: ', token.data)
-  const {access_token: accessToken, expires_in: expiresIn} = token.data;
-  console.log('accessToken: ', accessToken);
-  profileres = await axios.get('https://api.linkedin.com/v2/userinfo',
-    {
-      'headers': {
-        'Authorization': `Bearer ${accessToken}`
-      },
-    }
-
-  );
-  console.log('profileres: ', profileres.data)
-}
-catch(err){
-  res.status(500).send('Authentication Failed');
-  console.error('Error during LinkedIn Auth:', err.response?.data || err.message || err);
-
-}
-
-
-try{
-  let user = await userModel.findOne({ email: profileres.data.email });
-  const pass = Math.random().toString(36).slice(-8);
-  const hashpass = await hashPassword(pass);
-  const username = await generateUsername(profileres.data.email);
-  if (!user) {
-    user = new userModel({
-      name: profileres.data.name,
-      email: profileres.data.email,
-      isVerified: true,
-      password: hashpass,
-      username: username,
-    });
-    await user.save();
+  if (!code) {
+    return res.status(400).send('Invalid authorization code');
   }
 
-  const accessToken = generateAccessToken({
-    id: user._id,
-    role: user.role,
-  });
-  const refreshToken = generateRefreshToken({
-    id: user._id,
-    role: user.role,
-  });
+  let profileres;
+  try {
+    console.log('1');
+    const token = await axios.post(
+      'https://www.linkedin.com/oauth/v2/accessToken',
+      qs.stringify({
+        grant_type: 'authorization_code',
+        code: code,
+        client_id: config.LINKEDIN_CLIENT_ID,
+        client_secret: config.LINKEDIN_CLIENT_SECRET,
+        redirect_uri: `${config.PUBLIC_URL}/api/auth/linkedincallback`,
+      }),
+      {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      }
+    );
+    console.log('2');
+    console.log('Topken.data: ', token.data);
+    const { access_token: accessToken, expires_in: expiresIn } = token.data;
+    console.log('accessToken: ', accessToken);
+    profileres = await axios.get('https://api.linkedin.com/v2/userinfo', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    console.log('profileres: ', profileres.data);
+  } catch (err) {
+    console.error(
+      'Error during LinkedIn Auth:',
+      err.response?.data || err.message || err
+    );
+    next(err);
+  }
 
-  res.cookie('refreshToken', refreshToken, config.CookieOptions);
+  try {
+    let user = await userModel.findOne({ email: profileres.data.email });
+    const pass = Math.random().toString(36).slice(-8);
+    const hashpass = await hashPassword(pass);
+    const username = await generateUsername(profileres.data.email);
+    if (!user) {
+      user = new userModel({
+        name: profileres.data.name,
+        email: profileres.data.email,
+        isVerified: true,
+        password: hashpass,
+        username: username,
+      });
+      await user.save();
+    }
 
-  res.redirect('http://localhost:5173');
-}
-catch(err){
-  console.error("Error during storing data values in database via linkedin", err);
-}
+    const accessToken = generateAccessToken({
+      id: user._id,
+      role: user.role,
+    });
+    const refreshToken = generateRefreshToken({
+      id: user._id,
+      role: user.role,
+    });
 
+    res.cookie('refreshToken', refreshToken, config.CookieOptions);
 
-
+    res.redirect(config.FRONTEND_URL);
+  } catch (err) {
+    console.error(
+      'Error during storing data values in database via linkedin',
+      err
+    );
+    next(err);
+  }
 };
 
-
-
-module.exports = { register, login, verifyemail, googleAuth, linkedin, linkedinauth, updateprofile };
+module.exports = {
+  register,
+  login,
+  verifyemail,
+  googleAuth,
+  linkedin,
+  linkedinauth,
+  // updateprofile,
+};

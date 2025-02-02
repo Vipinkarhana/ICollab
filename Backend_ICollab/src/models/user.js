@@ -32,7 +32,7 @@ let userschma = mongoose.Schema(
     emailToken: { type: String },
     phone_no: {
       type: Number,
-      unique: true,
+      // unique: true, // TODO: NULL is allowed for now
       required: false,
     },
     social: {

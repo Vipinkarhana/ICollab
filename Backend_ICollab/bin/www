@@ -5,7 +5,6 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('backend-icollab:server');
 var http = require('http');
 var config = require('../config/config');
 
@@ -83,8 +82,7 @@ function onError(error) {
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  debug('Listening on ' + bind);
 
   // Adding message when server starts
-  console.log(`Server started and listening on port ${port}`);
+  console.log(`Server started and listening on port ${bind}`);
 }
