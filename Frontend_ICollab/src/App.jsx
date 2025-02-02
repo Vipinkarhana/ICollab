@@ -11,24 +11,26 @@ import Login from "./components/Pages/Login_RegistrationPages/Login";
 import Register from "./components/Pages/Login_RegistrationPages/Registration";
 import Layout from "./components/Layout/Layout";
 import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
+import AlertMessage from "./components/Common/Alert";
 function App() {
   return (
     <GoogleOAuthProvider clientId="158006314043-jqdft8o3lrds0j62jrh5t8ir19k7b1ra.apps.googleusercontent.com">
-    <Router>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/network" element={<NetworkPage />} />
-          <Route path="/project" element={<ProjectPage />} />
-          <Route path="/message" element={<MessagePage />} />
-          <Route path="/notification" element={<NotificationPage />} />
-          <Route path="/incubators" element={ <IncubatorsPage/>} />
-        </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/Register" element={<Register />} />
-      </Routes>
-    </Router>
+      <Router>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/network" element={<NetworkPage />} />
+            <Route path="/project" element={<ProjectPage />} />
+            <Route path="/message" element={<MessagePage />} />
+            <Route path="/notification" element={<NotificationPage />} />
+            <Route path="/incubators" element={<IncubatorsPage />} />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/Register" element={<Register />} />
+        </Routes>
+      </Router>
+      <AlertMessage />
     </GoogleOAuthProvider>
   );
 }

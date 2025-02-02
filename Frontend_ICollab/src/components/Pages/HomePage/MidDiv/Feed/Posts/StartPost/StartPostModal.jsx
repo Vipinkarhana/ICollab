@@ -1,9 +1,9 @@
-import { useEffect, useRef,useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
-import ProfilePic from "../../../../Common/ProfilePic";
+import ProfilePic from "../../../../../../Common/ProfilePic";
 import EmojiButton from "./EmojiButton";
 import FileUpload from "./FileUpload";
-import Name_Designation from "../../../../Common/Name&Designation";
+import Name_Designation from "../../../../../../Common/Name&Designation";
 
 function StartPostModal({ isOpen, SetIsOpen }) {
   if (!isOpen) return null;
@@ -36,7 +36,7 @@ function StartPostModal({ isOpen, SetIsOpen }) {
         <div className="h-[13%] w-full flex px-4 justify-between bg-gray-50 rounded-t-lg">
           <div className="h-full w-auto flex justify-evenly items-center ">
             <ProfilePic />
-            <Name_Designation/>
+            <Name_Designation />
           </div>
           <button
             className="absolute  text-gray-600 hover:text-black hover:bg-gray-300 rounded-full p-1 top-2 right-2"
@@ -67,8 +67,12 @@ function StartPostModal({ isOpen, SetIsOpen }) {
               </div>
             </div>
             <div className="h-24 mt-2 flex justify-end items-end px-2 py-1">
-              <button onClick={()=>{console.log("action");
-              }} className="px-3  bg-slate-300 rounded-lg text-lg text-gray-800">
+              <button
+                onClick={() => {
+                  console.log("action");
+                }}
+                className="px-3  bg-slate-300 rounded-lg text-lg text-gray-800"
+              >
                 Post
               </button>
             </div>

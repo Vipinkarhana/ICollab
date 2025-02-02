@@ -1,11 +1,11 @@
 import React from 'react'
 
-function Feed() {
+function PostCard() {
   return (
-    <div className=''>
+    <div>
       
     </div>
   )
 }
 
-export default Feed
+export default PostCard
