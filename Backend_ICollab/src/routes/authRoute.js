@@ -9,6 +9,8 @@ const {
   linkedinauth,
   logout,
   refreshToken,
+  addpost,
+  likepost,
 } = require('../controllers/authController');
 
 router.post('/register', register);
@@ -19,5 +21,7 @@ router.get('/linkedin', linkedin);
 router.get('/linkedincallback', linkedinauth);
 router.post('/logout', logout);
 router.post('/refresh', refreshToken);
+router.post('/addpost', addpost);
+router.post('/likepost', likepost);
 
 module.exports = router;
