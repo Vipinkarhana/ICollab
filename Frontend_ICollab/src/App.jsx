@@ -1,6 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { Provider } from "react-redux";
+import { store } from "../src/Redux/Store";
+
 import HomePage from "./components/Pages/HomePage/HomePage";
 import ProfilePage from "./components/Pages/ProfilePage/ProfilePage";
 import NetworkPage from "./components/Pages/NetworkPage/NetworkPage";
@@ -12,28 +15,30 @@ import Register from "./components/Pages/Login_RegistrationPages/Registration";
 import Layout from "./components/Layout/Layout";
 import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
 import AlertMessage from "./components/Common/Alert";
+
 function App() {
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-    <Router>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/network" element={<NetworkPage />} />
-          <Route path="/project" element={<ProjectPage />} />
-          <Route path="/message" element={<MessagePage />} />
-          <Route path="/notification" element={<NotificationPage />} />
-          <Route path="/incubators" element={ <IncubatorsPage/>} />
-        </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/Register" element={<Register />} />
-      </Routes>
-    </Router>
-    </GoogleOAuthProvider>
+    <Provider store={store}>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <Router>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/network" element={<NetworkPage />} />
+              <Route path="/project" element={<ProjectPage />} />
+              <Route path="/message" element={<MessagePage />} />
+              <Route path="/notification" element={<NotificationPage />} />
+              <Route path="/incubators" element={<IncubatorsPage />} />
+            </Route>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+          <AlertMessage />
+        </Router>
+      </GoogleOAuthProvider>
+    </Provider>
   );
 }
 
 export default App;
-
-
