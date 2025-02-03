@@ -14,7 +14,7 @@ import Login from "./components/Pages/Login_RegistrationPages/Login";
 import Register from "./components/Pages/Login_RegistrationPages/Registration";
 import Layout from "./components/Layout/Layout";
 import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
-import AlertMessage from "./components/Common/Alert";
+// import AlertMessage from "./components/Common/Alert";
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
-          <AlertMessage />
+          {/* <AlertMessage /> */}
         </Router>
       </GoogleOAuthProvider>
     </Provider>
