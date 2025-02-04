@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cors = require('cors');
 var helmet = require('helmet');
 const config = require('./config/config');
+const sanitizeInput = require('./middlewares/sanitize');
 
 var ApiError = require('./src/utils/ApiError');
 const connectDB = require('./config/DB');
@@ -15,6 +16,7 @@ var app = express();
 
 connectDB();
 app.use(cors({ origin: config.FRONTEND_URL, credentials: true }));
+app.use(sanitizeInput);
 app.use(helmet());
 app.use(logger('dev'));
 app.use(express.json());
