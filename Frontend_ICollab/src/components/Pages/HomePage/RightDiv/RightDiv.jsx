@@ -4,7 +4,7 @@ const RightDiv = () => {
   return (
     <>
       <div className="w-[20%] h-[100%]  flex flex-col justify-start items-center">
-        <div className="w-[90%] h-[95%] bg-gray-200 rounded-md flex flex-col justify-start items-center">
+        <div className="w-[100%] h-[100%] bg-gray-200 rounded-md flex flex-col justify-start items-center">
           <div className="h-[10%] w-[100%] text-xl font-bold px-2  flex  items-center justify-start">
             <p>Network</p>
           </div>

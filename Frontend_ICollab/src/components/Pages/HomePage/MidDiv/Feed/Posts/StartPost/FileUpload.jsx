@@ -105,9 +105,8 @@ const FileUpload = () => {
   return (
     <div className="px-1 flex flex-col justify-start items-start w-full h-auto">
       <div className="flex gap-4">
-
-        <div className="relative w-10 h-10">
-          <button className="w-10 h-10 flex justify-center items-center">
+        <div className="relative w-10 h-1 ">
+          <button className="w-10 h-10 flex justify-center items-center ">
             <ImageUp color="gray" size={26} />
           </button>
           <input
@@ -119,7 +118,7 @@ const FileUpload = () => {
           />
         </div>
 
-        <div className="relative w-10 h-10">
+        <div className="relative w-10 h-1 ">
           <button className="w-10 h-10 flex justify-center items-center">
             <Youtube color="gray" size={28} />
           </button>
@@ -137,7 +136,6 @@ const FileUpload = () => {
 
       {selectedFiles.length > 0 && selectedFiles[currentIndex] && (
         <div className="mt-4 relative w-full h-full flex items-center justify-between">
-    
           <button
             className="absolute left-1 bg-gray-500 text-white p-2 rounded-full z-10"
             onClick={prevSlide}
@@ -145,9 +143,7 @@ const FileUpload = () => {
             <ChevronLeft size={20} />
           </button>
 
-          
           <div className="relative w-full h-full flex justify-center items-center">
-            
             <button
               className="absolute bg-red-400 text-white p-1 rounded-full right-3 -mt-56 z-10"
               onClick={removeFile}
@@ -155,7 +151,6 @@ const FileUpload = () => {
               <X color="white" size={24} />
             </button>
 
-  
             <FilePreview
               file={selectedFiles[currentIndex].file}
               type={selectedFiles[currentIndex].type}
