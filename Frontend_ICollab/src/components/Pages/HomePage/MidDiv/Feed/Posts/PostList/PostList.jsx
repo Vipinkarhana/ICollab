@@ -1,5 +1,9 @@
 import React from 'react'
 import PostCard from "../Postcard/PostCard"
+import test from "../../../../../../../assets/ProfilePic.png"
+import test1 from "../../../../../../../assets/test.png"
+import test2 from "../../../../../../../assets/test2.png"
+import testvedio from "../../../../../../../assets/TestVedio.mp4"
 function PostList() {
   const text = `Lorem ipsumdolor
 
@@ -12,11 +16,18 @@ Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit tenetur a
 ores veniam possimus voluptatem nihil debitis pariatur itaque culpa adipisci, voluptatum quibusdam delectus ipsam harum molestias iste quidem qui facere perspiciatis! Delectus sunt eos, aliquam, voluptatem placeat adipisc
    
 i tempora tempore ut, necessitatibus maxime culpa mollitia repellat iure! Fugit placeat tenetur, sint atque vel ex commodi laudantium eveniet, blanditiis iusto ipsum magnam id quas aut quidem nam. Cumque ex rerum illum, eveniet aliquid modi corporis aspernatur hic dolores recusandae, doloribus deleniti animi magnam dolore quis ut dolorem architecto? Libero earum impedit veniam? Sunt exercitationem ratione nam ipsum maxime, distinctio dolor a, et eveniet facere blanditiis cupiditate dolore voluptatum veritatis, eos voluptatem voluptatibus ullam saepe quos? Voluptatum qui incidunt illo, iste quod voluptas maiores ex soluta rem quae ducimus reprehenderit ipsa dolorem officiis similique blanditiis vitae dignissimos aut ut nam, atque perspiciatis placeat tenetur? Odio ipsum officia aperiam eius deserunt ex distinctio mollitia, unde, consequatur omnis in maiores doloremque, quis sapiente?`;
+  
+  const Media = [test,test1,test2]
+  
+  const MediaVedio = testvedio
+  const Media2= [test1,test2]
+  
+  
   return (
-    <div className='h-[70svh] w-[99%] border overflow-y-auto scroll-auto scrollbar-hide px-4 '>
-      <PostCard text={text}/>
-      <PostCard text={text}/>
-      <PostCard text={text}/>
+    <div className='h-[70svh] w-[99%] overflow-y-auto scroll-auto scrollbar-hide px-4 '>
+      <PostCard text={text} media={Media}/>
+      <PostCard text={text} media={MediaVedio}/>
+      <PostCard text={text} media={Media2}/>
     </div>
   )
 }
