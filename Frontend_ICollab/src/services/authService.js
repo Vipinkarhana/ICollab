@@ -10,7 +10,6 @@ export const login = async ({email, password}) => {
     localStorage.setItem('accessToken', accessToken);
     return response.data;
   } catch (error) {
-    console.log("Login error", error);
     throw new Error(error.response?.data?.error?.message || 'Login failed');
   }
 };

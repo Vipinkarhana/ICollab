@@ -6,9 +6,11 @@ import Google from "./Google";
 import Linkedin from "./LinkedinButoon";
 import { register } from "../../../services/authService";
 import { useNavigate } from "react-router-dom";
+import useAlert from "../../Common/UseAlert";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [showSuccess, showWarning, showError] = useAlert();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,10 +18,11 @@ const Register = () => {
   const handleFormSubmit = async () => {
     try {
       const response = await register({ name, email, password });
-      console.log(response);
-      navigate("/");
+      if(response.status === "success") {
+        showSuccess(response.message);
+      }
     } catch (error) {
-      console.error("Login failed:", error);
+      showError(error.message);
     }
   };
 

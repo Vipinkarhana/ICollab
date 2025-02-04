@@ -6,18 +6,21 @@ import Google from "./Google";
 import Linkedin from "./LinkedinButoon";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../../services/authService";
+import useAlert from "../../Common/UseAlert";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [showSuccess, showWarning, showError] = useAlert();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleFormSubmit = async () => {
     try {
       const response = await login({ email, password });
+      console.log("Login:", response);
       navigate("/");
     } catch (error) {
-      console.error("Login failed:", error);
+      showError(error.message);
     }
   };
 

@@ -38,7 +38,7 @@ let userschma = mongoose.Schema(
     profile: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'profile',
-      required: true,
+      required: false,
     },
   },
   {
