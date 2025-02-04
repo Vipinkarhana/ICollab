@@ -1,0 +1,61 @@
+// middlewares/validation.js
+const { z } = require('zod');
+
+const validateRegister = (req, res, next) => {
+  const registerSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid Email address"),
+    password: z.string().min(6, "Password's minimum length is 6"),
+  });
+
+  try {
+    req.body = registerSchema.parse(req.body); // Parse and validate request body
+    next(); // Proceed to the next middleware or route handler
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors });
+    }
+    next(error);
+  }
+};
+
+const validateLogin = (req, res, next) => {
+  const loginSchema = z.object({
+    email: z.string().email("Invalid Email address"),
+    password: z.string().min(6, "Password's minimum length is 6"),
+  });
+
+  try {
+    req.body = loginSchema.parse(req.body); // Parse and validate request body
+    next();
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors });
+    }
+    next(error);
+  }
+};
+
+const validatePost = (req, res, next) => {
+  const postSchema = z.object({
+    content: z.string().min(1, "Content is required"),
+    media: z.string().optional(),
+    tag: z.array(z.string()).optional(),
+  });
+
+  try {
+    req.body = postSchema.parse(req.body);
+    next();
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors });
+    }
+    next(error);
+  }
+};
+
+module.exports = {
+  validateRegister,
+  validateLogin,
+  validatePost,
+};
