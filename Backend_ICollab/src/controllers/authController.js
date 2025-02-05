@@ -77,6 +77,7 @@ const login = async (req, res, next) => {
       message: 'Login successful',
       status: 'success',
       accessToken,
+      data: user,
     });
   } catch (error) {
     next(error);
@@ -144,7 +145,7 @@ const googleAuth = async (req, res, next) => {
       message: 'Login successful',
       status: 'success',
       accessToken,
-      refreshToken,
+      data: user,
     });
   } catch (error) {
     next(error);

@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cors = require('cors');
 var helmet = require('helmet');
 const config = require('./config/config');
-const sanitizeInput = require('./middlewares/sanitize');
+const sanitizeInput = require('./src/middlewares/sanitize');
 
 var ApiError = require('./src/utils/ApiError');
 const connectDB = require('./config/DB');
@@ -37,9 +37,9 @@ const errorHandler = (err, req, res, next) => {
   console.error(`Error: ${err.message}`);
   res.status(err.statusCode || 500).json({
     error: {
-      message: err.message || 'Internal Server Error',
       stack: process.env.NODE_ENV === 'production' ? ' ' : err.stack,
     },
+    message: err.message || 'Internal Server Error',
     status: 'failed',
   });
 };
