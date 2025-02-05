@@ -1,35 +1,125 @@
-import React from 'react'
-import PostCard from "../Postcard/PostCard"
-import test from "../../../../../../../assets/ProfilePic.png"
-import test1 from "../../../../../../../assets/test.png"
-import test2 from "../../../../../../../assets/test2.png"
-import testvedio from "../../../../../../../assets/TestVedio.mp4"
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import PostCard from "../Postcard/PostCard";
+import SkeletonPostCard from "../Postcard/SkeletonPostCard";
+import test from "../../../../../../../assets/ProfilePic.png";
+import test1 from "../../../../../../../assets/test.png";
+import test2 from "../../../../../../../assets/test2.png";
+import testvedio from"../../../../../../../assets/TestVedio.mp4"
+
 function PostList() {
-  const text = `Lorem ipsumdolor
+  const text = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum 
+  
+dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat... ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit.
 
-sit amet consectetur adipisicing elit.Dolorem delectus accusantium quia non.Labore sitab quos error veniam ratione sunt facere quisquam doloribus ex autem est ad magni ea, illum deleniti necessitatibus
+Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit.
 
-eius, officiis nihil eaque molestias dicta quaerat.Impedit id delectus eligendi explicabo iste deserunt maiores unde reprehenderit ? Delectus autem saepe nesciunt corrupti nam, aspernatur aperiam a maiores adipisci, soluta aliquid sapiente beatae voluptatibus ducimus error.Similique, delectus ? 
-   
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit tenetur at delectus, quibusdam aliquam, porro dolor nesciunt id assumenda ipsum voluptatibus facilis pariatur officiis dolore quam reiciendis nobis accusamus corrupti sint laboriosam? Earum nulla blanditiis facere officiis aliquid magni cumque debitis, maxime sed accusamus velit molestias sapiente voluptatibus, minus non rem incidunt obcaecati est veritatis ut. Sequi soluta nihil omnis quasi ipsa incidunt officia, cum dolorem rem! Voluptatum esse magnam excepturi ad reiciendis neque, cupiditate ut molestiae, delectus quibusdam voluptate nisi qui, dignissimos voluptatibus corporis dolore corrupti possimus quam eligendi. Delectus quis modi nisi. Provident tenetur commodi, reprehenderit eos accusamus blanditiis mai
-   
-ores veniam possimus voluptatem nihil debitis pariatur itaque culpa adipisci, voluptatum quibusdam delectus ipsam harum molestias iste quidem qui facere perspiciatis! Delectus sunt eos, aliquam, voluptatem placeat adipisc
-   
-i tempora tempore ut, necessitatibus maxime culpa mollitia repellat iure! Fugit placeat tenetur, sint atque vel ex commodi laudantium eveniet, blanditiis iusto ipsum magnam id quas aut quidem nam. Cumque ex rerum illum, eveniet aliquid modi corporis aspernatur hic dolores recusandae, doloribus deleniti animi magnam dolore quis ut dolorem architecto? Libero earum impedit veniam? Sunt exercitationem ratione nam ipsum maxime, distinctio dolor a, et eveniet facere blanditiis cupiditate dolore voluptatum veritatis, eos voluptatem voluptatibus ullam saepe quos? Voluptatum qui incidunt illo, iste quod voluptas maiores ex soluta rem quae ducimus reprehenderit ipsa dolorem officiis similique blanditiis vitae dignissimos aut ut nam, atque perspiciatis placeat tenetur? Odio ipsum officia aperiam eius deserunt ex distinctio mollitia, unde, consequatur omnis in maiores doloremque, quis sapiente?`;
-  
-  const Media = [test,test1,test2]
-  
-  const MediaVedio = testvedio
-  const Media2= [test1,test2]
-  
-  
+Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id
+
+fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...`;
+  const media1 = [test, test1, test2];
+  const media2 = testvedio;
+
+  // Generate initial 20 posts
+  const generatePosts = (startId, count) =>
+    Array.from({ length: count }, (_, i) => ({
+      id: startId + i,
+      text,
+      media: i % 2 === 0 ? media1 : media2,
+    }));
+
+  const [allPosts, setAllPosts] = useState(generatePosts(1, 20)); // Store all posts
+  const [visiblePosts, setVisiblePosts] = useState([]); // Posts currently rendered
+  const [loading, setLoading] = useState(false);
+  const [showSeeMore, setShowSeeMore] = useState(false);
+  const observer = useRef(null);
+  const loadedCount = useRef(0); // Track loaded posts
+
+  // Load first 5 posts initially
+  useEffect(() => {
+    setVisiblePosts(allPosts.slice(0, 5));
+    loadedCount.current = 5;
+  }, [allPosts]);
+
+  // Function to load next 5 posts
+  const fetchMorePosts = useCallback(() => {
+    if (loading) return;
+    setLoading(true);
+
+    setTimeout(() => {
+      const nextBatch = allPosts.slice(
+        loadedCount.current,
+        loadedCount.current + 5
+      );
+      setVisiblePosts((prev) => [...prev, ...nextBatch]);
+      loadedCount.current += 5;
+      setLoading(false);
+
+      // If we've loaded all 20 posts, show the "See More" button
+      if (loadedCount.current >= allPosts.length) {
+        setShowSeeMore(true);
+      }
+    }, 1000);
+  }, [loading, allPosts]);
+
+  // Observer callback for infinite scrolling
+  const lastPostRef = useCallback(
+    (node) => {
+      if (loading || showSeeMore) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          fetchMorePosts();
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [loading, fetchMorePosts, showSeeMore]
+  );
+
+  // Load 20 more posts when "See More Posts" is clicked
+  const handleLoadMore = () => {
+    const newPosts = generatePosts(allPosts.length + 1, 20);
+    setAllPosts((prev) => [...prev, ...newPosts]);
+    setShowSeeMore(false);
+    loadedCount.current = 0; // Reset counter for new batch
+  };
+
   return (
-    <div className='h-[70svh] w-[99%] overflow-y-auto scroll-auto scrollbar-hide px-4 '>
-      <PostCard text={text} media={Media}/>
-      <PostCard text={text}/>
-      <PostCard text={text} media={Media2}/>
+    <div className="h-auto w-[99%] overflow-y-auto scrollbar-hide px-4">
+      {visiblePosts.map((post, index) => (
+        <div
+          key={post.id}
+          ref={index === visiblePosts.length - 1 ? lastPostRef : null}
+        >
+          <PostCard text={post.text} media={post.media} />
+        </div>
+      ))}
+
+      {loading && (
+        <>
+          <SkeletonPostCard />
+          <SkeletonPostCard />
+          <SkeletonPostCard />
+          <SkeletonPostCard />
+          <SkeletonPostCard />
+          <SkeletonPostCard />
+        </>
+      )}
+
+      {showSeeMore && (
+        <div className="text-center mt-4">
+          <button
+            onClick={handleLoadMore}
+            className="bg-gray-300 text-gray-700 px-1 py-1 rounded-md border border-black"
+          >
+            See More Posts
+          </button>
+        </div>
+      )}
     </div>
-  )
+  );
 }
 
-export default PostList
+export default PostList;

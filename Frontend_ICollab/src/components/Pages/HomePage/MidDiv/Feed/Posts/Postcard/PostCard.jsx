@@ -39,8 +39,7 @@ function PostCard({text,media}) {
       </div>
       <div className="h-auto w-[95%]">
         <p style={{ whiteSpace: "pre-wrap" }} className="text-md text-gray-800">
-          {textToDisplay}
-          {words.length > wordLimit && (
+          {textToDisplay}{words.length > wordLimit && (
             <button
               className="text-gray-950 font-semibold"
               onClick={() => setIsFullTextVisible(!isFullTextVisible)}

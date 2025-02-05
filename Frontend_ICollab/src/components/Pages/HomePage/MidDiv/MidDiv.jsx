@@ -5,7 +5,7 @@ import Feed from "./Feed/Feed";
 const MidDiv = () => {
   return (
     <>
-      <div className="w-[50%] h-[100%]  flex flex-col justify-start items-center gap-2 py-1">
+      <div className="w-[50%] h-auto  flex flex-col justify-start items-center gap-2 py-1">
         <StartPost />
         <Feed />
       </div>
