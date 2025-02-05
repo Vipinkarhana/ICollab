@@ -1,7 +1,8 @@
 import React,{useState} from 'react'
 import ProfilePic from '../../../../../../Common/ProfilePic'
 import Name_Designation from '../../../../../../Common/Name&Designation'
-import { Bookmark,BookmarkCheck } from 'lucide-react';
+import { BookmarkIcon as OutlineBookmark, BookmarkIcon as SolidBookmark } from "@heroicons/react/24/solid";
+import { BookmarkIcon } from 'lucide-react';
 import Media from './Media';
 
 function PostCard({text,media}) {
@@ -21,33 +22,23 @@ function PostCard({text,media}) {
           <ProfilePic />
           <Name_Designation />
         </div>
-        <div className="w-[10%] h-full flex justify-end items-start">
+        <div className="w-[10%] h-full flex justify-end items-start p-1">
           <button
             onClick={() => setBookmarked(!bookmarked)}
-            className={`p-2 rounded-full transition-all ${
+            className={` rounded-full transition-all ${
               bookmarked ? " text-gray-500" : "bg-gray-200 text-gray-500"
             } `}
           >
             {bookmarked ? (
-              <BookmarkCheck
-                size={30}
-                color="blue"
-                strokeWidth={1}
-                className="transition-all"
-              />
+              <SolidBookmark className="w-auto h-[1.84rem] text-gray-500" />
             ) : (
-              <Bookmark
-                size={30}
-                strokeWidth={1}
-                color="black"
-                className="transition-all"
-              />
+              <BookmarkIcon size={30} color='gray'/>
             )}
           </button>
         </div>
       </div>
       <div className="h-auto w-[95%]">
-        <p style={{whiteSpace:'pre-wrap'}} className="text-md text-gray-800">
+        <p style={{ whiteSpace: "pre-wrap" }} className="text-md text-gray-800">
           {textToDisplay}
           {words.length > wordLimit && (
             <button
@@ -60,7 +51,7 @@ function PostCard({text,media}) {
         </p>
       </div>
       <div className="h-auto w-full object-cover flex justify-center items-center">
-        <Media media={media}/>
+        <Media media={media} />
       </div>
     </div>
   );

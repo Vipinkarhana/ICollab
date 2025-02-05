@@ -26,7 +26,7 @@ i tempora tempore ut, necessitatibus maxime culpa mollitia repellat iure! Fugit 
   return (
     <div className='h-[70svh] w-[99%] overflow-y-auto scroll-auto scrollbar-hide px-4 '>
       <PostCard text={text} media={Media}/>
-      <PostCard text={text} media={MediaVedio}/>
+      <PostCard text={text}/>
       <PostCard text={text} media={Media2}/>
     </div>
   )
