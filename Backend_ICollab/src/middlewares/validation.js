@@ -1,5 +1,6 @@
 // middlewares/validation.js
 const { z } = require('zod');
+const ApiError = require('../utils/ApiError');
 
 const validateRegister = (req, res, next) => {
   const registerSchema = z.object({
@@ -13,7 +14,7 @@ const validateRegister = (req, res, next) => {
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ error: error.errors });
+      return next(new ApiError(400, error.errors.map(err => err.message).join(", ")));
     }
     next(error);
   }
@@ -30,7 +31,7 @@ const validateLogin = (req, res, next) => {
     next();
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ error: error.errors });
+      return next(new ApiError(400, error.errors.map(err => err.message).join(", ")));
     }
     next(error);
   }
@@ -48,7 +49,7 @@ const validatePost = (req, res, next) => {
     next();
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ error: error.errors });
+      return next(new ApiError(400, error.errors.map(err => err.message).join(", ")));;
     }
     next(error);
   }

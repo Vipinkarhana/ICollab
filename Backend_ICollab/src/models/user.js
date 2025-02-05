@@ -49,6 +49,9 @@ let userschma = mongoose.Schema(
         delete ret.__v;
         delete ret.password;
         delete ret.isVerified;
+        delete ret.emailToken;
+        delete ret.createdAt;
+        delete ret.updatedAt;
         return ret;
       },
     },

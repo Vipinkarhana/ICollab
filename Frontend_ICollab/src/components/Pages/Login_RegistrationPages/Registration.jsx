@@ -7,8 +7,11 @@ import Linkedin from "./LinkedinButoon";
 import { register } from "../../../services/authService";
 import { useNavigate } from "react-router-dom";
 import useAlert from "../../Common/UseAlert";
+import { useDispatch } from 'react-redux';
+import { registerUser } from "../../../Redux/Slices/UserSlice";
 
 const Register = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showSuccess, showWarning, showError] = useAlert();
   const [name, setName] = useState("");
@@ -17,12 +20,10 @@ const Register = () => {
 
   const handleFormSubmit = async () => {
     try {
-      const response = await register({ name, email, password });
-      if(response.status === "success") {
-        showSuccess(response.message);
-      }
+      const message = await dispatch(registerUser({ name, email, password })).unwrap();
+      showSuccess(message);
     } catch (error) {
-      showError(error.message);
+      showError(error);
     }
   };
 

@@ -5,10 +5,12 @@ import { Link } from "react-router-dom";
 import Google from "./Google";
 import Linkedin from "./LinkedinButoon";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../../services/authService";
+import { useDispatch } from 'react-redux';
+import { loginUser } from "../../../Redux/Slices/UserSlice";
 import useAlert from "../../Common/UseAlert";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showSuccess, showWarning, showError] = useAlert();
   const [email, setEmail] = useState("");
@@ -16,11 +18,10 @@ const Login = () => {
 
   const handleFormSubmit = async () => {
     try {
-      const response = await login({ email, password });
-      console.log("Login:", response);
+      await dispatch(loginUser({ email, password })).unwrap();
       navigate("/");
     } catch (error) {
-      showError(error.message);
+      showError(error);
     }
   };
 

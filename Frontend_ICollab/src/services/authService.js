@@ -10,7 +10,7 @@ export const login = async ({email, password}) => {
     localStorage.setItem('accessToken', accessToken);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.error?.message || 'Login failed');
+    return error.response?.data || 'Login failed';
   }
 };
 // Register function
@@ -21,7 +21,7 @@ export const register = async (userData) => {
     // localStorage.setItem('accessToken', accessToken);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.error?.message || 'Registration failed');
+    return error.response?.data || 'Registration failed';
   }
 };
 
@@ -33,7 +33,7 @@ export const googleAuth = async ({credential}) => {
       localStorage.setItem("accessToken", res.data.accessToken);
       return res.data;
     } catch (error) {
-        throw new Error(error.response?.data?.error?.message || 'Google authentication failed');
+      return error.response?.data || 'Google authentication failed';
     }
 };
 
@@ -47,7 +47,7 @@ export const test = async () => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    throw new Error('Test failed');
+    return error.response?.data || 'Test failed';
   }
 };
 
@@ -59,6 +59,6 @@ export const logout = async () => {
     // Clear access token from localStorage
     localStorage.removeItem('accessToken');
   } catch (error) {
-    throw new Error('Logout failed');
+    return error.response?.data || 'Logout failed';
   }
 };
