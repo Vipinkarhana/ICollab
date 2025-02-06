@@ -1,125 +1,75 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import PostCard from "../Postcard/PostCard";
-import SkeletonPostCard from "../Postcard/SkeletonPostCard";
-import test from "../../../../../../../assets/ProfilePic.png";
-import test1 from "../../../../../../../assets/test.png";
-import test2 from "../../../../../../../assets/test2.png";
-import testvedio from"../../../../../../../assets/TestVedio.mp4"
+import { useEffect, useState, useCallback } from "react";
+import PostCard from "../Postcard/PostCard"; 
+import test from "../../../../../../../assets/test.png"
+import test2 from "../../../../../../../assets/test2.png"
+import SkeletonPost from "../Postcard/SkeletonPostCard"
 
-function PostList() {
-  const text = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum 
-  
-dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat... ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-
-Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-
-Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id
-
-fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...`;
-  const media1 = [test, test1, test2];
-  const media2 = testvedio;
-
-  // Generate initial 20 posts
-  const generatePosts = (startId, count) =>
-    Array.from({ length: count }, (_, i) => ({
-      id: startId + i,
-      text,
-      media: i % 2 === 0 ? media1 : media2,
-    }));
-
-  const [allPosts, setAllPosts] = useState(generatePosts(1, 20)); // Store all posts
-  const [visiblePosts, setVisiblePosts] = useState([]); // Posts currently rendered
+export default function Feed() {
+  const [posts, setPosts] = useState([]);
+  const [displayedPosts, setDisplayedPosts] = useState([]);
+  const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [showSeeMore, setShowSeeMore] = useState(false);
-  const observer = useRef(null);
-  const loadedCount = useRef(0); // Track loaded posts
-
-  // Load first 5 posts initially
-  useEffect(() => {
-    setVisiblePosts(allPosts.slice(0, 5));
-    loadedCount.current = 5;
-  }, [allPosts]);
-
-  // Function to load next 5 posts
-  const fetchMorePosts = useCallback(() => {
-    if (loading) return;
+  
+  
+  const mockFetchPosts = useCallback(() => {
     setLoading(true);
-
     setTimeout(() => {
-      const nextBatch = allPosts.slice(
-        loadedCount.current,
-        loadedCount.current + 5
-      );
-      setVisiblePosts((prev) => [...prev, ...nextBatch]);
-      loadedCount.current += 5;
+      const fakePosts = Array.from({ length: 50 }, (_, i) => ({
+        id: i + 1,
+        description: `This is the description of post ${i + 1}.`,
+        media:
+          i % 2 === 0
+            ? [test,test2] 
+            : `https://samplelib.com/lib/preview/mp4/sample-5s.mp4`, 
+      }));
+      setPosts(fakePosts);
+      setDisplayedPosts(fakePosts.slice(0, 20));
+      setIndex(20);
       setLoading(false);
-
-      // If we've loaded all 20 posts, show the "See More" button
-      if (loadedCount.current >= allPosts.length) {
-        setShowSeeMore(true);
-      }
     }, 1000);
-  }, [loading, allPosts]);
+  }, []);
 
-  // Observer callback for infinite scrolling
-  const lastPostRef = useCallback(
-    (node) => {
-      if (loading || showSeeMore) return;
-      if (observer.current) observer.current.disconnect();
+  useEffect(() => {
+    mockFetchPosts();
+  }, [mockFetchPosts]);
 
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          fetchMorePosts();
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [loading, fetchMorePosts, showSeeMore]
-  );
-
-  // Load 20 more posts when "See More Posts" is clicked
-  const handleLoadMore = () => {
-    const newPosts = generatePosts(allPosts.length + 1, 20);
-    setAllPosts((prev) => [...prev, ...newPosts]);
-    setShowSeeMore(false);
-    loadedCount.current = 0; // Reset counter for new batch
+  const loadMore = () => {
+    if (index < posts.length) {
+      setDisplayedPosts((prev) => [...prev, ...posts.slice(index, index + 20)]);
+      setIndex((prev) => prev + 20);
+    } else {
+      mockFetchPosts();
+    }
   };
 
-  return (
-    <div className="h-auto w-[99%] overflow-y-auto scrollbar-hide px-4">
-      {visiblePosts.map((post, index) => (
-        <div
-          key={post.id}
-          ref={index === visiblePosts.length - 1 ? lastPostRef : null}
-        >
-          <PostCard text={post.text} media={post.media} />
-        </div>
-      ))}
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight - 50 &&
+        !loading
+      ) {
+        loadMore();
+      }
+    };
 
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [index, loading, posts]);
+
+  return (
+    <div className="p-4 space-y-4">
+      {displayedPosts.map((post) => (
+        <PostCard key={post.id} text={post.description} media={post.media} />
+      ))}
       {loading && (
         <>
-          <SkeletonPostCard />
-          <SkeletonPostCard />
-          <SkeletonPostCard />
-          <SkeletonPostCard />
-          <SkeletonPostCard />
-          <SkeletonPostCard />
+        <SkeletonPost/>
+        <SkeletonPost/>
+        <SkeletonPost/>
+        <SkeletonPost/>
         </>
-      )}
-
-      {showSeeMore && (
-        <div className="text-center mt-4">
-          <button
-            onClick={handleLoadMore}
-            className="bg-gray-300 text-gray-700 px-1 py-1 rounded-md border border-black"
-          >
-            See More Posts
-          </button>
-        </div>
       )}
     </div>
   );
 }
-
-export default PostList;
