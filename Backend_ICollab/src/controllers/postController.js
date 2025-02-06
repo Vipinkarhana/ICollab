@@ -15,7 +15,8 @@ const addpost = async (req, res, next) => {
         user: user._id, content, media, tag,
       });
       await newPost.save();
-      res.status(201).json({message: "Post created successfully", post: newPost});
+      await newPost.populate("user", "username name profile_pic designation");
+      res.status(201).json({message: "Post created successfully", data: newPost, status: 'success'});
     }
     catch(err){
       next(err);

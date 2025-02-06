@@ -2,7 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Provider } from "react-redux";
-import { store } from "../src/Redux/Store";
+// import { store } from "../src/Redux/Store";
+import { store } from "./Redux/Store";
 
 import HomePage from "./components/Pages/HomePage/HomePage";
 import ProfilePage from "./components/Pages/ProfilePage/ProfilePage";
