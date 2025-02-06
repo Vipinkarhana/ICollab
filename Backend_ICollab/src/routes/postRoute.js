@@ -4,7 +4,7 @@ const {
   addpost,
   likepost,
   feed,
-} = require('../controllers/authController');
+} = require('../controllers/postController');
 const { validatePost } = require('../middlewares/validation');
 
 router.post('/addpost', validatePost ,addpost);
