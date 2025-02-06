@@ -32,7 +32,6 @@ const mongoose = require('mongoose');
         timestamps: true,
         toJSON: {
           transform: (doc, ret) => {
-            delete ret._id;
             delete ret.__v;
             return ret;
           },
