@@ -316,6 +316,29 @@ const likepost = async (req, res, next) => {
 };
 
 
+const feed = async (req, res, next) => {
+  try{
+    const { timestamp } = req.query; // the timestamp sent by the frontend
+
+  if (!timestamp) {
+    return res.status(400).json({ error: 'Timestamp is required' });
+  }
+
+     // Convert timestamp to Date format
+     const date = new Date(Number(timestamp));
+
+    // Fetch posts after the provided timestamp
+    const posts = await postModel.find({ createdAt: { $gt: date } })
+      .sort({ createdAt: -1 }) // Sort to show posts in order of creation
+      .limit(20); // Limit the result to 20 posts (or whatever the desired chunk is)
+
+    return res.json(posts);
+  }
+  catch(err){
+    res.status(500).json({error: "Server Error"});
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -327,5 +350,6 @@ module.exports = {
   logout,
   addpost,
   likepost,
+  feed,
   // updateprofile,
 };
