@@ -1,7 +1,4 @@
 const userModel = require('../models/user');
-const postModel = require('../models/post');
-const commentModel = require('../models/comment');
-const profileModel = require('../models/profile');
 const ApiError = require('../utils/ApiError');
 const config = require('../../config/config');
 const axios = require('axios');
@@ -45,13 +42,6 @@ const register = async (req, res, next) => {
     next(error);
   }
 };
-
-/*const updateprofile = async (req, res, next) => {
-    const email = 'ayushobadola@gmail.com';
-    const user = userModel.findOne({'email':email});
-    user.role = req.body;
-    user.social = req.body;
-};*/
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -99,10 +89,7 @@ const verifyemail = async (req, res, next) => {
       user.emailToken = null; // Clear the token after verification
       await user.save();
 
-      const refreshToken = generateRefreshToken({
-        id: user._id,
-        role: user.role,
-      });
+      const refreshToken = generateRefreshToken(user);
 
       res.cookie('refreshToken', refreshToken, config.CookieOptions);
 
@@ -283,39 +270,6 @@ const logout = async (req, res, next) => {
   });
 };
 
-
-const addpost = async (req, res, next) => {
-  try{
-    const username = ayushbadola;
-    user = userModel.findOne({'username': username});
-    const {content, media, tag} = req.body;
-    if(!content) res.status(400).json({error: "Content is required."});
-    const newPost = new postModel({
-      user, content, media, tag,
-    });
-    await newPost.save();
-    res.status(201).json({message: "Post created successfully", post: newPost});
-  }
-  catch(err){
-    res.status(500).json({ error: "Server error" });
-  }
-};
-
-const likepost = async (req, res, next) => {
-  try{
-    const postid = 1234567890; //dummy post id
-    //post = await postModel.findOne({'_id':postid});
-    const newPost = await postModel.updateOne(
-      {_id : postid},
-      { $inc: { likes: 1 } },
-    );
-  }
-  catch(err){
-    res.status(500).json({error: "Server Error"});
-  }
-};
-
-
 module.exports = {
   register,
   login,
@@ -325,7 +279,4 @@ module.exports = {
   linkedinauth,
   refreshToken,
   logout,
-  addpost,
-  likepost,
-  // updateprofile,
 };
