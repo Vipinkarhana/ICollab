@@ -40,7 +40,7 @@ const addpost = async (req, res, next) => {
   
   const feed = async (req, res, next) => {
     try{
-      const { timestamp } = req.query; // the timestamp sent by the frontend
+      const timestamp = req.body.timestamp; // the timestamp sent by the frontend
   
     if (!timestamp) {
       return res.status(400).json({ error: 'Timestamp is required' });

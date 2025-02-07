@@ -10,6 +10,6 @@ const {isloggedin} = require('../middlewares/auth');
 
 router.post('/addpost', isloggedin ,validatePost ,addpost);
 router.post('/likepost', likepost);
-router.get('/feed', feed);
+router.post('/feed', feed);
 
 module.exports = router;
