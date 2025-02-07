@@ -53,7 +53,9 @@ const addpost = async (req, res, next) => {
       // Fetch posts after the provided timestamp
       const posts = await postModel.find({ createdAt: { $gt: date } })
         .sort({ createdAt: -1 }) // Sort to show posts in order of creation
-        .limit(20); // Limit the result to 20 posts (or whatever the desired chunk is)
+        .limit(20) // Limit the result to 20 posts (or whatever the desired chunk is)
+        .populate('user')
+        .populate('comments');
   
       return res.json(posts);
     }
