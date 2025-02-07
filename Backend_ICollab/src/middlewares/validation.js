@@ -40,7 +40,12 @@ const validateLogin = (req, res, next) => {
 const validatePost = (req, res, next) => {
   const postSchema = z.object({
     content: z.string().min(1, "Content is required"),
-    media: z.string().optional(),
+    media: z.array(
+      z.object({
+        fileType: z.string().min(1, "File type is required"),
+        fileName: z.string().min(1, "File name is required"),
+      })
+    ).optional(), // Optional media array
     tag: z.array(z.string()).optional(),
   });
 

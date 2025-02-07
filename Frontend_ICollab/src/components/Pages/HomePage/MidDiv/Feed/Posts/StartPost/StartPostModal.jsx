@@ -7,12 +7,12 @@ import Name_Designation from "../../../../../../Common/Name&Designation";
 import { useDispatch, useSelector } from "react-redux";
 import { addDraft, createPost } from "../../../../../../../Redux/Slices/PostSlice";
 
-
 function StartPostModal({ isOpen, SetIsOpen }) {
   if (!isOpen) return null;
   const dispatch = useDispatch();
   const content = useSelector((state) => state.post.post.content);
   const [text, setText] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState([]);
 
   const textareaRef = useRef(null);
 
@@ -34,6 +34,10 @@ function StartPostModal({ isOpen, SetIsOpen }) {
       document.removeEventListener("keydown", keepFocus);
     };
   }, []);
+
+  useEffect(() => {
+    console.log(selectedFiles);
+  }, [selectedFiles]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -68,13 +72,13 @@ function StartPostModal({ isOpen, SetIsOpen }) {
                 <EmojiButton onSelectEmoji={addEmoji} />
               </div>
               <div className="h-auto w-full flex justify-start items-center ">
-                <FileUpload />
+                <FileUpload selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles}/>
               </div>
             </div>
             <div className="h-24 mt-2 flex justify-end items-end px-2 py-1">
               <button
                 onClick={async () => {
-                  await dispatch(createPost());
+                  await dispatch(createPost({ mediaFiles: selectedFiles }));
                   SetIsOpen(false);
                 }}
                 className="px-3  bg-slate-300 rounded-lg text-lg text-gray-800"

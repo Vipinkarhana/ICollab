@@ -3,20 +3,32 @@ const commentModel = require('../models/comment');
 const ApiError = require('../utils/ApiError');
 const config = require('../../config/config');
 const userModel = require('../models/user');
+const { generatePresignedUrl } = require('../../config/s3');
 
 const addpost = async (req, res, next) => {
     try{
-      console.log("1");
       const username = req.user.username;
       const user = await userModel.findOne({'username': username});
-      const {content, media, tag} = req.body;
+      const {content, media} = req.body;
+      console.log("Media:", req.body);
       if(!content) res.status(400).json({error: "Content is required."});
       const newPost = new postModel({
-        user: user._id, content, media, tag,
+        user: user._id, content
       });
       await newPost.save();
       await newPost.populate("user", "username name profile_pic designation");
-      res.status(201).json({message: "Post created successfully", data: newPost, status: 'success'});
+      console.log(media);
+      const presignedUrls = await Promise.all(
+        media.map(async ({ fileType, fileName }) => {
+          const key = `posts/${newPost._id}/${Date.now()}-${fileName}`;
+          return await generatePresignedUrl(key, fileType);
+        })
+      );
+
+      res.status(201).json({
+        message: "Post created successfully", 
+        data: { post: newPost, presignedUrls }, 
+        status: 'success'});
     }
     catch(err){
       next(err);
