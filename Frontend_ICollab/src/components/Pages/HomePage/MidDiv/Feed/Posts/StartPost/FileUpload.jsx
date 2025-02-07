@@ -1,12 +1,14 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { ImageUp, Youtube, X, ChevronLeft, ChevronRight } from "lucide-react";
 import useAlert from "../../../../../../Common/UseAlert";
+import { useDispatch } from "react-redux";
+import { addDraft } from "../../../../../../../Redux/Slices/PostSlice";
 
 const FilePreview = React.memo(({ file, type }) => {
   const fileUrl = useMemo(() => URL.createObjectURL(file), [file]);
 
   const cleanup = () => {
-    URL.revokeObjectURL(fileUrl); 
+    URL.revokeObjectURL(fileUrl);
   };
 
   return type === "photo" ? (
@@ -23,10 +25,11 @@ const FilePreview = React.memo(({ file, type }) => {
   );
 });
 
-const FileUpload = () => {
+const FileUpload = ({selectedFiles, setSelectedFiles}) => {
   const [showSuccess, showWarning, showError] = useAlert();
+  const dispatch = useDispatch();
 
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  // const [selectedFiles, setSelectedFiles] = useState([]);
   const [currentType, setCurrentType] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -59,34 +62,32 @@ const FileUpload = () => {
         setSelectedFiles([{ file: files[0], type: fileType }]);
       }
 
-      setCurrentType(fileType); 
-      setCurrentIndex(0); 
+      setCurrentType(fileType);
+      setCurrentIndex(0);
 
       event.target.value = "";
     },
     [currentType, selectedFiles, showError]
   );
 
- const removeFile = useCallback(() => {
-   setSelectedFiles((prevFiles) => {
-     const updatedFiles = [...prevFiles];
-     updatedFiles.splice(currentIndex, 1);
+  const removeFile = useCallback(() => {
+    setSelectedFiles((prevFiles) => {
+      const updatedFiles = [...prevFiles];
+      updatedFiles.splice(currentIndex, 1);
+1
+      if (updatedFiles.length === 0) {
+        setCurrentType(null);
+      }
 
-     if (updatedFiles.length === 0) {
-       setCurrentType(null);
-     }
+      return updatedFiles;
+    });
 
-     return updatedFiles;
-   });
-
-   setCurrentIndex((prevIndex) =>
-     prevIndex >= selectedFiles.length - 1
-       ? Math.max(prevIndex - 1, 0)
-       : prevIndex
-   );
- }, [currentIndex, selectedFiles]);
-
-
+    setCurrentIndex((prevIndex) =>
+      prevIndex >= selectedFiles.length - 1
+        ? Math.max(prevIndex - 1, 0)
+        : prevIndex
+    );
+  }, [currentIndex, selectedFiles]);
 
   const nextSlide = useCallback(() => {
     if (selectedFiles.length > 0) {
@@ -105,8 +106,8 @@ const FileUpload = () => {
   return (
     <div className="px-1 flex flex-col justify-start items-start w-full h-auto">
       <div className="flex gap-4">
-        <div className="relative w-10 h-1 ">
-          <button className="w-10 h-10 flex justify-center items-center ">
+        <div className="relative w-10 h-10">
+          <button className="w-10 h-10 flex justify-center items-center">
             <ImageUp color="gray" size={26} />
           </button>
           <input
@@ -118,7 +119,7 @@ const FileUpload = () => {
           />
         </div>
 
-        <div className="relative w-10 h-1 ">
+        <div className="relative w-10 h-10">
           <button className="w-10 h-10 flex justify-center items-center">
             <Youtube color="gray" size={28} />
           </button>

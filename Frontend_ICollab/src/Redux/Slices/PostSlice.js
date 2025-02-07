@@ -3,21 +3,18 @@ import { addPost } from "../../services/postService";
 
 export const createPost = createAsyncThunk(
     "post/createPost",
-    async (_, { rejectWithValue, getState }) => {
+    async ({mediaFiles}, { rejectWithValue, getState }) => {
         try {
             console.log("createPost thunk");
+            console.log(mediaFiles);
             const state = getState();
             const content = state.post.post.content;
-            const mediaFiles = state.post.post.mediaFiles;
 
             const response = await addPost({ content, mediaFiles });
 
-            if (response.status === "success") {
-                return response.data;
-            } else {
-                return rejectWithValue(response.message);
-            }
+            return response.data;
         } catch (error) {
+            console.log(error);
             return rejectWithValue(error.message);
         }
     }
@@ -26,10 +23,12 @@ export const createPost = createAsyncThunk(
 const initialState = {
     post: {
         content: "",
-        mediaFiles: [],
+        tags: [],
+        hashtags: [],
     },
     myPost: [],
     savePost: [],
+    error: null,
 };
 
 const postSlice = createSlice({
@@ -37,19 +36,21 @@ const postSlice = createSlice({
     initialState,
     reducers: {
         addDraft: (state, action) => {
-            const { content, mediaFiles } = action.payload;
-            if (content !== undefined) {
-                state.post.content = content;
-            }
-            if (mediaFiles !== undefined) {
-                state.post.mediaFiles = mediaFiles;
-            }
+            const { content, tags, hashtags } = action.payload;
+            state.post.content = content;
+            state.post.tags = tags;
+            state.post.hashtags = hashtags;
         },
     },
     extraReducers: (builder) => {
         builder.addCase(createPost.fulfilled, (state, action) => {
+            console.log("createPost fulfilled");
+            console.log("Post:", state?.myPost);
             state.myPost.push(action.payload);
             state.post.content = "";
+        });
+        builder.addCase(createPost.rejected, (state, action) => {
+            state.error = action.payload;
         });
     },
 });

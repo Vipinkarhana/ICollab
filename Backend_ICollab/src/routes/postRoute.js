@@ -8,7 +8,7 @@ const {
 const { validatePost } = require('../middlewares/validation');
 const {isloggedin} = require('../middlewares/auth');
 
-router.post('/', isloggedin ,validatePost ,addpost);
+router.post('/', isloggedin  ,addpost);
 router.post('/likepost', likepost);
 router.get('/feed', feed);
 
