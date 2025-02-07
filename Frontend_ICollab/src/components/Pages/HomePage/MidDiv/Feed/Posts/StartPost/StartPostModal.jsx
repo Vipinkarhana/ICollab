@@ -4,15 +4,20 @@ import ProfilePic from "../../../../../../Common/ProfilePic";
 import EmojiButton from "./EmojiButton";
 import FileUpload from "./FileUpload";
 import Name_Designation from "../../../../../../Common/Name&Designation";
+import { useDispatch, useSelector } from "react-redux";
+import { addDraft, createPost } from "../../../../../../../Redux/Slices/PostSlice";
+
 
 function StartPostModal({ isOpen, SetIsOpen }) {
   if (!isOpen) return null;
+  const dispatch = useDispatch();
+  const content = useSelector((state) => state.post.post.content);
   const [text, setText] = useState("");
 
   const textareaRef = useRef(null);
 
   const addEmoji = (emoji) => {
-    setText((prev) => prev + emoji);
+    dispatch(addDraft({ content: content + emoji }));
   };
 
   useEffect(() => {
@@ -51,8 +56,8 @@ function StartPostModal({ isOpen, SetIsOpen }) {
               ref={textareaRef}
               name=""
               id=""
-              value={text}
-              onChange={(e) => setText(e.target.value)}
+              value={content}
+              onChange={(e) => dispatch(addDraft({ content: e.target.value }))}
               placeholder="What do you want to talk about?"
               className=" h-full w-full px-4 py-2 placeholder:text-xl outline-none resize-none"
             ></textarea>
@@ -68,8 +73,9 @@ function StartPostModal({ isOpen, SetIsOpen }) {
             </div>
             <div className="h-24 mt-2 flex justify-end items-end px-2 py-1">
               <button
-                onClick={() => {
-                  console.log("action");
+                onClick={async () => {
+                  await dispatch(createPost());
+                  SetIsOpen(false);
                 }}
                 className="px-3  bg-slate-300 rounded-lg text-lg text-gray-800"
               >
