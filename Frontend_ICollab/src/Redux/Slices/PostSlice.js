@@ -44,8 +44,8 @@ const postSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(createPost.fulfilled, (state, action) => {
-            console.log("createPost fulfilled");
-            console.log("Post:", state?.myPost);
+            console.log("Post created successfully");
+            console.log("Redux Action Post:",action.payload);
             state.myPost.push(action.payload);
             state.post.content = "";
         });

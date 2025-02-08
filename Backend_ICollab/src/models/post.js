@@ -10,7 +10,6 @@ const mongoose = require('mongoose');
       },
       content: {
         type: String,
-        unique: true,
         required: true,
       },
       media: {
@@ -27,12 +26,22 @@ const mongoose = require('mongoose');
         type: Number,
         default: 0,
       },
+      status: {
+        type: String,
+        enum: ['public', 'network', 'draft'],
+        default: 'draft',
+      },
     },
     {
         timestamps: true,
         toJSON: {
           transform: (doc, ret) => {
+            ret.id = ret._id;
+            delete ret._id;
             delete ret.__v;
+            delete ret.updatedAt;
+            // delete ret.status; // TODO: Uncomment this line to hide the status field (v0)
+            delete ret.updatedAt;
             return ret;
           },
         },

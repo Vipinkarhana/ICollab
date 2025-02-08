@@ -21,11 +21,12 @@ const config = {
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
   LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID,
   LINKEDIN_CLIENT_SECRET: process.env.LINKEDIN_CLIENT_SECRET,
-  S3_ENDPOINT: process.env.S3_ENDPOINT,
+  S3_API_ENDPOINT: process.env.S3_API_ENDPOINT,
   S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
   S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
   S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
   S3_REGION: process.env.S3_REGION,
+  S3_PUBLIC_URL: process.env.S3_PUBLIC_URL,
 
   CookieOptions: {
     httpOnly: true,

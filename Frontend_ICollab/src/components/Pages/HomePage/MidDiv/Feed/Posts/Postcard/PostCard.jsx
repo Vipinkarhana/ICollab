@@ -16,7 +16,7 @@ function PostCard({text,media}) {
 
 
   return (
-    <div className="w-[100%] h-auto border-2 mt-3 bg-gray-200 rounded-lg px-2 py-1 flex flex-col justify-center items-center gap-2">
+    <div className="w-[100%] h-auto border border-gray-400 mt-3 bg-gray-200 rounded-lg px-2 py-1 flex flex-col justify-center items-center gap-2">
       <div className="h-18 w-full flex justify-between ">
         <div className="w-[50%] h-full flex justify-start items-center ">
           <ProfilePic />
@@ -41,7 +41,7 @@ function PostCard({text,media}) {
         <p style={{ whiteSpace: "pre-wrap" }} className="text-md text-gray-800">
           {textToDisplay}{words.length > wordLimit && (
             <button
-              className="text-gray-950 font-semibold"
+              className="text-gray-950 font-semibold hover:text-blue-600"
               onClick={() => setIsFullTextVisible(!isFullTextVisible)}
             >
               {isFullTextVisible ? "" : "...more"}
