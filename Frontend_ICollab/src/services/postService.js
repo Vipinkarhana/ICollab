@@ -14,7 +14,7 @@ export const addPost = async (postData) => {
             })),
         });
 
-        const { presignedUrls, post } = response.data.data;
+        const { presignedUrls, postid } = response.data.data;
         console.log("Post Service:", presignedUrls);
 
         // Step 2: Upload files to S3/R2 using presigned URLs
@@ -27,10 +27,13 @@ export const addPost = async (postData) => {
 
         await Promise.all(uploadPromises);
 
-        return {
-            message: "Post created successfully",
-            data: post,
-        };
+        // Step 3: Send post ID and media URLs to add media to the post
+        const post = await privateAxios.post("/posts/addmedia", {
+            postid,
+            media: presignedUrls,
+        });
+
+        return post.data;
     } catch (error) {
         return error.response?.data || { error: "Post creation failed" };
     }

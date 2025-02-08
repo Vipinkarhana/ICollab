@@ -5,7 +5,7 @@ const config = require("./config");
 
 const s3 = new S3Client({
     region: config.S3_REGION,
-    endpoint: config.S3_ENDPOINT,
+    endpoint: config.S3_API_ENDPOINT,
     credentials: {
         accessKeyId: config.S3_ACCESS_KEY,
         secretAccessKey: config.S3_SECRET_ACCESS_KEY,

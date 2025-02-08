@@ -73,6 +73,11 @@ const initialState = {
   error: null,
 };
 
+// Custom matchers to filter actions starting with "user/"
+const isUserActionPending = (action) => action.type.startsWith("user/") && action.type.endsWith("/pending");
+const isUserActionFulfilled = (action) => action.type.startsWith("user/") && action.type.endsWith("/fulfilled");
+const isUserActionRejected = (action) => action.type.startsWith("user/") && action.type.endsWith("/rejected");
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -81,21 +86,21 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     // Handle all pending actions (for thunks)
-    builder.addMatcher(isPending, (state) => {
+    builder.addMatcher(isUserActionPending, (state) => {
       state.loading = true;
       state.error = null;
     });
 
     // Handle all fulfilled actions (for thunks)
-    builder.addMatcher(isFulfilled, (state, action) => {
+    builder.addMatcher(isUserActionFulfilled, (state, action) => {
       state.loading = false;
-      if (action.type !== "auth/registerUser/fulfilled" && action.type !== "auth/logoutUser/fulfilled") {
+      if (action.type !== "user/registerUser/fulfilled" && action.type !== "user/logoutUser/fulfilled"){
         state.userData = action.payload; 
       }
     });
 
     // Handle all rejected actions (for thunks)
-    builder.addMatcher(isRejected, (state, action) => {
+    builder.addMatcher(isUserActionRejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });

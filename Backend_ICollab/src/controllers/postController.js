@@ -3,6 +3,8 @@ const commentModel = require('../models/comment');
 const ApiError = require('../utils/ApiError');
 const config = require('../../config/config');
 const userModel = require('../models/user');
+const { URL } = require('url'); 
+
 const { generatePresignedUrl } = require('../../config/s3');
 
 const addpost = async (req, res, next) => {
@@ -10,14 +12,14 @@ const addpost = async (req, res, next) => {
       const username = req.user.username;
       const user = await userModel.findOne({'username': username});
       const {content, media} = req.body;
-      console.log("Media:", req.body);
+
       if(!content) res.status(400).json({error: "Content is required."});
       const newPost = new postModel({
-        user: user._id, content
+        user: user._id, content, 
       });
+
       await newPost.save();
-      await newPost.populate("user", "username name profile_pic designation");
-      console.log(media);
+
       const presignedUrls = await Promise.all(
         media.map(async ({ fileType, fileName }) => {
           const key = `posts/${newPost._id}/${Date.now()}-${fileName}`;
@@ -27,13 +29,42 @@ const addpost = async (req, res, next) => {
 
       res.status(201).json({
         message: "Post created successfully", 
-        data: { post: newPost, presignedUrls }, 
+        data: { postid: newPost._id, presignedUrls }, 
         status: 'success'});
     }
     catch(err){
       next(err);
     }
   };
+
+const addPostMedia = async (req, res, next) => {
+    const { postid, media } = req.body;
+    try {
+      const post = await postModel.findOne({ '_id': postid, 'status': 'draft' });
+
+      if (!post) return res.status(404).json({ error: "Post not Found" });
+
+      const updatedMedia = media.map(url => {
+        const urlObj = new URL(url);
+        const filePath = urlObj.pathname;
+        return `${config.S3_PUBLIC_URL}${filePath}`;
+      });
+
+      post.media = updatedMedia;
+      post.status = 'public';
+      await post.save();
+      await post.populate("user", "username name profile_pic designation");
+
+      res.status(200).json({
+        message: "Post media added successfully",
+        data: post,
+        status: 'success'
+      });
+      
+    } catch (err) {
+      next(err);
+    }
+};
   
   const likepost = async (req, res, next) => {
     try{
@@ -76,6 +107,7 @@ const addpost = async (req, res, next) => {
 
   module.exports = {
     addpost,
+    addPostMedia,
     likepost,
     feed,
   };
