@@ -10,7 +10,7 @@ const Media = ({ media }) => {
 
   if (isVideo) {
     return (
-      <div className="w-full h-auto">
+      <div className="w-full h-auto py-2 px-1">
         <video src={media} controls className="w-full h-full object-cover rounded-md" />
       </div>
     );
@@ -25,14 +25,14 @@ const Media = ({ media }) => {
   };
 
   return (
-    <div className="relative w-auto h-full flex items-center justify-center ">
+    <div className="relative w-[90%] h-auto flex items-center justify-center py-2">
       <button
         onClick={prevImage}
         className="absolute -left-10 p-2 rounded-full  opacity-75 group-hover:opacity-100 text-gray-900"
       >
         <ChevronLeft size={36} color="gray" strokeWidth={3} />
       </button>
-      <div className="h-[80svh] w-auto">
+      <div className="h-[60svh] w-auto max-w-[90%]">
         <img
           src={media[currentIndex]}
           alt="Post Media"

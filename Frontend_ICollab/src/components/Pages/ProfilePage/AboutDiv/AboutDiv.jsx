@@ -27,10 +27,10 @@ function AboutDiv({text}) {
           {textToDisplay}
           {words.length > wordLimit && (
             <button
-              className="text-gray-950 font-semibold hover:text-blue-600"
+              className="text-gray-700 font-semibold hover:text-blue-600"
               onClick={() => setIsFullTextVisible(!isFullTextVisible)}
             >
-              {isFullTextVisible ? "" : "...more"}
+              {isFullTextVisible ? "..see less" : "...more"}
             </button>
           )}
         </p>
