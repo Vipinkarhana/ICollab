@@ -1,5 +1,6 @@
 const postModel = require('../models/post');
 const commentModel = require('../models/comment');
+const profileModel = require('../models/profile');
 const ApiError = require('../utils/ApiError');
 const config = require('../../config/config');
 const userModel = require('../models/user');
@@ -18,8 +19,12 @@ const addpost = async (req, res, next) => {
       user: user._id,
       content,
     });
-
     await newPost.save();
+    if (user.profile) {
+      await profileModel.findByIdAndUpdate(user.profile._id, {
+        $push: { posts: newPost._id.toString() }, // Convert ObjectId to string
+      });
+    }
 
     const presignedUrls = await Promise.all(
       media.map(async ({ fileType, fileName }) => {

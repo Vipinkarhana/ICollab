@@ -13,6 +13,19 @@ let profileschma = mongoose.Schema(
         type: String,
       },
     },
+    about: {
+      type: String,
+    },
+    posts: {
+      type: [String],
+    },
+    experience: {
+      company: String,
+      startDate: Date,
+      endDate: Date,
+      role: String,
+      desc: String,
+    },
   },
   {
     timestamps: true,
