@@ -1,14 +1,15 @@
 import { useState } from "react";
 import ProfilePic from "../../../../../../Common/ProfilePic";
 import StartPostModal from "./StartPostModal";
+import { useSelector } from "react-redux";
 
 function StartPost() {
   const [isOpen, SetIsOpen] = useState(false);
-  console.log(isOpen);
+  const user = useSelector((state) => state?.user?.userData);
 
   return (
     <div className="w-full h-20 bg-gray-200 rounded-md flex justify-evenly items-center p-1">
-      <ProfilePic />
+      <ProfilePic picture={user?.profile_pic}/>
       <button
         onClick={() => {
           SetIsOpen(true);

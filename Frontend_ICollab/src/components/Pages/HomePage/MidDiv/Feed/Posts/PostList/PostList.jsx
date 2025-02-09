@@ -26,14 +26,14 @@ function PostList() {
   //     media: i % 2 === 0 ? media1 : media2,
   //   }));
 
-    const getNextTimestamp = () => {
-      if (!allPosts || allPosts.length === 0) {
-        return new Date().getTime() - 1;
-      }
-      const lastPost = allPosts[allPosts.length - 1];
-      return new Date(lastPost.createdAt).getTime() - 1;
-    };
-    
+  const getNextTimestamp = () => {
+    if (!allPosts || allPosts.length === 0) {
+      return new Date().getTime() - 1;
+    }
+    const lastPost = allPosts[allPosts.length - 1];
+    return new Date(lastPost.createdAt).getTime() - 1;
+  };
+
 
   const [allPosts, setAllPosts] = useState([]);
   const [visiblePosts, setVisiblePosts] = useState([]);
@@ -100,10 +100,10 @@ function PostList() {
   // const fetchMorePosts = useCallback(() => {
   //   if (loading) return;
   //   setLoading(true);
-  
+
   //   // Get the timestamp for the next fetch (last post's createdAt - 1ms)
   //   const timestamp = getNextTimestamp();
-  
+
   //   // Dispatch the async thunk. It is assumed that fetchFeed returns a promise
   //   // that resolves with an array of new posts.
   //   dispatch(fetchFeed(timestamp))
@@ -130,7 +130,7 @@ function PostList() {
 
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          if(feedEnd) return;
+          if (feedEnd) return;
           fetchMorePosts();
         }
       });
@@ -141,13 +141,13 @@ function PostList() {
   );
 
   return (
-    <div className="h-auto w-[99%] overflow-y-auto scrollbar-hide px-4 py-3 flex flex-col gap-4 justify-center items-center">
+    <div className="h-auto w-[99%] overflow-y-auto scrollbar-hide px-4 pb-5 flex flex-col gap-3">
       {visiblePosts.map((post, index) => (
         <div
           key={post.id}
           ref={index === visiblePosts.length - 1 ? lastPostRef : null}
         >
-          <PostCard text={post.content} media={post.media} />
+          <PostCard text={post?.content} media={post?.media} user={post?.user} />
         </div>
       ))}
 
@@ -160,12 +160,14 @@ function PostList() {
       )}
 
       {feedEnd && (
-        <button
-          onClick={handleReload}
-          className="p-2 bg-gray-300 text-gray-800 rounded h-10 w-28 border border-gray-500"
-        >
-          Reload Page
-        </button>
+        <div className="flex justify-center items-center">
+          <button
+            onClick={handleReload}
+            className="p-2 bg-gray-300 text-gray-800 rounded h-10 w-28 border border-gray-500"
+          >
+            Reload Page
+          </button>
+        </div>
       )}
     </div>
   );

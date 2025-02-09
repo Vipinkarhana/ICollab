@@ -5,7 +5,7 @@ import { BookmarkIcon as OutlineBookmark, BookmarkIcon as SolidBookmark } from "
 import { BookmarkIcon } from 'lucide-react';
 import Media from './Media';
 
-function PostCard({text,media}) {
+function PostCard({text,media,user}) {
   const [bookmarked, setBookmarked] = useState(false);
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);
   const words = text.split(" ");
@@ -19,8 +19,8 @@ function PostCard({text,media}) {
     <div className="w-[100%] h-auto border border-gray-400 mt-3 bg-gray-200 rounded-lg px-2 py-1 flex flex-col justify-center items-center gap-2">
       <div className="h-18 w-full flex justify-between ">
         <div className="w-[50%] h-full flex justify-start items-center ">
-          <ProfilePic />
-          <Name_Designation />
+          <ProfilePic picture={user?.profile_pic} />
+          <Name_Designation name={user?.name} />
         </div>
         <div className="w-[10%] h-full flex justify-end items-start p-1">
           <button
@@ -56,4 +56,4 @@ function PostCard({text,media}) {
   );
 }
 
-  export default PostCard;
+export default PostCard;
