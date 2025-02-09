@@ -1,6 +1,8 @@
 import { React,useState } from 'react'
 import { Pencil } from 'lucide-react';
-function AboutDiv({text}) {
+import EditAbout from './EditAbout';
+function AboutDiv({ text }) {
+  const [isOpen, SetIsOpen] = useState(false);
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);
       const words = text.split(" ");
       const wordLimit = 30;
@@ -14,9 +16,15 @@ function AboutDiv({text}) {
           <p>About</p>
         </div>
         <div className="w-[4%]   flex  items-start justify-center ">
-          <button className="rounded-full hover:bg-slate-300 p-2">
+          <button
+            onClick={() => {
+              SetIsOpen(true);
+            }}
+            className="rounded-full hover:bg-slate-300 p-2"
+          >
             <Pencil size={24} />
           </button>
+          {isOpen && <EditAbout SetIsOpen={SetIsOpen} isOpen={isOpen} />}
         </div>
       </div>
       <div className="h-auto w-[95%] py-2">

@@ -11,7 +11,6 @@ function StartPostModal({ isOpen, SetIsOpen }) {
   if (!isOpen) return null;
   const dispatch = useDispatch();
   const content = useSelector((state) => state.post.post.content);
-  const [text, setText] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
 
   const textareaRef = useRef(null);
@@ -41,7 +40,7 @@ function StartPostModal({ isOpen, SetIsOpen }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="relative w-[35rem] h-[35rem] bg-white shadow-lg rounded-lg  flex flex-col justify-start overflow-y-auto">
+      <div className="relative w-[35rem] h-[35rem] bg-white shadow-lg rounded-lg  flex flex-col justify-start overflow-y-auto scrollbar-hide">
         <div className="h-[13%] w-full flex px-4 justify-between bg-gray-50 rounded-t-lg">
           <div className="h-full w-auto flex justify-evenly items-center ">
             <ProfilePic />
@@ -54,7 +53,7 @@ function StartPostModal({ isOpen, SetIsOpen }) {
             <X size={26} />
           </button>
         </div>
-        <div className="h-[87%] overflow-y-auto">
+        <div className="h-[87%] overflow-y-auto scrollbar-hide">
           <div className=" h-[68%] w-[100%] ">
             <textarea
               ref={textareaRef}
@@ -63,7 +62,7 @@ function StartPostModal({ isOpen, SetIsOpen }) {
               value={content}
               onChange={(e) => dispatch(addDraft({ content: e.target.value }))}
               placeholder="What do you want to talk about?"
-              className=" h-full w-full px-4 py-2 placeholder:text-xl outline-none resize-none"
+              className=" h-full w-full px-4 py-2 placeholder:text-xl outline-none resize-none scrollbar-hide"
             ></textarea>
           </div>
           <div className=" h-[30%] flex flex-col">

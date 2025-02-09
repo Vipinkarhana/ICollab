@@ -1,10 +1,13 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { Pencil, MoveRight } from "lucide-react";
 import PostCard from "../../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
 import test1 from "../../../../assets/test.png";
 import test2 from "../../../../assets/test2.png";
 import testvedio from "../../../../assets/TestVedio.mp4";
+import StartPostModal from "../../HomePage/MidDiv/Feed/Posts/StartPost/StartPostModal";
 function Activity() {
+  const [isOpen, SetIsOpen] = useState(false);
+  console.log(isOpen);
   const media1 = [test1, test2];
   const media2 = testvedio;
 
@@ -21,9 +24,15 @@ In, ipsum nam laudantium distinctio suscipit unde cumque deserunt. Esse dolorum 
           <p>Activity</p>
         </div>
         <div className="w-[18%]   flex   justify-center items-center gap-1">
-          <button className=" px-2 border-2 border-gray-500 rounded-2xl hover:bg-slate-300">
+          <button
+            onClick={() => {
+              SetIsOpen(true);
+            }}
+            className=" px-2 border-2 border-gray-500 rounded-2xl hover:bg-slate-300"
+          >
             Create a post
           </button>
+      {isOpen && <StartPostModal SetIsOpen={SetIsOpen} isOpen={isOpen} />}
         </div>
       </div>
       <div className="h-auto w-[80%] flex">
