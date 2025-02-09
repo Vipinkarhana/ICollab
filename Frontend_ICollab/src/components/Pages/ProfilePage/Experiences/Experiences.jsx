@@ -45,9 +45,12 @@ function Experiences() {
           </button>
         </div>
       </div>
-      <div className="h-auto py-5 px-2 flex flex-col gap-5">
+      <div className="h-auto  flex flex-col gap-5">
         {experiences.map((exp) => (
+          <div>
           <Experience key={exp.id} experience={exp} />
+          <hr className="border border-gray-300"/>
+          </div>
         ))}
       </div>
     </div>
