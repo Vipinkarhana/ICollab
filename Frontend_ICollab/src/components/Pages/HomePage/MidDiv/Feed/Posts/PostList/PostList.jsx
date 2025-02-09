@@ -11,6 +11,9 @@ import { use } from "react";
 
 function PostList() {
   const dispatch = useDispatch();
+  const handleReload = () => {
+    window.location.reload();
+  };
   // const content = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...`;
 
   // const media1 = [test, test1, test2];
@@ -138,7 +141,7 @@ function PostList() {
   );
 
   return (
-    <div className="h-auto w-[99%] overflow-y-auto scrollbar-hide px-4 py-3">
+    <div className="h-auto w-[99%] overflow-y-auto scrollbar-hide px-4 py-3 flex flex-col gap-4 justify-center items-center">
       {visiblePosts.map((post, index) => (
         <div
           key={post.id}
@@ -156,7 +159,14 @@ function PostList() {
         </>
       )}
 
-      {feedEnd && <p className="text-center text-gray-500">End of Feed</p>}
+      {feedEnd && (
+        <button
+          onClick={handleReload}
+          className="p-2 bg-gray-300 text-gray-800 rounded h-10 w-28 border border-gray-500"
+        >
+          Reload Page
+        </button>
+      )}
     </div>
   );
 }

@@ -7,7 +7,7 @@ function StartPost() {
   console.log(isOpen);
 
   return (
-    <div className="w-full h-[25%] bg-gray-200 rounded-md flex justify-evenly items-center p-1">
+    <div className="w-full h-20 bg-gray-200 rounded-md flex justify-evenly items-center p-1">
       <ProfilePic />
       <button
         onClick={() => {
