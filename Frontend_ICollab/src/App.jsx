@@ -1,10 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { Provider } from "react-redux";
-// import { store } from "../src/Redux/Store";
-import { store } from "./Redux/Store";
-
 import HomePage from "./components/Pages/HomePage/HomePage";
 import ProfilePage from "./components/Pages/ProfilePage/ProfilePage";
 import NetworkPage from "./components/Pages/NetworkPage/NetworkPage";
@@ -19,7 +15,6 @@ import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
 
 function App() {
   return (
-    <Provider store={store}>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <Router>
           <Routes>
@@ -38,7 +33,6 @@ function App() {
           {/* <AlertMessage /> */}
         </Router>
       </GoogleOAuthProvider>
-    </Provider>
   );
 }
 

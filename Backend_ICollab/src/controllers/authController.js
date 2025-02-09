@@ -57,7 +57,7 @@ const login = async (req, res, next) => {
     if (!isPasswordValid) {
       return next(new ApiError(401, 'Please check your password'));
     }
-    if(!user.isVerified){
+    if (!user.isVerified) {
       return next(new ApiError(401, 'Please verify your mail'));
     }
 

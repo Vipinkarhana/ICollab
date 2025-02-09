@@ -1,39 +1,71 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import PostCard from "../Postcard/PostCard";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchFeed } from "../../../../../../../Redux/Slices/PostSlice";
 import SkeletonPostCard from "../Postcard/SkeletonPostCard";
 import test from "../../../../../../../assets/ProfilePic.png";
 import test1 from "../../../../../../../assets/test.png";
 import test2 from "../../../../../../../assets/test2.png";
 import testvedio from "../../../../../../../assets/TestVedio.mp4";
+import { use } from "react";
 
 function PostList() {
-  const text = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...`;
+  const dispatch = useDispatch();
+  // const content = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio recusandae id fugiat...`;
 
-  const media1 = [test, test1, test2];
-  const media2 = testvedio;
+  // const media1 = [test, test1, test2];
+  // const media2 = testvedio;
 
-  const generatePosts = (startId, count) =>
-    Array.from({ length: count }, (_, i) => ({
-      id: startId + i,
-      text,
-      media: i % 2 === 0 ? media1 : media2,
-    }));
+  // const generatePosts = (startId, count) =>
+  //   Array.from({ length: count }, (_, i) => ({
+  //     id: startId + i,
+  //     content: `${content} ${i + 1}`,
+  //     media: i % 2 === 0 ? media1 : media2,
+  //   }));
 
-  const [allPosts, setAllPosts] = useState(generatePosts(1, 50)); 
-  const [visiblePosts, setVisiblePosts] = useState([]); 
+    const getNextTimestamp = () => {
+      if (!allPosts || allPosts.length === 0) {
+        return new Date().getTime() - 1;
+      }
+      const lastPost = allPosts[allPosts.length - 1];
+      return new Date(lastPost.createdAt).getTime() - 1;
+    };
+    
+
+  const [allPosts, setAllPosts] = useState([]);
+  const [visiblePosts, setVisiblePosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [totalPostsCount, setTotalPostsCount] = useState(50); 
+  const [feedEnd, setfeedEnd] = useState(false); // TODO: Remove this Logic and implement proper pagination logic (v0)
+  const [totalPostsCount, setTotalPostsCount] = useState(50);
 
   const observer = useRef(null);
-  const loadedCount = useRef(0); 
+  const loadedCount = useRef(0);
+
+  // 1. Initial load: Dispatch fetchFeed once when the component is mounted.
+  useEffect(() => {
+    dispatch(fetchFeed(new Date().getTime() - 1))
+      .unwrap()
+      .then((newPosts) => {
+        if (newPosts && newPosts.length > 0) {
+          setAllPosts(newPosts);
+          // For initial visible posts, display the first 3 (or however many you prefer)
+          setVisiblePosts(newPosts.slice(0, 3));
+          loadedCount.current = 3;
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching initial feed:", err);
+      });
+  }, [dispatch]);
 
   useEffect(() => {
     setVisiblePosts(allPosts.slice(0, 3));
     loadedCount.current = 3;
-    console.log("Length", allPosts.length);
+    // console.log("Length of All Post", allPosts.length);
   }, [allPosts]);
+
   // useEffect(() => {
-  //   console.log("Length", visiblePosts.length);
+  //   console.log("Visible Post Length", visiblePosts.length);
   // }, [visiblePosts]);
 
   const fetchMorePosts = useCallback(() => {
@@ -47,9 +79,12 @@ function PostList() {
       );
 
       if (nextBatch.length === 0) {
-        const newBatch = generatePosts(totalPostsCount + 1, 50);
-        setAllPosts((prev) => [...prev, ...newBatch]);
-        setTotalPostsCount((prev) => prev + 50);
+        // dispatch(fetchFeed(getNextTimestamp()))
+        // const newBatch = generatePosts(totalPostsCount + 1, 50);
+        // setAllPosts((prev) => [...prev, ...newBatch]);
+        // setTotalPostsCount((prev) => prev + 50);
+        setLoading(false);
+        setfeedEnd(true);
       } else {
         setVisiblePosts((prev) => [...prev, ...nextBatch]);
         loadedCount.current += 3;
@@ -59,6 +94,32 @@ function PostList() {
     }, 1000);
   }, [loading, allPosts, totalPostsCount]);
 
+  // const fetchMorePosts = useCallback(() => {
+  //   if (loading) return;
+  //   setLoading(true);
+  
+  //   // Get the timestamp for the next fetch (last post's createdAt - 1ms)
+  //   const timestamp = getNextTimestamp();
+  
+  //   // Dispatch the async thunk. It is assumed that fetchFeed returns a promise
+  //   // that resolves with an array of new posts.
+  //   dispatch(fetchFeed(timestamp))
+  //     .unwrap()
+  //     .then((newPosts) => {
+  //       if (newPosts && newPosts.length > 0) {
+  //         // Append the new posts to the local state arrays.
+  //         setAllPosts((prevPosts) => [...prevPosts, ...newPosts]);
+  //         setVisiblePosts((prevVisible) => [...prevVisible, ...newPosts]);
+  //         // Optionally, update any pagination counters if needed.
+  //       }
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Error fetching more posts:", err);
+  //       setLoading(false);
+  //     });
+  // }, [loading, dispatch, allPosts]);
+
   const lastPostRef = useCallback(
     (node) => {
       if (loading) return;
@@ -66,6 +127,7 @@ function PostList() {
 
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
+          if(feedEnd) return;
           fetchMorePosts();
         }
       });
@@ -76,13 +138,13 @@ function PostList() {
   );
 
   return (
-    <div className="h-auto w-[99%] overflow-y-auto scrollbar-hide px-4">
+    <div className="h-auto w-[99%] overflow-y-auto scrollbar-hide px-4 py-3">
       {visiblePosts.map((post, index) => (
         <div
           key={post.id}
           ref={index === visiblePosts.length - 1 ? lastPostRef : null}
         >
-          <PostCard text={post.text} media={post.media} />
+          <PostCard text={post.content} media={post.media} />
         </div>
       ))}
 
@@ -93,6 +155,8 @@ function PostList() {
           <SkeletonPostCard />
         </>
       )}
+
+      {feedEnd && <p className="text-center text-gray-500">End of Feed</p>}
     </div>
   );
 }
