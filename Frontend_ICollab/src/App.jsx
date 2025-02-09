@@ -11,28 +11,30 @@ import Login from "./components/Pages/Login_RegistrationPages/Login";
 import Register from "./components/Pages/Login_RegistrationPages/Registration";
 import Layout from "./components/Layout/Layout";
 import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
-// import AlertMessage from "./components/Common/Alert";
+import PrivateRoute from "./components/Common/PrivateRoute";
 
 function App() {
   return (
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-        <Router>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/network" element={<NetworkPage />} />
-              <Route path="/project" element={<ProjectPage />} />
-              <Route path="/message" element={<MessagePage />} />
-              <Route path="/notification" element={<NotificationPage />} />
-              <Route path="/incubators" element={<IncubatorsPage />} />
-            </Route>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Routes>
-          {/* <AlertMessage /> */}
-        </Router>
-      </GoogleOAuthProvider>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <Router>
+        <Routes>
+          {/* Private routes: wrapped with PrivateRoute via the Layout element */}
+          <Route element={<PrivateRoute element={<Layout />} />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/network" element={<NetworkPage />} />
+            <Route path="/project" element={<ProjectPage />} />
+            <Route path="/message" element={<MessagePage />} />
+            <Route path="/notification" element={<NotificationPage />} />
+            <Route path="/incubators" element={<IncubatorsPage />} />
+          </Route>
+
+          {/* Public routes: no authentication required */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </Router>
+    </GoogleOAuthProvider>
   );
 }
 
