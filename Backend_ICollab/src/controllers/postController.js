@@ -93,7 +93,7 @@ const feed = async (req, res, next) => {
     const posts = await postModel
       .find({ createdAt: { $lt: date }, status: 'public' })
       .sort({ createdAt: -1 }) // Sort to show posts in order of creation
-      .limit(20) // Limit the result to 20 posts (or whatever the desired chunk is)
+      .limit(30) // Limit the result to 30 posts (or whatever the desired chunk is)
       .populate('user', 'username name profile_pic designation');
 
     res.status(201).json({
