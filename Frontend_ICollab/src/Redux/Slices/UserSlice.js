@@ -102,7 +102,9 @@ export const updateUserAbout = createAsyncThunk(
 
 const initialState = {
   userData: null,
-  profileData: null,
+  profileData: {
+    about: ""
+  },
   loading: false,
   error: null,
 };
