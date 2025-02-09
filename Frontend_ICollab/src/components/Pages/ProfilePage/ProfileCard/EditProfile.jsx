@@ -1,7 +1,20 @@
-import React from "react";
+import React, {useState} from "react";
 import { Pencil, X } from "lucide-react";
 import ProfilePic from "../../../Common/ProfilePic";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUserInfo } from "../../../../Redux/Slices/UserSlice";
+
 function EditProfile({ SetIsOpen, isOpen }) {
+  const user = useSelector((state) => state?.user?.userData);
+  const dispatch = useDispatch();
+  const [name, setName] = useState(user?.name);
+  const [designation, setDesignation] = useState(user?.designation);
+
+  const handleSubmit = () => {
+    dispatch(updateUserInfo({name,designation}));
+    SetIsOpen(false);
+  }
+
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -20,7 +33,7 @@ function EditProfile({ SetIsOpen, isOpen }) {
         <div className="h-auto flex justify-evenly">
           <div className="w-[50%] h-64 flex flex-col justify-center items-center relative">
             <div className="relative">
-              <ProfilePic className="h-52 w-52 shadow-none" />
+              <ProfilePic picture={user?.profile_pic} className="h-52 w-52 shadow-none" />
               <div className="h-12 w-12  flex justify-center items-center absolute bottom-2 right-2">
                 <label className="rounded-full p-3 hover:bg-slate-400 bg-slate-300 h-auto w-auto">
                   <Pencil />
@@ -34,16 +47,20 @@ function EditProfile({ SetIsOpen, isOpen }) {
               type="text"
               className="bg-gray-100 outline-none border rounded-sm border-gray-400 px-2 py-2 placeholder:text-xl text-gray-700"
               placeholder="Your Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
             <input
               type="text"
               className="bg-gray-100 outline-none border rounded-sm border-gray-400 px-2 py-2 placeholder:text-xl text-gray-700"
               placeholder="Your Designation"
+              value={designation}
+              onChange={(e) => setDesignation(e.target.value)}
             />
           </div>
         </div>
         <div className="h-12 border-t border-gray-300 flex items-center justify-end px-2">
-          <button className="h-6 text-lg flex justify-center items-center w-16 text-gray-700 bg-gray-200 border border-gray-500 rounded-md p-4">Save</button>
+          <button className="h-6 text-lg flex justify-center items-center w-16 text-gray-700 bg-gray-200 border border-gray-500 rounded-md p-4" onClick={handleSubmit}>Save</button>
         </div>
       </div>
     </div>

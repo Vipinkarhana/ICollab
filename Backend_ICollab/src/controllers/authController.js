@@ -57,7 +57,7 @@ const login = async (req, res, next) => {
   console.log('Login:', email, password);
 
   try {
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email }).populate('profile');
     if (!user) {
       return next(new ApiError(401, 'User Does Not Exist'));
     }
@@ -119,7 +119,8 @@ const googleAuth = async (req, res, next) => {
     );
     const { sub, email, name, picture } = response.data; // `sub` is the unique user ID
 
-    let user = await userModel.findOne({ email });
+    let user = await userModel.findOne({ email }).populate('profile');
+    console.log('User:', user);
     const username = await generateUsername(email);
     const pass = Math.random().toString(36).slice(-8);
     const hashpass = await hashPassword(pass);
@@ -136,9 +137,9 @@ const googleAuth = async (req, res, next) => {
         about: '',
         experience: [],
       });
-  
+
       await newProfile.save();
-  
+
       // Update the user's profile field with the newly created profile's ID
       user.profile = newProfile._id;
       await user.save();
@@ -236,9 +237,9 @@ const linkedinauth = async (req, res, next) => {
         about: '',
         experience: [],
       });
-  
+
       await newProfile.save();
-  
+
       // Update the user's profile field with the newly created profile's ID
       user.profile = newProfile._id;
       await user.save();

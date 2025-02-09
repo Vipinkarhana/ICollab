@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, isPending, isFulfilled, isRejected } from "@reduxjs/toolkit";
 import { register, login, googleAuth, logout } from "../../services/authService";
+import { updateInfo, updateAbout } from "../../services/profileService";
 
 export const registerUser = createAsyncThunk(
   "user/registerUser",
@@ -67,8 +68,41 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+export const updateUserInfo = createAsyncThunk(
+  "user/updateUserInfo",
+  async ({name, designation, profile}, {rejectWithValue}) => {
+    try{
+      const response = await updateInfo({name,designation,profile});
+      if(response.status === 'success') {
+        return response.data;
+      } else {
+        return rejectWithValue(response.message);
+      }
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+)
+
+export const updateUserAbout = createAsyncThunk(
+  "user/updateUserAbout",
+  async ({ about }, { rejectWithValue }) => {
+    try {
+      const response = await updateAbout(about);
+      if(response.status === 'success') {
+        return response.data;
+      } else {
+        return rejectWithValue(response.message);
+      }
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const initialState = {
   userData: null,
+  profileData: null,
   loading: false,
   error: null,
 };
@@ -96,6 +130,8 @@ const userSlice = createSlice({
       state.loading = false;
       if (action.type !== "user/registerUser/fulfilled" && action.type !== "user/logoutUser/fulfilled"){
         state.userData = action.payload; 
+        state.profileData = action.payload.profile;
+        delete state.userData.profile;
       }
     });
 

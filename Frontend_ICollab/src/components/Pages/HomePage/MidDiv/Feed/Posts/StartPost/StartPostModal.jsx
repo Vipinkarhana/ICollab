@@ -11,6 +11,7 @@ function StartPostModal({ isOpen, SetIsOpen }) {
   if (!isOpen) return null;
   const dispatch = useDispatch();
   const content = useSelector((state) => state.post.post.content);
+  const user = useSelector((state) => state.user.userData);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
   const textareaRef = useRef(null);
@@ -43,8 +44,8 @@ function StartPostModal({ isOpen, SetIsOpen }) {
       <div className="relative w-[35rem] h-[35rem] bg-white shadow-lg rounded-lg  flex flex-col justify-start overflow-y-auto scrollbar-hide">
         <div className="h-[13%] w-full flex px-4 justify-between bg-gray-50 rounded-t-lg">
           <div className="h-full w-auto flex justify-evenly items-center ">
-            <ProfilePic />
-            <Name_Designation />
+            <ProfilePic picture={user?.profile_pic}/>
+            <Name_Designation name={user?.name} designation={user?.designation}/>
           </div>
           <button
             className="absolute  text-gray-600 hover:text-black hover:bg-gray-300 rounded-full p-1 top-2 right-2"

@@ -8,7 +8,7 @@ import postReducer from "./Slices/PostSlice";
 const userPersistConfig = {
   key: "user",
   storage,
-  whitelist: ["userData"],
+  whitelist: ["userData", "profileData"],
 };
 
 const postPersistConfig = {

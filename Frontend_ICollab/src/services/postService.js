@@ -3,8 +3,6 @@ import axios from "axios";
 
 export const addPost = async (postData) => {
     try {
-        console.log("Post Service:", postData);
-        console.log("Post Service:", postData.mediaFiles);
         // Step 1: Send post data to create a new post
         const response = await privateAxios.post("/posts", {
             content: postData.content,
@@ -15,7 +13,6 @@ export const addPost = async (postData) => {
         });
 
         const { presignedUrls, postid } = response.data.data;
-        console.log("Post Service:", presignedUrls);
 
         // Step 2: Upload files to S3/R2 using presigned URLs
         const uploadPromises = postData.mediaFiles.map((fileObj, index) => {

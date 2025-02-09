@@ -1,14 +1,18 @@
 import { React,useState } from 'react'
 import { Pencil } from 'lucide-react';
 import EditAbout from './EditAbout';
-function AboutDiv({ text }) {
+import { useSelector } from 'react-redux';
+
+function AboutDiv() {
+  const text = useSelector((state) => state?.user?.profileData?.about);
+  console.log(text);
   const [isOpen, SetIsOpen] = useState(false);
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);
-      const words = text.split(" ");
+      const words = text?.split(" ");
       const wordLimit = 30;
       const textToDisplay = isFullTextVisible
         ? text
-        : words.slice(0, wordLimit).join(" ");
+        : words?.slice(0, wordLimit).join(" ");
   return (
     <div className="w-[100%] h-auto bg-gray-200 rounded-md flex flex-col justify-around items-center border border-gray-400 text-gray-800">
       <div className="h-12 w-[100%] flex justify-between items-center py-2 px-4 border-b border-gray-400">
