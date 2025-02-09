@@ -4,6 +4,7 @@ const config = require('../../config/config');
 const axios = require('axios');
 const qs = require('qs');
 const generateUsername = require('../utils/usernamegenerate');
+const profileModel = require('../models/profile');
 
 const {
   generateAccessToken,
@@ -31,7 +32,15 @@ const register = async (req, res, next) => {
       emailToken: jwt.sign({ email }, config.SECRET_KEY, { expiresIn: '1h' }),
       username: username,
     });
+    const newProfile = new profileModel({
+      about: '',
+      experience: [],
+    });
 
+    await newProfile.save();
+
+    // Update the user's profile field with the newly created profile's ID
+    newUser.profile = newProfile._id;
     await newUser.save();
     await sendVerificationEmail(newUser, newUser.emailToken);
     res.status(200).json({
@@ -57,7 +66,7 @@ const login = async (req, res, next) => {
     if (!isPasswordValid) {
       return next(new ApiError(401, 'Please check your password'));
     }
-    if(!user.isVerified){
+    if (!user.isVerified) {
       return next(new ApiError(401, 'Please verify your mail'));
     }
 
@@ -123,6 +132,15 @@ const googleAuth = async (req, res, next) => {
         username: username,
         password: hashpass,
       });
+      const newProfile = new profileModel({
+        about: '',
+        experience: [],
+      });
+  
+      await newProfile.save();
+  
+      // Update the user's profile field with the newly created profile's ID
+      user.profile = newProfile._id;
       await user.save();
     }
 
@@ -214,6 +232,15 @@ const linkedinauth = async (req, res, next) => {
         password: hashpass,
         username: username,
       });
+      const newProfile = new profileModel({
+        about: '',
+        experience: [],
+      });
+  
+      await newProfile.save();
+  
+      // Update the user's profile field with the newly created profile's ID
+      user.profile = newProfile._id;
       await user.save();
     }
 

@@ -10,7 +10,7 @@ const experiences = [
     duration: "June 2023 - Sept 2023",
     description:
       "Worked on a soil farming agent project, implementing AI-based solutions for farmers.",
-    logo: "https://ineuron.ai/images/ineuron-logo.ico",
+    logo: "https://www.google.com/favicon.ico",
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const experiences = [
     company: "Freelance",
     duration: "Oct 2023 - Present",
     description:
-      "Developed multiple full-stack applications using React, Node.js, Express, and MongoDB.",
+      "Developed multiple full-stack applications using React, Node.js, Express, and MongoDB. Developed multiple full-stack applications using React, Node.js, Express, and MongoDB.",
     logo: "https://www.google.com/favicon.ico",
   },
   {
@@ -28,7 +28,7 @@ const experiences = [
     duration: "Jan 2024 - Feb 2024",
     description:
       "Organized a competitive programming event for multiple branches, engaging 100+ students.",
-    logo: "https://static.licdn.com/sc/h/1bt1uwvian5lj4o3bflq8sprj",
+    logo: "https://www.google.com/favicon.ico",
   },
 ];
 
@@ -45,9 +45,12 @@ function Experiences() {
           </button>
         </div>
       </div>
-      <div className="h-auto py-2 px-2 flex flex-col gap-3">
+      <div className="h-auto  flex flex-col gap-5">
         {experiences.map((exp) => (
+          <div>
           <Experience key={exp.id} experience={exp} />
+          <hr className="border border-gray-300"/>
+          </div>
         ))}
       </div>
     </div>

@@ -12,6 +12,7 @@ const connectDB = require('./config/DB');
 var indexRouter = require('./src/routes/index');
 var authRouter = require('./src/routes/authRoute');
 var postRouter = require('./src/routes/postRoute');
+var profileRouter = require('./src/routes/profileRoute');
 
 var app = express();
 
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/profile', profileRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

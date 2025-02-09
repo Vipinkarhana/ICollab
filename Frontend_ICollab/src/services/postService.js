@@ -38,3 +38,14 @@ export const addPost = async (postData) => {
         return error.response?.data || { error: "Post creation failed" };
     }
 };
+
+export const getFeed = async (timestamp) => {
+    try {
+        const response = await privateAxios.get("/posts/feed", {
+            params: { timestamp },
+        });
+        return response.data;
+    } catch (error) {
+        return error.response?.data || { error: "Failed to fetch feed" };
+    }
+}

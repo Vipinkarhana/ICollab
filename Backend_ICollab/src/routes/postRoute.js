@@ -7,11 +7,11 @@ const {
   feed,
 } = require('../controllers/postController');
 const { validatePost } = require('../middlewares/validation');
-const {isloggedin} = require('../middlewares/auth');
+const { isloggedin } = require('../middlewares/auth');
 
-router.post('/', isloggedin  ,addpost);
+router.post('/', isloggedin, addpost);
 router.post('/addmedia', isloggedin, addPostMedia);
-router.post('/likepost', likepost);
-router.post('/feed', feed);
+router.post('/likepost', isloggedin, likepost);
+router.get('/feed', isloggedin, feed);
 
 module.exports = router;
