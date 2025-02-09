@@ -1,13 +1,14 @@
 import React,{useState} from 'react'
 import { Pencil, MoveRight } from "lucide-react";
 import PostCard from "../../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
-import test1 from "../../../../assets/test.png";
-import test2 from "../../../../assets/test2.png";
-import testvedio from "../../../../assets/TestVedio.mp4";
 import StartPostModal from "../../HomePage/MidDiv/Feed/Posts/StartPost/StartPostModal";
 function Activity() {
   const [isOpen, SetIsOpen] = useState(false);
   console.log(isOpen);
+
+  const test1 = "/test.png";
+  const test2 = "/test2.png";
+  const testvedio = "/TestVedio.mp4";
   const media1 = [test1, test2];
   const media2 = testvedio;
 

@@ -3,11 +3,6 @@ import PostCard from "../Postcard/PostCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFeed } from "../../../../../../../Redux/Slices/PostSlice";
 import SkeletonPostCard from "../Postcard/SkeletonPostCard";
-import test from "../../../../../../../assets/ProfilePic.png";
-import test1 from "../../../../../../../assets/test.png";
-import test2 from "../../../../../../../assets/test2.png";
-import testvedio from "../../../../../../../assets/TestVedio.mp4";
-import { use } from "react";
 
 function PostList() {
   const dispatch = useDispatch();

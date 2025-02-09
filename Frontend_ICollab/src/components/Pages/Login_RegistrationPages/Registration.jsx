@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Logo from "../../../assets/ICollab_Logo.png";
 import { UserRound, Mail, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import Google from "./Google";
@@ -11,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { registerUser } from "../../../Redux/Slices/UserSlice";
 
 const Register = () => {
+  const Logo = "/ICollab_Logo.png";
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showSuccess, showWarning, showError] = useAlert();

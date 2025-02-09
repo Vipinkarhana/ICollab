@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import Logo from "../../../assets/Icollab_Logo.png"
 import HamburgerMenu from "./Hamburegr";
 const Header = ({ id }) => {
+  const Logo = "/ICollab_Logo.png";
   const location = useLocation();
   const [hoverStyle, setHoverStyle] = useState({
     left: 0,

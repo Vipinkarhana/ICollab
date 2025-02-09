@@ -19,7 +19,7 @@ async function sendVerificationEmail(user, token) {
         <br>
         <h3>Click the link below to verify your email address:</h3>
         <br>
-        <a href="http://localhost:${config.PORT}/api/auth/verifyemail?token=${token}">Verify Email</a>
+        <a href="${config.PUBLIC_URL}/api/auth/verifyemail?token=${token}">Verify Email</a>
         <br>
         <h3>The confirmation link will expire in 1 Hour.</h3>
       `,
