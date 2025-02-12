@@ -32,6 +32,7 @@ const config = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     signed: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
     //domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
   },
 };
