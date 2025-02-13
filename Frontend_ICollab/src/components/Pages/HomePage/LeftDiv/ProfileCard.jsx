@@ -6,6 +6,8 @@ import Name_Designation from "../../../Common/Name&Designation";
 import { useSelector } from "react-redux";
 const ProfileCard = () => {
   const user = useSelector((state) => state?.user?.userData);
+  const profile = useSelector((state) => state?.user?.profileData);
+
   return (
     <>
       <div className="h-[30%] w-[100%] bg-gray-200 rounded-md flex flex-col justify-evenly py-2">
@@ -21,7 +23,7 @@ const ProfileCard = () => {
         </div>
         <Name_Designation name={user?.name} designation={user?.designation}/>
         <div className="text-sm h-[25%] px-4 text-gray-600">
-          <p>Lorem ipsum dicta eaque cons equatur?... <Link to="/profile" className="font-semibold text-gray-900">Read More</Link></p>
+          <p>{profile?.about?.split(" ")?.slice(0,5)?.join(" ")} <Link to="/profile" className="font-semibold text-gray-900">Read More</Link></p>
         </div>
       </div>
     </>

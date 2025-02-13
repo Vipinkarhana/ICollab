@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchFeed } from "../../../../../../../Redux/Slices/PostSlice";
 import PostCard from "../Postcard/PostCard";
 import SkeletonPostCard from "../Postcard/SkeletonPostCard";
 
 function PostList() {
   const dispatch = useDispatch();
-  const [allPosts, setAllPosts] = useState([]);
+  const allPosts = useSelector((state) => state?.post?.feed?.posts);
   const [hasMore, setHasMore] = useState(true);
-  const [apiCallCount, setApiCallCount] = useState(0); // Count total API requests
+  const [apiCallCount, setApiCallCount] = useState(0);
 
   // Fetch initial posts on mount
   useEffect(() => {
@@ -28,7 +28,7 @@ function PostList() {
       console.log("📌 Posts Data:", newPosts);
 
       if (newPosts.length > 0) {
-        setAllPosts(newPosts);
+        // setAllPosts(newPosts);
       } else {
         setHasMore(false);
       }
@@ -56,7 +56,7 @@ function PostList() {
       console.log("📌 New Posts Data:", newPosts);
 
       if (newPosts.length > 0) {
-        setAllPosts((prev) => [...prev, ...newPosts]);
+        // setAllPosts((prev) => [...prev, ...newPosts]);
       } else {
         setHasMore(false);
       }
@@ -72,6 +72,7 @@ function PostList() {
   };
 
   return (
+    <div className="w-[99%]">
     <InfiniteScroll
       dataLength={allPosts.length}
       next={fetchMorePosts}
@@ -87,7 +88,7 @@ function PostList() {
           </button>
         </div>
       }
-      className="h-auto w-[99%] overflow-y-auto scrollbar-hide px-4 pb-5 flex flex-col gap-3"
+      className="h-auto overflow-y-auto scrollbar-hide px-4 pb-5 flex flex-col gap-3"
     >
       {allPosts.map((post, index) => (
         <PostCard
@@ -98,6 +99,7 @@ function PostList() {
         />
       ))}
     </InfiniteScroll>
+    </div>
   );
 }
 

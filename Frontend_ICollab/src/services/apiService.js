@@ -62,6 +62,7 @@ privateAxios.interceptors.response.use(
         return privateAxios(originalRequest); // Retry the original request with the new token
       } catch (refreshError) {
         console.error('Token refresh failed:', refreshError);
+        localStorage.removeItem('accessToken');
         throw new Error("Please login again to continue");
       }
     }

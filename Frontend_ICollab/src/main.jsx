@@ -6,12 +6,11 @@ import { Provider } from "react-redux";
 import { store, persistor } from "./Redux/Store.js";
 import { PersistGate } from "redux-persist/integration/react";
 
+// Strict Mode Removed Its Not Prefered (Due to multiple render of posts)
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <App />
       </PersistGate>
     </Provider>
-  </StrictMode>,
 )

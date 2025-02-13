@@ -9,7 +9,14 @@ function PostCard({text,media,user}) {
   const [bookmarked, setBookmarked] = useState(false);
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);
   const words = text.split(" ");
-  const wordLimit = 15;
+
+  let wordLimit
+  if(media?.length == 0){
+    wordLimit = 80;
+  }
+  else{
+    wordLimit = 15;
+  }
   const textToDisplay = isFullTextVisible
     ? text
     : words.slice(0, wordLimit).join(" ");
