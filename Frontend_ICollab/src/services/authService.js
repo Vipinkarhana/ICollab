@@ -54,10 +54,11 @@ export const test = async () => {
 // Logout function
 export const logout = async () => {
   try {
-    await publicAxios.post('/auth/logout');
+    const response = await publicAxios.post('/auth/logout');
 
     // Clear access token from localStorage
     localStorage.removeItem('accessToken');
+    return response.data;
   } catch (error) {
     return error.response?.data || 'Logout failed';
   }

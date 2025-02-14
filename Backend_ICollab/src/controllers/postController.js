@@ -46,7 +46,7 @@ const getMyPost = async (req, res, next) => {
       path: 'posts',
       populate: {
         path: 'user',
-        select: 'username email profile_pic'
+        select: 'username profile_pic name designation'
       }
     });
     

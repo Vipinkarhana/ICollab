@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import HamburgerMenu from "./Hamburegr";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../../../Redux/Slices/UserSlice";
+import { useNavigate } from "react-router-dom";
+
 const Header = ({ id }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const Logo = "/ICollab_Logo.png";
   const location = useLocation();
   const [hoverStyle, setHoverStyle] = useState({
@@ -46,6 +52,11 @@ const Header = ({ id }) => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const handleLogout = () =>{
+    dispatch(logoutUser());
+    navigate("/login");
+  }
 
   const isActive = (path) => location.pathname === path;
 
@@ -109,7 +120,7 @@ const Header = ({ id }) => {
           </div>
 
           {!isMobile && (
-            <button to="/incubators" className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center">
+            <button to="/incubators" className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center" onClick={handleLogout}>
               Log Out
             </button>
           )}

@@ -33,6 +33,7 @@ const refreshAccessToken = async () => {
     return accessToken;
   } catch (error) {
     console.error('Failed to refresh token:', error);
+    localStorage.removeItem('accessToken');
     throw error;
   }
 };
@@ -62,7 +63,6 @@ privateAxios.interceptors.response.use(
         return privateAxios(originalRequest); // Retry the original request with the new token
       } catch (refreshError) {
         console.error('Token refresh failed:', refreshError);
-        localStorage.removeItem('accessToken');
         throw new Error("Please login again to continue");
       }
     }
