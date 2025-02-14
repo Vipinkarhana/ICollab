@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 
 function AboutDiv() {
   const text = useSelector((state) => state?.user?.profileData?.about);
-  console.log(text);
   const [isOpen, SetIsOpen] = useState(false);
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);
       const words = text?.split(" ");
@@ -19,7 +18,7 @@ function AboutDiv() {
         <div className="text-2xl font-semibold ">
           <p>About</p>
         </div>
-        <div className="w-[4%]   flex  items-start justify-center ">
+        <div className="w-[4%] flex items-start justify-center ">
           <button
             onClick={() => {
               SetIsOpen(true);
@@ -36,8 +35,8 @@ function AboutDiv() {
           style={{ whiteSpace: "pre-wrap" }}
           className="text-md text-gray-800 "
         >
-          {textToDisplay}
-          {words?.length > wordLimit && (
+          {text ? textToDisplay : "No description available, write something about yourself"}
+          {text && words?.length > wordLimit && (
             <button
               className="text-gray-700 font-semibold hover:text-blue-600"
               onClick={() => setIsFullTextVisible(!isFullTextVisible)}

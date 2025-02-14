@@ -25,7 +25,7 @@ function PostCard({text,media,user}) {
   return (
     <div className="w-[100%] h-auto border border-gray-400 mt-3 bg-gray-200 rounded-lg px-2 py-1 flex flex-col justify-center items-center gap-2">
       <div className="h-18 w-full flex justify-between ">
-        <div className="w-[50%] h-full flex justify-start items-center ">
+        <div className="w-auto h-full flex justify-start items-center ">
           <ProfilePic picture={user?.profile_pic} />
           <Name_Designation name={user?.name} />
         </div>

@@ -8,7 +8,7 @@ function StartPost() {
   const user = useSelector((state) => state?.user?.userData);
 
   return (
-    <div className="w-full h-20 bg-gray-200 rounded-md flex justify-evenly items-center p-1">
+    <div className="w-full h-20 bg-gray-200 rounded-md flex justify-evenly items-center p-1 border border-gray-400">
       <ProfilePic picture={user?.profile_pic}/>
       <button
         onClick={() => {
