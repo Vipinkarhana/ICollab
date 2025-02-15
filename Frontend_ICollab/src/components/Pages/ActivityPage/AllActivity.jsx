@@ -27,7 +27,7 @@ function AllActivity() {
             <PostCard key={index} text={post.text} media={post.media} />
           ))
         ) : (
-          <div className="text-gray-500 text-lg font-medium mt-4 h-[70svh]">
+          <div className="text-gray-500 text-lg font-medium mt-4 h-[73svh]">
             No Posts Yet
           </div>
         )}
