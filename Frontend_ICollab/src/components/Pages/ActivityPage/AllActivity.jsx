@@ -21,7 +21,7 @@ function AllActivity() {
         <div className="h-12 w-[100%] border-b border-gray-400 flex items-center px-4 text-2xl font-semibold">
             <p>All Activity</p>
       </div>
-      <div className="h-auto w-[98%] flex flex-col justify-start items-center py-1 gap-1 ">
+      <div className="h-auto w-[98%] flex flex-col justify-start items-center p-2 gap-1 ">
         {
           posts.map((post) => {
             return <PostCard text={post.text} media={post.media} />;
