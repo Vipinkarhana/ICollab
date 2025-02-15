@@ -1,4 +1,5 @@
 import React,{useState} from 'react'
+import { Link } from 'react-router-dom';
 import { Pencil, MoveRight } from "lucide-react";
 import PostCard from "../../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
 import StartPostModal from "../../HomePage/MidDiv/Feed/Posts/StartPost/StartPostModal";
@@ -39,10 +40,10 @@ In, ipsum nam laudantium distinctio suscipit unde cumque deserunt. Esse dolorum 
       <div className="h-auto w-[80%] flex">
         <PostCard text={text} media={media1} />
       </div>
-      <button className="flex gap-2 text-xl text-gray-900 border-t border-gray-400 w-[100%] justify-center items-center h-auto py-2">
+      <Link to="/Activity" className="flex gap-2 text-xl text-gray-900 border-t border-gray-400 w-[100%] justify-center items-center h-auto py-2">
         <p>Show More Posts</p>
         <MoveRight />
-      </button>
+      </Link>
     </div>
   );
 }

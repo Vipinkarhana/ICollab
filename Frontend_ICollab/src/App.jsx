@@ -12,6 +12,7 @@ import Register from "./components/Pages/Login_RegistrationPages/Registration";
 import Layout from "./components/Layout/Layout";
 import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
 import PrivateRoute from "./components/Common/PrivateRoute";
+import ActivityPage from "./components/Pages/ActivityPage/ActivityPage";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/message" element={<MessagePage />} />
             <Route path="/notification" element={<NotificationPage />} />
             <Route path="/incubators" element={<IncubatorsPage />} />
+            <Route path="/Activity" element={<ActivityPage />} />
           </Route>
 
           {/* Public routes: no authentication required */}
