@@ -8,6 +8,7 @@ import Media from './Media';
 function PostCard({text,media,user}) {
   const [bookmarked, setBookmarked] = useState(false);
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);
+  console.log(user, media, text);
   const words = text.split(" ");
 
   let wordLimit

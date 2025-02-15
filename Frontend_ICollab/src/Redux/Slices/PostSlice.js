@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addPost, getFeed } from "../../services/postService";
+import { addPost, getFeed, getMyPost } from "../../services/postService";
 
 export const createPost = createAsyncThunk(
     "post/createPost",
@@ -30,6 +30,22 @@ export const fetchFeed = createAsyncThunk(
             // const state = getState();
             // const timestamp = state.post.feed.timestamp;
             const response = await getFeed(timestamp);
+            if(response.status === 'success') {
+                return response.data;
+            } else {
+                return rejectWithValue(response.message);
+            }
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const fetchMyPosts = createAsyncThunk(
+    "post/fetchMyPosts",
+    async (_, { rejectWithValue}) => {
+        try {
+            const response = await getMyPost();
             if(response.status === 'success') {
                 return response.data;
             } else {
@@ -88,6 +104,13 @@ const postSlice = createSlice({
             state.loading = false;
         });
         builder.addCase(fetchFeed.rejected, (state, action) => {
+            state.error = action.payload;
+        });
+        builder.addCase(fetchMyPosts.fulfilled, (state, action) => {
+            state.myPost = [...action.payload]; // Get All My Posts
+            state.loading = false;
+        });
+        builder.addCase(fetchMyPosts.rejected, (state, action) => {
             state.error = action.payload;
         });
     },

@@ -49,7 +49,6 @@ const changeAbout = async (req, res, next) => {
   try {
     const username = req.user.username;
     const user = await userModel.findOne({ username: username }).populate('profile');
-    console.log(user);
     const { about } = req.body;
     await profileModel.findByIdAndUpdate(user.profile._id, {
       $set: { about: about },

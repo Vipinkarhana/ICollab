@@ -36,6 +36,15 @@ export const addPost = async (postData) => {
     }
 };
 
+export const getMyPost = async() => {
+    try{
+        const response = await privateAxios.get("/posts/mypost");
+        return response.data;
+    } catch (error) {
+        return error.response?.data || { error: "Failed to fetch feed" };
+    }
+}
+
 export const getFeed = async (timestamp) => {
     try {
         const response = await privateAxios.get("/posts/feed", {

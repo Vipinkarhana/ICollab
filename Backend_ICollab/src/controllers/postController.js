@@ -1,6 +1,5 @@
 const postModel = require('../models/post');
 const commentModel = require('../models/comment');
-const profileModel = require('../models/profile');
 const ApiError = require('../utils/ApiError');
 const config = require('../../config/config');
 const userModel = require('../models/user');
@@ -20,11 +19,8 @@ const addpost = async (req, res, next) => {
       content,
     });
     await newPost.save();
-    if (user.profile) {
-      await profileModel.findByIdAndUpdate(user.profile._id, {
-        $push: { posts: newPost._id.toString() }, // Convert ObjectId to string
-      });
-    }
+    user.posts.push(newPost._id);
+    await user.save();
 
     const presignedUrls = await Promise.all(
       media.map(async ({ fileType, fileName }) => {
@@ -37,6 +33,31 @@ const addpost = async (req, res, next) => {
       message: 'Post created successfully',
       data: { postid: newPost._id, presignedUrls },
       status: 'success',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getMyPost = async (req, res, next) => {
+  try {
+    const username = req.user.username;
+    const user = await userModel.findOne({ username }).populate({
+      path: 'posts',
+      populate: {
+        path: 'user',
+        select: 'username email profile_pic'
+      }
+    });
+    
+    if (!user) {
+      return next(new ApiError(404, 'User not found'));
+    }
+
+    res.status(200).json({
+      message: 'User posts retrieved successfully',
+      data: user.posts,
+      status: 'success'
     });
   } catch (err) {
     next(err);
@@ -113,6 +134,7 @@ const feed = async (req, res, next) => {
 
 module.exports = {
   addpost,
+  getMyPost,
   addPostMedia,
   likepost,
   feed,

@@ -43,6 +43,11 @@ let userschma = mongoose.Schema(
       ref: 'profile',
       required: false,
     },
+    posts: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'post',
+      default: []
+    }
   },
   {
     timestamps: true,

@@ -1,24 +1,22 @@
-import React,{useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
-import { Pencil, MoveRight } from "lucide-react";
+import { Pencil, MoveRight, User } from "lucide-react";
 import PostCard from "../../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
 import StartPostModal from "../../HomePage/MidDiv/Feed/Posts/StartPost/StartPostModal";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchMyPosts } from '../../../../Redux/Slices/PostSlice';
 function Activity() {
+  const dispatch = useDispatch();
+  const posts = useSelector((state) => state?.post?.myPost);
   const [isOpen, SetIsOpen] = useState(false);
   console.log(isOpen);
 
-  const test1 = "/test.png";
-  const test2 = "/test2.png";
-  const testvedio = "/TestVedio.mp4";
-  const media1 = [test1, test2];
-  const media2 = testvedio;
+  useEffect(() => {
+    if (!posts || posts.length === 0) {
+      dispatch(fetchMyPosts());
+    }
+  }, []);
 
-  const text = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque,
-laboriosam eos, mollitia atque officia
-    
-soluta odit fugiat aliquam sit quisquam natus deserunt error? Accusamus, voluptatibus ad! Debitis, repellat harum quis obcaecati ipsum laboriosam animi quas laudantium ipsa. Nam quibusdam atque maiores odit cum optio repellendus.
-  
-In, ipsum nam laudantium distinctio suscipit unde cumque deserunt. Esse dolorum iste doloremque voluptate aliquam. Nisi expedita labore iusto modi exercitationem dolorum, sunt explicabo debitis necessitatibus, magni repellat quo sequi quibusdam itaque libero quae adipisci cumque? Aspernatur, quas? Culpa, beatae similique obcaecati dolorem atque quidem eius nobis quia quisquam minus. Fugit laboriosam illo libero voluptatibus.`;
   return (
     <div className="w-[100%] h-auto bg-gray-200 rounded-md flex flex-col justify-around items-center gap-2 text-gray-800 border border-gray-400">
       <div className="h-12 w-[100%] flex justify-between items-center py-2 px-4 border-b border-gray-400">
@@ -34,11 +32,17 @@ In, ipsum nam laudantium distinctio suscipit unde cumque deserunt. Esse dolorum 
           >
             Create a post
           </button>
-      {isOpen && <StartPostModal SetIsOpen={SetIsOpen} isOpen={isOpen} />}
+          {isOpen && <StartPostModal SetIsOpen={SetIsOpen} isOpen={isOpen} />}
         </div>
       </div>
       <div className="h-auto w-[80%] flex">
-        <PostCard text={text} media={media1} />
+        {posts.length > 0 ? (
+          <PostCard text={posts[0]?.content} media={posts[0]?.media} user={posts[0]?.user} />
+        ) : (
+          <div className="text-gray-500 text-lg font-medium my-4">
+            No Posts Yet
+          </div>
+        )}
       </div>
       <Link to="/Activity" className="flex gap-2 text-xl text-gray-900 border-t border-gray-400 w-[100%] justify-center items-center h-auto py-2">
         <p>Show More Posts</p>
