@@ -28,7 +28,7 @@ function PostCard({text,media,user}) {
       <div className="h-18 w-full flex justify-between ">
         <div className="w-auto h-full flex justify-start items-center ">
           <ProfilePic picture={user?.profile_pic} />
-          <Name_Designation name={user?.name} />
+          <Name_Designation name={user?.name} designation={user?.designation} />
         </div>
         <div className="w-[10%] h-full flex justify-end items-start p-1">
           <button

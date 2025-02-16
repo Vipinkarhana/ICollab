@@ -1,12 +1,10 @@
 import React from 'react';
 import { Search ,FilePenLine, UsersRound, Lightbulb} from 'lucide-react';
 import Header from '../../Common/Header/Header';
-import Survey from '../../Common/Survey';
 
 function LandingPage() {
   return (
     <>
-      <Survey />
       <Header id="Header" />
     <div className="flex flex-col  items-center justify-between max-w-6xl mx-auto py-16 px-4">
     <div className="flex  items-center justify-between max-w-6xl mx-auto py-8 px-4 gap-14">
