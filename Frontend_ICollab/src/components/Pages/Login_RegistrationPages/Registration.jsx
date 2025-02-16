@@ -22,6 +22,7 @@ const Register = () => {
     try {
       const message = await dispatch(registerUser({ name, email, password })).unwrap();
       showSuccess(message);
+      navigate("/login")
     } catch (error) {
       showError(error);
     }

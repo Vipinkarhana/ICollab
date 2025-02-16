@@ -19,7 +19,7 @@ const Login = () => {
   const handleFormSubmit = async () => {
     try {
       await dispatch(loginUser({ email, password })).unwrap();
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       showError(error);
     }

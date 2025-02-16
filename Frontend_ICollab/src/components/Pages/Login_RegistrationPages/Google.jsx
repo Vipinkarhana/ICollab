@@ -13,7 +13,7 @@ const Google = () => {
     try {
       const { credential } = credentialResponse;
       await dispatch(googleLogin({ credential })).unwrap();
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       showError(error);
     }
