@@ -17,7 +17,7 @@ const Header = ({ id }) => {
     { name: "My Networks", path: "/network" },
     { name: "Projects", path: "/project" },
     { name: "Messages", path: "/message" },
-    { name: "Notifications", path: "/notification" },
+    { name: "Incubators", path: "/incubators" },
     { name: "User Profile", path: "/profile" },
   ];
 
@@ -109,9 +109,9 @@ const Header = ({ id }) => {
           </div>
 
           {!isMobile && (
-            <Link to="/incubators" className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center">
-              Incubators
-            </Link>
+            <button to="/incubators" className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center">
+              Log Out
+            </button>
           )}
           <div className="md:hidden">
             <button className="text-gray-800 text-4xl -mr-5" onClick={toggleMenu}>

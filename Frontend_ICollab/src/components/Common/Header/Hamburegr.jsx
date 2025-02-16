@@ -18,7 +18,7 @@ const HamburgerMenu = ({ isMenuOpen, toggleMenu, menuItems }) => {
           ))}
           <div className="mt-4 flex justify-center">
             <button className="h-10 rounded-md w-28 text-xl bg-black text-white">
-              Incubators
+              Log Out
             </button>
           </div>
         </div>
