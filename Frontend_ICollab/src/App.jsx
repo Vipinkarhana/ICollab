@@ -34,7 +34,7 @@ function App() {
           </Route>
 
           {/* LandingPage with Layout, not a private route */}
-          <Route path="/" element={<Layout><LandingPage /></Layout>} />
+          <Route path="/" element={<LandingPage />} />
 
           {/* Public routes: no authentication required */}
           <Route path="/login" element={<Login />} />
