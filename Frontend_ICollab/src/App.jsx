@@ -13,6 +13,8 @@ import Layout from "./components/Layout/Layout";
 import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
 import PrivateRoute from "./components/Common/PrivateRoute";
 import ActivityPage from "./components/Pages/ActivityPage/ActivityPage";
+import LandingPage from "./components/Pages/LandingPage/LandingPage";
+
 
 function App() {
   return (
@@ -21,15 +23,18 @@ function App() {
         <Routes>
           {/* Private routes: wrapped with PrivateRoute via the Layout element */}
           <Route element={<PrivateRoute element={<Layout />} />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/network" element={<NetworkPage />} />
             <Route path="/project" element={<ProjectPage />} />
             <Route path="/message" element={<MessagePage />} />
             <Route path="/notification" element={<NotificationPage />} />
             <Route path="/incubators" element={<IncubatorsPage />} />
-            <Route path="/Activity" element={<ActivityPage />} />
+            <Route path="/activity" element={<ActivityPage />} />
           </Route>
+
+          {/* LandingPage with Layout, not a private route */}
+          <Route path="/" element={<Layout><LandingPage /></Layout>} />
 
           {/* Public routes: no authentication required */}
           <Route path="/login" element={<Login />} />
@@ -39,5 +44,6 @@ function App() {
     </GoogleOAuthProvider>
   );
 }
+
 
 export default App;

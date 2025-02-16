@@ -13,7 +13,7 @@ const Header = ({ id }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const menuItems = [
-    { name: "Home", path: "/" },
+    { name: "Home", path: "/home" },
     { name: "My Networks", path: "/network" },
     { name: "Projects", path: "/project" },
     { name: "Messages", path: "/message" },
