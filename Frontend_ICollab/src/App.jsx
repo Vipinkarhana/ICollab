@@ -14,6 +14,8 @@ import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
 import PrivateRoute from "./components/Common/PrivateRoute";
 import ActivityPage from "./components/Pages/ActivityPage/ActivityPage";
 import LandingPage from "./components/Pages/LandingPage/LandingPage";
+import AdminRoute from "./components/Pages/AdminPage/AdminRoute";
+import Unauthorized from "./components/Pages/AdminPage/Unauthorized/Unauthorized";
 
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
             <Route path="/notification" element={<NotificationPage />} />
             <Route path="/incubators" element={<IncubatorsPage />} />
             <Route path="/activity" element={<ActivityPage />} />
+            <Route path="/admin" element={<AdminRoute />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
           </Route>
 
           {/* LandingPage with Layout, not a private route */}

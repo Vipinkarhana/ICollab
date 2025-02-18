@@ -14,6 +14,7 @@ var authRouter = require('./src/routes/authRoute');
 var postRouter = require('./src/routes/postRoute');
 var profileRouter = require('./src/routes/profileRoute');
 var surveyRouter = require('./src/routes/surveyRoute');
+var adminRouter = require('./src/routes/adminRoute');
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/profile', profileRouter);
 app.use('/api/announcement', surveyRouter);
+app.use('/api/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
