@@ -7,7 +7,7 @@ function ActivityPage() {
         <div className='w-[20%] h-[100%] flex flex-col justify-start items-center'>
           <ProfileCard/>
         </div>
-      <div className='w-[50%] h-auto flex-col justify-start items-center gap-2 py-1 border bg-gray-200 border-gray-400 rounded-md'>
+      <div className='w-[50%] min-h-[85svh] h-auto flex-col justify-start items-center gap-2 py-1 border bg-gray-200 border-gray-400 rounded-md'>
         <AllActivity/>
       </div>
       <div className="h-44 w-[20%] bg-gray-200 border border-gray-400 rounded-md"></div>
