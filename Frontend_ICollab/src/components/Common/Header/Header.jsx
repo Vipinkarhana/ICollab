@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const Header = ({ id }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const Logo = "/ICollab_Logo.png";
+  const Logo = "/ICollab.jpeg";
   const location = useLocation();
   const [hoverStyle, setHoverStyle] = useState({
     left: 0,
@@ -64,10 +64,10 @@ const Header = ({ id }) => {
     <div>
       <div
         id={id}
-        className="fixed w-full h-[8%] flex justify-center items-center z-[1] text-black bg-gray-50  border-gray-50 shadow-md"
+        className="fixed w-full h-[8%] flex justify-center items-center z-[1] text-black bg-white shadow-md"
       >
         <div className="w-11/12 lg:w-[90%] h-[99%] flex items-center justify-between md:justify-evenly md:gap-4">
-          <Link to="/" className="h-14  w-28 lg:h-14 lg:w-28  ml-2 lg:mr-1  lg:-ml-1">
+          <Link to="/" className="h-14  w-28 lg:h-12 lg:w-28  ml-2 lg:mr-1  lg:-ml-1">
             <img src={Logo} alt="Logo" className="h-[100%] w-[100%]" />
           </Link>
           <div className="w-auto h-full relative flex items-center">
