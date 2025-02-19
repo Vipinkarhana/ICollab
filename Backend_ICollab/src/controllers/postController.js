@@ -4,6 +4,8 @@ const ApiError = require('../utils/ApiError');
 const config = require('../../config/config');
 const userModel = require('../models/user');
 const { URL } = require('url');
+const mongoose = require('mongoose');
+
 
 const { generatePresignedUrl } = require('../../config/s3');
 
@@ -77,7 +79,7 @@ const addPostMedia = async (req, res, next) => {
       return `${config.S3_PUBLIC_URL}${filePath}`;
     });
 
-    post.media = updatedMedia;
+    post.media.push(updatedMedia);
     post.status = 'public';
     await post.save();
     await post.populate('user', 'username name profile_pic designation');
@@ -91,6 +93,8 @@ const addPostMedia = async (req, res, next) => {
     next(err);
   }
 };
+
+
 
 const likepost = async (req, res, next) => {
   try {
@@ -131,6 +135,9 @@ const feed = async (req, res, next) => {
     next(err);
   }
 };
+
+
+
 
 module.exports = {
   addpost,

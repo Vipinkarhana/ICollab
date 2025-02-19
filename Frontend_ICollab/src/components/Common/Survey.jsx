@@ -85,8 +85,8 @@ function Survey() {
           </button>
         </form>
         <p className="mt-4">
-          From ICollab Development Team :<br />
-          (Tanmay and Naman)
+          From ICollab Development Team<br />
+          (Ayush, Tanmay and Naman)
         </p>
       </div>
     </div>
