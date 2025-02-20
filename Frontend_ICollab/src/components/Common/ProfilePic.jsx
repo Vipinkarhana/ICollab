@@ -1,4 +1,20 @@
-import React from 'react'
+/**
+ * @file ProfilePic.js
+ * @brief Displays a user's profile picture with a fallback image.
+ * @details This component renders a circular profile picture, with a default fallback image if no picture is provided or an error occurs.
+ * @param {Object} props Component properties.
+ * @param {string} [props.picture] URL of the profile picture.
+ * @param {string} [props.className] Optional CSS classes for custom styling.
+ * @returns {JSX.Element} The ProfilePic component.
+ */
+
+import React from 'react';
+
+/**
+ * @class ProfilePic
+ * @brief A component for displaying a profile picture with a fallback.
+ */
+
 function ProfilePic({picture, className = "" }) {
   const ProfileImg = "/ProfilePic.png";
   return (

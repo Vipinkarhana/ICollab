@@ -1,10 +1,31 @@
+/**
+ * @file Survey.js
+ * @brief A modal survey form for collecting user feedback on new features.
+ * @details This component displays a survey modal asking users to choose between 
+ *          different feature requests. The selected response is sent to the server.
+ *          The survey appears only if the user hasn't submitted it before.
+ * @author ICollab Development Team
+ * @date 2025-02-20
+ */
+
 import React, { useState, useEffect } from "react";
 import privateAxios from "../../services/apiService";
 
+
+/**
+ * @class Survey
+ * @brief A modal survey form component.
+ * @returns {JSX.Element | null} The Survey component or null if the survey is already submitted.
+ */
 function Survey() {
   const [selectedOption, setSelectedOption] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
+   /**
+   * @brief Initializes survey state on component mount.
+   * @details Checks if the survey has been submitted before using local storage.
+   *          If not, the survey modal is displayed.
+   */
   useEffect(() => {
     const surveyStatus = localStorage.getItem("Survey1");
     if (!surveyStatus) {
@@ -17,10 +38,19 @@ function Survey() {
     }
   }, []);
 
+    /**
+   * @brief Handles the change event for radio input selection.
+   * @param {Event} event The change event.
+   */
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
 
+    /**
+   * @brief Handles survey form submission.
+   * @details Saves the survey status in local storage and sends the selected answer to the backend API.
+   * @param {Event} event The form submit event.
+   */
   const handleSubmit = async (event) => {
     event.preventDefault();
     try{
@@ -32,6 +62,9 @@ function Survey() {
     setModalIsOpen(false);
   };
 
+    /**
+   * @brief Closes the survey modal without submitting.
+   */
   const handleClose = () => {
     setModalIsOpen(false);
   };

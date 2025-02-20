@@ -1,3 +1,15 @@
+/**
+ * @file HamburgerMenu.js
+ * @brief Hamburger menu component for mobile navigation.
+ * @details This component displays a dropdown menu when activated, allowing users
+ *          to navigate through different sections of the application.
+ * @param {Object} props Component properties.
+ * @param {boolean} props.isMenuOpen Indicates if the menu is currently open.
+ * @param {Function} props.toggleMenu Function to toggle menu visibility.
+ * @param {Array} props.menuItems List of menu items with `name` and `path`.
+ * @returns {JSX.Element} The HamburgerMenu component.
+ */
+
 import React from "react";
 import { Link } from "react-router-dom";
 

@@ -1,9 +1,23 @@
+/**
+ * @file ProfileCard.js
+ * @brief Displays a user profile card with a profile picture, name, designation, and a brief about section.
+ * @details This component fetches user data from Redux and provides a link to edit the profile.
+ * @author ICollab
+ * @date 2025-02-20
+ */
+
 import React from "react";
 import { UserPen } from "lucide-react";
 import { Link } from "react-router-dom";
 import ProfilePic from "../../../Common/ProfilePic";
 import Name_Designation from "../../../Common/Name&Designation";
 import { useSelector } from "react-redux";
+
+/**
+ * @class ProfileCard
+ * @brief Component that displays the user's profile details.
+ * @returns {JSX.Element} A styled profile card with a profile picture, name, designation, and about section.
+ */
 const ProfileCard = () => {
   const user = useSelector((state) => state?.user?.userData);
   const profile = useSelector((state) => state?.user?.profileData);

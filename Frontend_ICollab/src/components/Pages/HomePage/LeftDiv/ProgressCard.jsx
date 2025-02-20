@@ -1,5 +1,19 @@
+/**
+ * @file ProgressCard.js
+ * @brief Displays a progress report card with a brief description and a "Learn More" link.
+ * @details This component presents a brief progress report with a title, description, and a link for more details.
+ * @author ICollab
+ * @date 2025-02-20
+ */
+
 import React from "react";
 import { Link } from "react-router-dom";
+
+/**
+ * @class ProgressCard
+ * @brief A card component that displays a brief progress report.
+ * @returns {JSX.Element} A styled progress report card with a title, description, and a "Learn More" link.
+ */
 const ProgressCard = () => {
   return (
     <>
