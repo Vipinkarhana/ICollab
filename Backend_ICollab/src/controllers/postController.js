@@ -75,8 +75,7 @@ const addPostMedia = async (req, res, next) => {
       const filePath = urlObj.pathname;
       return `${config.S3_PUBLIC_URL}${filePath}`;
     });
-
-    post.media.push(updatedMedia);
+    post.media.push(...updatedMedia);
     post.status = 'public';
     await post.save();
     await post.populate('user', 'username name profile_pic designation');
@@ -90,8 +89,6 @@ const addPostMedia = async (req, res, next) => {
     next(err);
   }
 };
-
-
 
 const likepost = async (req, res, next) => {
   try {
@@ -133,81 +130,58 @@ const feed = async (req, res, next) => {
   }
 };
 
-
-
 const editPost = async (req, res, next) => {
   try {
-    let presignedUrls;
     const username = req.user.username;
     const user = await userModel.findOne({ username: username });
-    const { postid, newcontent } = req.body;
+    const { postid, newcontent, existingMedia, newMedia } = req.body;
+
     const post = await postModel.findOne({ _id: postid, user: user._id });
+    if (!post) return next(new ApiError(404, "Post not found or unauthorized"));
 
-    if (!post) return next(new ApiError(404, 'Post not found or unauthorized'));
-    if (newcontent) post.content = newcontent;
-    
-    if(req.body.data){
-
-        const stringsArray = [];
-        const media = [];
-    try {
-        const combinedArray = req.body.data; // Parse JSON data
-
-        combinedArray.forEach(item => {
-            if (typeof item === "string") {
-                stringsArray.push(item); // Add to string array
-            } else if (typeof item === "object" && item.fileName && item.fileType) {
-                media.push(item); // Add file metadata to files array
-            }
-        });
-
-
-         // Find media to be deleted
-         const existingMedia = post.media || [];
-         const mediaToDelete = existingMedia.filter((mediaUrl) => !stringsArray.includes(mediaUrl));
- 
-         // Delete old media from R2
-         await Promise.all(mediaToDelete.map((url) => deleteFromR2(url)));
-
-
-         post.media = stringsArray;
-         post.status = "draft";
-
-    } catch (error) {
-        return next(error);
+    if (newcontent) {
+      post.content = newcontent;
     }
 
+    const mediaToDelete = (post.media || []).filter(
+      (mediaUrl) => !existingMedia.includes(mediaUrl)
+    );
 
-    if(media.length>0){
+    await Promise.all(mediaToDelete.map((url) => deleteFromR2(url)));
+
+    post.media = existingMedia;
+    post.status = "draft";
+
+    let presignedUrls = [];
+    if (newMedia && newMedia.length > 0) {
       presignedUrls = await Promise.all(
-        media.map(async ({ fileType, fileName }) => {
+        newMedia.map(async ({ fileType, fileName }) => {
           const key = `posts/${post._id}/${Date.now()}-${fileName}`;
           return await generatePresignedUrl(key, fileType);
         })
       );
     }
-      }
 
     await post.save();
 
-    res.status(200).json({
-      message: 'Post updated successfully',
-      data: presignedUrls,
-      status: 'success',
+    return res.status(200).json({
+      message: "Post updated successfully",
+      status: "success",
+      data: { postid: post._id, presignedUrls }
     });
+
   } catch (err) {
-    console.log(err);
+    console.error(err);
     next(err);
   }
 };
-
-
 
 
 const deletePost = async (req, res, next) => {
   try {
     const { postid } = req.body;
     const username = req.user.username;
+    console.log(postid, username)
     const user = await userModel.findOne({ username: username });
 
     const post = await postModel.findOne({ _id: postid, user: user._id });

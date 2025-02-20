@@ -93,9 +93,7 @@ function PostList() {
       {allPosts.map((post, index) => (
         <PostCard
           key={post.id}
-          text={post?.content}
-          media={post?.media}
-          user={post?.user}
+          post={post}
         />
       ))}
     </InfiniteScroll>

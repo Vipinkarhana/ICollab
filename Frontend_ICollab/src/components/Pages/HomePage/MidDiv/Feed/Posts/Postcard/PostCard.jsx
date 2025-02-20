@@ -9,9 +9,16 @@ import {
 } from "@heroicons/react/24/solid";
 import { BookmarkIcon } from "lucide-react";
 import Media from "./Media";
+import { useDispatch } from "react-redux";
+import { addDraft, openPostModal, removePost, fetchMyPosts } from "../../../../../../../Redux/Slices/PostSlice";
 
-function PostCard({ text, media, user }) {
+  function PostCard({post}) {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
+
+  const text = post?.content;
+  const media = post?.media;
+  const user = post?.user;
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -21,8 +28,7 @@ function PostCard({ text, media, user }) {
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);
   const currentUser = useSelector((state) => state.user.userData);
 
-  console.log(user, media, text);
-  const words = text.split(" ");
+  const words = text?.split(" ");
 
   let wordLimit;
   if (media?.length == 0) {
@@ -32,9 +38,19 @@ function PostCard({ text, media, user }) {
   }
   const textToDisplay = isFullTextVisible
     ? text
-    : words.slice(0, wordLimit).join(" ");
+    : words?.slice(0, wordLimit)?.join(" ");
 
   const isCurrentUser = user?.name === currentUser?.name;
+
+  const handleEdit = () => {
+    dispatch(addDraft(post));
+    dispatch(openPostModal(true));
+  }
+
+  const handleDelete = () => {
+    dispatch(removePost({postid: post?.id}));
+    dispatch(fetchMyPosts());
+  }
 
   return (
     <div className="w-[100%] h-auto border border-gray-300 mt-3 bg-white rounded-lg px-2 py-1 flex flex-col justify-center items-center gap-2">
@@ -56,7 +72,7 @@ function PostCard({ text, media, user }) {
                 <div className="absolute mt-6 bg-white rounded-md w-24 border border-gray-300 shadow-xl ">
                   <button
                     onClick={() => {
-                      console.log("Edit");
+                      handleEdit();
                     }}
                     className="text-gray-500 font-semibold w-full h-10 p-1 border-b-[0.5px] border-gray-400 hover:bg-gray-100 rounded-t-lg flex items-center justify-start gap-2 px-3 "
                   >
@@ -65,7 +81,7 @@ function PostCard({ text, media, user }) {
                   </button>
                   <button
                     onClick={() => {
-                      console.log("Delete");
+                      handleDelete();
                     }}
                     className="text-gray-500 font-semibold w-full h-10 p-1 hover:bg-gray-100 rounded-b-lg flex items-center justify-center gap-1"
                   >
@@ -94,7 +110,7 @@ function PostCard({ text, media, user }) {
       <div className="h-auto w-[95%]">
         <p style={{ whiteSpace: "pre-wrap" }} className="text-md text-gray-800">
           {textToDisplay}
-          {words.length > wordLimit && (
+          {words?.length > wordLimit && (
             <button
               className="text-gray-700 font-semibold hover:text-blue-600"
               onClick={() => setIsFullTextVisible(!isFullTextVisible)}

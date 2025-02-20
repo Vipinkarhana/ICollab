@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { Pencil, MoveRight, User } from "lucide-react";
 import PostCard from "../../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
-import StartPostModal from "../../HomePage/MidDiv/Feed/Posts/StartPost/StartPostModal";
+import StartPostModal from "../../../Common/StartPostModal";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMyPosts } from '../../../../Redux/Slices/PostSlice';
 function Activity() {
@@ -37,7 +37,7 @@ function Activity() {
       </div>
       <div className="h-auto w-[80%] flex">
         {posts.length > 0 ? (
-          <PostCard text={posts[0]?.content} media={posts[0]?.media} user={posts[0]?.user} />
+          <PostCard key={posts[0].id} post={posts[0]} />
         ) : (
           <div className="text-gray-500 text-lg font-medium my-4 text-center">
             No Posts Yet

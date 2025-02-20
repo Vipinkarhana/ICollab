@@ -36,6 +36,56 @@ export const addPost = async (postData) => {
     }
 };
 
+export const editPost = async (postData) => {
+    try {
+        const existingMedia = postData.mediaFiles.filter(item => typeof item === "string");
+        const newMediaFiles = postData.mediaFiles.filter(item => typeof item === "object");
+
+        const response = await privateAxios.post("/posts/editpost", {
+            postid: postData.id,
+            newcontent: postData.content,
+            existingMedia: existingMedia,
+            newMedia: newMediaFiles.map(({ file, type }) => ({
+                fileType: file.type,
+                fileName: file.name,
+            }))
+        });
+
+        const { presignedUrls, postid } = response.data.data;
+
+        const uploadPromises = newMediaFiles.map((fileObj, index) => {
+            const fileBlob = new Blob([fileObj.file], { type: fileObj.file.type });
+            return axios.put(presignedUrls[index], fileBlob, {
+              headers: { "Content-Type": fileObj.file.type || "application/octet-stream" },
+            });
+        });
+
+        await Promise.all(uploadPromises);
+
+        const allMediaUrls = [...presignedUrls];
+
+        const post = await privateAxios.post("/posts/addmedia", {
+            postid,
+            media: allMediaUrls,
+        });
+
+        return post.data;
+    } catch (error) {
+        return error.response?.data || { error: "Post updation failed" };
+    }
+};
+
+export const deletePost = async( postid ) => {
+    try{
+        const response = await privateAxios.post("/posts/deletepost", {
+            postid
+        });
+        return response.data;
+    } catch (error) {
+        return error.response?.data || { error: "Failed to fetch feed" };
+    }
+}
+
 export const getMyPost = async() => {
     try{
         const response = await privateAxios.get("/posts/mypost");

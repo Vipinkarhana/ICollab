@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
-import ProfilePic from "../../../../../../Common/ProfilePic";
-import EmojiButton from "./EmojiButton";
-import FileUpload from "./FileUpload";
-import Name_Designation from "../../../../../../Common/Name&Designation";
+import ProfilePic from "./ProfilePic";
+import EmojiButton from "../Pages/HomePage/MidDiv/Feed/Posts/StartPost/EmojiButton";
+import FileUpload from "../Pages/HomePage/MidDiv/Feed/Posts/StartPost/FileUpload";
+import Name_Designation from "./Name&Designation";
 import { useDispatch, useSelector } from "react-redux";
-import { addDraft, createPost } from "../../../../../../../Redux/Slices/PostSlice";
+import { addDraft, createPost, openPostModal, updatePost } from "../../Redux/Slices/PostSlice";
 
-function StartPostModal({ isOpen, SetIsOpen }) {
+function StartPostModal() {
+  const isOpen = useSelector((state) => state.post.isStartPostModalOpen);
   if (!isOpen) return null;
   const dispatch = useDispatch();
-  const content = useSelector((state) => state.post.post.content);
+  const post = useSelector((state) => state.post.post);
   const user = useSelector((state) => state.user.userData);
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const content = post.content;
+  const [selectedFiles, setSelectedFiles] = useState(post?.media || []);
 
   const textareaRef = useRef(null);
 
@@ -20,6 +22,7 @@ function StartPostModal({ isOpen, SetIsOpen }) {
     dispatch(addDraft({ content: content + emoji }));
   };
 
+  // cursor Blinking
   useEffect(() => {
     const keepFocus = () => {
       if (document.activeElement !== textareaRef.current) {
@@ -35,21 +38,27 @@ function StartPostModal({ isOpen, SetIsOpen }) {
     };
   }, []);
 
-  useEffect(() => {
-    console.log(selectedFiles);
-  }, [selectedFiles]);
+  const handleSubmit = () => {
+    if(post.id){
+      dispatch(updatePost({ mediaFiles: selectedFiles }));
+    }else{
+      // console.log("Post Not Available");
+      dispatch(createPost({ mediaFiles: selectedFiles }));
+    }
+    dispatch(openPostModal(false))
+  }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="relative w-[35rem] h-[35rem] bg-white shadow-lg rounded-lg  flex flex-col justify-start overflow-y-auto scrollbar-hide">
         <div className="h-[13%] w-full flex px-4 justify-between bg-gray-50 rounded-t-lg">
           <div className="h-full w-auto flex justify-evenly items-center ">
-            <ProfilePic picture={user?.profile_pic}/>
-            <Name_Designation name={user?.name} designation={user?.designation}/>
+            <ProfilePic picture={user?.profile_pic} />
+            <Name_Designation name={user?.name} designation={user?.designation} />
           </div>
           <button
             className="absolute  text-gray-600 hover:text-black hover:bg-gray-300 rounded-full p-1 top-2 right-2"
-            onClick={() => SetIsOpen(false)}
+            onClick={() => dispatch(openPostModal(false))}
           >
             <X size={26} />
           </button>
@@ -72,15 +81,17 @@ function StartPostModal({ isOpen, SetIsOpen }) {
                 <EmojiButton onSelectEmoji={addEmoji} />
               </div>
               <div className="h-auto w-full flex justify-start items-center ">
-                <FileUpload selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles}/>
+                <FileUpload
+                  selectedFiles={selectedFiles}
+                  setSelectedFiles={setSelectedFiles}
+                  existingMedia={post?.media || []}
+                />
+
               </div>
             </div>
             <div className="h-24 mt-2 flex justify-end items-end px-2 py-1">
               <button
-                onClick={async () => {
-                  await dispatch(createPost({ mediaFiles: selectedFiles }));
-                  SetIsOpen(false);
-                }}
+                onClick={handleSubmit}
                 className="px-3  bg-slate-300 rounded-lg text-lg text-gray-800"
               >
                 Post

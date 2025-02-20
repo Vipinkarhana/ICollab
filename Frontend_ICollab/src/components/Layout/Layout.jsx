@@ -11,6 +11,8 @@ import React from "react";
 import Header from "../Common/Header/Header";
 import { Outlet } from "react-router-dom";
 import BackToTopButton from "./BackToTopButton";
+import { useSelector } from "react-redux";
+import StartPostModal from "../Common/StartPostModal";
 
 /**
  * @class Layout
@@ -18,9 +20,11 @@ import BackToTopButton from "./BackToTopButton";
  * @returns {JSX.Element} The layout structure including the header, main content, and back-to-top button.
  */
 function Layout() {
+  const isOpen = useSelector((state) => state.post.isStartPostModalOpen);
   return (
     <div className="flex flex-col min-h-screen">
       <Header id="Header" />
+      {isOpen && <StartPostModal />}
       <BackToTopButton />
       <main className="flex-grow flex items-center justify-center gap-3">
         <Outlet />

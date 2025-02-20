@@ -27,15 +27,16 @@ function Survey() {
    *          If not, the survey modal is displayed.
    */
   useEffect(() => {
-    const surveyStatus = localStorage.getItem("Survey1");
-    if (!surveyStatus) {
-      localStorage.setItem("Survey1", "NotSubmitted");
-      setModalIsOpen(true);
-    } else if (surveyStatus === "NotSubmitted") {
-      setModalIsOpen(true);
-    } else {
-      setModalIsOpen(false);
-    }
+    localStorage.removeItem("Survey1");
+    // const surveyStatus = localStorage.getItem("Survey1");
+    // if (!surveyStatus) {
+    //   localStorage.setItem("Survey1", "NotSubmitted");
+    //   setModalIsOpen(true);
+    // } else if (surveyStatus === "NotSubmitted") {
+    //   setModalIsOpen(true);
+    // } else {
+    //   setModalIsOpen(false);
+    // }
   }, []);
 
     /**
@@ -69,7 +70,7 @@ function Survey() {
     setModalIsOpen(false);
   };
 
-  if (!modalIsOpen) return null;
+  if (true) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">

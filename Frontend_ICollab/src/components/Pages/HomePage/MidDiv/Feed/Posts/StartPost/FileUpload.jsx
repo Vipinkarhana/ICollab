@@ -4,26 +4,53 @@ import useAlert from "../../../../../../Common/UseAlert";
 import { useDispatch } from "react-redux";
 import { addDraft } from "../../../../../../../Redux/Slices/PostSlice";
 
-const FilePreview = React.memo(({ file, type }) => {
-  const fileUrl = useMemo(() => URL.createObjectURL(file), [file]);
+const FilePreview = React.memo(({ selectedFile }) => {
+  const isURL = typeof selectedFile === "string";
+  let fileUrl;
+  let fileType;
+
+  if (isURL) {
+    fileUrl = selectedFile;
+    const extension = fileUrl.split(".").pop().toLowerCase();
+    
+    // Determine file type based on extension
+    const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
+    const videoExtensions = ["mp4", "webm", "ogg"];
+
+    if (imageExtensions.includes(extension)) {
+      fileType = "photo";
+    } else if (videoExtensions.includes(extension)) {
+      fileType = "video";
+    } else {
+      fileType = "unknown"; // Unsupported format
+    }
+  } else {
+    fileUrl = URL.createObjectURL(selectedFile?.file);
+    fileType = selectedFile?.type; // Keep the original type for selected files
+  }
 
   const cleanup = () => {
-    URL.revokeObjectURL(fileUrl);
+    if (!isURL) {
+      URL.revokeObjectURL(fileUrl);
+    }
   };
 
-  return type === "photo" ? (
+  return fileType === "photo" ? (
     <img
       src={fileUrl}
       alt="Selected"
       className="w-auto h-80 rounded-md object-cover object-center"
       onLoad={cleanup}
     />
-  ) : (
+  ) : fileType === "video" ? (
     <video controls className="w-full h-42 rounded-md" onLoadedData={cleanup}>
       <source src={fileUrl} type="video/mp4" />
     </video>
+  ) : (
+    <p>Unsupported file type</p>
   );
 });
+
 
 const FileUpload = ({selectedFiles, setSelectedFiles}) => {
   const [showSuccess, showWarning, showError] = useAlert();
@@ -41,7 +68,7 @@ const FileUpload = ({selectedFiles, setSelectedFiles}) => {
 
       if (
         fileType === "video" &&
-        selectedFiles.length > 0 &&
+        selectedFiles?.length > 0 &&
         currentType === "video"
       ) {
         showError("You can only upload ONE video at a time!");
@@ -83,22 +110,22 @@ const FileUpload = ({selectedFiles, setSelectedFiles}) => {
     });
 
     setCurrentIndex((prevIndex) =>
-      prevIndex >= selectedFiles.length - 1
+      prevIndex >= selectedFiles?.length - 1
         ? Math.max(prevIndex - 1, 0)
         : prevIndex
     );
   }, [currentIndex, selectedFiles]);
 
   const nextSlide = useCallback(() => {
-    if (selectedFiles.length > 0) {
-      setCurrentIndex((prev) => (prev + 1) % selectedFiles.length);
+    if (selectedFiles?.length > 0) {
+      setCurrentIndex((prev) => (prev + 1) % selectedFiles?.length);
     }
   }, [selectedFiles]);
 
   const prevSlide = useCallback(() => {
-    if (selectedFiles.length > 0) {
+    if (selectedFiles?.length > 0) {
       setCurrentIndex(
-        (prev) => (prev - 1 + selectedFiles.length) % selectedFiles.length
+        (prev) => (prev - 1 + selectedFiles?.length) % selectedFiles.length
       );
     }
   }, [selectedFiles]);
@@ -135,7 +162,7 @@ const FileUpload = ({selectedFiles, setSelectedFiles}) => {
         </div>
       </div>
 
-      {selectedFiles.length > 0 && selectedFiles[currentIndex] && (
+      {selectedFiles?.length > 0 && selectedFiles[currentIndex] && (
         <div className="mt-4 relative w-full h-full flex items-center justify-between">
           <button
             className="absolute left-1 bg-gray-500 text-white p-2 rounded-full z-10"
@@ -155,6 +182,7 @@ const FileUpload = ({selectedFiles, setSelectedFiles}) => {
             <FilePreview
               file={selectedFiles[currentIndex].file}
               type={selectedFiles[currentIndex].type}
+              selectedFile={selectedFiles[currentIndex]}
             />
           </div>
           <button

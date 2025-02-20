@@ -1,10 +1,9 @@
-import { useState } from "react";
 import ProfilePic from "../../../../../../Common/ProfilePic";
-import StartPostModal from "./StartPostModal";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch  } from "react-redux";
+import {openPostModal} from "../../../../../../../Redux/Slices/PostSlice"
 
 function StartPost() {
-  const [isOpen, SetIsOpen] = useState(false);
+  const dispatch = useDispatch();
   const user = useSelector((state) => state?.user?.userData);
 
   return (
@@ -12,13 +11,12 @@ function StartPost() {
       <ProfilePic picture={user?.profile_pic}/>
       <button
         onClick={() => {
-          SetIsOpen(true);
+          dispatch(openPostModal(true));
         }}
         className="h-12 w-[80%] border-2 border-gray-300 rounded-3xl text-gray-500 font-semibold text-lg hover:bg-gray-100"
       >
         Start a Post
       </button>
-      {isOpen && <StartPostModal SetIsOpen={SetIsOpen} isOpen={isOpen} />}
     </div>
   );
 }

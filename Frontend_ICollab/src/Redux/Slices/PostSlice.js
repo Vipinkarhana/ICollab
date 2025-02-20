@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addPost, getFeed, getMyPost } from "../../services/postService";
+import { addPost, getFeed, getMyPost, editPost, deletePost } from "../../services/postService";
 
 export const createPost = createAsyncThunk(
     "post/createPost",
@@ -9,10 +9,49 @@ export const createPost = createAsyncThunk(
             console.log(mediaFiles);
             const state = getState();
             const content = state.post.post.content;
+            console.log(content);
 
             const response = await addPost({ content, mediaFiles });
             if(response.status === 'success') {
                 return response.data;
+            } else {
+                return rejectWithValue(response.message);
+            }
+        } catch (error) {
+            console.log(error);
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const updatePost = createAsyncThunk(
+    "post/updatePost",
+    async ({mediaFiles}, { rejectWithValue, getState }) => {
+        try {
+            const state = getState();
+            const post = state.post.post;
+
+            const response = await editPost({ ...post, mediaFiles });
+            if(response.status === 'success') {
+                return response.data;
+            } else {
+                return rejectWithValue(response.message);
+            }
+        } catch (error) {
+            console.log(error);
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const removePost = createAsyncThunk(
+    "post/removePost",
+    async ({postid}, { rejectWithValue }) => {
+        try {
+            console.log("In Redux: ", postid);
+            const response = await deletePost(postid);
+            if(response.status === 'success') {
+                return response.message;
             } else {
                 return rejectWithValue(response.message);
             }
@@ -62,6 +101,7 @@ const initialState = {
         content: "",
         tags: [],
         hashtags: [],
+        media: [],
     },
     feed: {
         timestamp: new Date().getTime(),
@@ -69,6 +109,7 @@ const initialState = {
     },
     myPost: [],
     savePost: [],
+    isStartPostModalOpen: false,
     error: null,
     loading: false,
 };
@@ -78,10 +119,15 @@ const postSlice = createSlice({
     initialState,
     reducers: {
         addDraft: (state, action) => {
-            const { content, tags, hashtags } = action.payload;
+            const { content, tags, hashtags, media, id } = action.payload;
             state.post.content = content;
             state.post.tags = tags;
             state.post.hashtags = hashtags;
+            state.post.media = media;
+            state.post.id = id;
+        },
+        openPostModal: (state, action) => {
+            state.isStartPostModalOpen = action.payload;
         },
         setTimestamp: (state, action) => {
             state.feed.timestamp = action.payload;
@@ -91,7 +137,7 @@ const postSlice = createSlice({
         builder.addCase(createPost.fulfilled, (state, action) => {
             state.myPost = [action.payload, ...state.myPost];
             state.feed.posts = [action.payload, ...state.feed.posts];
-            state.post.content = "";
+            state.post = initialState.post;
         });
         builder.addCase(createPost.rejected, (state, action) => {
             state.error = action.payload;
@@ -108,13 +154,25 @@ const postSlice = createSlice({
         });
         builder.addCase(fetchMyPosts.fulfilled, (state, action) => {
             state.myPost = [...action.payload]; // Get All My Posts
+            state.post = initialState.post;
             state.loading = false;
         });
         builder.addCase(fetchMyPosts.rejected, (state, action) => {
             state.error = action.payload;
         });
+        builder.addCase(updatePost.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(updatePost.fulfilled, (state, action) => {
+            state.feed.posts = [action.payload, ...state.feed.posts];
+            state.loading = false;
+        });
+        builder.addCase(updatePost.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        });
     },
 });
 
-export const { addDraft } = postSlice.actions;
+export const { addDraft, openPostModal } = postSlice.actions;
 export default postSlice.reducer;

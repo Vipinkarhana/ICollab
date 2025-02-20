@@ -39,7 +39,7 @@ function AllActivity() {
       <div className="h-auto w-[98%] flex flex-col justify-start items-center p-2 gap-1">
         {posts.length > 0 ? (
           posts.map((post, index) => (
-            <PostCard key={index} text={post?.content} media={post?.media} user={post?.user} />
+            <PostCard key={index} post={post} />
           ))
         ) : (
           <div className="text-gray-500 text-lg font-medium mt-4 h-[73svh]">
