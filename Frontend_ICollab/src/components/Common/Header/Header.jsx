@@ -64,7 +64,7 @@ const Header = ({ id }) => {
     <div>
       <div
         id={id}
-        className="fixed w-full h-[8%] flex justify-center items-center z-[1] text-black bg-white shadow-md"
+        className="fixed w-full h-[9%] flex justify-center items-center z-[1] text-black bg-white shadow-sm"
       >
         <div className="w-11/12 lg:w-[90%] h-[99%] flex items-center justify-between md:justify-evenly md:gap-4">
           <Link to="/" className="h-14  w-28 lg:h-12 lg:w-28  ml-2 lg:mr-1  lg:-ml-1">

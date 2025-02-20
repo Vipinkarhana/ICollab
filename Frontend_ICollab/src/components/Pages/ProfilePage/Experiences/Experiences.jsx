@@ -34,13 +34,13 @@ const experiences = [
 
 function Experiences() {
   return (
-    <div className="w-full h-auto rounded-md bg-gray-200 border border-gray-400">
-      <div className="h-12 w-full flex justify-between items-center py-2 px-4 border-b border-gray-400 text-gray-800">
+    <div className="w-full h-auto rounded-md bg-white border border-gray-300">
+      <div className="h-12 w-full flex justify-between items-center py-2 px-4 border-b border-gray-300 text-gray-800">
         <div className="text-2xl font-semibold">
           <p>Experiences</p>
         </div>
         <div className="w-8 flex items-center justify-center">
-          <button className="rounded-full hover:bg-slate-300 p-2">
+          <button className="rounded-full hover:bg-slate-100 p-2">
             <Pencil size={24} />
           </button>
         </div>
@@ -49,7 +49,7 @@ function Experiences() {
         {experiences.map((exp) => (
           <div>
           <Experience key={exp.id} experience={exp} />
-          <hr className="border border-gray-300"/>
+          <hr className="border-b border-gray-300"/>
           </div>
         ))}
       </div>

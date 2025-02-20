@@ -7,7 +7,7 @@ import Survey from "../../Common/Survey";
 const HomePage = () => {
   return (
     <>
-      <div className="w-[90svw] h-[90svh] mt-14 flex   justify-evenly p-2">
+      <div className="w-[100svw] mt-14 flex   justify-evenly p-2">
         <Survey />
         <LeftDiv />
         <MidDiv />

@@ -10,10 +10,10 @@ const ProfileCard = () => {
 
   return (
     <>
-      <div className="h-[30%] w-[100%] bg-gray-200 rounded-md flex flex-col justify-evenly py-2 border-gray-400 border">
+      <div className="h-48 w-[100%] bg-white rounded-md flex flex-col justify-evenly py-3 border-gray-300 border">
         <div className="h-[30%] w-[100%] px-4 py-1 flex justify-between items-start">
-          <div className=" -mt-7 ">
-             <ProfilePic picture={user?.profile_pic}/>
+          <div className="-mt-3">
+             <ProfilePic picture={user?.profile_pic} className="h-18 w-18"/>
           </div>
           <div className="py-1 -mt-2">
             <Link to="/profile">

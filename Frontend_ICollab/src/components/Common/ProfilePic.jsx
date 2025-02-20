@@ -3,7 +3,7 @@ function ProfilePic({picture, className = "" }) {
   const ProfileImg = "/ProfilePic.png";
   return (
     <div
-      className={`h-16 w-16 rounded-full border-2 border-gray-500 shadow-xl overflow-hidden ${className}`}
+      className={`h-16 w-16 rounded-full border-2 border-gray-400  overflow-hidden ${className}`}
     >
       <img
         src={picture ? picture : ProfileImg}

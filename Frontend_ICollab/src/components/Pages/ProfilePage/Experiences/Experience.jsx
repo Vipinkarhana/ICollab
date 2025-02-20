@@ -8,7 +8,7 @@ function Experience({ experience }) {
           ? experience.description
           : words.slice(0, wordLimit).join(" ");
   return (
-    <div className="h-auto  p-2 flex flex-col justify-center gap-2 rounded-md  border ">
+    <div className="h-auto  p-2 flex flex-col justify-center gap-2 rounded-md   ">
       <div className="h-16 w-full  flex items-center gap-4 p-2 ml-4">
         <div className="h-auto w-auto   flex justify-center items-center">
           <img

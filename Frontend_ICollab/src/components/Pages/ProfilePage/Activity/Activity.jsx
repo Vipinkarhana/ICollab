@@ -18,8 +18,8 @@ function Activity() {
   }, []);
 
   return (
-    <div className="w-[100%] h-auto bg-gray-200 rounded-md flex flex-col justify-around items-center gap-2 text-gray-800 border border-gray-400">
-      <div className="h-12 w-[100%] flex justify-between items-center py-2 px-4 border-b border-gray-400">
+    <div className="w-[100%] h-auto bg-white rounded-md flex flex-col justify-around items-center gap-2 text-gray-800 border border-gray-300">
+      <div className="h-12 w-[100%] flex justify-between items-center py-2 px-4 border-b border-gray-300">
         <div className="text-2xl font-semibold  ">
           <p>Activity</p>
         </div>
@@ -28,7 +28,7 @@ function Activity() {
             onClick={() => {
               SetIsOpen(true);
             }}
-            className=" px-2 border-2 border-gray-500 rounded-2xl hover:bg-slate-300"
+            className=" px-2 border border-gray-400 rounded-2xl hover:bg-slate-100"
           >
             Create a post
           </button>
@@ -39,12 +39,12 @@ function Activity() {
         {posts.length > 0 ? (
           <PostCard text={posts[0]?.content} media={posts[0]?.media} user={posts[0]?.user} />
         ) : (
-          <div className="text-gray-500 text-lg font-medium my-4">
+          <div className="text-gray-500 text-lg font-medium my-4 text-center">
             No Posts Yet
           </div>
         )}
       </div>
-      <Link to="/Activity" className="flex gap-2 text-xl text-gray-900 border-t border-gray-400 w-[100%] justify-center items-center h-auto py-2">
+      <Link to="/Activity" className="flex gap-2 text-xl text-gray-900 border-t border-gray-300 w-[100%] justify-center items-center h-auto py-2">
         <p>Show More Posts</p>
         <MoveRight />
       </Link>
