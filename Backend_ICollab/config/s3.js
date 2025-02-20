@@ -15,7 +15,8 @@ const s3 = new S3Client({
 const deleteFromR2 = async (fileUrl) => {
   try {
     const urlObj = new URL(fileUrl);
-    const key = urlObj.pathname.substring(1); // Remove leading "/"
+    const encodedkey = urlObj.pathname.substring(1); // Remove leading "/"
+    const key = decodeURIComponent(encodedkey);
 
     const command = new DeleteObjectCommand({
       Bucket: config.S3_BUCKET_NAME,
