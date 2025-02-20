@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 const RightDiv = () => {
   return (
     <>
-      <div className="w-[20%] h-[100%]  flex flex-col justify-start items-center border border-gray-400">
-        <div className="w-[100%] h-[100%] bg-gray-200 rounded-md flex flex-col justify-start items-center">
-          <div className="h-[10%] w-[100%] text-xl font-bold px-2  flex  items-center justify-start">
+      <div className="w-[20%] h-[100%]  flex flex-col justify-start items-center ">
+        <div className="w-[100%] h-44 bg-white border border-gray-300 rounded-md flex flex-col justify-evenly items-center ">
+          <div className="h-[15%] w-[100%] text-xl font-bold px-2  flex  items-center justify-start">
             <p>Network</p>
           </div>
           <div className="h-auto w-[100%] text-sm text-gray-600 px-2">

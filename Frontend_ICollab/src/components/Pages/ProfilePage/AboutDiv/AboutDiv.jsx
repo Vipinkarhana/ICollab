@@ -13,8 +13,8 @@ function AboutDiv() {
         ? text
         : words?.slice(0, wordLimit).join(" ");
   return (
-    <div className="w-[100%] h-auto bg-gray-200 rounded-md flex flex-col justify-around items-center border border-gray-400 text-gray-800">
-      <div className="h-12 w-[100%] flex justify-between items-center py-2 px-4 border-b border-gray-400">
+    <div className="w-[100%] h-auto bg-white rounded-md flex flex-col justify-around items-center border  border-gray-300 text-gray-800">
+      <div className="h-12 w-[100%] flex justify-between items-center py-2 px-4 border-b border-gray-300">
         <div className="text-2xl font-semibold ">
           <p>About</p>
         </div>
@@ -23,7 +23,7 @@ function AboutDiv() {
             onClick={() => {
               SetIsOpen(true);
             }}
-            className="rounded-full hover:bg-slate-300 p-2"
+            className="rounded-full hover:bg-slate-100 p-2"
           >
             <Pencil size={24} />
           </button>

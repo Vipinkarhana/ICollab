@@ -1,11 +1,38 @@
+/**
+ * @file Dropdown.js
+ * @brief A reusable dropdown component for sorting options.
+ * 
+ * This component displays a dropdown menu with sorting options.
+ * The menu opens/closes when clicked and closes when clicked outside.
+ * 
+ * @author [Your Name]
+ * @date 2025-02-20
+ */
+
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react"; // Import icons
 
+/**
+ * @class Dropdown
+ * @brief Implements a dropdown menu with sorting options.
+ * 
+ * Features:
+ * - Displays sorting options in a dropdown.
+ * - Closes when clicking outside.
+ * - Uses icons for UX enhancement.
+ */
 const Dropdown = () => {
+
+  /// @brief State to manage dropdown visibility
   const [isOpen, setIsOpen] = useState(false);
+
+  /// @brief State to track selected sorting option
   const [selectedOption, setSelectedOption] = useState("All"); 
+
+  /// @brief Reference to dropdown container to detect outside clicks
   const dropdownRef = useRef(null);
 
+  /// @brief Sorting options available in the dropdown
   // Array of options
   const options = [
     "All",
@@ -14,6 +41,9 @@ const Dropdown = () => {
     "Oldest",
   ];
 
+   /**
+   * @brief Effect to handle clicks outside the dropdown and close it.
+   */
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -24,6 +54,10 @@ const Dropdown = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+    /**
+   * @brief Handles selection of an option and closes the dropdown.
+   * @param option Selected sorting option.
+   */
   const handleSelect = (option) => {
     setSelectedOption(option); // Update selected option
     setIsOpen(false); // Close dropdown after selection

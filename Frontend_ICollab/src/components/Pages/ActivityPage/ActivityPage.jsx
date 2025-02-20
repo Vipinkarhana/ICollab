@@ -1,6 +1,23 @@
+/**
+ * @file ActivityPage.js
+ * @brief Renders the activity page layout with a profile card, activity feed, and additional content section.
+ * @details The page consists of three sections:
+ *          1. A profile card on the left.
+ *          2. The main activity feed in the center.
+ *          3. An additional content area (placeholder) on the right.
+ * @author ICollab
+ * @date 2025-02-20
+ */
+
 import React from 'react'
 import ProfileCard from '../HomePage/LeftDiv/ProfileCard'
 import AllActivity from './AllActivity'
+
+/**
+ * @class ActivityPage
+ * @brief Component for displaying user activity on the platform.
+ * @returns {JSX.Element} A page with a profile section, activity feed, and an additional content box.
+ */
 function ActivityPage() {
   return (
     <div className= 'h-auto w-[90svw] mt-14 p-2 flex justify-evenly '>

@@ -37,7 +37,7 @@ function PostCard({ text, media, user }) {
   const isCurrentUser = user?.name === currentUser?.name;
 
   return (
-    <div className="w-[100%] h-auto border border-gray-400 mt-3 bg-gray-200 rounded-lg px-2 py-1 flex flex-col justify-center items-center gap-2">
+    <div className="w-[100%] h-auto border border-gray-300 mt-3 bg-white rounded-lg px-2 py-1 flex flex-col justify-center items-center gap-2">
       <div className="h-18 w-full flex justify-between ">
         <div className="w-auto h-full flex justify-start items-center ">
           <ProfilePic picture={user?.profile_pic} />
@@ -79,11 +79,11 @@ function PostCard({ text, media, user }) {
             <button
               onClick={() => setBookmarked(!bookmarked)}
               className={`rounded-full transition-all ${
-                bookmarked ? "text-gray-500" : "bg-gray-200 text-gray-500"
+                bookmarked ? "text-gray-500" : " text-gray-500"
               }`}
             >
               {bookmarked ? (
-                <SolidBookmark className="w-auto h-[1.84rem] text-gray-500" />
+                <SolidBookmark className="w-auto h-[1.84rem] text-gray-600" />
               ) : (
                 <BookmarkIcon size={30} color="gray" />
               )}

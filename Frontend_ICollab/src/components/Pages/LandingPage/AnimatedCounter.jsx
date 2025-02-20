@@ -10,7 +10,7 @@ const useCounterAnimation = (target) => {
   useEffect(() => {
     let start = 0;
     const end = target;
-    const duration = 4000; // 4 seconds total duration
+    const duration = 3000; // 4 seconds total duration
 
     // Dynamically set increment based on the target value
     const incrementValue = target < 1000 ? 1 : 50;
@@ -60,7 +60,7 @@ const Counter = ({ target, text, image }) => {
 
 const SocialCounter = () => {
   // Define the target values for the counters
-  const targets = [12000, 5000, 7500];
+  const targets = [350, 112, 3];
 
   // Define the image sources for each counter
   const images = [PostsImg,Users,IncubatorImg];

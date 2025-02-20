@@ -1,15 +1,44 @@
+/**
+ * @file Media.js
+ * @brief A component to display and navigate through media (images/videos).
+ *
+ * This component handles:
+ * - Displaying **single/multiple images** with navigation.
+ * - Playing **videos** when applicable.
+ * - Providing **left/right navigation** for multiple images.
+ *
+ * @author [Your Name]
+ * @date 2025-02-20
+ */
+
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+/**
+ * @class Media
+ * @brief Handles media display including images and videos.
+ *
+ * Features:
+ * - Displays **single images** or **multiple images with navigation**.
+ * - Detects and plays **video files** (MP4).
+ * - Provides **left/right buttons** for navigation.
+ *
+ * @param {Object} props - React props.
+ * @param {Array} props.media - An array of media URLs (images or videos).
+ *
+ * @returns {JSX.Element | null} The rendered media component.
+ */
 
 const Media = ({ media }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const isMultiMedia = media && media.length > 1;
 
+  // Return nothing if media is empty
   if (!media || media.length === 0) return null;
 
   const mediaItem = media[currentIndex];
   const isVideo = typeof mediaItem === "string" && mediaItem.trim().endsWith(".mp4");
 
+  // If it's a video, display a video player
   if (isVideo) {
     return (
       <div className="w-full h-auto py-2 px-1">
@@ -18,6 +47,7 @@ const Media = ({ media }) => {
     );
   }
 
+  // Navigation Handlers
   const prevImage = () => {
     setCurrentIndex((prev) => (prev === 0 ? media.length - 1 : prev - 1));
   };

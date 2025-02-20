@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 import { registerUser } from "../../../Redux/Slices/UserSlice";
 
 const Register = () => {
-  const Logo = "/ICollab_Logo.png";
+  const Logo = "/ICollab.png";
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showSuccess, showWarning, showError] = useAlert();
@@ -29,8 +29,8 @@ const Register = () => {
   };
 
   return (
-    <div className="w-[98svw] flex justify-center items-center bg-gray-200 lg:bg-gray-50 py-2">
-      <div className="h-auto w-[100%] lg:w-[50%] flex flex-col justify-center items-center rounded-lg lg:bg-gray-200">
+    <div className="w-[98svw] flex justify-center items-center  py-2">
+      <div className="h-auto w-[100%] lg:w-[50%] flex flex-col justify-center items-center rounded-lg bg-white border border-gray-300">
         <div className="h-14 w-[100%] flex justify-start items-center px-4">
           <img src={Logo} alt="" className="h-[100%]" />
         </div>
@@ -48,12 +48,12 @@ const Register = () => {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="peer w-full border-2 border-black rounded-md px-3 pt-5 pb-2 outline-none focus:border-black focus:ring-1 focus:ring-black bg-gray-200"
+                  className="peer w-full border border-gray-300 rounded-md px-3 pt-5 pb-2 outline-none focus:border-black focus:ring-1 focus:ring-black "
                 />
                 <label
                   htmlFor="name"
                   className={`absolute left-3 ${name
-                    ? "-top-3 text-md px-1 bg-gray-200 peer-focus:text-black"
+                    ? "-top-3 text-md px-1 bg-white peer-focus:text-black"
                     : "top-3 text-lg"
                     } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
                 >
@@ -72,12 +72,12 @@ const Register = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="peer w-full border-2 border-black rounded-md px-3 pt-5 pb-2 outline-none focus:border-black focus:ring-1 focus:ring-black bg-gray-200"
+                  className="peer w-full border border-gray-300 rounded-md px-3 pt-5 pb-2 outline-none focus:border-black focus:ring-1 focus:ring-black bg-white"
                 />
                 <label
                   htmlFor="email"
                   className={`absolute left-3 ${email
-                    ? "-top-3 text-md px-1 bg-gray-200 peer-focus:text-black"
+                    ? "-top-3 text-md px-1 bg-white peer-focus:text-black"
                     : "top-3 text-lg"
                     } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
                 >
@@ -96,12 +96,12 @@ const Register = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="peer w-full border-2 border-black rounded-md px-3 pt-5 pb-2 outline-none focus:border-black focus:ring-1 focus:ring-black bg-gray-200"
+                  className="peer w-full border border-gray-300 rounded-md px-3 pt-5 pb-2 outline-none focus:border-black focus:ring-1 focus:ring-black bg-white"
                 />
                 <label
                   htmlFor="password"
                   className={`absolute left-3 ${password
-                    ? "-top-3 text-md px-1 bg-gray-200 peer-focus:text-black"
+                    ? "-top-3 text-md px-1 bg-white peer-focus:text-black"
                     : "top-3 text-lg"
                     } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
                 >

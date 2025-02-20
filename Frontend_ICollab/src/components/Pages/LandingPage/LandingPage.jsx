@@ -36,7 +36,7 @@ function LandingPage() {
      <div className="h-[90svh]">
      <TestimonialCard />
      </div>
-    <div className="bg-white py-16 h-[90svh]">
+    <div className=" py-16 h-[90svh]">
       <div className="max-w-6xl mx-auto text-center px-4 flex flex-col gap-6 items-center">
         <h2 className="text-5xl font-bold mb-6 ">Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-72">

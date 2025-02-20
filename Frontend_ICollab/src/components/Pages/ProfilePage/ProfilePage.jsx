@@ -15,7 +15,7 @@ const ProfilePage = () => {
         <Activity />
         <Experiences/>
       </div>
-      <div className="w-[20%]  bg-gray-200 rounded-md"></div>
+      <div className="w-[20%]  bg-white rounded-md border border-gray-300"></div>
     </div>
   ); 
   
