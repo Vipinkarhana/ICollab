@@ -4,10 +4,7 @@ const ApiError = require('../utils/ApiError');
 const config = require('../../config/config');
 const userModel = require('../models/user');
 const { URL } = require('url');
-const mongoose = require('mongoose');
-
-
-const { generatePresignedUrl } = require('../../config/s3');
+const { generatePresignedUrl, deleteFromR2 } = require('../../config/s3');
 
 const addpost = async (req, res, next) => {
   try {
@@ -138,6 +135,107 @@ const feed = async (req, res, next) => {
 
 
 
+const editPost = async (req, res, next) => {
+  try {
+    let presignedUrls;
+    const username = req.user.username;
+    const user = await userModel.findOne({ username: username });
+    const { postid, newcontent } = req.body;
+    const post = await postModel.findOne({ _id: postid, user: user._id });
+
+    if (!post) return next(new ApiError(404, 'Post not found or unauthorized'));
+    if (newcontent) post.content = newcontent;
+    
+    if(req.body.data){
+
+        const stringsArray = [];
+        const media = [];
+    try {
+        const combinedArray = req.body.data; // Parse JSON data
+
+        combinedArray.forEach(item => {
+            if (typeof item === "string") {
+                stringsArray.push(item); // Add to string array
+            } else if (typeof item === "object" && item.fileName && item.fileType) {
+                media.push(item); // Add file metadata to files array
+            }
+        });
+
+
+         // Find media to be deleted
+         const existingMedia = post.media || [];
+         const mediaToDelete = existingMedia.filter((mediaUrl) => !stringsArray.includes(mediaUrl));
+ 
+         // Delete old media from R2
+         await Promise.all(mediaToDelete.map((url) => deleteFromR2(url)));
+
+
+         post.media = stringsArray;
+         post.status = "draft";
+
+    } catch (error) {
+        return next(error);
+    }
+
+
+    if(media.length>0){
+      presignedUrls = await Promise.all(
+        media.map(async ({ fileType, fileName }) => {
+          const key = `posts/${post._id}/${Date.now()}-${fileName}`;
+          return await generatePresignedUrl(key, fileType);
+        })
+      );
+    }
+      }
+
+    await post.save();
+
+    res.status(200).json({
+      message: 'Post updated successfully',
+      data: presignedUrls,
+      status: 'success',
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
+
+
+
+
+const deletePost = async (req, res, next) => {
+  try {
+    const { postid } = req.body;
+    const username = req.user.username;
+    const user = await userModel.findOne({ username: username });
+
+    const post = await postModel.findOne({ _id: postid, user: user._id });
+
+    if (!post) return next(new ApiError(404, 'Post not found or unauthorized'));
+
+    // Delete media from Cloudflare R2
+    if ( post?.media?.length > 0) {
+      console.log(post.media);
+      await Promise.all(post.media.map((url) => deleteFromR2(url)));
+    }
+
+    // Remove post from user's posts array
+    await userModel.updateOne({ _id: user._id }, { $pull: { posts: postid } });
+
+    // Delete post from database
+    await postModel.deleteOne({ _id: postid });
+
+    res.status(200).json({
+      message: 'Post deleted successfully',
+      status: 'success',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 
 module.exports = {
   addpost,
@@ -145,4 +243,6 @@ module.exports = {
   addPostMedia,
   likepost,
   feed,
+  editPost,
+  deletePost
 };
