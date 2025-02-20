@@ -9,7 +9,7 @@ import { loginUser } from "../../../Redux/Slices/UserSlice";
 import useAlert from "../../Common/UseAlert";
 
 const Login = () => {
-  const Logo = "/ICollab_Logo.png";
+  const Logo = "/ICollab.png";
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showSuccess, showWarning, showError] = useAlert();
@@ -26,8 +26,8 @@ const Login = () => {
   };
 
   return (
-    <div className="h-[99svh] w-[99svw] flex justify-center items-center bg-gray-200 lg:bg-gray-50 py-2">
-      <div className="h-auto w-[100%] lg:w-[50%] flex flex-col justify-center items-center rounded-lg lg:bg-gray-200">
+    <div className="h-[99svh] w-[99svw] flex justify-center items-center   py-2">
+      <div className="h-auto w-[100%] lg:w-[50%] flex flex-col justify-center items-center rounded-lg bg-white border border-gray-300">
         <div className="h-14 w-[100%] flex justify-start items-center px-4">
           <img src={Logo} alt="Logo" className="h-[100%]" />
         </div>
@@ -44,12 +44,12 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="peer w-full border-2 border-black rounded-md px-3 pt-5 pb-2 outline-none focus:border-black focus:ring-1 focus:ring-black focus:border-b bg-gray-200"
+                  className="peer w-full border border-gray-400 rounded-md px-3 pt-5 pb-2 outline-none focus:border-black focus:ring-1 focus:ring-black focus:border-b bg-white"
                 />
                 <label
                   htmlFor="email"
                   className={`absolute left-3 top-3 text-gray-500 text-md px-1 transition-all duration-300 ${email ? "-top-4 text-black" : "top-3 text-lg text-black"
-                    } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-gray-200 rounded-xl flex items-center gap-2`}
+                    } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-white rounded-xl flex items-center gap-2`}
                 >
                   <Mail size={20} /> Email
                 </label>
@@ -64,12 +64,12 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="peer w-full border-2 border-black rounded-md px-3 pt-5 pb-2 outline-none focus:border-black focus:ring-1 focus:ring-black focus:border-b bg-gray-200"
+                  className="peer w-full border border-gray-400 rounded-md px-3 pt-5 pb-2 outline-none focus:border-black focus:ring-1 focus:ring-black focus:border-b bg-white"
                 />
                 <label
                   htmlFor="password"
                   className={`absolute left-3 top-3 text-gray-500 text-md px-1 transition-all duration-300 ${password ? "-top-4 text-black" : "top-3 text-lg text-black"
-                    } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-gray-200 rounded-xl flex items-center gap-2`}
+                    } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-white rounded-xl flex items-center gap-2`}
                 >
                   <Lock size={20} /> Password
                 </label>
@@ -91,7 +91,7 @@ const Login = () => {
           <span className="px-4 text-gray-500 text-lg font-semibold whitespace-nowrap">
             or sign in with
           </span>
-          <div className="flex-grow border-t border-gray-800"></div>
+          <div className="flex-grow border-t border-gray-300"></div>
         </div>
         <div className="h-32 w-[100%] flex flex-col  justify-evenly items-center">
           <Google />

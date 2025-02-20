@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const Header = ({ id }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const Logo = "/ICollab.jpeg";
+  const Logo = "/ICollab.png";
   const location = useLocation();
   const [hoverStyle, setHoverStyle] = useState({
     left: 0,
