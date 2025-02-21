@@ -12,10 +12,7 @@ const useCounterAnimation = (target) => {
 
   useEffect(() => {
     let start = 0;
-    const end = target;
-    const duration = 3000; // 4 seconds total duration
-
-    // Dynamically set increment based on the target value
+    const duration = 3000; 
     const incrementValue = target < 1000 ? 1 : 50;
     const totalIncrements = Math.max(target / incrementValue, 1);
     const incrementTime = duration / totalIncrements;
@@ -42,10 +39,9 @@ const Counter = ({ target, text, image }) => {
   const count = useCounterAnimation(target);
 
   return (
-   
-    <div className="flex flex-col items-center w-[20rem]  ">
-       <div className="w-14 h-14">
-      <img src={image} alt={text} className="w-full h-full object-cover " />
+    <div className="flex flex-col items-center w-[20rem]">
+      <div className="w-14 h-14">
+        <img src={image} alt={text} className="w-full h-full object-cover" />
       </div>
       <p className="text-gray-700 text-7xl font-semibold">{formatNumber(count)}</p>
       <p className="text-gray-500 text-2xl font-medium">{text}</p>
@@ -54,12 +50,12 @@ const Counter = ({ target, text, image }) => {
 };
 
 const SocialCounter = () => {
-  const targets = [350, 112, 3, 3, 3, 3];
-  const images = [PostsImg, Users, IncubatorImg, InstitutionImg, IndustriesImg,LiveProjectImg];
-  const labels = ["Posts", "Users", "Incubators", "Institutions", "Industrials","Live Project"];
+  const targets = [400, 112, 2, 2, 3, 5];
+  const images = [PostsImg, Users, IncubatorImg, InstitutionImg, IndustriesImg, LiveProjectImg];
+  const labels = ["Posts", "Users", "Incubators", "Institutions", "Industries", "Live Project"];
 
   return (
-    <div className="h-[90svh] w-[85svw] flex flex-col items-center justify-center gap-10 mt-40">
+    <div className="h-auto w-[85svw] flex flex-col items-center justify-center gap-10 mt-20">
       {/* Upper Row (First 3 Counters) */}
       <div className="flex justify-center gap-14">
         {targets.slice(0, 3).map((target, index) => (
@@ -67,20 +63,37 @@ const SocialCounter = () => {
         ))}
       </div>
 
-      {/* Lower Row (Last 2 Counters) */}
-      <div className="flex justify-center gap-14 mt-20">
+      {/* Lower Row (Last 3 Counters) */}
+      <div className="flex justify-center gap-14 mt-28">
         {targets.slice(3).map((target, index) => (
           <Counter key={index + 3} target={target} text={labels[index + 3]} image={images[index + 3]} />
         ))}
       </div>
 
-      <div className="mt-12 text-center max-w-3xl mx-auto">
-        <h1 className="font-bold text-4xl">Our Main Startups Funding And Incubation Branch</h1>
-        <p className="text-lg text-gray-600 mt-4 leading-relaxed">A leading foundation with connected incubation centers across many states like Uttar Pradesh, Delhi, haryana, Uttarakhand and Punjab. Serving funding requirements of student entrepreneurs, schools, universities, institutions and grants requirements from state and central government.</p>
-      </div>
+      {/* Section with Image and Text */}
+      <div className="mt-32 flex  items-center justify-start gap-8 px-6 max-w-6xl mx-auto">
+        {/* Left Side Image */}
+        <div className="w-[30%] max-w-[250px] flex justify-center ">
+          <img src="/StartupImg.jpeg" alt="Startup and Incubation" className="w-full  h-auto rounded-lg shadow-lg" />
+        </div>
 
+        {/* Right Side Text */}
+        <div className="w-[60%] text-left ml-6 ">
+          <h1 className="font-bold text-4xl leading-snug text-gray-800">
+            Our Main Branch for Startup and Incubation Funding
+          </h1>
+          <p className="text-lg text-gray-600 mt-4 leading-relaxed">
+            A leading foundation with connected incubation centers across many states like 
+            <span className="font-semibold" > Uttar Pradesh, Delhi, Haryana, Uttarakhand, and Punjab.</span><br /> Serving funding requirements of student entrepreneurs, schools, universities, institutions, and grants requirements from state and central government.
+          </p>
+          <a href="https://uvpfoundation.org/our-gallery/" target="_blank" rel="noopener noreference">
+          <button className="mt-6 px-6 py-3 bg-black text-white rounded-lg shadow-md hover:bg-gray-200 transition duration-300">
+            Learn More
+          </button>
+          </a>
+        </div>
+      </div>
     </div>
-    
   );
 };
 

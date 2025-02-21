@@ -51,7 +51,7 @@ function LandingPage() {
         </div>
 
         {/* Features Section */}
-        <div className="bg-white py-16 h-[90svh]">
+        <div className="bg-white py-16 h-[90svh] mt-20">
           <div className="max-w-6xl mx-auto text-center px-4 flex flex-col gap-6 items-center">
             <h2 className="text-5xl font-bold mb-6">Features</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-72">
@@ -103,12 +103,12 @@ function LandingPage() {
       </div>
 
       {/* Footer */}
-      <div className="bg-slate-300 text-black py-8 flex justify-between">
+      <div className="bg-slate-300 text-black py-8 flex justify-between mt-20">
   <div className="w-[30%] px-20  gap-20"> {/* Increased gap to gap-20 */}
     {/* Left Section */}
     <div>
       <h2 className="text-lg font-bold">IR-Collab </h2>
-      <p className="text-gray-900 mt-2 text-xl">
+      <p className="text-gray-900 mt-2 text-base">
       A research collaboration platform for sharing knowledge and building a community of highly skilled professionals.
       </p>
     </div>
@@ -116,10 +116,10 @@ function LandingPage() {
     {/* Right Section */}
     <div className='w-[35%]'>
       <h2 className="text-lg font-bold ml-20">Contact Us</h2>
-      <p className="text-black mt-2 text-2xl ml-20">
+      <p className="text-black mt-2 text-base ml-20">
         IR-Collab <br />
-        Tagline: Research Collaboration platform <br />
-        Sector-15, Noida, Uttar Pradesh, India <br />
+        Office Address: Yashoda complex,<br />
+        1st floor, naya bans, sector 15 <br />
         Phone Number: +91-7065151075 <br />
         Email: <a href="mailto:support@cubegreentech.com" className="text-green-600"><br />support@ircollab.com</a>
       </p>
@@ -129,16 +129,21 @@ function LandingPage() {
   {/* Bottom Section */}
   <div className="px-20 mt-1 w-[30%]">
     <h2 className="text-lg font-bold">Resources</h2>
-    <ul className="mt-2 text-black space-y-2 text-xl">
+    <ul className="mt-2 text-black space-y-2 text-sm">
       <li><Link to="/home" className="hover:text-white">Home</Link></li>
       <li><Link to="/network" className="hover:text-white">My Networks</Link></li>
       <li><Link to="/project" className="hover:text-white">Projects</Link></li>
       <li><Link to="/message" className="hover:text-white">Messages</Link></li>
       <li><Link to="/incubators" className="hover:text-white">Incubators</Link></li>
       <li><Link to="/profile" className="hover:text-white">User Profile</Link></li>
-      <li className="hover:text-white">Login As Admin</li>
+      <li className="hover:text-white">Admin Login</li>
     </ul>
   </div>
+    
+
+</div>
+<div className="w-full bg-slate-300 text-center">
+    <p className="text-sm text-black">Copyright © 2025, R Cube Green Technology LLP</p>
 </div>
 
     </>

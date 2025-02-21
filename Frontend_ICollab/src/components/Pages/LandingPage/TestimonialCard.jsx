@@ -6,41 +6,46 @@ import TestimonialImg3 from "/TestimonialImg3.jpeg";
 export const testimonials = [
   {
     name: "Ribi Adeshoken",
-    role: "At world vision project United kingdom",
+    role: "Director at World Vision Project, United Kingdom",
     image: TestimonialImg1,
-    text: "Highly impressed by the use case of the research collab platform. Especially for developing and promoting intellectual property based startups. Looking forward for collaboration ",
+    text: "Highly impressed by the use case of the research collab platform. Especially for developing and promoting intellectual property-based startups. Looking forward to collaboration.",
   },
   {
     name: "Ashish D.Thombre",
-    role: "Udhyam Vidhya Prasad foundation UVPF",
+    role: "Director at Udhyam Vidhya Prasad foundation",
     image: TestimonialImg2,
-    text: "The idea behind the platform can be a game changer in generating and developing a startup ecosystem inside campuses",
+    text: "The idea behind the platform can be a game changer in generating and developing a startup ecosystem inside campuses.",
   },
   {
-    name: "Siddhart Prithvi singh",
-    role: "Sidpik PVT LTD Working from Dubai",
+    name: "Siddhart Prithvi Singh",
+    role: "Director at Sidpik PVT LTD ",
     image: TestimonialImg3,
-    text: "It is great to see a platform for the student innovators. The entrepreneurial development mindset about college projects and more emphasis on the research part",
+    text: "It is great to see a platform for student innovators. The entrepreneurial development mindset about college projects and more emphasis on the research part.",
   },
+  // Additional testimonials can be added here if needed.
 ];
 
 const TestimonialSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const testimonialsPerSlide = 3;
 
   // This effect will auto slide every 10 seconds (10000ms)
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % 3); // Cycle through 3 slides
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % totalSlides); // Cycle through the slides
     }, 10000); // 10 seconds
 
     // Clean up the interval on component unmount
     return () => clearInterval(interval);
   }, []);
 
-  // Function to get the slice of 3 testimonials for current index
+  // Calculate the total number of slides
+  const totalSlides = Math.ceil(testimonials.length / testimonialsPerSlide);
+
+  // Function to get the current set of testimonials
   const getCurrentTestimonials = () => {
-    const start = (currentIndex % 3) * 3; // Ensure that the start index cycles between 0, 3, 6, ...
-    return testimonials.slice(start, start + 3);
+    const start = currentIndex * testimonialsPerSlide;
+    return testimonials.slice(start, start + testimonialsPerSlide);
   };
 
   // Handle dot click to change slide manually
@@ -49,7 +54,7 @@ const TestimonialSlider = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen mt-12">
+    <div className="flex justify-center items-center min-h-screen mt-14">
       <div className="w-full max-w-6xl px-4">
         <div className="overflow-hidden">
           <div className="flex transition-all duration-500 ease-in-out">
@@ -58,20 +63,24 @@ const TestimonialSlider = () => {
                 key={index}
                 className="bg-white w-[40%] h-64 p-6 rounded-lg shadow-lg text-center mx-4 border border-gray-300"
               >
-                <div>
+                <div className="h-[65%]">
                   <p className="text-gray-700 italic mb-4">"{testimonial.text}"</p>
                 </div>
-                <div className="flex justify-evenly items-center gap-2]">
+                <div className="flex justify-evenly items-center gap-2">
                   <div className="h-16 w-16 rounded-full overflow-hidden border border-gray-300">
                     <img
                       src={testimonial.image}
                       alt={testimonial.name}
-                      className="w-full h-full   object-cover object-center" 
+                      className="w-full h-full object-cover object-center"
                     />
                   </div>
                   <div className="flex flex-col items-center w-[75%]">
                     <h3 className="font-semibold text-lg">{testimonial.name}</h3>
-                    <p className="text-sm text-gray-500">{testimonial.role}</p>
+                    <p className="text-sm text-gray-500">
+                      <span>{testimonial.role.split(" at ")[0]}</span>
+                      <br />
+                      <span>{testimonial.role.split(" at ")[1]}</span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -81,10 +90,12 @@ const TestimonialSlider = () => {
 
         {/* Dots for navigation */}
         <div className="flex justify-center mt-4 space-x-2">
-          {Array.from({ length: 3 }).map((_, index) => (
+          {Array.from({ length: totalSlides }).map((_, index) => (
             <div
               key={index}
-              className={`w-3 h-3 rounded-full cursor-pointer ${index === currentIndex ? "bg-blue-500" : "bg-gray-300"}`}
+              className={`w-3 h-3 rounded-full cursor-pointer ${
+                index === currentIndex ? "bg-blue-500" : "bg-gray-300"
+              }`}
               onClick={() => handleDotClick(index)}
             />
           ))}

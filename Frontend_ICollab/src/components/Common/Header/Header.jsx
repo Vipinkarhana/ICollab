@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 const Header = ({ id }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const Logo = "/ICollab.png"; ///< Path to the logo image.
+  const Logo = "/icollab.jpeg"; ///< Path to the logo image.
   const location = useLocation(); ///< Retrieves the current route location.
   const currentUser = useSelector((state) => state.user.userData);
   const username = currentUser?.username;
