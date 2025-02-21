@@ -87,9 +87,27 @@ const changeExperience = async (req, res, next) => {
   }
 };
 
+const userprofile = async(req, res, next) => {
+  try {
+    const username = req.params.username;
+    const user = await userModel.findOne({ username: username }).populate('profile').populate({path: 'posts', populate: {path: 'user'}});
+    if (!user || !user.profile) {
+      throw new ApiError(404, 'User profile not found');
+    }
+    res.status(200).json({
+      message: 'User profile fetched',
+      status: 'success',
+      data: user,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   profile,
   changeUserInfo,
   changeAbout,
   changeExperience,
+  userprofile,
 };
