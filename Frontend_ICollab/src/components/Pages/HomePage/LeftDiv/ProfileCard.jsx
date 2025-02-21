@@ -35,7 +35,7 @@ const ProfileCard = () => {
             </Link>
           </div>
         </div>
-        <Name_Designation name={user?.name} designation={user?.designation}/>
+        <Name_Designation name={user?.name} designation={user?.designation} user={ user} />
         <div className="text-sm h-[25%] px-4 text-gray-600">
           <p>{profile?.about?.split(" ")?.slice(0,5)?.join(" ")} <Link to="/profile" className="font-semibold text-gray-900">Read More</Link></p>
         </div>

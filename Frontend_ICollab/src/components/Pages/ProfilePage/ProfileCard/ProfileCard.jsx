@@ -3,10 +3,8 @@ import ProfilePic from "../../../Common/ProfilePic";
 import Name_Designation from "../../../Common/Name&Designation";
 import { Pencil } from 'lucide-react';
 import EditProfile from './EditProfile';
-import { useSelector } from 'react-redux';
 
-function ProfileCard() {
-  const user = useSelector((state) => state?.user?.userData);
+function ProfileCard({user,iscurrentUser}) {
   const [isOpen, SetIsOpen] = useState(false);
   return (
     <div className="w-[100%] h-24  flex justify-between bg-white rounded-md py-2 border border-gray-300 text-gray-800">
@@ -15,15 +13,15 @@ function ProfileCard() {
         <Name_Designation name={user?.name} designation={user?.designation} nameClass="text-2xl" designationClass="text-lg" />
       </div>
       <div className="w-[8%] h-full  flex  items-start justify-center ">
-        <button
+        {iscurrentUser && <button
           onClick={() => {
             SetIsOpen(true);
           }}
-          className="rounded-full p-2 hover:bg-slate-100"
+          className="rounded-full hover:bg-slate-100 p-2"
         >
           <Pencil size={24} />
-        </button>
-        {isOpen && <EditProfile SetIsOpen={SetIsOpen} isOpen={isOpen} />}
+        </button>}
+        {isOpen &&  <EditProfile SetIsOpen={SetIsOpen} isOpen={isOpen} />}
       </div>
     </div>
   );

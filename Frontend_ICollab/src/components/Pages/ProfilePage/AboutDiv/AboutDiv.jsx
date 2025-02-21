@@ -1,10 +1,9 @@
 import { React,useState } from 'react'
 import { Pencil } from 'lucide-react';
 import EditAbout from './EditAbout';
-import { useSelector } from 'react-redux';
 
-function AboutDiv() {
-  const text = useSelector((state) => state?.user?.profileData?.about);
+function AboutDiv({text,iscurrentUser}) {
+  
   const [isOpen, SetIsOpen] = useState(false);
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);
       const words = text?.split(" ");
@@ -19,14 +18,16 @@ function AboutDiv() {
           <p>About</p>
         </div>
         <div className="w-[4%] flex items-start justify-center ">
-          <button
-            onClick={() => {
-              SetIsOpen(true);
-            }}
-            className="rounded-full hover:bg-slate-100 p-2"
-          >
-            <Pencil size={24} />
-          </button>
+          {iscurrentUser && (
+            <button
+              onClick={() => {
+                SetIsOpen(true);
+              }}
+              className="rounded-full hover:bg-slate-100 p-2"
+            >
+              <Pencil size={24} />
+            </button>
+          )}
           {isOpen && <EditAbout SetIsOpen={SetIsOpen} isOpen={isOpen} />}
         </div>
       </div>
@@ -35,7 +36,9 @@ function AboutDiv() {
           style={{ whiteSpace: "pre-wrap" }}
           className="text-md text-gray-800 "
         >
-          {text ? textToDisplay : "No description available, write something about yourself"}
+          {text
+            ? textToDisplay
+            : "No description available, write something about yourself"}
           {text && words?.length > wordLimit && (
             <button
               className="text-gray-700 font-semibold hover:text-blue-600"

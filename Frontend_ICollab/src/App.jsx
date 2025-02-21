@@ -17,6 +17,7 @@ import LandingPage from "./components/Pages/LandingPage/LandingPage";
 
 
 function App() {
+
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
@@ -24,7 +25,7 @@ function App() {
           {/* Private routes: wrapped with PrivateRoute via the Layout element */}
           <Route element={<PrivateRoute element={<Layout />} />}>
             <Route path="/home" element={<HomePage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/:username" element={<ProfilePage />} />
             <Route path="/network" element={<NetworkPage />} />
             <Route path="/project" element={<ProjectPage />} />
             <Route path="/message" element={<MessagePage />} />

@@ -22,24 +22,6 @@ export const testimonials = [
     image: TestimonialImg3,
     text: "It is great to see a platform for the student innovators. The entrepreneurial development mindset about college projects and more emphasis on the research part",
   },
-  {
-    name: "James Johnson",
-    role: "Participant",
-    image: "https://randomuser.me/api/portraits/men/46.jpg",
-    text: "An amazing experience. The sessions were informative and the event was well organized.",
-  },
-  {
-    name: "Mary Lee",
-    role: "Sponsor",
-    image: "https://randomuser.me/api/portraits/women/47.jpg",
-    text: "We had a great experience being a sponsor at this event. Looking forward to the next one.",
-  },
-  {
-    name: "Chris Green",
-    role: "Organizer",
-    image: "https://randomuser.me/api/portraits/men/48.jpg",
-    text: "It was a pleasure to be part of the event. Excellent organization and great feedback from participants.",
-  },
 ];
 
 const TestimonialSlider = () => {
@@ -79,15 +61,15 @@ const TestimonialSlider = () => {
                 <div>
                   <p className="text-gray-700 italic mb-4">"{testimonial.text}"</p>
                 </div>
-                <div className="flex justify-start items-center gap-3">
-                  <div className="flex justify-center">
+                <div className="flex justify-evenly items-center gap-2]">
+                  <div className="h-16 w-16 rounded-full overflow-hidden border border-gray-300">
                     <img
                       src={testimonial.image}
                       alt={testimonial.name}
-                      className="w-16 h-16 rounded-full border border-gray-400 object-cover" 
+                      className="w-full h-full   object-cover object-center" 
                     />
                   </div>
-                  <div className="flex flex-col items-center">
+                  <div className="flex flex-col items-center w-[75%]">
                     <h3 className="font-semibold text-lg">{testimonial.name}</h3>
                     <p className="text-sm text-gray-500">{testimonial.role}</p>
                   </div>

@@ -11,19 +11,22 @@
  */
 
 import React from "react";
-
+import { Link, useNavigate } from "react-router-dom";
 /**
  * @class Name_Designation
  * @brief A component that displays a user's name and designation.
  */
 
 
-function Name_Designation({ name,designation, nameClass = "", designationClass = "" }) {
+function Name_Designation({ name, designation, nameClass = "", designationClass = "", user }) {
   return (
     <div className="flex h-16 px-4 py-2 flex-col">
-      <div className={`text-xl font-bold ${nameClass}`}>
+      <Link
+        to={user?.username ? `/profile/${user.username}` : "#"}
+        className={`text-xl font-bold hover:underline ${nameClass}`}
+      >
         <p>{name}</p>
-      </div>
+      </Link>
       <div className={`text-gray-900 ${designationClass}`}>
         <p>{designation}</p>
       </div>

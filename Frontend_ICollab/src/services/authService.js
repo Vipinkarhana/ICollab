@@ -63,3 +63,18 @@ export const logout = async () => {
     return error.response?.data || 'Logout failed';
   }
 };
+
+export const getUserByUsername = async (username) => {
+  try {
+    console.log("Fetching user data for:", username);
+    const response = await privateAxios.get(`/profile/${username}`); // FIXED
+    console.log("User data received:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching user:",
+      error.response?.data || error.message
+    );
+    return { message: "Failed to fetch user data" };
+  }
+};

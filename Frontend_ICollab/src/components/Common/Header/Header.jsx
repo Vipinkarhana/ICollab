@@ -26,7 +26,8 @@ const Header = ({ id }) => {
   const navigate = useNavigate();
   const Logo = "/ICollab.png"; ///< Path to the logo image.
   const location = useLocation(); ///< Retrieves the current route location.
-
+  const currentUser = useSelector((state) => state.user.userData);
+  const username = currentUser?.username;
  /**
    * @brief State for hover effect styling.
    * @details Tracks the position, width, and opacity of the hover effect for menu items.
@@ -57,7 +58,7 @@ const Header = ({ id }) => {
     { name: "Projects", path: "/project" },
     { name: "Messages", path: "/message" },
     { name: "Incubators", path: "/incubators" },
-    { name: "User Profile", path: "/profile" },
+    { name: "User Profile", path: `/profile/${username}` },
   ];
 
     /**

@@ -32,7 +32,7 @@ const experiences = [
   },
 ];
 
-function Experiences() {
+function Experiences({iscurrentUser}) {
   return (
     <div className="w-full h-auto rounded-md bg-white border border-gray-300">
       <div className="h-12 w-full flex justify-between items-center py-2 px-4 border-b border-gray-300 text-gray-800">
@@ -40,16 +40,23 @@ function Experiences() {
           <p>Experiences</p>
         </div>
         <div className="w-8 flex items-center justify-center">
-          <button className="rounded-full hover:bg-slate-100 p-2">
-            <Pencil size={24} />
-          </button>
+          {iscurrentUser && (
+            <button
+              onClick={() => {
+                SetIsOpen(true);
+              }}
+              className="rounded-full hover:bg-slate-100 p-2"
+            >
+              <Pencil size={24} />
+            </button>
+          )}
         </div>
       </div>
       <div className="h-auto  flex flex-col gap-5">
         {experiences.map((exp) => (
           <div>
-          <Experience key={exp.id} experience={exp} />
-          <hr className="border-b border-gray-300"/>
+            <Experience key={exp.id} experience={exp} />
+            <hr className="border-b border-gray-300" />
           </div>
         ))}
       </div>

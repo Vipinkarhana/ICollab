@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
-import { Pencil, MoveRight, User } from "lucide-react";
+import { Pencil, MoveRight} from "lucide-react";
 import PostCard from "../../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
 import StartPostModal from "../../../Common/StartPostModal";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMyPosts } from '../../../../Redux/Slices/PostSlice';
-function Activity() {
+function Activity({posts,iscurrentUser}) {
   const dispatch = useDispatch();
-  const posts = useSelector((state) => state?.post?.myPost);
+  
   const [isOpen, SetIsOpen] = useState(false);
   console.log(isOpen);
 
@@ -24,14 +24,16 @@ function Activity() {
           <p>Activity</p>
         </div>
         <div className="w-[18%]   flex   justify-center items-center gap-1">
-          <button
-            onClick={() => {
-              SetIsOpen(true);
-            }}
-            className=" px-2 border border-gray-400 rounded-2xl hover:bg-slate-100"
-          >
-            Create a post
-          </button>
+          {iscurrentUser && (
+            <button
+              onClick={() => {
+                SetIsOpen(true);
+              }}
+              className="rounded-full hover:bg-slate-100 p-2"
+            >
+              <Pencil size={24} />
+            </button>
+          )}
           {isOpen && <StartPostModal SetIsOpen={SetIsOpen} isOpen={isOpen} />}
         </div>
       </div>
@@ -44,7 +46,10 @@ function Activity() {
           </div>
         )}
       </div>
-      <Link to="/Activity" className="flex gap-2 text-xl text-gray-900 border-t border-gray-300 w-[100%] justify-center items-center h-auto py-2">
+      <Link
+        to="/Activity"
+        className="flex gap-2 text-xl text-gray-900 border-t border-gray-300 w-[100%] justify-center items-center h-auto py-2"
+      >
         <p>Show More Posts</p>
         <MoveRight />
       </Link>
