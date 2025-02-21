@@ -70,7 +70,7 @@ function StartPostModal() {
               name=""
               id=""
               value={content}
-              onChange={(e) => dispatch(addDraft({ content: e.target.value }))}
+              onChange={(e) => dispatch(addDraft({ ...post, content: e.target.value }))}
               placeholder="What do you want to talk about?"
               className=" h-full w-full px-4 py-2 placeholder:text-xl outline-none resize-none scrollbar-hide"
             ></textarea>
