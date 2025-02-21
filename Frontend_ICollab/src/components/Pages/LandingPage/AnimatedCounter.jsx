@@ -4,6 +4,7 @@ import PostsImg from "/posts.png";
 import IncubatorImg from "/Incubators.png";  
 import InstitutionImg from "/Institution.png";
 import IndustriesImg from "/Industry.png";
+import LiveProjectImg from "/LiveProjectImg.png";
 
 // Utility function to animate the count
 const useCounterAnimation = (target) => {
@@ -53,9 +54,9 @@ const Counter = ({ target, text, image }) => {
 };
 
 const SocialCounter = () => {
-  const targets = [350, 112, 3, 3, 3];
-  const images = [PostsImg, Users, IncubatorImg, InstitutionImg, IndustriesImg];
-  const labels = ["Posts", "Users", "Incubators", "Institutions", "Industrials"];
+  const targets = [350, 112, 3, 3, 3, 3];
+  const images = [PostsImg, Users, IncubatorImg, InstitutionImg, IndustriesImg,LiveProjectImg];
+  const labels = ["Posts", "Users", "Incubators", "Institutions", "Industrials","Live Project"];
 
   return (
     <div className="h-[90svh] w-[85svw] flex flex-col items-center justify-center gap-10 mt-40">
@@ -72,7 +73,14 @@ const SocialCounter = () => {
           <Counter key={index + 3} target={target} text={labels[index + 3]} image={images[index + 3]} />
         ))}
       </div>
+
+      <div className="mt-12 text-center max-w-3xl mx-auto">
+        <h1 className="font-bold text-4xl">Our Main Startups Funding And Incubation Branch</h1>
+        <p className="text-lg text-gray-600 mt-4 leading-relaxed">A leading foundation with connected incubation centers across many states like Uttar Pradesh, Delhi, haryana, Uttarakhand and Punjab. Serving funding requirements of student entrepreneurs, schools, universities, institutions and grants requirements from state and central government.</p>
+      </div>
+
     </div>
+    
   );
 };
 

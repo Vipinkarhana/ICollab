@@ -103,54 +103,44 @@ function LandingPage() {
       </div>
 
       {/* Footer */}
-      <div className="bg-slate-300 text-black py-8 flex">
-        <div className=" px-20 grid grid-cols-3 gap-10 ">
-          {/* Left Section */}
-          <div>
-            <h2 className="text-lg font-bold">IR-Collab </h2>
-            <p className="text-gray-900 mt-2 text-xl">
-              We are an IoT company which sells its products online like IoT Devices, IoT Softwares, 
-              IoT Applications related to the IoT Industry.
-            </p>
-          </div>
+      <div className="bg-slate-300 text-black py-8 flex justify-between">
+  <div className="w-[30%] px-20  gap-20"> {/* Increased gap to gap-20 */}
+    {/* Left Section */}
+    <div>
+      <h2 className="text-lg font-bold">IR-Collab </h2>
+      <p className="text-gray-900 mt-2 text-xl">
+      A research collaboration platform for sharing knowledge and building a community of highly skilled professionals.
+      </p>
+    </div>
+    </div>
+    {/* Right Section */}
+    <div className='w-[35%]'>
+      <h2 className="text-lg font-bold ml-20">Contact Us</h2>
+      <p className="text-black mt-2 text-2xl ml-20">
+        IR-Collab <br />
+        Tagline: Research Collaboration platform <br />
+        Sector-15, Noida, Uttar Pradesh, India <br />
+        Phone Number: +91-7065151075 <br />
+        Email: <a href="mailto:support@cubegreentech.com" className="text-green-600"><br />support@ircollab.com</a>
+      </p>
+    </div>
+ 
 
-          {/* Middle Section */}
-          <div>
-            <h2 className="text-lg font-bold">Our Products</h2>
-            <ul className="text-black mt-2 space-y-2 text-xl">
-              <li>IoT Devices For Home Buildings</li>
-              <li>IoT Devices For Agriculture Sector</li>
-              <li>IoT Devices For Transportation Sector</li>
-              <li>IoT Applications For Office Buildings</li>
-            </ul>
-          </div>
+  {/* Bottom Section */}
+  <div className="px-20 mt-1 w-[30%]">
+    <h2 className="text-lg font-bold">Resources</h2>
+    <ul className="mt-2 text-black space-y-2 text-xl">
+      <li><Link to="/home" className="hover:text-white">Home</Link></li>
+      <li><Link to="/network" className="hover:text-white">My Networks</Link></li>
+      <li><Link to="/project" className="hover:text-white">Projects</Link></li>
+      <li><Link to="/message" className="hover:text-white">Messages</Link></li>
+      <li><Link to="/incubators" className="hover:text-white">Incubators</Link></li>
+      <li><Link to="/profile" className="hover:text-white">User Profile</Link></li>
+      <li className="hover:text-white">Login As Admin</li>
+    </ul>
+  </div>
+</div>
 
-          {/* Right Section */}
-          <div>
-            <h2 className="text-lg font-bold">Contact Us</h2>
-            <p className="text-black mt-2 text-2xl">
-              IR-Collab <br />
-              Tagline: Making Powerful IoT Applications <br />
-              Sector-15, Noida, Uttar Pradesh, India <br />
-              Phone Number: +91-7065151075 <br />
-              Email: <a href="mailto:support@cubegreentech.com" className="text-green-600"><br />support@ir-collab.com</a>
-            </p>
-          </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="px-20 mt-1">
-          <h2 className="text-lg font-bold">Resources</h2>
-          <ul className="mt-2 text-black space-y-2 text-xl">
-            <li><Link to="/home" className="hover:text-white">Home</Link></li>
-            <li><Link to="/network" className="hover:text-white">My Networks</Link></li>
-            <li><Link to="/project" className="hover:text-white">Projects</Link></li>
-            <li><Link to="/message" className="hover:text-white">Messages</Link></li>
-            <li><Link to="/incubators" className="hover:text-white">Incubators</Link></li>
-            <li><Link to="/profile" className="hover:text-white">User Profile</Link></li>
-          </ul>
-        </div>
-      </div>
     </>
   );
 }
