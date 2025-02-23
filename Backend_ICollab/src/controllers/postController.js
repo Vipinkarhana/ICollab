@@ -5,6 +5,7 @@ const config = require('../../config/config');
 const userModel = require('../models/user');
 const { URL } = require('url');
 const { generatePresignedUrl, deleteFromR2 } = require('../../config/s3');
+  
 
 const addpost = async (req, res, next) => {
   try {
@@ -45,10 +46,10 @@ const getMyPost = async (req, res, next) => {
       path: 'posts',
       populate: {
         path: 'user',
-        select: 'username profile_pic name designation'
-      }
+        select: 'username profile_pic name designation',
+      },
     });
-    
+
     if (!user) {
       return next(new ApiError(404, 'User not found'));
     }
@@ -56,7 +57,7 @@ const getMyPost = async (req, res, next) => {
     res.status(200).json({
       message: 'User posts retrieved successfully',
       data: user.posts,
-      status: 'success'
+      status: 'success',
     });
   } catch (err) {
     next(err);
@@ -137,7 +138,7 @@ const editPost = async (req, res, next) => {
     const { postid, newcontent, existingMedia, newMedia } = req.body;
 
     const post = await postModel.findOne({ _id: postid, user: user._id });
-    if (!post) return next(new ApiError(404, "Post not found or unauthorized"));
+    if (!post) return next(new ApiError(404, 'Post not found or unauthorized'));
 
     if (newcontent) {
       post.content = newcontent;
@@ -150,7 +151,7 @@ const editPost = async (req, res, next) => {
     await Promise.all(mediaToDelete.map((url) => deleteFromR2(url)));
 
     post.media = existingMedia;
-    post.status = "draft";
+    post.status = 'draft';
 
     let presignedUrls = [];
     if (newMedia && newMedia.length > 0) {
@@ -165,23 +166,21 @@ const editPost = async (req, res, next) => {
     await post.save();
 
     return res.status(200).json({
-      message: "Post updated successfully",
-      status: "success",
-      data: { postid: post._id, presignedUrls }
+      message: 'Post updated successfully',
+      status: 'success',
+      data: { postid: post._id, presignedUrls },
     });
-
   } catch (err) {
     console.error(err);
     next(err);
   }
 };
 
-
 const deletePost = async (req, res, next) => {
   try {
     const { postid } = req.body;
     const username = req.user.username;
-    console.log(postid, username)
+    console.log(postid, username);
     const user = await userModel.findOne({ username: username });
 
     const post = await postModel.findOne({ _id: postid, user: user._id });
@@ -189,7 +188,7 @@ const deletePost = async (req, res, next) => {
     if (!post) return next(new ApiError(404, 'Post not found or unauthorized'));
 
     // Delete media from Cloudflare R2
-    if ( post?.media?.length > 0) {
+    if (post?.media?.length > 0) {
       console.log(post.media);
       await Promise.all(post.media.map((url) => deleteFromR2(url)));
     }
@@ -209,8 +208,6 @@ const deletePost = async (req, res, next) => {
   }
 };
 
-
-
 module.exports = {
   addpost,
   getMyPost,
@@ -218,5 +215,5 @@ module.exports = {
   likepost,
   feed,
   editPost,
-  deletePost
+  deletePost,
 };
