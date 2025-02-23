@@ -12,22 +12,26 @@ const people = [
   { id: 6, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
   { id: 7, name: "New User", role: "Software Engineer", img: ProfilePic },
   { id: 8, name: "Another User", role: "Data Scientist", img: ProfilePic },
+  { id: 9, name: "Another User", role: "Data Scientist", img: ProfilePic },
+  { id: 10, name: "Another User", role: "Data Scientist", img: ProfilePic },
+  { id: 11, name: "Another User", role: "Data Scientist", img: ProfilePic },
+  { id: 12, name: "Another User", role: "Data Scientist", img: ProfilePic },
+  { id: 13, name: "Another User", role: "Data Scientist", img: ProfilePic },
+  { id: 14, name: "Another User", role: "Data Scientist", img: ProfilePic },
+  { id: 15, name: "Another User", role: "Data Scientist", img: ProfilePic },
 ];
 
 const MyNetwork = () => {
   const [showAll, setShowAll] = useState(false);
 
-  // Toggle showAll state
   const toggleShowAll = () => setShowAll(!showAll);
 
-  // Logic to decide how many people to show
   const visiblePeople = showAll ? people : people.slice(0, 6);
 
   return (
-    <div className="p-6 rounded-md w-full h-auto">
-      {/* Show All button moved to MyNetwork */}
+    <div className="p-6 rounded-md w-full h-auto bg-white border border-gray-300">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">People you may know</h2>
+        <h2 className="text-xl font-semibold">Your Collaborators</h2>
         <button
           onClick={toggleShowAll}
           className="text-blue-600 hover:underline"
@@ -36,12 +40,11 @@ const MyNetwork = () => {
         </button>
       </div>
 
-      {/* Mapping over the visiblePeople */}
-      <div className="grid grid-cols-3 grid-rows-2 gap-4 h-auto">
+      <div className="grid grid-cols-3  gap-4 h-auto">
         {visiblePeople.map((person) => (
           <NetworkCard
             key={person.id}
-            person={person} // Passing individual person data to NetworkCard
+            person={person} 
           />
         ))}
       </div>
