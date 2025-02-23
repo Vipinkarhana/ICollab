@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Ellipsis, Pencil, Trash2 } from "lucide-react";
+import { Ellipsis, Pencil, Trash2, UserPlus } from "lucide-react";
 import ProfilePic from "../../../../../../Common/ProfilePic";
 import Name_Designation from "../../../../../../Common/Name&Designation";
 import {
@@ -57,7 +57,11 @@ import { addDraft, openPostModal, removePost, fetchMyPosts } from "../../../../.
       <div className="h-18 w-full flex justify-between ">
         <div className="w-auto h-full flex justify-start items-center ">
           <ProfilePic picture={user?.profile_pic} />
-          <Name_Designation name={user?.name} designation={user?.designation} user={user} />
+          <Name_Designation
+            name={user?.name}
+            designation={user?.designation}
+            user={user}
+          />
         </div>
         <div className="w-[10%] h-full flex justify-end items-start p-1">
           {isCurrentUser ? (
@@ -92,18 +96,24 @@ import { addDraft, openPostModal, removePost, fetchMyPosts } from "../../../../.
               )}
             </>
           ) : (
-            <button
-              onClick={() => setBookmarked(!bookmarked)}
-              className={`rounded-full transition-all ${
-                bookmarked ? "text-gray-500" : " text-gray-500"
-              }`}
-            >
-              {bookmarked ? (
-                <SolidBookmark className="w-auto h-[1.84rem] text-gray-600" />
-              ) : (
-                <BookmarkIcon size={30} color="gray" />
-              )}
-            </button>
+            <div className="flex w-auto gap-1">
+              <button className="px-2  text-blue-600 hover:bg-blue-50 rounded-md py-1  flex items-center justify-center gap-2">
+                <UserPlus size={20} />
+                Collab
+              </button>
+              <button
+                onClick={() => setBookmarked(!bookmarked)}
+                className={`rounded-full transition-all ${
+                  bookmarked ? "text-gray-500" : " text-gray-500"
+                }`}
+              >
+                {bookmarked ? (
+                  <SolidBookmark className="w-auto h-[1.84rem] text-gray-600" />
+                ) : (
+                  <BookmarkIcon size={30} color="gray" />
+                )}
+              </button>
+            </div>
           )}
         </div>
       </div>
