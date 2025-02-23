@@ -22,7 +22,7 @@ export const testimonials = [
     image: TestimonialImg3,
     text: "It is great to see a platform for student innovators. The entrepreneurial development mindset about college projects and more emphasis on the research part.",
   },
-  // Additional testimonials can be added here if needed.
+
 ];
 
 const TestimonialSlider = () => {
@@ -54,16 +54,16 @@ const TestimonialSlider = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen mt-14">
-      <div className="w-full max-w-6xl px-4">
+    <div className="flex justify-center items-center min-h-screen mt-14 px-4">
+      <div className="w-full max-w-6xl">
         <div className="overflow-hidden">
-          <div className="flex transition-all duration-500 ease-in-out">
+          <div className="flex flex-wrap justify-center gap-4 transition-all duration-500 ease-in-out">
             {getCurrentTestimonials().map((testimonial, index) => (
               <div
                 key={index}
-                className="bg-white w-[40%] h-64 p-6 rounded-lg shadow-lg text-center mx-4 border border-gray-300"
+                className="bg-white p-6 rounded-lg shadow-lg text-center mx-2 border border-gray-300 w-full sm:w-[48%] md:w-[30%] lg:w-[30%] max-w-[400px]"
               >
-                <div className="h-[65%]">
+                <div >
                   <p className="text-gray-700 italic mb-4">"{testimonial.text}"</p>
                 </div>
                 <div className="flex justify-evenly items-center gap-2">
