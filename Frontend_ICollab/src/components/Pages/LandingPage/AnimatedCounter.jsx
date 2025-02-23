@@ -78,7 +78,7 @@ const SocialCounter = () => {
         </div>
 
         {/* Right Side Text */}
-        <div className="w-[60%] text-left ml-6 ">
+        <div className="w-[60%] text-center ml-6 ">
           <h1 className="font-bold text-4xl leading-snug text-gray-800">
             Our Main Branch for Startup and Incubation Funding
           </h1>
@@ -87,7 +87,7 @@ const SocialCounter = () => {
             <span className="font-semibold" > Uttar Pradesh, Delhi, Haryana, Uttarakhand, and Punjab.</span><br /> Serving funding requirements of student entrepreneurs, schools, universities, institutions, and grants requirements from state and central government.
           </p>
           <a href="https://uvpfoundation.org/our-gallery/" target="_blank" rel="noopener noreference">
-          <button className="mt-6 px-6 py-3 bg-black text-white rounded-lg shadow-md hover:bg-gray-200 transition duration-300">
+          <button className="mt-6 px-6 py-3 bg-black text-white rounded-lg shadow-md hover:bg-black transition duration-300">
             Learn More
           </button>
           </a>

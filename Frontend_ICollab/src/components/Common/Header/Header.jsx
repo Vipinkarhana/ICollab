@@ -115,20 +115,25 @@ const Header = ({ id }) => {
    * @return {boolean} True if the path matches the current route.
    */
   const isActive = (path) => location.pathname === path;
-
+  const isAuthenticated = () => {
+    return !!localStorage.getItem("accessToken");
+  };
   return (
     <div>
-     {/* Main Header Container */}      
+      {/* Main Header Container */}
       <div
         id={id}
         className="fixed w-full h-[9%] flex justify-center items-center z-[1] text-black bg-white shadow-sm"
       >
         <div className="w-11/12 lg:w-[90%] h-[99%] flex items-center justify-between md:justify-evenly md:gap-4">
-           {/* Logo */}
-          <Link to="/" className="h-14  w-28 lg:h-12 lg:w-28  ml-2 lg:mr-1  lg:-ml-1">
+          {/* Logo */}
+          <Link
+            to="/"
+            className="h-14  w-28 lg:h-12 lg:w-28  ml-2 lg:mr-1  lg:-ml-1"
+          >
             <img src={Logo} alt="Logo" className="h-[100%] w-[100%]" />
           </Link>
-           {/* Search Bar */}
+          {/* Search Bar */}
           <div className="w-auto h-full relative flex items-center">
             <svg
               className="absolute left-3 w-5 h-5 "
@@ -144,7 +149,7 @@ const Header = ({ id }) => {
                 d="M21 21l-4.35-4.35M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0z"
               />
             </svg>
-         {/* Search Bar */}
+            {/* Search Bar */}
             <input
               type="text"
               className="h-10 lg:h-8 rounded-2xl w-11/12 md:w-60 placeholder:text-xl bg-gray-200 pl-10 text-center placeholder-gray-500 outline-none"
@@ -164,7 +169,7 @@ const Header = ({ id }) => {
               }}
             ></div>
 
-        {/* Mobile Menu Component */}
+            {/* Mobile Menu Component */}
             {menuItems.map((item, index) => (
               <Link
                 key={index}
@@ -180,14 +185,27 @@ const Header = ({ id }) => {
             ))}
           </div>
 
-          {!isMobile && (
-            <button to="/incubators" className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center" onClick={handleLogout}>
-              Log Out
-            </button>
-          )}
-
+          {!isMobile &&
+            (isAuthenticated() === false ? (
+              <Link
+                to="/login"
+                className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center"
+              >
+                Login
+              </Link>
+            ) : (
+              <button
+                className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center"
+                onClick={handleLogout}
+              >
+                Log Out
+              </button>
+            ))}
           <div className="md:hidden">
-            <button className="text-gray-800 text-4xl -mr-5" onClick={toggleMenu}>
+            <button
+              className="text-gray-800 text-4xl -mr-5"
+              onClick={toggleMenu}
+            >
               {isMenuOpen ? "☰" : "☰"}
             </button>
           </div>

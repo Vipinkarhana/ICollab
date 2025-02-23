@@ -1,33 +1,28 @@
 import React from "react";
-
-
+import MyNetwork from "./MyNetwork";
 const NetworkPage = () => {
   return (
     <>
-    <div className="min-h-screen flex bg-gray-100 ">
-      {/* Left Sidebar (Reduced Width) */}
-      <div className="w-[20%] bg-white p-4 shadow-md min-h-screen border border-black">Sidebar </div>
+      <div className=" w-[100%] h-auto mt-12 py-1 flex justify-center gap-2">
+        {/* Fixed Sidebar */}
+        <div className="w-[20%] bg-white rounded-md border border-gray-300"></div>
 
-      {/* Center Content (Increased Width) */}
-      <div className="w-4/5 flex flex-col items-center p-6 mt-10 ">
-        {/* First Inner Div */}
-        <div className="w-11/12 bg-white p-6 shadow-md mb-4 rounded-md h-auto min-h-[300px]">
-          <p>First Inner Div (Top)</p>
-          {/* <NetworkCard /> */}
-        </div>
+        {/* Main Content (Fixed Position) */}
+        <div className="w-[70%]  flex flex-col items-center p-6   overflow-auto h-auto">
+          {/* First Inner Div */}
+          <div className="w-full bg-white p-6 shadow-md  rounded-md h-auto ">
+           
+            <MyNetwork />
+          </div>
 
-        {/* Second Inner Div (Increased Height for Cart) */}
-        <div className="w-11/12 bg-white p-6 shadow-md rounded-md h-auto min-h-[300px]">
-          <p>Second Inner Div (Bottom, Cart Area)</p>
+          {/* Second Inner Div */}
+          <div className="w-full  bg-white p-6 shadow-md rounded-md h-auto ">
+            <p>Second Inner Div (Bottom, Cart Area)</p>
+          </div>
         </div>
       </div>
-    </div>
- 
-
-     
     </>
-  ) 
-  
-}
+  );
+};
 
 export default NetworkPage;

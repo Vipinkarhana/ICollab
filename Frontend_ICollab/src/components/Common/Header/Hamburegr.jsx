@@ -14,6 +14,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const HamburgerMenu = ({ isMenuOpen, toggleMenu, menuItems }) => {
+  const isAuthenticated = () => {
+    return !!localStorage.getItem("accessToken");
+  };
   return (
     <>
       {isMenuOpen && (
@@ -29,9 +32,21 @@ const HamburgerMenu = ({ isMenuOpen, toggleMenu, menuItems }) => {
             </Link>
           ))}
           <div className="mt-4 flex justify-center">
-            <button className="h-10 rounded-md w-28 text-xl bg-black text-white">
-              Log Out
-            </button>
+            {isAuthenticated() === false ? (
+                          <Link
+                            to="/login"
+                            className="h-10 rounded-md w-[80%] bg-black text-white flex justify-center items-center"
+                          >
+                            Login
+                          </Link>
+                        ) : (
+                          <button
+                            className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center"
+                            onClick={handleLogout}
+                          >
+                            Log Out
+                          </button>
+                        )}
           </div>
         </div>
       )}
