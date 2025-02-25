@@ -10,6 +10,8 @@ import { getUserByUsername } from "../../../services/authService";
 const ProfilePage = () => {
   const { username } = useParams();
   const currentUser = useSelector((state) => state.user.userData);
+  const currentProfile = useSelector((state) => state.user.profileData);
+  const currentPosts = useSelector((state) => state.post.myPost);
   const [otherUser, setOtherUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -49,15 +51,17 @@ const ProfilePage = () => {
   if (error) return <div>Error: {error}</div>;
 
   const user = isCurrentUser ? currentUser : otherUser;
+  const profile = isCurrentUser? currentProfile: otherUser?.profile;
+  const posts = isCurrentUser ? currentPosts : otherUser?.posts
 
   if (!user) return <div>No user found.</div>;
-
+ // TODO: About Not Working Properly
   return (
     <div className="w-[100%] h-auto mt-12 py-1 flex justify-center gap-2">
       <div className="w-[55%] h-auto p-2 flex flex-col gap-4">
         <ProfileCard user={user} iscurrentUser={isCurrentUser} />
-        <AboutDiv text={user.about || ""} iscurrentUser={isCurrentUser} />
-        <Activity posts={user.posts || []} iscurrentUser={isCurrentUser} />
+        <AboutDiv text={profile?.about || ""} iscurrentUser={isCurrentUser} />
+        <Activity posts={posts || []} iscurrentUser={isCurrentUser} />
         <Experiences iscurrentUser={isCurrentUser}/>
       </div>
       <div className="w-[20%] bg-white rounded-md border border-gray-300"></div>

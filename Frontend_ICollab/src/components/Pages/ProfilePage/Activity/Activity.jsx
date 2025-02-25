@@ -9,7 +9,6 @@ function Activity({posts,iscurrentUser}) {
   const dispatch = useDispatch();
   
   const [isOpen, SetIsOpen] = useState(false);
-  console.log(isOpen);
 
   useEffect(() => {
     if (!posts || posts.length === 0) {
@@ -47,7 +46,7 @@ function Activity({posts,iscurrentUser}) {
         )}
       </div>
       <Link
-        to="/Activity"
+        to={`/Activity/${posts[0]?.user?.username}`}
         className="flex gap-2 text-xl text-gray-900 border-t border-gray-300 w-[100%] justify-center items-center h-auto py-2"
       >
         <p>Show More Posts</p>

@@ -31,7 +31,7 @@ function App() {
             <Route path="/message" element={<MessagePage />} />
             <Route path="/notification" element={<NotificationPage />} />
             <Route path="/incubators" element={<IncubatorsPage />} />
-            <Route path="/activity" element={<ActivityPage />} />
+            <Route path="/activity/:username" element={<ActivityPage />} />
           </Route>
 
           {/* LandingPage with Layout, not a private route */}
