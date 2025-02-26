@@ -117,7 +117,7 @@ function LandingPage() {
             Office Address: Yashoda complex, <br />
             1st floor, naya bans, sector 15 <br />
             Phone Number: +91-7065151075 <br />
-            Email: <a href="mailto:support@cubegreentech.com" className="text-green-600">support@ircollab.com</a>
+            Email: <a href="mailto:support@ircollab.com" className="text-green-600">support@ircollab.com</a>
           </p>
         </div>
 
