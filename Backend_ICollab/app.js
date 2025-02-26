@@ -16,7 +16,7 @@ var profileRouter = require('./src/routes/profileRoute');
 var surveyRouter = require('./src/routes/surveyRoute');
 var userRouter = require('./src/Admin/routes/userRoute');
 var networkRouter = require('./src/routes/network');
-//var postRouter = require('./src/Admin/routes/postRoute');
+//// var postRouter = require('./src/Admin/routes/postRoute');
 
 var app = express();
 

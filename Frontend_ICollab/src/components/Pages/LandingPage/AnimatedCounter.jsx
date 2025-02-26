@@ -39,8 +39,8 @@ const Counter = ({ target, text, image }) => {
   const count = useCounterAnimation(target);
 
   return (
-    <div className="flex flex-col items-center w-[20rem]">
-      <div className="w-14 h-14">
+    <div className="flex flex-col items-center w-full sm:w-[48%] md:w-[20rem] justify-center">
+      <div className="w-14 h-14 mb-4 mx-auto">
         <img src={image} alt={text} className="w-full h-full object-cover" />
       </div>
       <p className="text-gray-700 text-7xl font-semibold">{formatNumber(count)}</p>
@@ -55,41 +55,45 @@ const SocialCounter = () => {
   const labels = ["Posts", "Users", "Incubators", "Institutions", "Industries", "Live Project"];
 
   return (
-    <div className="h-auto w-[85svw] flex flex-col items-center justify-center gap-10 mt-20">
-      {/* Upper Row (First 3 Counters) */}
-      <div className="flex justify-center gap-14">
-        {targets.slice(0, 3).map((target, index) => (
-          <Counter key={index} target={target} text={labels[index]} image={images[index]} />
-        ))}
-      </div>
+    <div className="w-full px-4 py-20 flex flex-col items-center justify-center gap-10">
+  {/* Upper Row (First 3 Counters) */}
+  <div className="flex flex-wrap justify-center gap-14 sm:gap-4 sm:flex-col md:flex-row">
+    {targets.slice(0, 3).map((target, index) => (
+      <Counter key={index} target={target} text={labels[index]} image={images[index]} />
+    ))}
+    
+  </div>
 
-      {/* Lower Row (Last 3 Counters) */}
-      <div className="flex justify-center gap-14 mt-28">
-        {targets.slice(3).map((target, index) => (
-          <Counter key={index + 3} target={target} text={labels[index + 3]} image={images[index + 3]} />
-        ))}
-      </div>
+  {/* Lower Row (Last 3 Counters) */}
+  <div className="flex flex-wrap justify-center gap-14  sm:gap-4 sm:flex-col md:flex-row">
+    {targets.slice(3).map((target, index) => (
+      <Counter key={index + 3} target={target} text={labels[index + 3]} image={images[index + 3]} />
+    ))}
+  </div>
+
+
 
       {/* Section with Image and Text */}
-      <div className="mt-32 flex  items-center justify-start gap-8 px-6 max-w-6xl mx-auto">
+      <div className="mt-32 flex flex-col md:flex-row items-center justify-between gap-8 px-6 max-w-6xl mx-auto">
         {/* Left Side Image */}
-        <div className="w-[30%] max-w-[250px] flex justify-center ">
-          <img src="/StartupImg.jpeg" alt="Startup and Incubation" className="w-full  h-auto rounded-lg shadow-lg" />
+        <div className="w-[100%] md:w-[30%] max-w-[250px] flex justify-center mb-8 md:mb-0">
+          <img src="/StartupImg.jpeg" alt="Startup and Incubation" className="w-full h-auto rounded-lg shadow-lg" />
         </div>
 
         {/* Right Side Text */}
-        <div className="w-[60%] text-center ml-6 ">
+        <div className="w-[100%] md:w-[60%] text-center md:text-left">
           <h1 className="font-bold text-4xl leading-snug text-gray-800">
             Our Main Branch for Startup and Incubation Funding
           </h1>
           <p className="text-lg text-gray-600 mt-4 leading-relaxed">
             A leading foundation with connected incubation centers across many states like 
-            <span className="font-semibold" > Uttar Pradesh, Delhi, Haryana, Uttarakhand, and Punjab.</span><br /> Serving funding requirements of student entrepreneurs, schools, universities, institutions, and grants requirements from state and central government.
+            <span className="font-semibold"> Uttar Pradesh, Delhi, Haryana, Uttarakhand, and Punjab.</span><br />
+            Serving funding requirements of student entrepreneurs, schools, universities, institutions, and grants requirements from state and central government.
           </p>
-          <a href="https://uvpfoundation.org/our-gallery/" target="_blank" rel="noopener noreference">
-          <button className="mt-6 px-6 py-3 bg-black text-white rounded-lg shadow-md hover:bg-black transition duration-300">
-            Learn More
-          </button>
+          <a href="https://uvpfoundation.org/our-gallery/" target="_blank" rel="noopener noreferrer">
+            <button className="mt-6 px-6 py-3 bg-black text-white rounded-lg shadow-md hover:bg-black transition duration-300">
+              Learn More
+            </button>
           </a>
         </div>
       </div>

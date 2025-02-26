@@ -20,7 +20,7 @@ const LeftDiv = () => {
   return (
     <>
       <div className="w-[20%] h-[100%]  flex flex-col justify-start items-center gap-4">
-        <ProfileCard />
+        <ProfileCard otherUser={null}/>
         <ProgressCard />
         <MyIncubatorsCard/>
       </div>
