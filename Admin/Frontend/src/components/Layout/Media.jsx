@@ -40,7 +40,7 @@ const Media = ({ media }) => {
         <img
           src={media[currentIndex]}
           alt="Post Media"
-          className="w-full h-full object-cover rounded-md"
+          className="w-full h-full object-contain rounded-md"
         />
       </div>
 
