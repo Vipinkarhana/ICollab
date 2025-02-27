@@ -7,8 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../../Redux/Slices/UserSlice";
 import useAlert from "../../Common/UseAlert";
-import dotenv from "dotenv";
-dotenv.config();
+
 
 const Login = () => {
   const Logo = "/ICollab.png";
@@ -23,7 +22,7 @@ const Login = () => {
       const response = await dispatch(loginUser({ email, password })).unwrap();
 
       if (response.role === 'admin') {
-        window.location.href = process.env.VITE_ADMIN_DOMAIN;
+        window.location.href = import.meta.env.VITE_ADMIN_DOMAIN;
       } else {
         navigate("/home");
       }

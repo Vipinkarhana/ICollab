@@ -57,7 +57,7 @@ const Media = ({ media }) => {
   };
 
   return (
-    <div className="relative w-[90%] h-auto flex items-center justify-center py-2">
+    <div className="relative w-[95%] h-auto flex items-center justify-center py-2">
       {isMultiMedia && (
         <button
           onClick={prevImage}
@@ -70,7 +70,7 @@ const Media = ({ media }) => {
         <img
           src={media[currentIndex]}
           alt="Post Media"
-          className="w-full h-full object-cover rounded-md"
+          className="w-full h-full object-contain rounded-md"
         />
       </div>
 
