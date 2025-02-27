@@ -4,9 +4,11 @@ import { Link } from "react-router-dom";
 import Google from "./Google";
 import Linkedin from "./LinkedinButoon";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import { loginUser } from "../../../Redux/Slices/UserSlice";
 import useAlert from "../../Common/UseAlert";
+import dotenv from "dotenv";
+dotenv.config();
 
 const Login = () => {
   const Logo = "/ICollab.png";
@@ -18,8 +20,15 @@ const Login = () => {
 
   const handleFormSubmit = async () => {
     try {
-      await dispatch(loginUser({ email, password })).unwrap();
-      navigate("/home");
+      const response = await dispatch(loginUser({ email, password })).unwrap();
+
+      if (response.role === 'admin') {
+        window.location.href = process.env.VITE_ADMIN_DOMAIN;
+      } else {
+        navigate("/home");
+      }
+
+
     } catch (error) {
       showError(error);
     }
@@ -48,8 +57,9 @@ const Login = () => {
                 />
                 <label
                   htmlFor="email"
-                  className={`absolute left-3 top-3 text-gray-500 text-md px-1 transition-all duration-300 ${email ? "-top-4 text-black" : "top-3 text-lg text-black"
-                    } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-white rounded-xl flex items-center gap-2`}
+                  className={`absolute left-3 top-3 text-gray-500 text-md px-1 transition-all duration-300 ${
+                    email ? "-top-4 text-black" : "top-3 text-lg text-black"
+                  } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-white rounded-xl flex items-center gap-2`}
                 >
                   <Mail size={20} /> Email
                 </label>
@@ -68,8 +78,9 @@ const Login = () => {
                 />
                 <label
                   htmlFor="password"
-                  className={`absolute left-3 top-3 text-gray-500 text-md px-1 transition-all duration-300 ${password ? "-top-4 text-black" : "top-3 text-lg text-black"
-                    } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-white rounded-xl flex items-center gap-2`}
+                  className={`absolute left-3 top-3 text-gray-500 text-md px-1 transition-all duration-300 ${
+                    password ? "-top-4 text-black" : "top-3 text-lg text-black"
+                  } peer-focus:-top-4 peer-focus:left-3 peer-focus:text-md peer-focus:text-black peer-focus:px-1 peer-focus:bg-white rounded-xl flex items-center gap-2`}
                 >
                   <Lock size={20} /> Password
                 </label>
@@ -114,5 +125,3 @@ const Login = () => {
 };
 
 export default Login;
-
-

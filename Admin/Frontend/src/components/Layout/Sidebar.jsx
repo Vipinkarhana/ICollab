@@ -52,7 +52,7 @@ const Sidebar = () => {
             <FaTachometerAlt /> Dashboard
           </NavLink>
           <NavLink
-            to="/admin/notification"
+            to="/notification"
             onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
@@ -63,7 +63,7 @@ const Sidebar = () => {
             <FaBell /> Notification
           </NavLink>
           <NavLink
-            to="/admin/report"
+            to="/report"
             onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
@@ -74,7 +74,7 @@ const Sidebar = () => {
             <FaFileAlt /> Reports
           </NavLink>
           <NavLink
-            to="/admin/analytic"
+            to="/analytic"
             onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
@@ -85,7 +85,7 @@ const Sidebar = () => {
             <FaChartBar /> Analytics
           </NavLink>
           <NavLink
-            to="/admin/setting"
+            to="/setting"
             onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${

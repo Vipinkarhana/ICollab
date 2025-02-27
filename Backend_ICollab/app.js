@@ -20,7 +20,22 @@ var postRouter = require('./src/Admin/routes/postRoute');
 var app = express();
 
 connectDB();
-app.use(cors({ origin: config.FRONTEND_URL, credentials: true }));
+
+// to allow both the frontends to access the backend running on different ports
+const allowedOrigins = config.FRONTEND_URL.split(",");
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(sanitizeInput);
 app.use(helmet());
 app.use(logger('dev'));

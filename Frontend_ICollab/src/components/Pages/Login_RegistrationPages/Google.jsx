@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import useAlert from "../../Common/UseAlert";
 import { useDispatch } from 'react-redux';
 import { googleLogin } from "../../../Redux/Slices/UserSlice"; 
+import dotenv from "dotenv";
+dotenv.config();
 
 const Google = () => {
   const dispatch = useDispatch();
@@ -12,8 +14,17 @@ const Google = () => {
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     try {
       const { credential } = credentialResponse;
-      await dispatch(googleLogin({ credential })).unwrap();
-      navigate("/home");
+
+
+      const response = await dispatch(googleLogin({ credential })).unwrap();
+      
+      if (response.role === "admin") {
+        window.location.href = process.env.VITE_ADMIN_DOMAIN;
+      } else {
+        navigate("/home");
+      }
+
+
     } catch (error) {
       showError(error);
     }
