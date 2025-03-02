@@ -16,7 +16,7 @@ var profileRouter = require('./src/routes/profileRoute');
 var surveyRouter = require('./src/routes/surveyRoute');
 var userRouter = require('./src/Admin/routes/userRoute');
 var networkRouter = require('./src/routes/network');
-//// var postRouter = require('./src/Admin/routes/postRoute');
+var adminPostRouter = require('./src/Admin/routes/postRoute');
 
 var app = express();
 
@@ -47,7 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/admin/user', userRouter);
-app.use('/admin/posts', postRouter);
+app.use('/admin/posts', adminPostRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/profile', profileRouter);
