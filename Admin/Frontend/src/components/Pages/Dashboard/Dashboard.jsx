@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { backend_url } from "../../../config";
 import { FaUsers, FaUniversity, FaUserCheck } from "react-icons/fa";
 
 const DashBoard = () => {
@@ -11,15 +10,19 @@ const DashBoard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersRes = await axios.get(`${backend_url}/admin/user`);
+        const usersRes = await axios.get(
+          `${import.meta.env.VITE_BACKEND_DOMAIN}/admin/user`
+        );
         setTotalUsers(usersRes.data.data.length);
 
         const topUsersRes = await axios.get(
-          `${backend_url}/api/user/top-users`
+          `${import.meta.env.VITE_BACKEND_DOMAIN}/api/user/top-users`
         );
         setTopUsers(topUsersRes.data);
 
-        const topPostsRes = await axios.get(`${backend_url}/admin/post`);
+        const topPostsRes = await axios.get(
+          `${import.meta.env.VITE_BACKEND_DOMAIN}/admin/post`
+        );
         setTopPosts(topPostsRes.data.data);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -31,7 +34,6 @@ const DashBoard = () => {
 
   return (
     <div className="w-full md:w-[80%] min-h-screen mt-14 p-4 md:p-6 bg-gray-100 absolute top-0 md:left-[20%]">
-
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6 mb-4">

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
-import { backend_url } from "../../../config";
 
 const Report = () => {
   const [reports, setReports] = useState([
@@ -39,7 +38,7 @@ const Report = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        // const response = await fetch(`${backend_url}/api/user`);
+        // const response = await fetch(`${import.meta.env.VITE_BACKEND_DOMAIN}/api/user`);
         // const data = await response.json();
         // setReports(data);
       } catch (error) {
