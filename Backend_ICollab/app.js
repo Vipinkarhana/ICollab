@@ -14,9 +14,10 @@ var authRouter = require('./src/routes/authRoute');
 var postRouter = require('./src/routes/postRoute');
 var profileRouter = require('./src/routes/profileRoute');
 var surveyRouter = require('./src/routes/surveyRoute');
-var userRouter = require('./src/Admin/routes/userRoute');
+var adminUserRouter = require('./src/Admin/routes/userRoute');
 var networkRouter = require('./src/routes/network');
 var adminPostRouter = require('./src/Admin/routes/postRoute');
+var adminAnalyticsRouter = require('./src/Admin/routes/analyticsRoute');
 
 var app = express();
 
@@ -46,8 +47,9 @@ app.use(cookieParser(config.COOKIE_SECRET));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/admin/user', userRouter);
+app.use('/admin/user', adminUserRouter);
 app.use('/admin/posts', adminPostRouter);
+app.use('/admin/analytics', adminAnalyticsRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/profile', profileRouter);

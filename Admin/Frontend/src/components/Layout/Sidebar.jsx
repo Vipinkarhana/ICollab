@@ -8,6 +8,8 @@ import {
   FaTachometerAlt,
   FaBars,
   FaTimes,
+  FaAccusoft,
+  FaAddressBook,
 } from "react-icons/fa";
 import logo from "../../assets/ICollab.png";
 
@@ -72,6 +74,17 @@ const Sidebar = () => {
             }
           >
             <FaFileAlt /> Reports
+          </NavLink>
+          <NavLink
+            to="/manage-posts"
+            onClick={() => setIsOpen(false)}
+            className={({ isActive }) =>
+              `flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 ${
+                isActive ? "bg-gray-500" : ""
+              }`
+            }
+          >
+            <FaAddressBook /> Manage Posts
           </NavLink>
           <NavLink
             to="/analytic"
