@@ -2,7 +2,6 @@
 
 const ProjectCard = () => {
   return (
-    <div className="flex  items-center min-h-screen -m-28 justify-center ">
       <div className="bg-white p-4 rounded-lg shadow-md w-64 h-85 border border-gray-300">
         <img
           src="/LandingImage.png"
@@ -15,7 +14,7 @@ const ProjectCard = () => {
           View
         </button>
       </div>
-    </div>
+    
   );
 };
 

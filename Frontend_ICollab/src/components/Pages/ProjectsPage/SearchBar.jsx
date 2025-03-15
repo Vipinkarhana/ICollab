@@ -3,7 +3,7 @@ import { Search, SlidersHorizontal } from  'lucide-react';
 
 const SearchBar = () => {
   return (
-    <div className="relative flex items-center bg-white rounded-full h-12 shadow-md p-2 mb-4">
+    <div className="relative flex items-center bg-white rounded-full h-12 shadow-md p-2 mb-4 w-full">
       <Search className="absolute left-3 text-gray-500" />
       <input
         type="text"

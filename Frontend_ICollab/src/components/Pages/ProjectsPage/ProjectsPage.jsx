@@ -1,46 +1,46 @@
-import React from "react";
+import React from 'react'
 import ProfileCard from "../HomePage/LeftDiv/ProfileCard";
-import ProjectCard from "./ProjectCard";
 import SearchBar from "./SearchBar";
+import ProjectCard from "./ProjectCard";
+import { Plus } from 'lucide-react';
 
-
-
-const ProjectsPage = () => {
+function ProjectsPage() {
   return (
-    <div className="min-h-[200vh] bg-blue-100 p-4 min-w-full">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4 ">
-        {/* Left Sidebar */}
-        <div className="md:col-span-1 mt-16 w-[85%]">
-          <div className="border border-gray-300 rounded-lg">
-          <ProfileCard />
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-md mt-4 h-[150%] relative flex items-center border border-gray-300">
-            <h2 className="font-bold -mt-96 text-lg">Ongoing Projects</h2>
-            <button className="text-2xl font-bold absolute right-3 text-gray-500 cursor-pointer -mt-96">
-              +
+    <div className="w-[100svw] mt-14 flex   justify-evenly p-2">
+      <div className="w-[20%] h-[100%]  flex flex-col justify-start items-center gap-2">
+        <ProfileCard otherUser={null} />
+        <div className="w-[100%] h-[56svh] bg-white py-2 rounded-lg   relative flex flex-col justify-start items-center border border-gray-300">
+          <div className="flex justify-between items-center w-full border-b border-gray-300 px-2 py-1">
+            <h2 className="font-semibold text-lg">Ongoing Projects</h2>
+            <button className="text-2xl font-bold text-gray-500 cursor-pointer">
+              <Plus />
             </button>
           </div>
-          
         </div>
-
-        {/* Main Content */}
-        <div className="md:col-span-2 mt-16 ">
-         <SearchBar />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-[35svh] ">
-            <ProjectCard />
-            <ProjectCard />
-           
-            
-          </div>
+      </div>
+      <div className="w-[50%] h-auto  flex flex-col justify-start items-center gap-2 py-1">
+        <SearchBar />
+        <div className="grid grid-cols-2 gap-4 h-auto w-[80%] items-center">
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
         </div>
-
-        {/* Right Sidebar */}
-        <div className="md:col-span-1 bg-white p-4 rounded-lg shadow-md mt-16 h-[180%] w-[85%] border border-gray-300 ">
-          <h2 className="font-bold mb-3 text-lg">Saved Projects</h2><hr className="w-[115%] border-t-2 -ml-4  border-gray-300 mt-1"/>
+      </div>
+      <div className="w-[20%] h-[88svh] bg-white border border-gray-300 rounded-md flex flex-col justify-start items-center ">
+        <div className="py-1 w-[100%] text-xl font-semibold px-2  flex  items-center justify-start border-b border-gray-300">
+          <p>Saved Projects</p>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default ProjectsPage;
+export default ProjectsPage
