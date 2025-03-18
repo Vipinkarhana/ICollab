@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ProfileCard from "../HomePage/LeftDiv/ProfileCard";
 import SearchBar from "./SearchBar";
 import ProjectCard from "./ProjectCard";
-import { Plus } from 'lucide-react';
+// import { Plus } from 'lucide-react';
 import TaskCard from './TaskCard';
 import { OngoingTasks, SavedTasks } from './TaskData';
 
