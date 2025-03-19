@@ -14,12 +14,12 @@ const TaskCard = ({ priority, title, users }) => {
   const truncatedTitle = truncateTitle(title, maxLength);
 
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-md flex flex-col gap-2 w-60 h-32 m-4 border border-gray-200">
+    <div className="bg-white p-4 rounded-2xl shadow-md flex  flex-col justify-between  gap-2  w-60 h-32   border border-gray-200">
       <span
         className={`text-xs font-semibold px-2 py-1 rounded-full w-fit ${
           priority === "Important" ? "bg-purple-100 text-purple-700" : "bg-gray-100 text-gray-700"
         }`}
-      >
+      > 
         {priority}
       </span>
       <h3 className="text-sm font-medium">{truncatedTitle}</h3>
