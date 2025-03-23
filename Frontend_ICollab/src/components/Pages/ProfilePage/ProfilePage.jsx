@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useParams, Navigate } from "react-router-dom";
 import ProfileCard from "./ProfileCard/ProfileCard";
 import AboutDiv from "./AboutDiv/AboutDiv";
+import ProjectDiv from "./ProjectDiv/ProjectDiv"
 import Activity from "./Activity/Activity";
 import Experiences from "./Experiences/Experiences";
 import { getUserByUsername } from "../../../services/authService";
@@ -61,6 +62,7 @@ const ProfilePage = () => {
       <div className="w-[55%] h-auto p-2 flex flex-col gap-4">
         <ProfileCard user={user} iscurrentUser={isCurrentUser} />
         <AboutDiv text={profile?.about || ""} iscurrentUser={isCurrentUser} />
+        <ProjectDiv></ProjectDiv>
         <Activity posts={posts || []} iscurrentUser={isCurrentUser} />
         <Experiences iscurrentUser={isCurrentUser}/>
       </div>

@@ -54,8 +54,8 @@ function ProjectsPage() {
               See All
             </button>
           </div>
-          <div className='flex items-start justify-center w-[90%] '>
-          <button className=" w-[200%] h-10 flex items-center justify-center gap-4  px-6 py-3 m-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 shadow-md">
+          <div className='flex items-start justify-center w-[80%] '>
+          <button className=" w-[150%] h-10 flex items-center justify-center gap-4  px-6 py-3 m-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 shadow-md">
           <Plus size={20} />
         <span className="text-lg font-medium">Add New</span>
         </button>
@@ -91,7 +91,7 @@ function ProjectsPage() {
         </div>
       </div>
 
-      <div className="w-[20%] min-h-[100vh] bg-white border border-gray-300 rounded-md flex flex-col justify-start items-center">
+      <div className="w-[20%] h-[80%] bg-white border border-gray-300 rounded-md flex flex-col justify-start items-center">
         <div className="py-2 w-[100%] text-xl font-semibold px-2 flex items-center justify-between border-b border-gray-300">
           <p>Saved Projects</p>
           <button
@@ -103,7 +103,7 @@ function ProjectsPage() {
         </div>
         <div
           ref={savedTaskContainerRef}
-          className="w-full h-[80%] flex items-center justify-evenly flex-col overflow-hidden gap-32"
+          className="w-full h-auto flex items-center justify-evenly flex-col overflow-hidden gap-8 p-2"
         >
           {savedTasks.slice(0, savedTaskCardsToShow).map((task, index) => (
             <TaskCard
