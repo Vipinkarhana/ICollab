@@ -45,7 +45,7 @@ function ProjectsPage() {
           ref={ongoingTaskContainerRef}
           className="w-[100%] h-[88svh] bg-white py-2 rounded-lg relative flex flex-col justify-start items-center border border-gray-300"
         >
-          <div className="flex justify-between items-center w-full border-b border-gray-300 px-2 py-1">
+          <div className="flex justify-between items-center w-full border-b border-gray-300 px-2 py-1 h-auto">
             <h2 className="font-semibold text-xl">Ongoing Projects</h2>
             <button
               className="text-blue-500 hover:underline text-xl font-semibold"
@@ -55,12 +55,12 @@ function ProjectsPage() {
             </button>
           </div>
           <div className='flex items-start justify-center w-[80%] '>
-          <button className=" w-[150%] h-10 flex items-center justify-center gap-4  px-6 py-3 m-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 shadow-md">
+          <button className=" w-40 h-10 flex items-center justify-center gap-4  px-6 py-3 my-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 shadow-md">
           <Plus size={20} />
         <span className="text-lg font-medium">Add New</span>
         </button>
           </div>
-          <div className="w-full h-[80%] flex items-center justify-evenly flex-col overflow-hidden">
+          <div className="w-full h-[100%] flex items-center justify-evenly flex-col overflow-hidden">
             {ongoingTasks.slice(0, ongoingTaskCardsToShow).map((task, index) => (
               <TaskCard
                 key={index}
@@ -103,7 +103,7 @@ function ProjectsPage() {
         </div>
         <div
           ref={savedTaskContainerRef}
-          className="w-full h-auto flex items-center justify-evenly flex-col overflow-hidden gap-8 p-2"
+          className="w-full h-auto flex items-center justify-evenly flex-col overflow-hidden gap-4 p-2"
         >
           {savedTasks.slice(0, savedTaskCardsToShow).map((task, index) => (
             <TaskCard

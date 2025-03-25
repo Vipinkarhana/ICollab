@@ -77,7 +77,7 @@ function ProjectDiv() {
               onScroll={handleScroll}
             >
               {/* Render Project Cards */}
-              {projects.slice(0, showMoreProjects ? projects.length : 6).map((project) => (
+              {projects.map((project) => (
                 <div key={project.id} className="w-64 flex justify-center">
                   <ProjectCard
                     title={project.title}
