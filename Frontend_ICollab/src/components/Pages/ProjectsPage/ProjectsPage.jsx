@@ -5,31 +5,30 @@ import ProjectCard from "./ProjectCard";
 import { Plus } from 'lucide-react';
 import TaskCard from './TaskCard';
 import { OngoingTasks, SavedTasks } from './TaskData';
+import ProjectForm from './ProjectForm';  
 
 function ProjectsPage() {
   const [ongoingTaskCardsToShow, setOngoingTaskCardsToShow] = useState(6);
   const [savedTaskCardsToShow, setSavedTaskCardsToShow] = useState(6);
   const [modalData, setModalData] = useState([]);
   const [showMore, setShowMore] = useState(false);
+  const [showForm, setShowForm] = useState(false); 
 
   const ongoingTasks = OngoingTasks();
   const savedTasks = SavedTasks();
 
- 
   const ongoingTaskContainerRef = useRef(null);
   const savedTaskContainerRef = useRef(null);
 
   useEffect(() => {
-  
     const ongoingContainerHeight = ongoingTaskContainerRef.current.clientHeight;
     const cardHeight = 150; 
     const ongoingCardsVisible = Math.floor(ongoingContainerHeight / cardHeight);
-    setOngoingTaskCardsToShow(ongoingCardsVisible > 3 ? ongoingCardsVisible : 3); 
+    setOngoingTaskCardsToShow(ongoingCardsVisible > 3 ? ongoingCardsVisible : 3);
 
-   
     const savedContainerHeight = savedTaskContainerRef.current.clientHeight;
     const savedCardsVisible = Math.floor(savedContainerHeight / cardHeight);
-    setSavedTaskCardsToShow(savedCardsVisible > 3 ? savedCardsVisible : 3); 
+    setSavedTaskCardsToShow(savedCardsVisible > 3 ? savedCardsVisible : 3);
   }, []);
 
   const handleSeeMoreClick = (tasks) => {
@@ -37,8 +36,27 @@ function ProjectsPage() {
     setShowMore(true);
   };
 
+  const handleAddNewClick = () => {
+    setShowForm(true);
+  };
+
+  const handleSaveDraft = (formData) => {
+    console.log("Draft saved:", formData);
+    setShowForm(false);  
+  };
+
+  const handleCreateProject = (formData) => {
+    console.log("Project created:", formData);
+    setShowForm(false);  
+  };
+
+  const handleCancel = () => {
+    setShowForm(false);  
+  };
+
   return (
     <div className="w-[100svw] mt-14 flex justify-evenly p-2">
+      {/* Profile and task containers */}
       <div className="w-[20%] h-[100%] flex flex-col justify-start items-center gap-2">
         <ProfileCard otherUser={null} />
         <div
@@ -54,11 +72,14 @@ function ProjectsPage() {
               See All
             </button>
           </div>
-          <div className='flex items-start justify-center w-[80%] '>
-          <button className=" w-40 h-10 flex items-center justify-center gap-4  px-6 py-3 my-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 shadow-md">
-          <Plus size={20} />
-        <span className="text-lg font-medium">Add New</span>
-        </button>
+          <div className="flex items-start justify-center w-[80%] ">
+            <button
+              className="w-[150%] h-10 flex items-center justify-center gap-4  px-6 py-3 m-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 shadow-md"
+              onClick={handleAddNewClick} 
+            >
+              <Plus size={20} />
+              <span className="text-lg font-medium">Add New</span>
+            </button>
           </div>
           <div className="w-full h-[100%] flex items-center justify-evenly flex-col overflow-hidden">
             {ongoingTasks.slice(0, ongoingTaskCardsToShow).map((task, index) => (
@@ -74,6 +95,7 @@ function ProjectsPage() {
         </div>
       </div>
 
+      {/* Project cards and search */}
       <div className="w-[50%] h-auto flex flex-col justify-start items-center gap-2 py-1">
         <SearchBar />
         <div className="grid grid-cols-2 gap-4 h-auto w-[80%] items-center">
@@ -91,6 +113,7 @@ function ProjectsPage() {
         </div>
       </div>
 
+      {/* Saved Tasks */}
       <div className="w-[20%] h-[80%] bg-white border border-gray-300 rounded-md flex flex-col justify-start items-center">
         <div className="py-2 w-[100%] text-xl font-semibold px-2 flex items-center justify-between border-b border-gray-300">
           <p>Saved Projects</p>
@@ -116,6 +139,19 @@ function ProjectsPage() {
           ))}
         </div>
       </div>
+
+      {/* Conditional Rendering for the Form */}
+      {showForm && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg w-3/4 h-3/4 overflow-auto">
+            <ProjectForm
+              onSaveDraft={handleSaveDraft}
+              onCreateProject={handleCreateProject}
+              onCancel={handleCancel}
+            />
+          </div>
+        </div>
+      )}
 
       {showMore && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
