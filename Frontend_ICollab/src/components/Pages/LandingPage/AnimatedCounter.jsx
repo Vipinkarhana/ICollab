@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Users from "/Users.png";  
-import PostsImg from "/posts.png";  
-import IncubatorImg from "/Incubators.png";  
+import Users from "/Users.png";
+import PostsImg from "/posts.png";
+import IncubatorImg from "/Incubators.png";
 import InstitutionImg from "/Institution.png";
 import IndustriesImg from "/Industry.png";
 import LiveProjectImg from "/LiveProjectImg.png";
+import useObserver from "../../../utils/useObserver";
 
 // Utility function to animate the count
 const useCounterAnimation = (target) => {
@@ -12,7 +13,7 @@ const useCounterAnimation = (target) => {
 
   useEffect(() => {
     let start = 0;
-    const duration = 3000; 
+    const duration = 3000;
     const incrementValue = target < 1000 ? 1 : 50;
     const totalIncrements = Math.max(target / incrementValue, 1);
     const incrementTime = duration / totalIncrements;
@@ -49,27 +50,33 @@ const Counter = ({ target, text, image }) => {
   );
 };
 
-const SocialCounter = () => {
+const AnimatedCounter = () => {
   const targets = [400, 112, 2, 2, 3, 5];
   const images = [PostsImg, Users, IncubatorImg, InstitutionImg, IndustriesImg, LiveProjectImg];
   const labels = ["Posts", "Users", "Incubators", "Institutions", "Industries", "Live Project"];
+  const { ref, isVisible } = useObserver({ once: false });
 
   return (
     <div className="w-full px-4 py-20 flex flex-col items-center justify-center gap-10">
-  {/* Upper Row (First 3 Counters) */}
-  <div className="flex flex-wrap justify-center gap-14 sm:gap-4 sm:flex-col md:flex-row">
-    {targets.slice(0, 3).map((target, index) => (
-      <Counter key={index} target={target} text={labels[index]} image={images[index]} />
-    ))}
-    
-  </div>
+      {/* Upper Row (First 3 Counters) */}
+      <div ref={ref}>
+        {isVisible && (
+          <>
+            <div className="flex flex-wrap justify-center gap-14 sm:gap-4 sm:flex-col md:flex-row">
+              {targets.slice(0, 3).map((target, index) => (
+                <Counter key={index} target={target} text={labels[index]} image={images[index]} />
+              ))}
 
-  {/* Lower Row (Last 3 Counters) */}
-  <div className="flex flex-wrap justify-center gap-14  sm:gap-4 sm:flex-col md:flex-row">
-    {targets.slice(3).map((target, index) => (
-      <Counter key={index + 3} target={target} text={labels[index + 3]} image={images[index + 3]} />
-    ))}
-  </div>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-14  sm:gap-4 sm:flex-col md:flex-row">
+              {targets.slice(3).map((target, index) => (
+                <Counter key={index + 3} target={target} text={labels[index + 3]} image={images[index + 3]} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
 
 
 
@@ -86,7 +93,7 @@ const SocialCounter = () => {
             Our Main Branch for Startup and Incubation Funding
           </h1>
           <p className="text-lg text-gray-600 mt-4 leading-relaxed">
-            A leading foundation with connected incubation centers across many states like 
+            A leading foundation with connected incubation centers across many states like
             <span className="font-semibold"> Uttar Pradesh, Delhi, Haryana, Uttarakhand, and Punjab.</span><br />
             Serving funding requirements of student entrepreneurs, schools, universities, institutions, and grants requirements from state and central government.
           </p>
@@ -101,4 +108,4 @@ const SocialCounter = () => {
   );
 };
 
-export default SocialCounter;
+export default AnimatedCounter;
