@@ -3,6 +3,7 @@ const commentModel = require('../models/comment');
 const ApiError = require('../utils/ApiError');
 const config = require('../../config/config');
 const userModel = require('../models/user');
+const connectionModel = require('../models/connections');
 const { URL } = require('url');
 const { generatePresignedUrl, deleteFromR2 } = require('../../config/s3');
   
@@ -115,12 +116,70 @@ const feed = async (req, res, next) => {
 
     const date = new Date(Number(timestamp));
 
-    const posts = await postModel
+let posts=null;
+const connection = await connectionModel.findOne({user: req.user.id});
+if(connection!=null){
+const connectionIds = connection.connectedusers;
+posts = await postModel.aggregate([
+  {
+    $match: {
+      createdAt: { $lt: date },
+      status: 'public'
+    }
+  },
+  {
+    $addFields: {
+      isConnection: {
+        $cond: { if: { $in: ['$user', connectionIds] }, then: 1, else: 0 }
+      }
+    }
+  },
+  {
+    $sort: { createdAt: -1 }
+  },
+  {
+    $limit: 10
+  },
+  {
+    $sort: { isConnection: -1 }
+  },
+  {
+    $lookup: {
+      from: 'users',           // the collection name for users
+      localField: 'user',      // field in posts referencing the user
+      foreignField: '_id',     // field in users to join on
+      as: 'user'
+    }
+  },
+  {
+    $unwind: '$user'
+  },
+  {
+    $project: {
+      // Projecting specific user fields similar to populate
+      'user.username': 1,
+      'user.name': 1,
+      'user.profile_pic': 1,
+      'user.designation': 1,
+      // Optionally project other post fields if needed, e.g.:
+      media: 1,
+      tag:1,
+      comments:1,
+      likes:1,
+      content: 1,
+      createdAt: 1
+    }
+  }
+]);
+}
+
+else {
+  posts = await postModel
       .find({ createdAt: { $lt: date }, status: 'public' })
       .sort({ createdAt: -1 })
       .limit(10)
       .populate('user', 'username name profile_pic designation');
-
+}
     res.status(200).json({
       message: 'Feed fetched successfully',
       data: posts,
