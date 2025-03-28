@@ -3,7 +3,7 @@ const config = require('../../config/config');
 
 const generateAccessToken = (user) => {
   const data = user.toObject();
-  const payload = { username: data.username, role: data.role };
+  const payload = { id: data._id, username: data.username, role: data.role };
   return jwt.sign(payload, config.JWT_SECRET, {
     expiresIn: config.JWT_EXPIRE,
   });
