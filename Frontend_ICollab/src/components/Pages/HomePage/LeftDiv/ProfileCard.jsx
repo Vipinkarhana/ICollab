@@ -28,9 +28,9 @@ const ProfileCard = ({otherUser}) => {
   console.log("In Home Page",profile);
   return (
     <>
-      <div className="h-48 w-[100%] bg-white rounded-md flex flex-col justify-evenly py-3 border-gray-300 border">
+      <div className="h-48 w-[100%] bg-white rounded-md flex flex-col justify-evenly py-3 border-gray-300 border px-4">
         <div className="h-[30%] w-[100%] px-4 py-1 flex justify-between items-start">
-          <div className="-mt-3">
+          <div className="-mt-3 -ml-4">
              <ProfilePic picture={user?.profile_pic} className="h-18 w-18"/>
           </div>
           <div className="py-1 -mt-2">
@@ -39,8 +39,8 @@ const ProfileCard = ({otherUser}) => {
             </Link>
           </div>
         </div>
-        <Name_Designation name={user?.name} designation={user?.designation} user={user} />
-        <div className="text-sm h-[25%] px-4 text-gray-600">
+        <Name_Designation name={user?.name} designation={user?.designation} user={user}/>
+        <div className="text-sm h-[25%]  text-left text-gray-600">
           <p>{profile?.about?.split(" ")?.slice(0,5)?.join(" ")} <Link to={`/profile/${username}`} className="font-semibold text-gray-900 hover:text-blue-500">Read More</Link></p>
         </div>
       </div>

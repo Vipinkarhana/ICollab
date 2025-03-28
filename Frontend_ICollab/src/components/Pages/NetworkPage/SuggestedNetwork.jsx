@@ -1,6 +1,7 @@
-import {useState} from 'react'
-import NetworkCard from './NetworkCard'
+import { useState } from 'react';
+import NetworkCard from './NetworkCard';
 import ProfilePic from "/ProfilePic.png";
+
 function SuggestedNetwork() {
   const people = [
     { id: 1, name: "John Dews", role: "Research Scholar", img: ProfilePic },
@@ -19,24 +20,27 @@ function SuggestedNetwork() {
     { id: 14, name: "Another User", role: "Data Scientist", img: ProfilePic },
     { id: 15, name: "Another User", role: "Data Scientist", img: ProfilePic },
   ];
+
   const [showAll, setShowAll] = useState(false);
-  
-    const toggleShowAll = () => setShowAll(!showAll);
-  
-    const visiblePeople = showAll ? people : people.slice(0, 6);
+
+  const toggleShowAll = () => setShowAll(!showAll);
+
+  const visiblePeople = showAll ? people : people.slice(0, 6);
+
   return (
     <div className="p-6 rounded-md w-full h-auto bg-white border border-gray-300">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">People you may know</h2>
         <button
           onClick={toggleShowAll}
-          className="text-blue-600 hover:underline"
+          className="text-blue-600 hover:underline font-medium"
         >
           {showAll ? "Show Less" : "Show All"}
         </button>
       </div>
 
-      <div className="grid grid-cols-3  gap-4 h-auto">
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {visiblePeople.map((person) => (
           <NetworkCard key={person.id} person={person} />
         ))}
@@ -45,4 +49,4 @@ function SuggestedNetwork() {
   );
 }
 
-export default SuggestedNetwork
+export default SuggestedNetwork;
