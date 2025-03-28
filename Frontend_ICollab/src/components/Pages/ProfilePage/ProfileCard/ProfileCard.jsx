@@ -9,12 +9,12 @@ function ProfileCard({user,iscurrentUser}) {
   const [isOpen, SetIsOpen] = useState(false);
   return (
     <div className="w-[100%] h-auto  flex justify-between bg-white rounded-md py-2 px-2 border border-gray-300 text-gray-800">
-      <div className="w-auto h-full  flex justify-evenly items-center p-2">
+      <div className="w-auto h-full  flex justify-evenly items-center ">
         <ProfilePic
           picture={user?.profile_pic}
           className="h-20 w-20 shadow-none"
         />
-        <div className="flex flex-col justify-evenly h-full w-auto">
+        <div className="flex flex-col justify-evenly  h-full w-auto ml-4">
           <Name_Designation
             name={user?.name}
             designation={user?.designation}
@@ -22,12 +22,12 @@ function ProfileCard({user,iscurrentUser}) {
             designationClass="text-lg"
           />
           {iscurrentUser ? (
-            <div className="text-blue-500 text-lg  px-4">
+            <div className="text-blue-500 text-lg ">
               <p>Collaborators: 24</p>
             </div>
           ) : (
-            <div className="flex justify-between items-center ">
-              <div className="text-blue-500 text-lg  px-4">
+            <div className="flex justify-between items-center gap-2">
+              <div className="text-blue-500 text-lg  ">
                 <p>Collaborators: 24</p>
               </div>
                 <button className="px-2 bg-blue-500 text-white py-1 rounded flex items-center justify-center gap-1">

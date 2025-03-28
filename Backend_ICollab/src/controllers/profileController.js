@@ -1,6 +1,7 @@
 const ApiError = require('../utils/ApiError');
 const userModel = require('../models/user');
 const profileModel = require('../models/profile');
+const { late } = require('zod');
 
 const profile = async (req, res, next) => {
   try {
@@ -27,13 +28,12 @@ const profile = async (req, res, next) => {
 const changeUserInfo = async (req, res, next) => {
   try {
     const username = req.user.username;
-    const user = await userModel.findOne({ username: username });
+    let user = await userModel.findOne({ username: username });
     const { name, designation } = req.body;
-    await userModel.findByIdAndUpdate(user._id, {
-      $set: { name: name, designation: designation },
-    });
-
-    await user.populate('profile');
+    user = await userModel.findByIdAndUpdate(user._id, 
+      { $set: { name: name, designation: designation } },
+      { new: true, lean: true }
+    ).populate('profile');
 
     res.status(200).json({
       message: 'Successfully updated User Info',

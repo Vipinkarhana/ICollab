@@ -1,31 +1,45 @@
-import React from 'react'
-import ProfilePic from '../../Common/ProfilePic'
+import React from 'react';
+import ProfilePic from '../../Common/ProfilePic';
 import Name_Designation from '../../Common/Name&Designation';
-import { UserX,UserCheck } from 'lucide-react';
-function CollaborationRequest({name,designation,profilepic}) {
+import { UserX, UserCheck } from 'lucide-react';
+
+function CollaborationRequest({ name, designation, profilepic, timeAgo }) {
   return (
-    <div className="h-auto w-full shadow-lg border flex items-center justify-around py-2 rounded-sm flex-col ">
-      <div className="w-full h-auto flex flex-col items-center justify-start">
-        <ProfilePic className="h-[3.4rem] w-[3.4rem]" picture={profilepic} />
-        <Name_Designation
-          name={name}
-          designation={designation}
-          nameClass="text-[1rem] text-center"
-          designationClass="text-[0.8rem] text-center"
+    <div className="w-full h-32 bg-white text-gray-800 px-2 py-1 flex items-center justify-between border-b">
+
+      {/* Left Section */}
+      <div className="flex items-start justify-start w-[84%]  gap-2">
+        <ProfilePic
+          className="h-10 w-10 rounded-full border-2 border-gray-300 "
+          picture={profilepic}
         />
+        <div className="flex flex-col items-start justify-start text-center w-auto  h-full">
+          <Name_Designation
+            name={name}
+            designation={designation}
+            nameClass="text-[1.0rem] font-semibold text-gray-800"
+            designationClass="text-xs text-gray-600"
+          />
+        </div>
       </div>
-      <div className="w-full h-10 flex items-center justify-evenly gap-2 mt-5">
-        <button className="bg-green-500 text-white rounded-md px-4 p-1 flex items-center gap-2">
+
+      {/* Right Section - Circular Action Buttons */}
+      <div className="flex flex-col gap-4 items-center w-[15%]">
+        <button 
+          className="border-green-600 hover:border-green-700 border text-green-400 p-3 rounded-full flex items-center justify-center transition duration-200"
+          aria-label="Accept Request"
+        >
           <UserCheck size={18} />
-          Accept
         </button>
-        <button className="bg-red-500 text-white rounded-md px-4 p-1 flex items-center gap-2">
+        <button 
+          className="border-red-600 hover:border-red-700 border text-red-400 p-3 rounded-full flex items-center justify-center transition duration-200"
+          aria-label="Ignore Request"
+        >
           <UserX size={18} />
-          Reject
         </button>
       </div>
     </div>
   );
 }
 
-export default CollaborationRequest
+export default CollaborationRequest;

@@ -34,18 +34,16 @@ const MyNetwork = () => {
         <h2 className="text-xl font-semibold">Your Collaborators</h2>
         <button
           onClick={toggleShowAll}
-          className="text-blue-600 hover:underline"
+          className="text-blue-600 hover:underline font-medium"
         >
           {showAll ? "Show Less" : "Show All"}
         </button>
       </div>
 
-      <div className="grid grid-cols-3  gap-4 h-auto">
+      {/* Responsive Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {visiblePeople.map((person) => (
-          <NetworkCard
-            key={person.id}
-            person={person} 
-          />
+          <NetworkCard key={person.id} person={person} />
         ))}
       </div>
     </div>
