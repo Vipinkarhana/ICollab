@@ -4,21 +4,21 @@ import ProfilePic from "/ProfilePic.png";
 
 // Array of people
 const people = [
-  { id: 1, name: "John Dews", role: "Research Scholar", img: ProfilePic },
-  { id: 2, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-  { id: 3, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-  { id: 4, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-  { id: 5, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-  { id: 6, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-  { id: 7, name: "New User", role: "Software Engineer", img: ProfilePic },
-  { id: 8, name: "Another User", role: "Data Scientist", img: ProfilePic },
-  { id: 9, name: "Another User", role: "Data Scientist", img: ProfilePic },
-  { id: 10, name: "Another User", role: "Data Scientist", img: ProfilePic },
-  { id: 11, name: "Another User", role: "Data Scientist", img: ProfilePic },
-  { id: 12, name: "Another User", role: "Data Scientist", img: ProfilePic },
-  { id: 13, name: "Another User", role: "Data Scientist", img: ProfilePic },
-  { id: 14, name: "Another User", role: "Data Scientist", img: ProfilePic },
-  { id: 15, name: "Another User", role: "Data Scientist", img: ProfilePic },
+  { id: 1, name: "John Dews", role: "Research Scholar", img: ProfilePic, description: "John is a research scholar with an interest in AI." },
+  { id: 2, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic, description: "Chanchal is an HR professional with 10+ years of experience." },
+  { id: 3, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic, description: "Chanchal is an HR professional with 10+ years of experience." },
+  { id: 4, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic, description: "Chanchal is an HR professional with 10+ years of experience." },
+  { id: 5, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic, description: "Chanchal is an HR professional with 10+ years of experience." },
+  { id: 6, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic, description: "Chanchal is an HR professional with 10+ years of experience." },
+  { id: 7, name: "New User", role: "Software Engineer", img: ProfilePic, description: "New user in software engineering, enthusiastic about developing web apps." },
+  { id: 8, name: "Another User", role: "Data Scientist", img: ProfilePic, description: "Data scientist focused on machine learning and analytics." },
+  { id: 9, name: "Another User", role: "Data Scientist", img: ProfilePic, description: "Data scientist focused on machine learning and analytics." },
+  { id: 10, name: "Another User", role: "Data Scientist", img: ProfilePic, description: "Data scientist focused on machine learning and analytics." },
+  { id: 11, name: "Another User", role: "Data Scientist", img: ProfilePic, description: "Data scientist focused on machine learning and analytics." },
+  { id: 12, name: "Another User", role: "Data Scientist", img: ProfilePic, description: "Data scientist focused on machine learning and analytics." },
+  { id: 13, name: "Another User", role: "Data Scientist", img: ProfilePic, description: "Data scientist focused on machine learning and analytics." },
+  { id: 14, name: "Another User", role: "Data Scientist", img: ProfilePic, description: "Data scientist focused on machine learning and analytics." },
+  { id: 15, name: "Another User", role: "Data Scientist", img: ProfilePic, description: "Data scientist focused on machine learning and analytics." },
 ];
 
 const MyNetwork = () => {

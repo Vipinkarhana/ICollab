@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import NetworkCard from './NetworkCard';
-import ProfilePic from "/ProfilePic.png";
+import ProfilePic from "../../Common/ProfilePic"; // Ensure you import the image or path correctly
+import { UserPlus } from "lucide-react"; // Importing the button icon
 
 function SuggestedNetwork() {
   const people = [
@@ -39,10 +39,21 @@ function SuggestedNetwork() {
         </button>
       </div>
 
-      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {visiblePeople.map((person) => (
-          <NetworkCard key={person.id} person={person} />
+          <div key={person.id} className="bg-white p-4 shadow-md rounded-md border border-gray-300">
+            {/* Profile Image */}
+            <ProfilePic className="w-20 h-20 mx-auto mb-2" />
+            {/* Name and Role */}
+            <h3 className="text-center font-bold">{person.name}</h3>
+            <p className="text-center text-gray-600">{person.role}</p>
+            
+            {/* Collab Button */}
+            <button className="w-full mt-2 bg-blue-500 text-white py-1 rounded flex items-center justify-center gap-1">
+              <UserPlus size={20} />
+              Collab
+            </button>
+          </div>
         ))}
       </div>
     </div>
