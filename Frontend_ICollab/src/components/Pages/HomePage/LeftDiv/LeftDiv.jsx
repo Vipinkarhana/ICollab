@@ -16,13 +16,13 @@ import MyIncubatorsCard from "./MyIncubatorsCard";
  * @brief Component that renders the left sidebar with user-related widgets.
  * @returns {JSX.Element} A sidebar containing the ProfileCard, ProgressCard, and MyIncubatorsCard.
  */
-const LeftDiv = () => {
+const LeftDiv = ({className=""}) => {
   return (
     <>
-      <div className="w-[20%] h-[100%]  flex flex-col justify-start items-center gap-4">
+      <div className={`w-[80%] h-[100%]  flex flex-col justify-start items-center gap-2 ${className}`}>
         <ProfileCard otherUser={null}/>
-        <ProgressCard />
-        <MyIncubatorsCard/>
+        <ProgressCard className="hidden md:block" />
+        <MyIncubatorsCard className="hidden md:block"/>
       </div>
     </>
   );

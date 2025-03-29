@@ -12,10 +12,18 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../Redux/Slices/UserSlice";
+import { useNavigate } from "react-router-dom";
 const HamburgerMenu = ({ isMenuOpen, toggleMenu, menuItems }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isAuthenticated = () => {
     return !!localStorage.getItem("accessToken");
+  };
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/login");
   };
   return (
     <>
@@ -41,7 +49,7 @@ const HamburgerMenu = ({ isMenuOpen, toggleMenu, menuItems }) => {
                           </Link>
                         ) : (
                           <button
-                            className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center"
+                            className="h-10 rounded-md w-[90%] bg-black text-white flex justify-center items-center"
                             onClick={handleLogout}
                           >
                             Log Out

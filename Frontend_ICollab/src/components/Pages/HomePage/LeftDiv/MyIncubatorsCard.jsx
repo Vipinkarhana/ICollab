@@ -14,10 +14,10 @@ import { Link } from "react-router-dom";
  * @brief Component that displays a list of incubators the user is associated with.
  * @returns {JSX.Element} A styled card listing incubators and a link to the incubators page.
  */
-const MyIncubatorsCard = () => {
+const MyIncubatorsCard = ({className=""}) => {
   return (
     <>
-      <div className="h-40 w-[100%] bg-white rounded-md py-2 flex flex-col justify-evenly items-center border border-gray-300">
+      <div className={`h-40 w-[100%] bg-white rounded-md py-2 flex flex-col justify-evenly items-center border border-gray-300 ${className}`}>
         <div className="h-[20%] w-[100%] text-xl font-bold px-2  flex  items-center justify-start">
           <Link to='/incubators' className="hover:underline">My Incubators</Link>
         </div>

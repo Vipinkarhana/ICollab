@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Ellipsis, Pencil, Trash2, UserPlus } from "lucide-react";
+import {  Pencil, Trash2, UserPlus, Ban } from "lucide-react";
 import ProfilePic from "../../../../../../Common/ProfilePic";
 import Name_Designation from "../../../../../../Common/Name&Designation";
 import {
   BookmarkIcon as OutlineBookmark,
   BookmarkIcon as SolidBookmark,
 } from "@heroicons/react/24/solid";
-import { BookmarkIcon } from "lucide-react";
 import Media from "./Media";
 import { useDispatch } from "react-redux";
 import { addDraft, openPostModal, removePost, fetchMyPosts } from "../../../../../../../Redux/Slices/PostSlice";
-
+import { EllipsisVertical } from "lucide-react";
   function PostCard({post}) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -53,32 +52,38 @@ import { addDraft, openPostModal, removePost, fetchMyPosts } from "../../../../.
   }
 
   return (
-    <div className="w-[100%] h-auto border border-gray-300 mt-3 bg-white rounded-lg px-2 py-1 flex flex-col justify-center items-center gap-2">
-      <div className="h-18 w-full flex justify-between ">
-        <div className="w-auto h-full flex justify-start items-center ">
-          <ProfilePic picture={user?.profile_pic} />
+    <div className="w-[100%] h-auto border border-gray-300 mt-3 bg-white rounded-lg   flex flex-col justify-center items-center gap-2">
+      <div className="h-14 w-full flex justify-between ">
+        <div className="w-auto h-full flex justify-start items-center gap-2 px-2">
+          <ProfilePic
+            picture={user?.profile_pic}
+            className="h-[2.7rem] w-[2.7rem]"
+          />
           <Name_Designation
             name={user?.name}
             designation={user?.designation}
             user={user}
+            nameClass="text-[0.8rem] lg:text-[1.1rem] font-semibold text-gray-800 tracking-tighter "
+            designationClass="text-[0.7rem] text-gray-600"
+            divclass="h-[30%]"
           />
         </div>
-        <div className="w-[10%] h-full flex justify-end items-start p-1">
+        <div className="w-[10%] h-full flex justify-end items-start p-1 ">
           {isCurrentUser ? (
             <>
               <button
                 onClick={toggleDropdown}
-                className="flex items-center justify-center text-gray-800 rounded-md"
+                className="flex items-center justify-center text-gray-800 rounded-md py-1"
               >
-                <Ellipsis />
+                <EllipsisVertical />
               </button>
               {isOpen && (
-                <div className="absolute mt-6 bg-white rounded-md w-24 border border-gray-300 shadow-xl ">
+                <div className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8  bg-white rounded-md w-36 border border-gray-300 shadow-xl ">
                   <button
                     onClick={() => {
                       handleEdit();
                     }}
-                    className="text-gray-500 font-semibold w-full h-10 p-1 border-b-[0.5px] border-gray-400 hover:bg-gray-100 rounded-t-lg flex items-center justify-start gap-2 px-3 "
+                    className="text-gray-500 text-xl w-full h-16 p-1 border-b-[0.5px] border-gray-400 hover:bg-gray-100 rounded-t-lg flex items-center justify-start gap-2 px-3 "
                   >
                     <Pencil color="gray" size={18} />
                     <p>Edit</p>
@@ -87,7 +92,7 @@ import { addDraft, openPostModal, removePost, fetchMyPosts } from "../../../../.
                     onClick={() => {
                       handleDelete();
                     }}
-                    className="text-gray-500 font-semibold w-full h-10 p-1 hover:bg-gray-100 rounded-b-lg flex items-center justify-center gap-1"
+                    className="text-gray-500  w-full h-16 text-xl p-1 hover:bg-gray-100 rounded-b-lg flex items-center justify-start gap-2 px-3"
                   >
                     <Trash2 color="gray" size={18} />
                     <p>Delete</p>
@@ -96,24 +101,57 @@ import { addDraft, openPostModal, removePost, fetchMyPosts } from "../../../../.
               )}
             </>
           ) : (
-            <div className="flex w-auto gap-1">
-              <button className="px-2  text-blue-600 hover:bg-blue-50 rounded-md py-1  flex items-center justify-center gap-2">
-                <UserPlus size={20} />
-                Collab
-              </button>
+            <>
               <button
-                onClick={() => setBookmarked(!bookmarked)}
-                className={`rounded-full transition-all ${
-                  bookmarked ? "text-gray-500" : " text-gray-500"
-                }`}
+                onClick={toggleDropdown}
+                className="flex items-center justify-start text-gray-800 rounded-md py-1"
               >
-                {bookmarked ? (
-                  <SolidBookmark className="w-auto h-[1.84rem] text-gray-600" />
-                ) : (
-                  <BookmarkIcon size={30} color="gray" />
-                )}
+                <EllipsisVertical />
               </button>
-            </div>
+              {isOpen && (
+                <div className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8  bg-white rounded-md w-36 border border-gray-300 shadow-xl ">
+                  <button className=" text-xl text-blue-600 h-16 border-b w-full hover:bg-blue-50 rounded-md py-1  flex items-center justify-start gap-3 px-4">
+                    <UserPlus size={22} />
+                    Collab
+                  </button>
+                  <button className="text-gray-500  w-full px-4 hover:bg-gray-100 rounded-b-lg flex items-center justify-start gap-3 text-xl border-b h-16 ">
+                    <Ban size={20} color="red" />
+                    <p>Block</p>
+                  </button>
+                  <button
+                    onClick={() => setBookmarked(!bookmarked)}
+                    className={`rounded-full transition-all h-16 flex items-center justify-start w-full px-4${
+                      bookmarked ? "text-gray-500" : " text-gray-500"
+                    }`}
+                  >
+                    {bookmarked ? (
+                      <div className="flex items-center justify-start gap-3  w-full text-xl px-4">
+                        <SolidBookmark className="w-auto h-[1.5rem]  text-gray-400"  />
+                        <p className="text-xl text-gray-500">Saved</p>
+                      </div>
+                    ) : (
+                      <div className="flex gap-1 items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                          />
+                        </svg>
+                        <p className="text-xl">Save</p>
+                      </div>
+                    )}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

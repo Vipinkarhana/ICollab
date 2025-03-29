@@ -62,7 +62,7 @@ import { MoveUp } from "lucide-react";
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-8 right-8 p-3 flex justify-center items-center text-2xl bg-slate-100  w-14 h-14  rounded-lg shadow-lg ${
+      className={`fixed bottom-8 right-8 p-3 flex justify-center items-center text-2xl bg-slate-100  z-[9999] w-14 h-14  rounded-lg shadow-lg ${
         visible ? "opacity-100" : "opacity-0 pointer-events-none"
       } transition-opacity duration-300 border border-gray-400`}
     >
