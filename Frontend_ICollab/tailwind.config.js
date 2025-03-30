@@ -14,5 +14,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-motion")], // Added Rombo animation plugin
 };
