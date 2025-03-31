@@ -7,11 +7,11 @@ import Survey from "../../Common/Survey";
 const HomePage = () => {
   return (
     <>
-      <div className="w-[100svw] mt-14 flex   justify-evenly p-2">
-        <Survey />
-        <LeftDiv />
-        <MidDiv />
-        <RightDiv />
+      <div className="w-[100svw] mt-14 flex flex-col items-center  justify-center gap-3 md:flex-row md:items-start lg:justify-evenly p-2">
+        {/* <Survey /> */}
+        <LeftDiv className="hidden lg:flex lg:w-[20%]"/>
+        <MidDiv className="sm:w-[95%] md:w-[95%] lg:w-[50%]"/>
+        <RightDiv className="hidden lg:block" />
       </div>
     </>
   ); 

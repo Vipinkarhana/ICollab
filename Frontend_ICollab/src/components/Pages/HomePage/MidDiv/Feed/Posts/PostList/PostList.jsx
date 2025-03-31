@@ -72,7 +72,7 @@ function PostList() {
   };
 
   return (
-    <div className="w-[99%]">
+    <div className="w-full">
     <InfiniteScroll
       dataLength={allPosts.length}
       next={fetchMorePosts}
@@ -88,7 +88,7 @@ function PostList() {
           </button>
         </div>
       }
-      className="h-auto overflow-y-auto scrollbar-hide px-4 pb-5 flex flex-col gap-3"
+      className="h-auto overflow-y-auto scrollbar-hide   flex flex-col gap-3"
     >
       {allPosts.map((post, index) => (
         <PostCard

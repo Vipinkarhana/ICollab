@@ -14,10 +14,10 @@ import { Link } from "react-router-dom";
  * @brief A card component that displays a brief progress report.
  * @returns {JSX.Element} A styled progress report card with a title, description, and a "Learn More" link.
  */
-const ProgressCard = () => {
+const ProgressCard = ({className=""}) => {
   return (
     <>
-      <div className="h-40 w-[100%] bg-white rounded-md py-2 flex flex-col justify-evenly items-center border border-gray-300">
+      <div className={`h-40 w-[100%] bg-white rounded-md py-2 flex flex-col justify-evenly items-center border border-gray-300 ${className}`}>
         <div className="h-[20%] w-[100%] text-xl font-bold px-2  flex  items-center justify-start">
           <p>Progress Report</p>
         </div>
