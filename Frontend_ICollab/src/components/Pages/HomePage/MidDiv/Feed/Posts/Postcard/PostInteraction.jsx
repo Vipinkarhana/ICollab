@@ -116,9 +116,9 @@ const PostInteractions = () => {
             )}
 
             {/* Main Comment */}
-            <div className="flex items-start space-x-3">
-              <ProfilePic className="w-9 h-9 relative z-10" />
-              <div className="bg-gray-100 p-3 rounded-lg w-full">
+            <div className="flex items-start  justify-evenly gap-2">
+              <ProfilePic className="w-9 h-9 relative " />
+              <div className="bg-gray-100 p-3 rounded-lg w-[90%]">
                 <p className="text-sm">{comment.text}</p>
                 <div className="flex items-center text-gray-500 text-xs mt-1 space-x-3">
                   <button className="hover:text-blue-500 flex items-center space-x-1">
@@ -142,7 +142,7 @@ const PostInteractions = () => {
               {comment.replies.map((reply, replyIndex) => (
                 <div
                   key={replyIndex}
-                  className="flex items-start space-x-3 mt-2 relative"
+                  className="flex items-start justify-evenly gap-2 mt-2 relative"
                 >
                   {/* Last reply should round the vertical line */}
                   {/* {replyIndex === comment.replies.length - 1 && (
@@ -150,7 +150,7 @@ const PostInteractions = () => {
                   )} */}
 
                   <ProfilePic className="w-9 h-9" />
-                  <div className="bg-gray-100 p-3 rounded-lg w-full">
+                  <div className="bg-gray-100 p-3 rounded-lg w-[90%]">
                     <p className="text-sm">{reply.text}</p>
                     <div className="flex items-center text-gray-500 text-xs mt-1 space-x-3">
                       <button className="hover:text-blue-500 flex items-center space-x-1">
