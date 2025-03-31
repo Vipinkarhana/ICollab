@@ -11,6 +11,7 @@ import Media from "./Media";
 import { useDispatch } from "react-redux";
 import { addDraft, openPostModal, removePost, fetchMyPosts } from "../../../../../../../Redux/Slices/PostSlice";
 import { EllipsisVertical } from "lucide-react";
+import PostInteraction from "./PostInteraction";
   function PostCard({post}) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -171,7 +172,11 @@ import { EllipsisVertical } from "lucide-react";
       <div className="h-auto w-full object-cover flex justify-center items-center">
         <Media media={media} />
       </div>
-      {isCurrentUser && <div className="w-full flex justify-end p-2"></div>}
+      {!isCurrentUser &&
+        <div className="w-full ">
+            <PostInteraction/>
+        </div>
+      }
     </div>
   );
 }
