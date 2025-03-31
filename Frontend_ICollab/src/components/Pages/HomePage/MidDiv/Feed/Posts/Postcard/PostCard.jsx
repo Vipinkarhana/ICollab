@@ -79,7 +79,7 @@ import PostInteraction from "./PostInteraction";
                 <EllipsisVertical />
               </button>
               {isOpen && (
-                <div className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8  bg-white rounded-md w-36 border border-gray-300 shadow-xl ">
+                <div className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8 z-50 bg-white rounded-md w-36 border border-gray-300 shadow-xl ">
                   <button
                     onClick={() => {
                       handleEdit();
@@ -110,7 +110,7 @@ import PostInteraction from "./PostInteraction";
                 <EllipsisVertical />
               </button>
               {isOpen && (
-                <div className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8  bg-white rounded-md w-36 border border-gray-300 shadow-xl ">
+                <div className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8 z-50 bg-white rounded-md w-36 border border-gray-300 shadow-xl ">
                   <button className=" text-xl text-blue-600 h-16 border-b w-full hover:bg-blue-50 rounded-md py-1  flex items-center justify-start gap-3 px-4">
                     <UserPlus size={22} />
                     Collab

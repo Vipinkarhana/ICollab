@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef,useState } from "react";
 import {
   MessageCircle,
   ThumbsUp,
@@ -15,7 +15,7 @@ const PostInteractions = () => {
   const [commentText, setCommentText] = useState("");
   const [replyText, setReplyText] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
-
+  const commentInputRef = useRef(null); 
   // Function to add a new comment
   const addComment = () => {
     if (commentText.trim() !== "") {
@@ -23,6 +23,12 @@ const PostInteractions = () => {
       setCommentText("");
     }
   };
+
+   const focusCommentInput = () => {
+     if (commentInputRef.current) {
+       commentInputRef.current.focus();
+     }
+   };
 
   // Function to add a reply to a specific comment
   const addReply = (index) => {
@@ -41,27 +47,34 @@ const PostInteractions = () => {
   return (
     <div className="w-full max-w-full bg-white p-4 shadow-md rounded-md">
       {/* Post Actions (Like, Comment, Repost, Send) */}
-      <div className="flex justify-around items-center text-gray-600 text-sm border-t border-gray-300 pt-4">
-        <button
-          className="flex items-center space-x-1 hover:text-blue-500"
-          onClick={() => setLikes(likes + 1)}
-        >
-          <ThumbsUp size={18} />
-          <span>{likes > 0 ? likes : "Like"}</span>
-        </button>
-        <button className="flex items-center space-x-1 hover:text-blue-500">
-          <MessageCircle size={18} />
-          <span>Comment</span>
-        </button>
-        <button className="flex items-center space-x-1 hover:text-blue-500">
-          <Repeat2 size={18} />
-          <span>Repost</span>
-        </button>
-        <button className="flex items-center space-x-1 hover:text-blue-500">
-          <Send size={18} />
-          <span>Send</span>
-        </button>
-      </div>
+      <div className="flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-4">
+  <button
+    className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2"
+    onClick={() => setLikes(likes + 1)}
+  >
+    <ThumbsUp size={18} />
+    <span className="hidden sm:inline">{likes > 0 ? `Like ${likes}` : "Like"}</span>
+  </button>
+
+  <button
+    className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2"
+    onClick={focusCommentInput}
+  >
+    <MessageCircle size={18} />
+    <span className="hidden sm:inline">Comment</span>
+  </button>
+
+  <button className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2">
+    <Repeat2 size={18} />
+    <span className="hidden sm:inline">Repost</span>
+  </button>
+
+  <button className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2">
+    <Send size={18} />
+    <span className="hidden sm:inline">Send</span>
+  </button>
+</div>
+
 
       {/* Comment Input Box */}
       <div className="flex items-center space-x-2 mt-4">
@@ -72,6 +85,7 @@ const PostInteractions = () => {
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
             placeholder="Add a comment..."
+            ref={commentInputRef}
             className="w-full border rounded-full px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
           {commentText.trim() && (
