@@ -115,12 +115,11 @@ const feed = async (req, res, next) => {
     }
 
     const date = new Date(Number(timestamp));
-
-let posts=null;
-const connection = await connectionModel.findOne({user: req.user.id});
-if(connection!=null){
-const connectionIds = connection.connectedusers;
-posts = await postModel.aggregate([
+    const connection = await connectionModel.findOne({ user: req.user.id });
+    //const connection = await connectionModel.findOne({ user: req.body.userid });
+    const connectionIds = connection?.connectedusers || [];
+    console.log("Connection IDs:", connectionIds);
+    const posts = await postModel.aggregate([
   {
     $match: {
       createdAt: { $lt: date },
@@ -167,19 +166,13 @@ posts = await postModel.aggregate([
       comments:1,
       likes:1,
       content: 1,
-      createdAt: 1
+      createdAt: 1,
+      isConnection: 1
     }
   }
 ]);
-}
 
-else {
-  posts = await postModel
-      .find({ createdAt: { $lt: date }, status: 'public' })
-      .sort({ createdAt: -1 })
-      .limit(10)
-      .populate('user', 'username name profile_pic designation');
-}
+
     res.status(200).json({
       message: 'Feed fetched successfully',
       data: posts,
