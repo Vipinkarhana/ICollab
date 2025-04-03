@@ -14,6 +14,7 @@ import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
 import PrivateRoute from "./components/Common/PrivateRoute";
 import ActivityPage from "./components/Pages/ActivityPage/ActivityPage";
 import LandingPage from "./components/Pages/LandingPage/LandingPage";
+import ProjectPreview from "./components/Pages/ProjectsPage/ProjectPreview/ProjectPreview";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             <Route path="/notification" element={<NotificationPage />} />
             <Route path="/incubators" element={<IncubatorsPage />} />
             <Route path="/activity/:username" element={<ActivityPage />} />
+            <Route path="/project_preview" element={<ProjectPreview/>} />
           </Route>
 
           {/* LandingPage with Layout, not a private route */}
