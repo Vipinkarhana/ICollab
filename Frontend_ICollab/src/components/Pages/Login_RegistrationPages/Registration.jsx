@@ -3,10 +3,10 @@ import { UserRound, Mail, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import Google from "./Google";
 import Linkedin from "./LinkedinButoon";
-import { register } from "../../../services/authService";
+import { register } from "../../../Services/authService";
 import { useNavigate } from "react-router-dom";
 import useAlert from "../../Common/UseAlert";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import { registerUser } from "../../../Redux/Slices/UserSlice";
 
 const Register = () => {
@@ -20,9 +20,11 @@ const Register = () => {
 
   const handleFormSubmit = async () => {
     try {
-      const message = await dispatch(registerUser({ name, email, password })).unwrap();
+      const message = await dispatch(
+        registerUser({ name, email, password })
+      ).unwrap();
       showSuccess(message);
-      navigate("/login")
+      navigate("/login");
     } catch (error) {
       showError(error);
     }
@@ -52,10 +54,11 @@ const Register = () => {
                 />
                 <label
                   htmlFor="name"
-                  className={`absolute left-3 ${name
-                    ? "-top-3 text-md px-1 bg-white peer-focus:text-black"
-                    : "top-3 text-lg"
-                    } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
+                  className={`absolute left-3 ${
+                    name
+                      ? "-top-3 text-md px-1 bg-white peer-focus:text-black"
+                      : "top-3 text-lg"
+                  } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
                 >
                   <UserRound size={20} />
                   Your Name
@@ -76,10 +79,11 @@ const Register = () => {
                 />
                 <label
                   htmlFor="email"
-                  className={`absolute left-3 ${email
-                    ? "-top-3 text-md px-1 bg-white peer-focus:text-black"
-                    : "top-3 text-lg"
-                    } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
+                  className={`absolute left-3 ${
+                    email
+                      ? "-top-3 text-md px-1 bg-white peer-focus:text-black"
+                      : "top-3 text-lg"
+                  } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
                 >
                   <Mail size={20} />
                   Email
@@ -100,10 +104,11 @@ const Register = () => {
                 />
                 <label
                   htmlFor="password"
-                  className={`absolute left-3 ${password
-                    ? "-top-3 text-md px-1 bg-white peer-focus:text-black"
-                    : "top-3 text-lg"
-                    } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
+                  className={`absolute left-3 ${
+                    password
+                      ? "-top-3 text-md px-1 bg-white peer-focus:text-black"
+                      : "top-3 text-lg"
+                  } text-gray-500 transition-all duration-300 rounded-xl w-auto flex justify-center items-center gap-2`}
                 >
                   <Lock size={20} />
                   Password

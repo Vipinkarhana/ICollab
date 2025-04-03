@@ -1,7 +1,7 @@
 /**
  * @file Survey.js
  * @brief A modal survey form for collecting user feedback on new features.
- * @details This component displays a survey modal asking users to choose between 
+ * @details This component displays a survey modal asking users to choose between
  *          different feature requests. The selected response is sent to the server.
  *          The survey appears only if the user hasn't submitted it before.
  * @author ICollab Development Team
@@ -9,8 +9,7 @@
  */
 
 import React, { useState, useEffect } from "react";
-import privateAxios from "../../services/apiService";
-
+import privateAxios from "../../Services/apiService";
 
 /**
  * @class Survey
@@ -21,7 +20,7 @@ function Survey() {
   const [selectedOption, setSelectedOption] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-   /**
+  /**
    * @brief Initializes survey state on component mount.
    * @details Checks if the survey has been submitted before using local storage.
    *          If not, the survey modal is displayed.
@@ -39,7 +38,7 @@ function Survey() {
     // }
   }, []);
 
-    /**
+  /**
    * @brief Handles the change event for radio input selection.
    * @param {Event} event The change event.
    */
@@ -47,23 +46,25 @@ function Survey() {
     setSelectedOption(event.target.value);
   };
 
-    /**
+  /**
    * @brief Handles survey form submission.
    * @details Saves the survey status in local storage and sends the selected answer to the backend API.
    * @param {Event} event The form submit event.
    */
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try{
+    try {
       localStorage.setItem("Survey1", "Submitted");
-      await privateAxios.post('/announcement/survey', {answer: selectedOption});
-    }catch (error){
+      await privateAxios.post("/announcement/survey", {
+        answer: selectedOption,
+      });
+    } catch (error) {
       console.log("Survey Form Submit Error: ", error);
     }
     setModalIsOpen(false);
   };
 
-    /**
+  /**
    * @brief Closes the survey modal without submitting.
    */
   const handleClose = () => {
@@ -75,7 +76,10 @@ function Survey() {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
       <div className="bg-white p-6 rounded shadow-lg w-[40svw]">
-        <span className="float-right text-xl cursor-pointer" onClick={handleClose}>
+        <span
+          className="float-right text-xl cursor-pointer"
+          onClick={handleClose}
+        >
           &times;
         </span>
         <h2 className="text-2xl mb-4 font-semibold">Feature Survey</h2>
@@ -111,15 +115,23 @@ function Survey() {
               Edit &amp; Delete
             </label>
           </div>
-          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded mr-2">
+          <button
+            type="submit"
+            className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+          >
             Submit
           </button>
-          <button type="button" onClick={handleClose} className="bg-red-500 text-white px-4 py-2 rounded">
+          <button
+            type="button"
+            onClick={handleClose}
+            className="bg-red-500 text-white px-4 py-2 rounded"
+          >
             Close
           </button>
         </form>
         <p className="mt-4">
-          From ICollab Development Team<br />
+          From ICollab Development Team
+          <br />
           (Ayush, Tanmay and Naman)
         </p>
       </div>

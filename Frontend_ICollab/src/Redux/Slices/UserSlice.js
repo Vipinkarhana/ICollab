@@ -1,13 +1,24 @@
-import { createSlice, createAsyncThunk, isPending, isFulfilled, isRejected } from "@reduxjs/toolkit";
-import { register, login, googleAuth, logout } from "../../services/authService";
-import { updateInfo, updateAbout } from "../../services/profileService";
+import {
+  createSlice,
+  createAsyncThunk,
+  isPending,
+  isFulfilled,
+  isRejected,
+} from "@reduxjs/toolkit";
+import {
+  register,
+  login,
+  googleAuth,
+  logout,
+} from "../../Services/authService";
+import { updateInfo, updateAbout } from "../../Services/profileService";
 
 export const registerUser = createAsyncThunk(
   "user/registerUser",
   async ({ name, email, password }, { rejectWithValue }) => {
     try {
       const response = await register({ name, email, password });
-      if(response.status === 'success') {
+      if (response.status === "success") {
         return response.message;
       } else {
         return rejectWithValue(response.message);
@@ -23,7 +34,7 @@ export const loginUser = createAsyncThunk(
   async ({ email, password }, { rejectWithValue }) => {
     try {
       const response = await login({ email, password });
-      if(response.status === 'success') {
+      if (response.status === "success") {
         return response.data;
       } else {
         return rejectWithValue(response.message);
@@ -39,7 +50,7 @@ export const googleLogin = createAsyncThunk(
   async ({ credential }, { rejectWithValue }) => {
     try {
       const response = await googleAuth({ credential });
-      if(response.status === 'success') {
+      if (response.status === "success") {
         return response.data;
       } else {
         return rejectWithValue(response.message);
@@ -57,7 +68,7 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await logout();
-      if(response.status === 'success') {
+      if (response.status === "success") {
         return response.message;
       } else {
         return rejectWithValue(response.message);
@@ -70,10 +81,10 @@ export const logoutUser = createAsyncThunk(
 
 export const updateUserInfo = createAsyncThunk(
   "user/updateUserInfo",
-  async ({name, designation, profile}, {rejectWithValue}) => {
-    try{
-      const response = await updateInfo({name,designation,profile});
-      if(response.status === 'success') {
+  async ({ name, designation, profile }, { rejectWithValue }) => {
+    try {
+      const response = await updateInfo({ name, designation, profile });
+      if (response.status === "success") {
         return response.data;
       } else {
         return rejectWithValue(response.message);
@@ -82,14 +93,14 @@ export const updateUserInfo = createAsyncThunk(
       return rejectWithValue(error.message);
     }
   }
-)
+);
 
 export const updateUserAbout = createAsyncThunk(
   "user/updateUserAbout",
   async ({ about }, { rejectWithValue }) => {
     try {
       const response = await updateAbout(about);
-      if(response.status === 'success') {
+      if (response.status === "success") {
         return response.data;
       } else {
         return rejectWithValue(response.message);
@@ -103,23 +114,24 @@ export const updateUserAbout = createAsyncThunk(
 const initialState = {
   userData: null,
   profileData: {
-    about: ""
+    about: "",
   },
   loading: false,
   error: null,
 };
 
 // Custom matchers to filter actions starting with "user/"
-const isUserActionPending = (action) => action.type.startsWith("user/") && action.type.endsWith("/pending");
-const isUserActionFulfilled = (action) => action.type.startsWith("user/") && action.type.endsWith("/fulfilled");
-const isUserActionRejected = (action) => action.type.startsWith("user/") && action.type.endsWith("/rejected");
+const isUserActionPending = (action) =>
+  action.type.startsWith("user/") && action.type.endsWith("/pending");
+const isUserActionFulfilled = (action) =>
+  action.type.startsWith("user/") && action.type.endsWith("/fulfilled");
+const isUserActionRejected = (action) =>
+  action.type.startsWith("user/") && action.type.endsWith("/rejected");
 
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-
-  },
+  reducers: {},
   extraReducers: (builder) => {
     // Handle all pending actions (for thunks)
     builder.addMatcher(isUserActionPending, (state) => {
@@ -130,8 +142,11 @@ const userSlice = createSlice({
     // Handle all fulfilled actions (for thunks)
     builder.addMatcher(isUserActionFulfilled, (state, action) => {
       state.loading = false;
-      if (action.type !== "user/registerUser/fulfilled" && action.type !== "user/logoutUser/fulfilled"){
-        state.userData = action.payload; 
+      if (
+        action.type !== "user/registerUser/fulfilled" &&
+        action.type !== "user/logoutUser/fulfilled"
+      ) {
+        state.userData = action.payload;
         state.profileData = action.payload.profile;
         delete state.userData.profile;
       }
