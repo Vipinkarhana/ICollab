@@ -45,9 +45,9 @@ const PostInteractions = () => {
   };
 
   return (
-    <div className="w-full max-w-full bg-white p-4 shadow-md rounded-md">
+    <div className="w-full max-w-full  px-2">
       {/* Post Actions (Like, Comment, Repost, Send) */}
-      <div className="flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-4">
+      <div className="flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-1 sm:pt-4">
   <button
     className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2"
     onClick={() => setLikes(likes + 1)}
@@ -77,7 +77,7 @@ const PostInteractions = () => {
 
 
       {/* Comment Input Box */}
-      <div className="flex items-center space-x-2 mt-4">
+      <div className="flex items-center space-x-2 sm:mt-4">
         <ProfilePic className="w-9 h-9" />
         <div className="relative flex-1">
           <input
@@ -158,10 +158,6 @@ const PostInteractions = () => {
                   key={replyIndex}
                   className="flex items-start justify-evenly gap-2 mt-2 relative"
                 >
-                  {/* Last reply should round the vertical line */}
-                  {/* {replyIndex === comment.replies.length - 1 && (
-                    <div className="absolute left-[-24px] w-[12px] h-[12px] bg-gray-300 "></div>
-                  )} */}
 
                   <ProfilePic className="w-9 h-9" />
                   <div className="bg-gray-100 p-3 rounded-lg w-[90%]">

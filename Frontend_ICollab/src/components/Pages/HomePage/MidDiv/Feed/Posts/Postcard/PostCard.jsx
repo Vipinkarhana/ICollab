@@ -169,7 +169,7 @@ import PostInteraction from "./PostInteraction";
           )}
         </p>
       </div>
-      <div className="h-auto w-full object-cover flex justify-center items-center">
+      <div className="h-auto w-full object-cover flex justify-center items-center ">
         <Media media={media} />
       </div>
       {!isCurrentUser &&
