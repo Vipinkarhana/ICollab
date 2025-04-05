@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ProfilePic from "../../Common/ProfilePic";
+import Name_Designation from "../../Common/Name&Designation";
 
 const NetworkCard = ({ person }) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -20,10 +21,14 @@ const NetworkCard = ({ person }) => {
       <ProfilePic className="w-20 h-20 mx-auto mb-2 rounded-full border border-gray-300" />
       
       {/* Name */}
-      <h3 className="text-center font-bold text-lg sm:text-xl md:text-xl">{person.name}</h3>
-      
-      {/* Role */}
-      <p className="text-center text-gray-600 text-sm sm:text-base">{person.role}</p>
+      <div className="flex flex-col items-center justify-center">
+              <Name_Designation
+                name={person.name}
+                designation={person.role}
+                nameClass="text-[1.0rem] font-semibold text-gray-800 text-center"
+                designationClass="text-sm text-gray-600  text-center"
+              />
+            </div>
       
       {/* Description */}
       <p className="text-center text-gray-600 text-sm mt-2">

@@ -5,14 +5,14 @@ import ProjectCard from "./ProjectCard";
 import { Plus } from 'lucide-react';
 import TaskCard from './TaskCard';
 import { OngoingTasks, SavedTasks } from './TaskData';
-import ProjectForm from './ProjectForm';  
+import ProjectForm from './ProjectForm';
 
 function ProjectsPage() {
   const [ongoingTaskCardsToShow, setOngoingTaskCardsToShow] = useState(6);
   const [savedTaskCardsToShow, setSavedTaskCardsToShow] = useState(6);
   const [modalData, setModalData] = useState([]);
   const [showMore, setShowMore] = useState(false);
-  const [showForm, setShowForm] = useState(false); 
+  const [showForm, setShowForm] = useState(false);
 
   const ongoingTasks = OngoingTasks();
   const savedTasks = SavedTasks();
@@ -22,7 +22,7 @@ function ProjectsPage() {
 
   useEffect(() => {
     const ongoingContainerHeight = ongoingTaskContainerRef.current.clientHeight;
-    const cardHeight = 150; 
+    const cardHeight = 150;
     const ongoingCardsVisible = Math.floor(ongoingContainerHeight / cardHeight);
     setOngoingTaskCardsToShow(ongoingCardsVisible > 3 ? ongoingCardsVisible : 3);
 
@@ -42,28 +42,28 @@ function ProjectsPage() {
 
   const handleSaveDraft = (formData) => {
     console.log("Draft saved:", formData);
-    setShowForm(false);  
+    setShowForm(false);
   };
 
   const handleCreateProject = (formData) => {
     console.log("Project created:", formData);
-    setShowForm(false);  
+    setShowForm(false);
   };
 
   const handleCancel = () => {
-    setShowForm(false);  
+    setShowForm(false);
   };
 
   return (
-    <div className="w-[100svw] mt-14 flex justify-evenly p-2">
+    <div className="w-full mt-16 p-2 flex flex-wrap justify-evenly gap-4">
       {/* Profile and task containers */}
-      <div className="w-[20%] h-[100%] flex flex-col justify-start items-center gap-2">
+      <div className="w-full md:w-1/5 h-full flex-col justify-start items-center gap-2 m-4 hidden lg:flex">
         <ProfileCard otherUser={null} />
         <div
           ref={ongoingTaskContainerRef}
-          className="w-[100%] h-[88svh] bg-white py-2 rounded-lg relative flex flex-col justify-start items-center border border-gray-300"
+          className="w-full h-88 bg-white py-2 rounded-lg flex flex-col justify-start items-center border border-gray-300"
         >
-          <div className="flex justify-between items-center w-full border-b border-gray-300 px-2 py-1 h-auto">
+          <div className="py-2 w-full text-xl font-semibold px-2 flex items-center justify-between border-b border-gray-300 m-4">
             <h2 className="font-semibold text-xl">Ongoing Projects</h2>
             <button
               className="text-blue-500 hover:underline text-xl font-semibold"
@@ -72,16 +72,16 @@ function ProjectsPage() {
               See All
             </button>
           </div>
-          <div className="flex items-start justify-center w-[80%] ">
+          <div className="flex items-start justify-center w-full">
             <button
-              className="w-[150%] h-10 flex items-center justify-center gap-4  px-6 py-3 m-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 shadow-md"
-              onClick={handleAddNewClick} 
+              className="w-full sm:w-[80%] h-10 flex items-center justify-center gap-4 px-6 py-3 m-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 shadow-md"
+              onClick={handleAddNewClick}
             >
               <Plus size={20} />
               <span className="text-lg font-medium">Add New</span>
             </button>
           </div>
-          <div className="w-full h-[100%] flex items-center justify-evenly flex-col overflow-hidden">
+          <div className="w-full h-full flex items-center justify-evenly flex-col overflow-hidden gap-4">
             {ongoingTasks.slice(0, ongoingTaskCardsToShow).map((task, index) => (
               <TaskCard
                 key={index}
@@ -96,9 +96,9 @@ function ProjectsPage() {
       </div>
 
       {/* Project cards and search */}
-      <div className="w-[50%] h-auto flex flex-col justify-start items-center gap-2 py-1">
+      <div className="w-full sm:w-1/2 md:w-[70%] lg:w-2/5 h-auto flex flex-col justify-start items-center gap-2 py-1 m-2">
         <SearchBar />
-        <div className="grid grid-cols-2 gap-4 h-auto w-[80%] items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-4 items-center justify-center">
           <ProjectCard />
           <ProjectCard />
           <ProjectCard />
@@ -114,8 +114,8 @@ function ProjectsPage() {
       </div>
 
       {/* Saved Tasks */}
-      <div className="w-[20%] h-[80%] bg-white border border-gray-300 rounded-md flex flex-col justify-start items-center">
-        <div className="py-2 w-[100%] text-xl font-semibold px-2 flex items-center justify-between border-b border-gray-300">
+      <div className="w-full md:w-1/5 h-[90%]  bg-white border border-gray-300 rounded-md flex-col justify-start items-center p-2 m-4 hidden lg:flex">
+        <div className="py-2 w-full text-xl font-semibold px-2 flex items-center justify-between border-b border-gray-300 m-4">
           <p>Saved Projects</p>
           <button
             className="text-blue-500 hover:underline"
@@ -126,7 +126,7 @@ function ProjectsPage() {
         </div>
         <div
           ref={savedTaskContainerRef}
-          className="w-full h-auto flex items-center justify-evenly flex-col overflow-hidden gap-4 p-2"
+          className="w-full h-auto flex items-center justify-evenly flex-col overflow-hidden gap-4"
         >
           {savedTasks.slice(0, savedTaskCardsToShow).map((task, index) => (
             <TaskCard
@@ -143,7 +143,7 @@ function ProjectsPage() {
       {/* Conditional Rendering for the Form */}
       {showForm && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-3/4 h-3/4 overflow-auto">
+          <div className="bg-white p-6 rounded-lg w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-3/4 overflow-auto">
             <ProjectForm
               onSaveDraft={handleSaveDraft}
               onCreateProject={handleCreateProject}
@@ -155,9 +155,9 @@ function ProjectsPage() {
 
       {showMore && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-3/4 h-3/4 overflow-auto">
+          <div className="bg-white p-6 rounded-lg w-full sm:w-3/4 md:w-2/3 h-3/4 overflow-auto">
             <h2 className="text-2xl font-semibold mb-4">All Projects</h2>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {modalData.map((task, index) => (
                 <TaskCard
                   key={index}

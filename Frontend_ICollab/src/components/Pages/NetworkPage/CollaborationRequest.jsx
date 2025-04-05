@@ -3,6 +3,7 @@ import ProfilePic from "../../Common/ProfilePic";
 import Name_Designation from "../../Common/Name&Designation";
 import { UserX, UserCheck } from "lucide-react";
 
+
 function CollaborationRequest({ name, designation, profilepic }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationCompleted, setAnimationCompleted] = useState(false);
