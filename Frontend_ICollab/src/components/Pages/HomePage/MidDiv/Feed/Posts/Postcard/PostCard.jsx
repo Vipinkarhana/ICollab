@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import {  Pencil, Trash2, UserPlus, Ban } from "lucide-react";
+import { Pencil, Trash2, UserPlus, Ban } from "lucide-react";
 import ProfilePic from "../../../../../../Common/ProfilePic";
 import Name_Designation from "../../../../../../Common/Name&Designation";
 import {
@@ -9,10 +9,15 @@ import {
 } from "@heroicons/react/24/solid";
 import Media from "./Media";
 import { useDispatch } from "react-redux";
-import { addDraft, openPostModal, removePost, fetchMyPosts } from "../../../../../../../Redux/Slices/PostSlice";
+import {
+  addDraft,
+  openPostModal,
+  removePost,
+  fetchMyPosts,
+} from "../../../../../../../Redux/Slices/PostSlice";
 import { EllipsisVertical } from "lucide-react";
-import PostInteraction from "./PostInteraction";
-  function PostCard({post}) {
+import Interaction from "../../../../../../Common/Interaction";
+function PostCard({ post }) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -45,12 +50,12 @@ import PostInteraction from "./PostInteraction";
   const handleEdit = () => {
     dispatch(addDraft(post));
     dispatch(openPostModal(true));
-  }
+  };
 
   const handleDelete = () => {
-    dispatch(removePost({postid: post?.id}));
+    dispatch(removePost({ postid: post?.id }));
     dispatch(fetchMyPosts());
-  }
+  };
 
   return (
     <div className="w-[100%] h-auto border border-gray-300 mt-3 bg-white rounded-lg   flex flex-col justify-center items-center gap-2">
@@ -127,7 +132,7 @@ import PostInteraction from "./PostInteraction";
                   >
                     {bookmarked ? (
                       <div className="flex items-center justify-start gap-3  w-full text-xl px-4">
-                        <SolidBookmark className="w-auto h-[1.5rem]  text-gray-400"  />
+                        <SolidBookmark className="w-auto h-[1.5rem]  text-gray-400" />
                         <p className="text-xl text-gray-500">Saved</p>
                       </div>
                     ) : (
@@ -172,11 +177,11 @@ import PostInteraction from "./PostInteraction";
       <div className="h-auto w-full object-cover flex justify-center items-center ">
         <Media media={media} />
       </div>
-      {!isCurrentUser &&
+      {!isCurrentUser && (
         <div className="w-full ">
-            <PostInteraction/>
+          <Interaction />
         </div>
-      }
+      )}
     </div>
   );
 }

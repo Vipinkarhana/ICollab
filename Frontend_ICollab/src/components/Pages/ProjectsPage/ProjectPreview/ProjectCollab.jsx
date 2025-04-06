@@ -20,13 +20,13 @@ const collaborators = [
   ];
 function ProjectCollab() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 border border-gray-100 m-2 rounded-md bg-gray-100 flex flex-col justify-center items-center">
+    <div className="max-w-4xl mx-auto px-4 py-10  m-2  flex flex-col justify-center items-center">
         <h2 className="text-2xl font-bold mb-6 ">Collaborators</h2>
         <div className="flex flex-wrap gap-6 overflow-x-auto scrollbar-hide">
           {collaborators.map((user, index) => (
             <div
               key={index}
-              className="flex items-center gap-4 bg-white p-4 rounded-xl shadow hover:shadow-md transition hover:scale-[1.02] "
+              className="flex items-center gap-4 bg-slate-50 border p-4 rounded-xl shadow hover:shadow-md transition hover:scale-[1.02] "
             >
               <img
                 src={user.image}

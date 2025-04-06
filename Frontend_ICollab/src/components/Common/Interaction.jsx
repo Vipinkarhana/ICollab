@@ -1,4 +1,4 @@
-import { useRef,useState } from "react";
+import { useRef, useState } from "react";
 import {
   MessageCircle,
   ThumbsUp,
@@ -7,15 +7,15 @@ import {
   MoreHorizontal,
   Send,
 } from "lucide-react";
-import ProfilePic from "../../../../../../Common/ProfilePic"; // ProfilePic component
+import ProfilePic from "./ProfilePic"; // ProfilePic component
 
-const PostInteractions = () => {
+const Interactions = () => {
   const [likes, setLikes] = useState(0);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [replyText, setReplyText] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
-  const commentInputRef = useRef(null); 
+  const commentInputRef = useRef(null);
   // Function to add a new comment
   const addComment = () => {
     if (commentText.trim() !== "") {
@@ -24,11 +24,11 @@ const PostInteractions = () => {
     }
   };
 
-   const focusCommentInput = () => {
-     if (commentInputRef.current) {
-       commentInputRef.current.focus();
-     }
-   };
+  const focusCommentInput = () => {
+    if (commentInputRef.current) {
+      commentInputRef.current.focus();
+    }
+  };
 
   // Function to add a reply to a specific comment
   const addReply = (index) => {
@@ -48,33 +48,34 @@ const PostInteractions = () => {
     <div className="w-full max-w-full  px-2">
       {/* Post Actions (Like, Comment, Repost, Send) */}
       <div className="flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-1 sm:pt-4">
-  <button
-    className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2"
-    onClick={() => setLikes(likes + 1)}
-  >
-    <ThumbsUp size={18} />
-    <span className="hidden sm:inline">{likes > 0 ? `Like ${likes}` : "Like"}</span>
-  </button>
+        <button
+          className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2"
+          onClick={() => setLikes(likes + 1)}
+        >
+          <ThumbsUp size={18} />
+          <span className="hidden sm:inline">
+            {likes > 0 ? `Like ${likes}` : "Like"}
+          </span>
+        </button>
 
-  <button
-    className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2"
-    onClick={focusCommentInput}
-  >
-    <MessageCircle size={18} />
-    <span className="hidden sm:inline">Comment</span>
-  </button>
+        <button
+          className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2"
+          onClick={focusCommentInput}
+        >
+          <MessageCircle size={18} />
+          <span className="hidden sm:inline">Comment</span>
+        </button>
 
-  <button className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2">
-    <Repeat2 size={18} />
-    <span className="hidden sm:inline">Repost</span>
-  </button>
+        <button className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2">
+          <Repeat2 size={18} />
+          <span className="hidden sm:inline">Repost</span>
+        </button>
 
-  <button className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2">
-    <Send size={18} />
-    <span className="hidden sm:inline">Send</span>
-  </button>
-</div>
-
+        <button className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2">
+          <Send size={18} />
+          <span className="hidden sm:inline">Send</span>
+        </button>
+      </div>
 
       {/* Comment Input Box */}
       <div className="flex items-center space-x-2 sm:mt-4">
@@ -158,7 +159,6 @@ const PostInteractions = () => {
                   key={replyIndex}
                   className="flex items-start justify-evenly gap-2 mt-2 relative"
                 >
-
                   <ProfilePic className="w-9 h-9" />
                   <div className="bg-gray-100 p-3 rounded-lg w-[90%]">
                     <p className="text-sm">{reply.text}</p>
@@ -213,4 +213,4 @@ const PostInteractions = () => {
   );
 };
 
-export default PostInteractions;
+export default Interactions;
