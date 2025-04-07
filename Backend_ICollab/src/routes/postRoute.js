@@ -4,7 +4,7 @@ const {
   addpost,
   getMyPost,
   addPostMedia,
-  likepost,
+  likeAndUnlikepost,
   feed,
   editPost,
   deletePost,
@@ -16,7 +16,7 @@ const { isloggedin } = require('../middlewares/auth');
 router.post('/', isloggedin, addpost);
 router.get('/mypost', isloggedin, getMyPost);
 router.post('/addmedia', isloggedin, addPostMedia);
-router.post('/likepost', isloggedin, likepost);
+router.post('/likeandunlikepost', isloggedin, likeAndUnlikepost);
 router.get('/feed', isloggedin, feed);
 router.post('/editpost', isloggedin, editPost);
 router.post('/deletepost', isloggedin, deletePost);

@@ -113,10 +113,8 @@ const sendRequest = async (req, res, next) => {
 const acceptRequest = async (req, res, next) => {
   console.log(req.body);
   const { senderUsername } = req.body;
-
   const sender = await userModel.findOne({ username: senderUsername }).lean();
   const reciever = await userModel.findOne({ username: req.user.username }).lean();
-
   console.log("reciever: ", reciever);
   console.log("sender: ", sender);
   const request = await requestModel.findOne({
