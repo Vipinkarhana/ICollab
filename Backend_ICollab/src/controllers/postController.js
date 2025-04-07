@@ -1,9 +1,11 @@
 const postModel = require('../models/post');
 const commentModel = require('../models/comment');
 const ApiError = require('../utils/ApiError');
+const mongoose = require('mongoose');
 const config = require('../../config/config');
 const userModel = require('../models/user');
 const connectionModel = require('../models/connections');
+const likeModel = require('../models/likes');
 const { URL } = require('url');
 const { generatePresignedUrl, deleteFromR2 } = require('../../config/s3');
   
@@ -92,15 +94,49 @@ const addPostMedia = async (req, res, next) => {
   }
 };
 
-const likepost = async (req, res, next) => {
+const likeAndUnlikepost = async (req, res, next) => {
   try {
-    const postid = req.body.postid; //dummy post id
-    //post = await postModel.findOne({'_id':postid});
-    const newPost = await postModel.updateOne(
-      { _id: postid },
-      { $inc: { likes: 1 } }
-    );
-    res.json(newPost);
+    
+    const {postId} = req.query; //dummy post id
+    const userId = req.user._id;
+    //const userId = req.body.userid;
+    let liked=0, unliked=0;
+    let likeDoc = await likeModel.findOne({ postId });
+
+    if(!likeDoc){
+      likeDoc = await likeModel.create({ postId, userId: [userId] });
+    }
+
+    if (likeDoc) {
+      // Check if the current user is already in the liked array
+      if (likeDoc.userId.includes(userId)) {
+        await likeModel.findOneAndUpdate(
+          {postId: postId},
+          {$pull: {userId: userId}}
+        );
+        await postModel.findOneAndUpdate(
+          {_id: postId},
+          {$inc: {likes: -1}}
+        );
+        unliked=1;
+      } else {
+        // Add the user to the like document's userId array if not already present
+        await likeModel.findOneAndUpdate(
+          { postId },
+          { $addToSet: { userId } }
+        );
+        console.log("PostId: ", postId);
+        await postModel.findOneAndUpdate(
+          {_id: postId},
+          {$inc: {likes: 1}}
+        );
+        liked=1;
+      }
+    }
+    res.status(200).json({
+      data: postId,liked,unliked,
+      status: 'success'
+    });
   } catch (err) {
     next(err);
   }
@@ -117,8 +153,11 @@ const feed = async (req, res, next) => {
     const date = new Date(Number(timestamp));
     const connection = await connectionModel.findOne({ user: req.user.id });
     //const connection = await connectionModel.findOne({ user: req.body.userid });
+    console.log("Connection: ", connection);
     const connectionIds = connection?.connectedusers || [];
     console.log("Connection IDs:", connectionIds);
+    const userId = req.user._id;
+    //const userId = req.body.userid;
     const posts = await postModel.aggregate([
   {
     $match: {
@@ -127,9 +166,32 @@ const feed = async (req, res, next) => {
     }
   },
   {
+    $lookup: {
+      from: 'postlikes',
+      let: {postId: {$toString: '$_id'}},
+      pipeline: [
+        {
+          $match: {
+              $expr: {
+                $and: [
+                  {$eq: ['$postId', '$$postId']},
+                  {$in: [String(userId), '$userId']}
+                ]
+              }
+          },
+        },
+        {$limit: 1},
+      ],
+      as: 'userlike'
+    }
+  },
+  {
     $addFields: {
       isConnection: {
         $cond: { if: { $in: ['$user', connectionIds] }, then: 1, else: 0 }
+      },
+      isLiked: {
+        $gt: [{$size: '$userlike'},0]
       }
     }
   },
@@ -167,7 +229,8 @@ const feed = async (req, res, next) => {
       likes:1,
       content: 1,
       createdAt: 1,
-      isConnection: 1
+      isConnection: 1,
+      isLiked: 1,
     }
   }
 ]);
@@ -264,7 +327,7 @@ module.exports = {
   addpost,
   getMyPost,
   addPostMedia,
-  likepost,
+  likeAndUnlikepost,
   feed,
   editPost,
   deletePost,
