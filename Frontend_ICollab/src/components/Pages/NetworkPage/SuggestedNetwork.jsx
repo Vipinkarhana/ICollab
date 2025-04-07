@@ -1,31 +1,42 @@
-import { useState } from 'react';
-import ProfilePic from "../../Common/ProfilePic"; // Ensure you import the image or path correctly
-import { UserPlus } from "lucide-react"; // Importing the button icon
+import { useState, useEffect } from 'react';
+import ProfilePic from "../../Common/ProfilePic";
+import { UserPlus, Clock } from "lucide-react";
+import Name_Designation from '../../Common/Name&Designation';
+import { suggestedNetwork } from '../../../Services/networkService';
 
 function SuggestedNetwork() {
-  const people = [
-    { id: 1, name: "John Dews", role: "Research Scholar", img: ProfilePic },
-    { id: 2, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-    { id: 3, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-    { id: 4, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-    { id: 5, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-    { id: 6, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-    { id: 7, name: "New User", role: "Software Engineer", img: ProfilePic },
-    { id: 8, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 9, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 10, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 11, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 12, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 13, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 14, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 15, name: "Another User", role: "Data Scientist", img: ProfilePic },
-  ];
+  const [people, setPeople] = useState([]);
 
   const [showAll, setShowAll] = useState(false);
+  const [collabStatus, setCollabStatus] = useState({}); 
 
   const toggleShowAll = () => setShowAll(!showAll);
 
   const visiblePeople = showAll ? people : people.slice(0, 6);
+
+  // Function to handle button click
+  const handleCollabClick = (personId) => {
+    setCollabStatus((prevStatus) => ({
+      ...prevStatus,
+      [personId]: 'Pending', 
+    }));
+  };
+  
+  useEffect(() => {
+    const fetchNetworkData = async () => {
+      try {
+        const response = await suggestedNetwork();
+        if (response.status === "success") {
+          setPeople(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching network data:", error);
+      }
+    };
+    fetchNetworkData();
+  }
+
+  , []);
 
   return (
     <div className="p-6 rounded-md w-full h-auto bg-white border border-gray-300">
@@ -43,15 +54,30 @@ function SuggestedNetwork() {
         {visiblePeople.map((person) => (
           <div key={person.id} className="bg-white p-4 shadow-md rounded-md border border-gray-300">
             {/* Profile Image */}
-            <ProfilePic className="w-20 h-20 mx-auto mb-2" />
+            <ProfilePic className="w-20 h-20 mx-auto mb-2 rounded-full object-cover" />
             {/* Name and Role */}
-            <h3 className="text-center font-bold">{person.name}</h3>
-            <p className="text-center text-gray-600">{person.role}</p>
+            <div className="flex flex-col items-center justify-center ">
+              <Name_Designation
+                name={person.name}
+                designation={person.role}
+                nameClass="text-[1.0rem] font-semibold text-gray-800 text-center"
+                designationClass="text-sm text-gray-600 text-center"
+              />
+            </div>
             
             {/* Collab Button */}
-            <button className="w-full mt-2 bg-blue-500 text-white py-1 rounded flex items-center justify-center gap-1">
-              <UserPlus size={20} />
-              Collab
+            <button
+              onClick={() => handleCollabClick(person.id)}
+              className={`w-full mt-2 py-1 rounded flex items-center justify-center gap-1 ${collabStatus[person.id] === 'Pending' ? 'bg-gray-500 text-white' : 'bg-blue-500 text-white'}`}
+              disabled={collabStatus[person.id] === 'Pending'} 
+            >
+              {/* Add appropriate icons */}
+              {collabStatus[person.id] === 'Pending' ? (
+                 <Clock size={20} />
+              ) : (
+                <UserPlus size={20} />
+              )}
+              {collabStatus[person.id] === 'Pending' ? 'Pending' : 'Collab'}
             </button>
           </div>
         ))}

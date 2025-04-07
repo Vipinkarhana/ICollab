@@ -9,13 +9,13 @@
  * @date 2025-02-20
  */
 
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ProfileCard from '../HomePage/LeftDiv/ProfileCard'
-import AllActivity from './AllActivity'
-import { useSelector } from 'react-redux';
-import { fetchMyPosts } from '../../../Redux/Slices/PostSlice';
-import { getUserByUsername } from "../../../services/authService";
+import ProfileCard from "../HomePage/LeftDiv/ProfileCard";
+import AllActivity from "./AllActivity";
+import { useSelector } from "react-redux";
+import { fetchMyPosts } from "../../../Redux/Slices/PostSlice";
+import { getUserByUsername } from "../../../Services/authService";
 
 /**
  * @class ActivityPage
@@ -71,22 +71,22 @@ function ActivityPage() {
   if (error) return <div>Error: {error}</div>;
 
   const user = isCurrentUser ? currentUser : otherUser;
-  const posts = isCurrentUser ? currentPosts : otherUser?.posts
+  const posts = isCurrentUser ? currentPosts : otherUser?.posts;
 
-  const otherUserProp = isCurrentUser? null: user;
+  const otherUserProp = isCurrentUser ? null : user;
 
   if (!user) return <div>No user found.</div>;
   return (
-    <div className= 'h-auto w-[90svw] mt-14 p-2 flex justify-evenly '>
-        <div className='w-[20%] h-[100%] flex flex-col justify-start items-center'>
-          <ProfileCard otherUser={otherUserProp}/>
-        </div>
-      <div className='w-[50%] min-h-[85svh] h-auto flex-col justify-start items-center gap-2 py-1 border bg-white border-gray-300 rounded-md'>
-        <AllActivity posts={posts}/>
+    <div className="h-auto w-[90svw] mt-14 p-2 flex justify-evenly ">
+      <div className="w-[20%] h-[100%] flex flex-col justify-start items-center">
+        <ProfileCard otherUser={otherUserProp} />
+      </div>
+      <div className="w-[50%] min-h-[85svh] h-auto flex-col justify-start items-center gap-2 py-1 border bg-white border-gray-300 rounded-md">
+        <AllActivity posts={posts} />
       </div>
       <div className="h-44 w-[20%] bg-white border border-gray-300 rounded-md"></div>
     </div>
-  )
+  );
 }
 
-export default ActivityPage
+export default ActivityPage;

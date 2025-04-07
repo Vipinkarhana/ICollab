@@ -8,7 +8,7 @@ const connectionModel = require('../models/connections');
 const likeModel = require('../models/likes');
 const { URL } = require('url');
 const { generatePresignedUrl, deleteFromR2 } = require('../../config/s3');
-  
+const SavedPost = require('../models/savedPost');
 
 const addpost = async (req, res, next) => {
   try {
@@ -323,6 +323,54 @@ const deletePost = async (req, res, next) => {
   }
 };
 
+const toggleSavePost = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { postid } = req.body;
+
+    let savedDoc = await SavedPost.findOne({ user: userId });
+
+    // If no savedDoc exists for the user, create one and add the post
+    if (!savedDoc) {
+      savedDoc = new SavedPost({
+        user: userId,
+        savedPosts: [postid],
+      });
+      await savedDoc.save();
+
+      return res.status(200).json({
+        message: 'Post saved successfully',
+        status: 'saved',
+      });
+    }
+
+    // If post already saved, remove it (unsave)
+    const isAlreadySaved = savedDoc.savedPosts.includes(postid);
+
+    if (isAlreadySaved) {
+      savedDoc.savedPosts.pull(postid);
+      await savedDoc.save();
+
+      return res.status(200).json({
+        message: 'Post unsaved successfully',
+        status: 'unsaved',
+      });
+    } else {
+      // Else, save the post
+      savedDoc.savedPosts.push(postid);
+      await savedDoc.save();
+
+      return res.status(200).json({
+        message: 'Post saved successfully',
+        status: 'saved',
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 module.exports = {
   addpost,
   getMyPost,
@@ -331,4 +379,5 @@ module.exports = {
   feed,
   editPost,
   deletePost,
+  toggleSavePost
 };

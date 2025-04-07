@@ -20,7 +20,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Name_Designation({ name, designation, nameClass = "", designationClass = "", user,divclass="" }) {
   return (
-    <div className={`flex h-16 justify-center items-start  flex-col  ${divclass}`}>
+    <div className={`flex h-16 justify-center   flex-col  ${divclass}`}>
       <Link
         to={user?.username ? `/profile/${user.username}` : "#"}
         className={`text-xl text-left font-bold hover:underline ${nameClass}`}
