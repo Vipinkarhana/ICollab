@@ -16,14 +16,14 @@ const SectionHeading = ({ heading, photo, text_content, video }) => {
         <img
           src={photo}
           alt="Media Content"
-          className="w-[90%] max-w-2xl object-contain  rounded-lg mb-6  "
+          className="w-[90%] max-w-2xl object-contain sm:ml-28 ml-5 rounded-lg mb-6  "
         />
         </div>
       )}
 
       {/* Text Content */}
       {text_content && (
-        <p className="text-xl text-gray-600 mb-6 leading-relaxed text-justify">
+        <p className="text-lg text-gray-600 mb-6 leading-relaxed text-justify">
           {text_content}
         </p>
       )}

@@ -32,6 +32,7 @@ function ProjectPreview() {
         {/* Project Tracking and Collaboration Sections */}
         <ProjectTracking />
         <ProjectCollab />
+        <Interactions />
         {/* <Interactions/> */}
       </div>
     </div>
