@@ -2,30 +2,46 @@ import React, { useState } from "react";
 import ProfilePic from "../../Common/ProfilePic";
 import Name_Designation from "../../Common/Name&Designation";
 import { UserX, UserCheck } from "lucide-react";
+import { acceptRequest, rejectRequest } from "../../../Services/networkService";
 
 
-function CollaborationRequest({ name, designation, profilepic }) {
+function CollaborationRequest({ name, designation, profilepic, username }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationCompleted, setAnimationCompleted] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [message, setMessage] = useState("");
 
-  const handleClick = (action) => {
-    setIsAnimating(true); 
-
+  const animate = (message) => {
+    setIsAnimating(true);
     setTimeout(() => {
       setAnimationCompleted(true); 
-      setMessage(action === "accept" ? "Accepted Request" : "Rejected Request");
+      setMessage(message);
 
       setTimeout(() => {
         setIsVisible(false); 
       }, 600);
     }, 450);
+  }
+
+  const handleClick = (action) => {
+    try{
+      if (action === "accept") {
+        acceptRequest(username);
+        animate("Accepted Request");
+      }
+      else if (action === "reject") {
+        rejectRequest(username);
+        animate("Rejected Request");
+      }
+    }catch (error){
+      console.error("Error handling request:", error);
+    }
   };
 
   if (!isVisible) return null;
 
   return (
+    
     <div className="relative w-full h-32 flex items-center justify-between border-b bg-white text-gray-800 px-2 py-1 transition-transform duration-[450ms]">
       {animationCompleted ? (
         <div className="absolute inset-0 flex items-center justify-center   text-black text-xl  ">

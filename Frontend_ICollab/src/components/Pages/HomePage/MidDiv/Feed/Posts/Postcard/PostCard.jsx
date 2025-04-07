@@ -17,9 +17,13 @@ import {
 } from "../../../../../../../Redux/Slices/PostSlice";
 import { EllipsisVertical } from "lucide-react";
 import Interaction from "../../../../../../Common/Interaction";
+import { sendRequest } from "../../../../../../../Services/networkService";
+
 function PostCard({ post }) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const [isConnected, setIsConnected] = useState(!post?.isConnection);
+  console.log("isConnected", isConnected);
 
   const text = post?.content;
   const media = post?.media;
@@ -56,6 +60,13 @@ function PostCard({ post }) {
     dispatch(removePost({ postid: post?.id }));
     dispatch(fetchMyPosts());
   };
+
+  const handleSendRequest = () => {
+    sendRequest(user?.username)
+    setIsConnected(false);
+    setIsOpen(false);
+  }
+
 
   return (
     <div className="w-[100%] h-auto border border-gray-300 mt-3 bg-white rounded-lg   flex flex-col justify-center items-center gap-2">
@@ -116,19 +127,20 @@ function PostCard({ post }) {
               </button>
               {isOpen && (
                 <div className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8 z-50 bg-white rounded-md w-36 border border-gray-300 shadow-xl ">
-                  <button className=" text-xl text-blue-600 h-16 border-b w-full hover:bg-blue-50 rounded-md py-1  flex items-center justify-start gap-3 px-4">
-                    <UserPlus size={22} />
-                    Collab
-                  </button>
+                  {isConnected ? (
+                    <button className=" text-xl text-blue-600 h-16 border-b w-full hover:bg-blue-50 rounded-md py-1  flex items-center justify-start gap-3 px-4" onClick={() => handleSendRequest()}>
+                      <UserPlus size={22} />
+                      Collab
+                    </button>
+                  ) : (<></>)}
                   <button className="text-gray-500  w-full px-4 hover:bg-gray-100 rounded-b-lg flex items-center justify-start gap-3 text-xl border-b h-16 ">
                     <Ban size={20} color="red" />
                     <p>Block</p>
                   </button>
                   <button
                     onClick={() => setBookmarked(!bookmarked)}
-                    className={`rounded-full transition-all h-16 flex items-center justify-start w-full px-4${
-                      bookmarked ? "text-gray-500" : " text-gray-500"
-                    }`}
+                    className={`rounded-full transition-all h-16 flex items-center justify-start w-full px-4${bookmarked ? "text-gray-500" : " text-gray-500"
+                      }`}
                   >
                     {bookmarked ? (
                       <div className="flex items-center justify-start gap-3  w-full text-xl px-4">

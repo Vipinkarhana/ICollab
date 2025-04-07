@@ -7,24 +7,25 @@ const NetworkCard = ({ person }) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
 
 
-  const description = person.description || "";
-  const truncatedDescription = description.slice(0, 30); 
-  const isDescriptionTruncated = description.length > 5;
+  const description = person?.profile?.about || "";
+  const truncatedDescription = description.slice(0, 30);
+  const isDescriptionTruncated = description.length > 10;
 
   return (
     <div className="bg-white p-4 shadow-md rounded-md border border-gray-300 flex flex-col items-center">
       {/* Profile Image */}
-      <ProfilePic className="w-20 h-20 mx-auto mb-2 rounded-full border border-gray-300" />
+      <ProfilePic className="w-20 h-20 mx-auto mb-2 rounded-full border border-gray-300" picture={person?.profile_pic}/>
       
       {/* Name */}
       <div className="flex flex-col items-center justify-center">
-        <Name_Designation
-          name={person.name}
-          designation={person.role}
-          nameClass="text-[1.0rem] font-semibold text-gray-800 text-center"
-          designationClass="text-sm text-gray-600 text-center"
-        />
-      </div>
+              <Name_Designation
+                name={person.name}
+                designation={person?.designation}
+                nameClass="text-[1.0rem] font-semibold text-gray-800 text-center"
+                user={person}
+                designationClass="text-sm text-gray-600  text-center"
+              />
+            </div>
       
       {/* Description */}
       <p className="text-center text-gray-600 text-sm mt-2">

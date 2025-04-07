@@ -1,5 +1,4 @@
 import privateAxios from "./apiService";
-import axios from "axios";
 
 export const addPost = async (postData) => {
     try {

@@ -1,26 +1,11 @@
-import { useState } from 'react';
-import ProfilePic from "../../Common/ProfilePic"; // Ensure you import the image or path correctly
-import { UserPlus, Clock } from "lucide-react"; // Importing the button icons
+import { useState, useEffect } from 'react';
+import ProfilePic from "../../Common/ProfilePic";
+import { UserPlus, Clock } from "lucide-react";
 import Name_Designation from '../../Common/Name&Designation';
+import { suggestedNetwork } from '../../../Services/networkService';
 
 function SuggestedNetwork() {
-  const people = [
-    { id: 1, name: "John Dews", role: "Research Scholar", img: ProfilePic },
-    { id: 2, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-    { id: 3, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-    { id: 4, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-    { id: 5, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-    { id: 6, name: "Chanchal Singh", role: "HR Professional", img: ProfilePic },
-    { id: 7, name: "New User", role: "Software Engineer", img: ProfilePic },
-    { id: 8, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 9, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 10, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 11, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 12, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 13, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 14, name: "Another User", role: "Data Scientist", img: ProfilePic },
-    { id: 15, name: "Another User", role: "Data Scientist", img: ProfilePic },
-  ];
+  const [people, setPeople] = useState([]);
 
   const [showAll, setShowAll] = useState(false);
   const [collabStatus, setCollabStatus] = useState({}); 
@@ -36,6 +21,22 @@ function SuggestedNetwork() {
       [personId]: 'Pending', 
     }));
   };
+  
+  useEffect(() => {
+    const fetchNetworkData = async () => {
+      try {
+        const response = await suggestedNetwork();
+        if (response.status === "success") {
+          setPeople(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching network data:", error);
+      }
+    };
+    fetchNetworkData();
+  }
+
+  , []);
 
   return (
     <div className="p-6 rounded-md w-full h-auto bg-white border border-gray-300">
