@@ -129,7 +129,7 @@ const ProjectTracking = () => {
         </div>
 
         {/* Tracking Details */}
-        <div className="space-y-8">
+        <div className="space-y-11">
           {/* Step 1: Project Initiation */}
           <div>
             <h3 className="text-lg font-semibold text-gray-800">
@@ -184,7 +184,7 @@ const ProjectTracking = () => {
           </div>
 
           {/* Step 6: Deployment */}
-          <div>
+          <div >
             <h3 className="text-lg font-semibold text-gray-800">Deployment</h3>
             <p className="text-gray-500">
               The project has been deployed. It is now live and accessible to
