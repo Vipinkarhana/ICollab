@@ -3,6 +3,7 @@ import React, { useState } from "react";
 const Media = ({ media }) => {
   const [expanded, setExpanded] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(false); // New state for preloader
 
   if (!media || media.length === 0) return null;
 
@@ -18,10 +19,12 @@ const Media = ({ media }) => {
   };
 
   const handlePrev = () => {
+    setLoading(true); // Show preloader
     setCurrentIndex((prev) => (prev === 0 ? media.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
+    setLoading(true); // Show preloader
     setCurrentIndex((prev) => (prev === media.length - 1 ? 0 : prev + 1));
   };
 
@@ -44,6 +47,13 @@ const Media = ({ media }) => {
             ✕
           </button>
 
+          {/* Preloader */}
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+              <div className="loader border-t-4 border-white rounded-full w-12 h-12 animate-spin"></div>
+            </div>
+          )}
+
           {/* Media Display */}
           <div className="flex-grow w-full flex items-center justify-center overflow-hidden">
             {isVideo ? (
@@ -51,6 +61,7 @@ const Media = ({ media }) => {
                 src={media[currentIndex]}
                 controls
                 className="max-h-[75vh] max-w-full object-contain"
+                onCanPlay={() => setLoading(false)} // Hide preloader when video is ready
               />
             ) : (
               <div className="overflow-auto scrollbar-hide min-h-[35svh] max-h-[75vh] max-w-full p-2">
@@ -58,6 +69,7 @@ const Media = ({ media }) => {
                   src={media[currentIndex]}
                   alt="Expanded Media"
                   className="max-h-[75vh] min-h-[35svh] max-w-full object-contain cursor-zoom-in"
+                  onLoad={() => setLoading(false)} // Hide preloader when image is loaded
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
