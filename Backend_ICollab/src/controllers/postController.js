@@ -338,7 +338,7 @@ const toggleSavePost = async (req, res, next) => {
 
       return res.status(200).json({
         message: 'Post saved successfully',
-        status: 'saved',
+        status: 'success',
       });
     }
 
@@ -351,7 +351,7 @@ const toggleSavePost = async (req, res, next) => {
 
       return res.status(200).json({
         message: 'Post unsaved successfully',
-        status: 'unsaved',
+        status: 'success',
       });
     } else {
       // Else, save the post
@@ -360,7 +360,7 @@ const toggleSavePost = async (req, res, next) => {
 
       return res.status(200).json({
         message: 'Post saved successfully',
-        status: 'saved',
+        status: 'success',
       });
     }
   } catch (err) {

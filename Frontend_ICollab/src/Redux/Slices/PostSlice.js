@@ -5,6 +5,7 @@ import {
   getMyPost,
   editPost,
   deletePost,
+  toggleSavePost,
 } from "../../Services/postService";
 
 export const createPost = createAsyncThunk(
@@ -102,6 +103,25 @@ export const fetchMyPosts = createAsyncThunk(
   }
 );
 
+export const saveOrUnsavePost = createAsyncThunk(
+  "post/saveOrUnsavePost",
+  async ({ post }, { rejectWithValue }) => {
+    try {
+      const postid = post._id; 
+      const response = await toggleSavePost(postid);
+      console.log("Response from saveOrUnsavePost:", response);
+      console.log("Post ID:", postid);
+      if (response.status === "success") {
+        return { postid, post };
+      } else {
+        return rejectWithValue(response.message);
+      }
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const initialState = {
   post: {
     content: "",
@@ -175,6 +195,23 @@ const postSlice = createSlice({
     });
     builder.addCase(updatePost.rejected, (state, action) => {
       state.loading = false;
+      state.error = action.payload;
+    });
+    builder.addCase(saveOrUnsavePost.fulfilled, (state, action) => {
+      const { postid, message } = action.payload;
+      console.log("Post ID:", postid);
+      // Handle toggling in `savePost` array
+      const alreadySaved = state.savePost.includes(postid);
+      if (alreadySaved) {
+        // Unsave the post
+        state.savePost = state.savePost.filter((id) => id !== postid);
+      } else {
+        // Save the post
+        state.savePost.push(postid);
+      }
+    });
+
+    builder.addCase(saveOrUnsavePost.rejected, (state, action) => {
       state.error = action.payload;
     });
   },

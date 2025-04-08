@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Pencil, Trash2, UserPlus, Ban } from "lucide-react";
 import ProfilePic from "../../../../../../Common/ProfilePic";
@@ -14,6 +14,7 @@ import {
   openPostModal,
   removePost,
   fetchMyPosts,
+  saveOrUnsavePost
 } from "../../../../../../../Redux/Slices/PostSlice";
 import { EllipsisVertical } from "lucide-react";
 import Interaction from "../../../../../../Common/Interaction";
@@ -24,6 +25,7 @@ function PostCard({ post }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isConnected, setIsConnected] = useState(!post?.isConnection);
   console.log("isConnected", isConnected);
+  const savedPosts = useSelector((state) => state.post.savePost);
 
   const text = post?.content;
   const media = post?.media;
@@ -32,8 +34,21 @@ function PostCard({ post }) {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+  
+  
+  const handleToggleSave = () => {
+    dispatch(saveOrUnsavePost({ post: post}));
+    setIsOpen(false);
+  };
+  const bookmarked = savedPosts.includes(post._id);
+  useEffect(() => {
+    console.log("bookmarked", bookmarked);
+    console.log(post._id, "post id");
+    
+  }, []);
+    
 
-  const [bookmarked, setBookmarked] = useState(false);
+
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);
   const currentUser = useSelector((state) => state.user.userData);
 
@@ -128,42 +143,33 @@ function PostCard({ post }) {
               {isOpen && (
                 <div className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8 z-50 bg-white rounded-md w-36 border border-gray-300 shadow-xl ">
                   {isConnected ? (
-                    <button className=" text-xl text-blue-600 h-16 border-b w-full hover:bg-blue-50 rounded-md py-1  flex items-center justify-start gap-3 px-4" onClick={() => handleSendRequest()}>
+                    <button
+                      className=" text-xl text-blue-600 h-16 border-b w-full hover:bg-blue-50 rounded-md py-1  flex items-center justify-start gap-3 px-4"
+                      onClick={() => handleSendRequest()}
+                    >
                       <UserPlus size={22} />
                       Collab
                     </button>
-                  ) : (<></>)}
+                  ) : (
+                    <></>
+                  )}
                   <button className="text-gray-500  w-full px-4 hover:bg-gray-100 rounded-b-lg flex items-center justify-start gap-3 text-xl border-b h-16 ">
                     <Ban size={20} color="red" />
                     <p>Block</p>
                   </button>
                   <button
-                    onClick={() => setBookmarked(!bookmarked)}
-                    className={`rounded-full transition-all h-16 flex items-center justify-start w-full px-4${bookmarked ? "text-gray-500" : " text-gray-500"
-                      }`}
+                    onClick={handleToggleSave}
+                    className=" transition-all h-16 flex items-center justify-start w-full px-4 text-gray-500 hover:bg-gray-100"
                   >
                     {bookmarked ? (
-                      <div className="flex items-center justify-start gap-3  w-full text-xl px-4">
-                        <SolidBookmark className="w-auto h-[1.5rem]  text-gray-400" />
-                        <p className="text-xl text-gray-500">Saved</p>
+                      <div className="flex items-center justify-start gap-3 w-full text-xl">
+                        <SolidBookmark className="w-auto h-[1.5rem] text-blue-400" />
+                        <p>Saved</p>
                       </div>
                     ) : (
-                      <div className="flex gap-1 items-center justify-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="size-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
-                          />
-                        </svg>
-                        <p className="text-xl">Save</p>
+                      <div className="flex items-center justify-start gap-3 w-full text-xl">
+                        <OutlineBookmark className="w-auto h-[1.5rem] text-gray-500" />
+                        <p>Save</p>
                       </div>
                     )}
                   </button>
