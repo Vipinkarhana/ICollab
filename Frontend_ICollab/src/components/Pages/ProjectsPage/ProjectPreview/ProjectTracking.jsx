@@ -33,7 +33,7 @@ const ProjectTracking = () => {
       <div className="text-3xl font-bold text-gray-800  p-6">
         <p>Milestones</p>
       </div>
-      <div className="flex items-start space-x-6 p-4  h-auto">
+      <div className="flex items-start space-x-6 p-4  h-auto ">
         {/* Timeline */}
         <div className="flex flex-col items-center">
           {/* Step 1 */}
@@ -47,14 +47,14 @@ const ProjectTracking = () => {
             ✔
           </div>
           <div
-            className={`w-1 h-16 ${
+            className={`w-1 md:h-16 h-28 ${
               step2Completed ? "bg-green-500" : "bg-gray-300"
             }`}
           ></div>
 
           {/* Step 2 */}
           <div
-            className={`w-8 h-8 flex items-center justify-center rounded-full ${
+            className={`w-8 h-8 flex items-center justify-center rounded-full  ${
               step2Completed
                 ? "bg-green-500 text-white"
                 : "border-2 border-green-500 text-green-500"
@@ -63,7 +63,7 @@ const ProjectTracking = () => {
             2
           </div>
           <div
-            className={`w-1 h-16 ${
+            className={`w-1 md:h-16 h-28 ${
               step3Completed ? "bg-green-500" : "bg-gray-300"
             }`}
           ></div>
@@ -79,7 +79,7 @@ const ProjectTracking = () => {
             3
           </div>
           <div
-            className={`w-1 h-16 ${
+            className={`w-1 md:h-16 h-36 ${
               step4Completed ? "bg-green-500" : "bg-gray-300"
             }`}
           ></div>
@@ -95,7 +95,7 @@ const ProjectTracking = () => {
             4
           </div>
           <div
-            className={`w-1 h-16 ${
+            className={`w-1  md:h-16 h-32 ${
               step5Completed ? "bg-green-500" : "bg-gray-300"
             }`}
           ></div>
@@ -111,7 +111,7 @@ const ProjectTracking = () => {
             5
           </div>
           <div
-            className={`w-1 h-16 ${
+            className={`w-1  md:h-16 h-36 ${
               step6Completed ? "bg-green-500" : "bg-gray-300"
             }`}
           ></div>

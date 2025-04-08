@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function ProjectForm({ onSaveDraft, onCreateProject, onCancel }) {
   const [formData, setFormData] = useState({
@@ -15,6 +15,8 @@ function ProjectForm({ onSaveDraft, onCreateProject, onCancel }) {
   });
 
   const [errors, setErrors] = useState({});
+  const [isOngoing, setIsOngoing] = useState(false); // New state for ongoing checkbox
+  const today = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,14 +27,8 @@ function ProjectForm({ onSaveDraft, onCreateProject, onCancel }) {
   };
 
   const handleTagsChange = (e) => {
-    const { options } = e.target;
-    const selectedTags = [];
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        selectedTags.push(options[i].value);
-      }
-    }
-    setFormData({ ...formData, tags: selectedTags });
+    const tags = e.target.value.split(',').map((tag) => tag.trim()).filter(Boolean); // Split by commas and trim spaces
+    setFormData({ ...formData, tags });
   };
 
   const handleFileChange = (e) => {
@@ -42,15 +38,21 @@ function ProjectForm({ onSaveDraft, onCreateProject, onCancel }) {
     });
   };
 
+  const handleOngoingChange = (e) => {
+    setIsOngoing(e.target.checked); // Update ongoing state based on checkbox
+    if (e.target.checked) {
+      setFormData({ ...formData, endDate: '' }); // Clear end date when ongoing
+    }
+  };
+
   const validateForm = () => {
     const newErrors = {};
     // Check required fields
     if (!formData.title) newErrors.title = 'Project title is required.';
     if (!formData.description) newErrors.description = 'Description is required.';
     if (!formData.category) newErrors.category = 'Category is required.';
-    if (!formData.priority) newErrors.priority = 'Priority is required.';
     if (!formData.startDate) newErrors.startDate = 'Start date is required.';
-    if (!formData.endDate) newErrors.endDate = 'End date is required.';
+    if (!isOngoing && !formData.endDate) newErrors.endDate = 'End date is required.';
     if (!formData.collaborators) newErrors.collaborators = 'Collaborators are required.';
     if (!formData.roles) newErrors.roles = 'Role is required.';
     if (formData.tags.length === 0) newErrors.tags = 'At least one tag is required.';
@@ -67,6 +69,40 @@ function ProjectForm({ onSaveDraft, onCreateProject, onCancel }) {
       onCreateProject(formData);
     }
   };
+
+  // Disable typing for date inputs
+  useEffect(() => {
+    const startDateInput = document.querySelector('input[name="startDate"]');
+    const endDateInput = document.querySelector('input[name="endDate"]');
+
+    // Disable typing for start date
+    if (startDateInput) {
+      startDateInput.addEventListener('keydown', (e) => {
+        e.preventDefault();
+      });
+    }
+
+    // Disable typing for end date
+    if (endDateInput) {
+      endDateInput.addEventListener('keydown', (e) => {
+        e.preventDefault();
+      });
+    }
+
+    return () => {
+      // Cleanup the event listeners when the component is unmounted
+      if (startDateInput) {
+        startDateInput.removeEventListener('keydown', (e) => {
+          e.preventDefault();
+        });
+      }
+      if (endDateInput) {
+        endDateInput.removeEventListener('keydown', (e) => {
+          e.preventDefault();
+        });
+      }
+    };
+  }, []);
 
   return (
     <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit}>
@@ -104,37 +140,16 @@ function ProjectForm({ onSaveDraft, onCreateProject, onCancel }) {
       {/* Category */}
       <div>
         <label className="block font-medium">Category</label>
-        <select
+        <input
+          type="text"
           name="category"
           value={formData.category}
           onChange={handleInputChange}
           className={`w-full p-2 border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+          placeholder="Enter project category"
           required
-        >
-          <option value="">Select category</option>
-          <option value="Web Development">Web Development</option>
-          <option value="Data Analysis">Data Analysis</option>
-          <option value="Design">Design</option>
-        </select>
+        />
         {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
-      </div>
-
-      {/* Priority */}
-      <div>
-        <label className="block font-medium">Priority</label>
-        <select
-          name="priority"
-          value={formData.priority}
-          onChange={handleInputChange}
-          className={`w-full p-2 border ${errors.priority ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          required
-        >
-          <option value="">Select priority</option>
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
-        {errors.priority && <p className="text-red-500 text-sm">{errors.priority}</p>}
       </div>
 
       {/* Start and End Date */}
@@ -148,9 +163,11 @@ function ProjectForm({ onSaveDraft, onCreateProject, onCancel }) {
             onChange={handleInputChange}
             className={`w-full p-2 border ${errors.startDate ? 'border-red-500' : 'border-gray-300'} rounded-md`}
             required
+            max={today} // Prevent future dates for the start date (allow today's date and earlier)
           />
           {errors.startDate && <p className="text-red-500 text-sm">{errors.startDate}</p>}
         </div>
+
         <div className="w-full sm:w-1/2">
           <label className="block font-medium">End Date</label>
           <input
@@ -159,27 +176,40 @@ function ProjectForm({ onSaveDraft, onCreateProject, onCancel }) {
             value={formData.endDate}
             onChange={handleInputChange}
             className={`w-full p-2 border ${errors.endDate ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-            required
+            required={!isOngoing} // Disable requirement if ongoing
+            disabled={isOngoing} // Disable the field if ongoing
+            min={formData.startDate} // Set end date to not be before the start date
+            max={today} // Set end date to not be after today
           />
           {errors.endDate && <p className="text-red-500 text-sm">{errors.endDate}</p>}
         </div>
       </div>
 
+      {/* Ongoing Checkbox */}
+      <div>
+        <label className="inline-flex items-center">
+          <input
+            type="checkbox"
+            checked={isOngoing}
+            onChange={handleOngoingChange}
+            className="form-checkbox"
+          />
+          <span className="ml-2">This project is ongoing</span>
+        </label>
+      </div>
+
       {/* Tags */}
       <div>
-        <label className="block font-medium">Tags</label>
-        <select
-          multiple
+        <label className="block font-medium">Tags </label>
+        <input
+          type="text"
           name="tags"
-          value={formData.tags}
+          value={formData.tags.join(', ')} // join tags into a string
           onChange={handleTagsChange}
           className={`w-full p-2 border ${errors.tags ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+          placeholder="Enter tags"
           required
-        >
-          <option value="React">React</option>
-          <option value="NodeJS">NodeJS</option>
-          <option value="UI/UX">UI/UX</option>
-        </select>
+        />
         {errors.tags && <p className="text-red-500 text-sm">{errors.tags}</p>}
       </div>
 
@@ -201,18 +231,15 @@ function ProjectForm({ onSaveDraft, onCreateProject, onCancel }) {
       {/* Roles */}
       <div>
         <label className="block font-medium">Roles</label>
-        <select
+        <input
+          type="text"
           name="roles"
           value={formData.roles}
           onChange={handleInputChange}
           className={`w-full p-2 border ${errors.roles ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+          placeholder="Enter project role"
           required
-        >
-          <option value="">Select role</option>
-          <option value="Developer">Developer</option>
-          <option value="Designer">Designer</option>
-          <option value="Manager">Manager</option>
-        </select>
+        />
         {errors.roles && <p className="text-red-500 text-sm">{errors.roles}</p>}
       </div>
 
