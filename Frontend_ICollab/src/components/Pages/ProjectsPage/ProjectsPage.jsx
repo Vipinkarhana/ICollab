@@ -96,9 +96,9 @@ function ProjectsPage() {
       </div>
 
       {/* Project cards and search */}
-      <div className="w-full sm:w-1/2 md:w-[70%] lg:w-2/5 h-auto flex flex-col justify-start items-center gap-2 py-1 m-2">
+      <div className="w-full sm:w-1/2 md:w-[80%] lg:w-2/5 h-auto flex flex-col justify-start items-center gap-2 py-1 m-2">
         <SearchBar />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-4 items-center justify-center">
+        <div className="flex flex-col gap-4 items-center justify-center">
           <ProjectCard />
           <ProjectCard />
           <ProjectCard />
