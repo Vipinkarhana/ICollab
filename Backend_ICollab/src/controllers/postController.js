@@ -368,6 +368,29 @@ const toggleSavePost = async (req, res, next) => {
   }
 };
 
+const getSavedPosts = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const saved = await SavedPost.findOne({ user: userId }).populate({
+      path: 'savedPosts',
+      populate: {
+        path: 'user',
+        select: 'username profile_pic name designation',
+      },
+    });
+
+    res.status(200).json({
+      message: 'Saved posts fetched successfully',
+      data: saved?.savedPosts || [],
+      status: 'success',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 module.exports = {
   addpost,
   getMyPost,
@@ -377,4 +400,5 @@ module.exports = {
   editPost,
   deletePost,
   toggleSavePost,
+  getSavedPosts
 };

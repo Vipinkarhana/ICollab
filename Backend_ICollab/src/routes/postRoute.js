@@ -9,6 +9,7 @@ const {
   editPost,
   deletePost,
   toggleSavePost,
+  getSavedPosts,  
 } = require('../controllers/postController');
 const { validatePost } = require('../middlewares/validation');
 const { isloggedin } = require('../middlewares/auth');
@@ -21,5 +22,6 @@ router.get('/feed', isloggedin, feed);
 router.post('/editpost', isloggedin, editPost);
 router.post('/deletepost', isloggedin, deletePost);
 router.post('/savepost', isloggedin, toggleSavePost);
+router.get('/savedposts', isloggedin, getSavedPosts);
 
 module.exports = router;
