@@ -8,10 +8,10 @@ let rejectSchema = mongoose.Schema(
       required: true,
     },
     reciever: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        required: true,
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+      required: true,
+    },
   },
   {
     timestamps: true,

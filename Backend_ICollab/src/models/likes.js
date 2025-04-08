@@ -6,10 +6,12 @@ let likeSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    userId: [{
+    userId: [
+      {
         type: String,
         required: true,
-    }],
+      },
+    ],
   },
   {
     timestamps: true,
@@ -19,7 +21,7 @@ let likeSchema = mongoose.Schema(
         delete ret._id;
         delete ret.__v;
         // delete ret.status; // TODO: Uncomment this line to hide the status field (v0)
-         delete ret.updatedAt;
+        delete ret.updatedAt;
         return ret;
       },
     },

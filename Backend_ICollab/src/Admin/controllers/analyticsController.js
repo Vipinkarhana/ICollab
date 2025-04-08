@@ -9,22 +9,46 @@ const getAnalytics = async (req, res, next) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const newUsers = await userModel.countDocuments({ createdAt: { $gte: today } });
+    const newUsers = await userModel.countDocuments({
+      createdAt: { $gte: today },
+    });
     const totalPosts = await postModel.countDocuments();
-    const newPosts = await postModel.countDocuments({ createdAt: { $gte: today } });
-    const activeUsers = await userModel.countDocuments({ lastLogin: { $gte: today } });
+    const newPosts = await postModel.countDocuments({
+      createdAt: { $gte: today },
+    });
+    const activeUsers = await userModel.countDocuments({
+      lastLogin: { $gte: today },
+    });
 
     // Post Growth (Last 7 Days)
     const postGrowth = await postModel.aggregate([
-      { $match: { createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } } },
-      { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } },
+      {
+        $match: {
+          createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          count: { $sum: 1 },
+        },
+      },
       { $sort: { _id: 1 } },
     ]);
 
     // Page Views (Last 7 Days)
     const pageViews = await pageViewModel.aggregate([
-      { $match: { createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } } },
-      { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } },
+      {
+        $match: {
+          createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          count: { $sum: 1 },
+        },
+      },
       { $sort: { _id: 1 } },
     ]);
 
@@ -41,16 +65,19 @@ const getAnalytics = async (req, res, next) => {
       let deviceType = 'Other';
       if (/mobile/i.test(userAgent)) deviceType = 'Mobile';
       else if (/tablet/i.test(userAgent)) deviceType = 'Tablet';
-      else if (/windows|macintosh|linux/i.test(userAgent)) deviceType = 'Desktop';
+      else if (/windows|macintosh|linux/i.test(userAgent))
+        deviceType = 'Desktop';
 
       deviceUsage[deviceType] = (deviceUsage[deviceType] || 0) + 1;
 
       // Improved Browser Detection
       let browser = 'Other';
       if (/edg/i.test(userAgent)) browser = 'Edge';
-      else if (/chrome|crios/i.test(userAgent) && !/edg/i.test(userAgent)) browser = 'Chrome';
+      else if (/chrome|crios/i.test(userAgent) && !/edg/i.test(userAgent))
+        browser = 'Chrome';
       else if (/firefox|fxios/i.test(userAgent)) browser = 'Firefox';
-      else if (/safari/i.test(userAgent) && !/chrome|crios/i.test(userAgent)) browser = 'Safari';
+      else if (/safari/i.test(userAgent) && !/chrome|crios/i.test(userAgent))
+        browser = 'Safari';
       else if (/opr|opera/i.test(userAgent)) browser = 'Opera';
 
       browserUsage[browser] = (browserUsage[browser] || 0) + 1;
@@ -72,12 +99,11 @@ const getAnalytics = async (req, res, next) => {
   }
 };
 
-
-
 const trackPageView = async (req, res, next) => {
   try {
     const { page } = req.body;
-    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const ipAddress =
+      req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'];
 
     await pageViewModel.create({ page, ipAddress, userAgent });

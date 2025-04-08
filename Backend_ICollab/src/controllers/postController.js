@@ -96,14 +96,14 @@ const addPostMedia = async (req, res, next) => {
 
 const likeAndUnlikepost = async (req, res, next) => {
   try {
-    
-    const {postId} = req.query; //dummy post id
+    const { postId } = req.query; //dummy post id
     const userId = req.user._id;
     //const userId = req.body.userid;
-    let liked=0, unliked=0;
+    let liked = 0,
+      unliked = 0;
     let likeDoc = await likeModel.findOne({ postId });
 
-    if(!likeDoc){
+    if (!likeDoc) {
       likeDoc = await likeModel.create({ postId, userId: [userId] });
     }
 
@@ -111,31 +111,30 @@ const likeAndUnlikepost = async (req, res, next) => {
       // Check if the current user is already in the liked array
       if (likeDoc.userId.includes(userId)) {
         await likeModel.findOneAndUpdate(
-          {postId: postId},
-          {$pull: {userId: userId}}
+          { postId: postId },
+          { $pull: { userId: userId } }
         );
         await postModel.findOneAndUpdate(
-          {_id: postId},
-          {$inc: {likes: -1}}
+          { _id: postId },
+          { $inc: { likes: -1 } }
         );
-        unliked=1;
+        unliked = 1;
       } else {
         // Add the user to the like document's userId array if not already present
-        await likeModel.findOneAndUpdate(
-          { postId },
-          { $addToSet: { userId } }
-        );
-        console.log("PostId: ", postId);
+        await likeModel.findOneAndUpdate({ postId }, { $addToSet: { userId } });
+        console.log('PostId: ', postId);
         await postModel.findOneAndUpdate(
-          {_id: postId},
-          {$inc: {likes: 1}}
+          { _id: postId },
+          { $inc: { likes: 1 } }
         );
-        liked=1;
+        liked = 1;
       }
     }
     res.status(200).json({
-      data: postId,liked,unliked,
-      status: 'success'
+      data: postId,
+      liked,
+      unliked,
+      status: 'success',
     });
   } catch (err) {
     next(err);
@@ -153,88 +152,87 @@ const feed = async (req, res, next) => {
     const date = new Date(Number(timestamp));
     const connection = await connectionModel.findOne({ user: req.user.id });
     //const connection = await connectionModel.findOne({ user: req.body.userid });
-    console.log("Connection: ", connection);
+    console.log('Connection: ', connection);
     const connectionIds = connection?.connectedusers || [];
-    console.log("Connection IDs:", connectionIds);
+    console.log('Connection IDs:', connectionIds);
     const userId = req.user._id;
     //const userId = req.body.userid;
     const posts = await postModel.aggregate([
-  {
-    $match: {
-      createdAt: { $lt: date },
-      status: 'public'
-    }
-  },
-  {
-    $lookup: {
-      from: 'postlikes',
-      let: {postId: {$toString: '$_id'}},
-      pipeline: [
-        {
-          $match: {
-              $expr: {
-                $and: [
-                  {$eq: ['$postId', '$$postId']},
-                  {$in: [String(userId), '$userId']}
-                ]
-              }
+      {
+        $match: {
+          createdAt: { $lt: date },
+          status: 'public',
+        },
+      },
+      {
+        $lookup: {
+          from: 'postlikes',
+          let: { postId: { $toString: '$_id' } },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$postId', '$$postId'] },
+                    { $in: [String(userId), '$userId'] },
+                  ],
+                },
+              },
+            },
+            { $limit: 1 },
+          ],
+          as: 'userlike',
+        },
+      },
+      {
+        $addFields: {
+          isConnection: {
+            $cond: { if: { $in: ['$user', connectionIds] }, then: 1, else: 0 },
+          },
+          isLiked: {
+            $gt: [{ $size: '$userlike' }, 0],
           },
         },
-        {$limit: 1},
-      ],
-      as: 'userlike'
-    }
-  },
-  {
-    $addFields: {
-      isConnection: {
-        $cond: { if: { $in: ['$user', connectionIds] }, then: 1, else: 0 }
       },
-      isLiked: {
-        $gt: [{$size: '$userlike'},0]
-      }
-    }
-  },
-  {
-    $sort: { createdAt: -1 }
-  },
-  {
-    $limit: 10
-  },
-  {
-    $sort: { isConnection: -1 }
-  },
-  {
-    $lookup: {
-      from: 'users',           // the collection name for users
-      localField: 'user',      // field in posts referencing the user
-      foreignField: '_id',     // field in users to join on
-      as: 'user'
-    }
-  },
-  {
-    $unwind: '$user'
-  },
-  {
-    $project: {
-      // Projecting specific user fields similar to populate
-      'user.username': 1,
-      'user.name': 1,
-      'user.profile_pic': 1,
-      'user.designation': 1,
-      // Optionally project other post fields if needed, e.g.:
-      media: 1,
-      tag:1,
-      comments:1,
-      likes:1,
-      content: 1,
-      createdAt: 1,
-      isConnection: 1,
-      isLiked: 1,
-    }
-  }
-]);
-
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $limit: 10,
+      },
+      {
+        $sort: { isConnection: -1 },
+      },
+      {
+        $lookup: {
+          from: 'users', // the collection name for users
+          localField: 'user', // field in posts referencing the user
+          foreignField: '_id', // field in users to join on
+          as: 'user',
+        },
+      },
+      {
+        $unwind: '$user',
+      },
+      {
+        $project: {
+          // Projecting specific user fields similar to populate
+          'user.username': 1,
+          'user.name': 1,
+          'user.profile_pic': 1,
+          'user.designation': 1,
+          // Optionally project other post fields if needed, e.g.:
+          media: 1,
+          tag: 1,
+          comments: 1,
+          likes: 1,
+          content: 1,
+          createdAt: 1,
+          isConnection: 1,
+          isLiked: 1,
+        },
+      },
+    ]);
 
     res.status(200).json({
       message: 'Feed fetched successfully',
@@ -370,7 +368,6 @@ const toggleSavePost = async (req, res, next) => {
   }
 };
 
-
 module.exports = {
   addpost,
   getMyPost,
@@ -379,5 +376,5 @@ module.exports = {
   feed,
   editPost,
   deletePost,
-  toggleSavePost
+  toggleSavePost,
 };

@@ -1,5 +1,8 @@
 const express = require('express');
-const {getAnalytics, trackPageView} = require("../controllers/analyticsController");
+const {
+  getAnalytics,
+  trackPageView,
+} = require('../controllers/analyticsController');
 const router = express.Router();
 
 router.get('/', getAnalytics);

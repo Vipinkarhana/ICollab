@@ -18,16 +18,24 @@ async function migratePostsToUser() {
       const posts = await postModel.find({ _id: { $in: user.profile.posts } });
 
       // Move posts to user
-      await userModel.updateOne({ _id: user._id }, { 
-        $set: { posts: posts.length > 0 ? posts.map(post => post._id) : [] } 
-      });
+      await userModel.updateOne(
+        { _id: user._id },
+        {
+          $set: {
+            posts: posts.length > 0 ? posts.map((post) => post._id) : [],
+          },
+        }
+      );
 
       // Remove posts reference from profile
-      await profileModel.updateOne({ _id: user.profile._id }, { $unset: { posts: "" } });
+      await profileModel.updateOne(
+        { _id: user.profile._id },
+        { $unset: { posts: '' } }
+      );
     }
   }
 
-  console.log("Migration completed!");
+  console.log('Migration completed!');
   mongoose.connection.close();
 }
 

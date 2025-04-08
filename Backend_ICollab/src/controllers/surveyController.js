@@ -23,4 +23,4 @@ const submitSurvey = async (req, res) => {
   }
 };
 
-module.exports = {submitSurvey};
+module.exports = { submitSurvey };

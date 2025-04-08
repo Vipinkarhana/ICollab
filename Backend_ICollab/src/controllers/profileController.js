@@ -30,10 +30,13 @@ const changeUserInfo = async (req, res, next) => {
     const username = req.user.username;
     let user = await userModel.findOne({ username: username });
     const { name, designation } = req.body;
-    user = await userModel.findByIdAndUpdate(user._id, 
-      { $set: { name: name, designation: designation } },
-      { new: true, lean: true }
-    ).populate('profile');
+    user = await userModel
+      .findByIdAndUpdate(
+        user._id,
+        { $set: { name: name, designation: designation } },
+        { new: true, lean: true }
+      )
+      .populate('profile');
 
     res.status(200).json({
       message: 'Successfully updated User Info',
@@ -48,7 +51,9 @@ const changeUserInfo = async (req, res, next) => {
 const changeAbout = async (req, res, next) => {
   try {
     const username = req.user.username;
-    const user = await userModel.findOne({ username: username }).populate('profile');
+    const user = await userModel
+      .findOne({ username: username })
+      .populate('profile');
     const { about } = req.body;
     await profileModel.findByIdAndUpdate(user.profile._id, {
       $set: { about: about },
@@ -87,10 +92,13 @@ const changeExperience = async (req, res, next) => {
   }
 };
 
-const userprofile = async(req, res, next) => {
+const userprofile = async (req, res, next) => {
   try {
     const username = req.params.username;
-    const user = await userModel.findOne({ username: username }).populate('profile').populate({path: 'posts', populate: {path: 'user'}});
+    const user = await userModel
+      .findOne({ username: username })
+      .populate('profile')
+      .populate({ path: 'posts', populate: { path: 'user' } });
     if (!user || !user.profile) {
       throw new ApiError(404, 'User profile not found');
     }

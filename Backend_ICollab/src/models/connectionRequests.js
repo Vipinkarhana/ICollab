@@ -8,14 +8,14 @@ let requestSchema = mongoose.Schema(
       required: true,
     },
     reciever: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        required: true,
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+      required: true,
+    },
     reqstatus: {
-        type: String,
-        enum: ['pending', 'accepted', 'rejected'],
-        default: 'pending',
+      type: String,
+      enum: ['pending', 'accepted', 'rejected'],
+      default: 'pending',
     },
   },
   {

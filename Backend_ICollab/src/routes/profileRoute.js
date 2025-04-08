@@ -13,6 +13,6 @@ router.get('/view', isloggedin, profile);
 router.post('/changeuserinfo', isloggedin, changeUserInfo);
 router.post('/changeabout', isloggedin, changeAbout);
 router.post('/changeexperience', isloggedin, changeExperience);
-router.get('/:username',isloggedin,  userprofile);
+router.get('/:username', isloggedin, userprofile);
 
 module.exports = router;

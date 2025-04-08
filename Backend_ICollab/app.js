@@ -24,14 +24,14 @@ var app = express();
 connectDB();
 
 // to allow both the frontends to access the backend running on different ports
-const allowedOrigins = config.FRONTEND_URL.split(",");
+const allowedOrigins = config.FRONTEND_URL.split(',');
 app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error('Not allowed by CORS'));
       }
     },
     credentials: true,
