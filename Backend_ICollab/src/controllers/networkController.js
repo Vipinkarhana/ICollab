@@ -89,9 +89,10 @@ const sendRequest = async (req, res, next) => {
       return next(new ApiError(400, 'User does not exist'));
     }
 
-    const [rejected, alreadyConnected] = await Promise.all([
+    const [rejected, alreadyConnected, requested] = await Promise.all([
       rejectedRequestModel.exists({ sender: user._id, reciever: reciever._id }),
       connectionModel.exists({ user: user._id, connectedusers: reciever._id }),
+      requestModel.exists({ sender: user._id, reciever: reciever._id }),
     ]);
 
     if (rejected) {
@@ -106,6 +107,14 @@ const sendRequest = async (req, res, next) => {
         new ApiError(
           400,
           'You are already connected with this user! No need to send the request again.'
+        )
+      );
+    }
+    else if (requested) {
+      return next(
+        new ApiError(
+          400,
+          'You have already sent the request! No need to send the request again.'
         )
       );
     }
