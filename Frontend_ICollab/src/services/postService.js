@@ -17,9 +17,9 @@ export const addPost = async (postData) => {
         const uploadPromises = postData.mediaFiles.map((fileObj, index) => {
             const fileBlob = new Blob([fileObj.file], { type: fileObj.file.type });
             return axios.put(presignedUrls[index], fileBlob, {
-              headers: { "Content-Type": fileObj.file.type || "application/octet-stream" },
+                headers: { "Content-Type": fileObj.file.type || "application/octet-stream" },
             });
-          });
+        });
 
         await Promise.all(uploadPromises);
 
@@ -55,7 +55,7 @@ export const editPost = async (postData) => {
         const uploadPromises = newMediaFiles.map((fileObj, index) => {
             const fileBlob = new Blob([fileObj.file], { type: fileObj.file.type });
             return axios.put(presignedUrls[index], fileBlob, {
-              headers: { "Content-Type": fileObj.file.type || "application/octet-stream" },
+                headers: { "Content-Type": fileObj.file.type || "application/octet-stream" },
             });
         });
 
@@ -74,8 +74,8 @@ export const editPost = async (postData) => {
     }
 };
 
-export const deletePost = async( postid ) => {
-    try{
+export const deletePost = async (postid) => {
+    try {
         const response = await privateAxios.post("/posts/deletepost", {
             postid
         });
@@ -85,8 +85,8 @@ export const deletePost = async( postid ) => {
     }
 }
 
-export const getMyPost = async() => {
-    try{
+export const getMyPost = async () => {
+    try {
         const response = await privateAxios.get("/posts/mypost");
         return response.data;
     } catch (error) {
@@ -106,6 +106,15 @@ export const getFeed = async (timestamp) => {
 }
 
 export const toggleSavePost = async (postid) => {
-  const response = await privateAxios.post("/posts/savepost",{postid});
-  return response.data; // should return something like { status: "saved" } or { status: "unsaved" }
+    const response = await privateAxios.post("/posts/savepost", {
+        postid,
+    });
+    return response.data;
 };
+
+export const toggleLikePost = async (postid) => {
+    const response = await privateAxios.post("/posts/likeandunlikepost", {
+        postid,
+    });
+    return response.data;
+}

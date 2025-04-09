@@ -35,7 +35,6 @@ function PostCard({ post }) {
     setIsOpen(!isOpen);
   };
   
-  
   const handleToggleSave = () => {
     dispatch(saveOrUnsavePost({ post: post}));
     setIsOpen(false);
@@ -45,11 +44,8 @@ function PostCard({ post }) {
   useEffect(() => {
     console.log("bookmarked", bookmarked);
     console.log(post._id, "post id");
-    
   }, []);
     
-
-
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);
   const currentUser = useSelector((state) => state.user.userData);
 
@@ -82,7 +78,6 @@ function PostCard({ post }) {
     setIsConnected(false);
     setIsOpen(false);
   }
-
 
   return (
     <div className="w-[100%] h-auto border border-gray-300 mt-3 bg-white rounded-lg   flex flex-col justify-center items-center gap-2">
@@ -198,7 +193,7 @@ function PostCard({ post }) {
       </div>
       {!isCurrentUser && (
         <div className="w-full ">
-          <Interaction />
+          <Interaction data={post}/>
         </div>
       )}
     </div>
