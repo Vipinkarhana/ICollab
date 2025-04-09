@@ -16,6 +16,7 @@ import ActivityPage from "./components/Pages/ActivityPage/ActivityPage";
 import LandingPage from "./components/Pages/LandingPage/LandingPage";
 import ProjectPreview from "./components/Pages/ProjectsPage/ProjectPreview/ProjectPreview";
 import SavedItemPage from "./components/Pages/SavedItems/SavedItemPage";
+import NewProjectPage from "./components/Pages/NewProjectPage/NewProjectPage";
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
             <Route path="/profile/:username" element={<ProfilePage />} />
             <Route path="/network" element={<NetworkPage />} />
             <Route path="/project" element={<ProjectPage />} />
+            <Route path="/project/new" element={<NewProjectPage />}></Route>
             <Route path="/message" element={<MessagePage />} />
             <Route path="/notification" element={<NotificationPage />} />
             <Route path="/incubators" element={<IncubatorsPage />} />
