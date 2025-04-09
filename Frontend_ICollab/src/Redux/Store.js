@@ -14,7 +14,7 @@ const userPersistConfig = {
 const postPersistConfig = {
   key: "post",
   storage: indexedDBStorageAdapter,
-  whitelist: [],
+  whitelist: ["savePost"],
 };
 
 const rootReducer = combineReducers({

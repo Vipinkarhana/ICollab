@@ -1,38 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BookmarkIcon as SolidBookmark } from "@heroicons/react/24/solid";
 import PostCard from "../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
 import ProjectCard from "../ProjectsPage/ProjectCard";
-
-const savedPosts = [
-  {
-    id: 1,
-    name: "Divyansh Singhal",
-    title: "Bringing Innovation to Life | CSE Student on a Mission to Code the...",
-    time: "2d",
-    content:
-      "Thrilled participated in SAMAGRA-2025, the inter-institutional Techno-Cultural Fest at the Institute of Technology and Science, Ghaziabad! I took part in four exciting competitions: video making, C programming, Python...",
-  },
-  {
-    id: 2,
-    name: "Divyansh Singhal",
-    title: "Bringing Innovation to Life | CSE Student on a Mission to Code the...",
-    time: "2d",
-    content:
-      "Thrilled to share that I recently participated in SAMAGRA-2025, the inter-institutional Techno-Cultural Fest at the Institute of Technology and Science, Ghaziabad! I took part in four exciting competitions: video making, C programming, Python...",
-  },
-  {
-    id: 3,
-    name: "Divyansh Singhal",
-    title: "Bringing Innovation to Life | CSE Student on a Mission to Code the...",
-    time: "2d",
-    content:
-      "Thrilled to share that I recently participated in SAMAGRA-2025, the inter-institutional Techno-Cultural Fest at the Institute of Technology and Science, Ghaziabad! I took part in four exciting competitions: video making, C programming, Python...",
-  },
-];
+import { useSelector } from "react-redux";
 
 const SavedItemPage = () => {
   // State to track the selected filter
   const [filter, setFilter] = useState("all");
+  const savedPostsObjects = useSelector((state) => state.post.savePost);
+  const [savedPosts, setSavedPosts] = useState(Object.values(savedPostsObjects));
+
+  useEffect(() => {
+    // Fetch saved posts from the Redux store or API if needed
+    setSavedPosts(Object.values(savedPostsObjects));
+  }
+  , [savedPostsObjects]);
 
   return (
     <div className="flex min-h-screen bg-gray-100 m-16">
