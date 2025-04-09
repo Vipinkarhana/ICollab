@@ -30,26 +30,34 @@ const SavedItemPage = () => {
       </div>
 
       {/* Main Section */}
-      <div className="flex-1 px-6 py-4 w-[50%]">
+      <div className="flex-1 px-6 py-4 w-[50svw]">
         <h2 className="text-xl font-semibold mb-1">Saved items</h2>
-        <p className="text-sm text-gray-600 mb-4">Anything you save is private.</p>
+        <p className="text-sm text-gray-600 mb-4">
+          Anything you save is private.
+        </p>
 
         {/* Filter buttons */}
         <div className="flex gap-2 mb-6">
           <button
-            className={`px-4 py-1 rounded-full border font-medium text-sm ${filter === "all" ? "bg-gray-300" : "hover:bg-gray-200"}`}
+            className={`px-4 py-1 rounded-full border font-medium text-sm ${
+              filter === "all" ? "bg-gray-300" : "hover:bg-gray-200"
+            }`}
             onClick={() => setFilter("all")}
           >
             All
           </button>
           <button
-            className={`px-4 py-1 rounded-full border font-medium text-sm ${filter === "posts" ? "bg-gray-300" : "hover:bg-gray-200"}`}
+            className={`px-4 py-1 rounded-full border font-medium text-sm ${
+              filter === "posts" ? "bg-gray-300" : "hover:bg-gray-200"
+            }`}
             onClick={() => setFilter("posts")}
           >
             Posts
           </button>
           <button
-            className={`px-4 py-1 rounded-full border font-medium text-sm ${filter === "projects" ? "bg-gray-300" : "hover:bg-gray-200"}`}
+            className={`px-4 py-1 rounded-full border font-medium text-sm ${
+              filter === "projects" ? "bg-gray-300" : "hover:bg-gray-200"
+            }`}
             onClick={() => setFilter("projects")}
           >
             Projects
@@ -71,10 +79,13 @@ const SavedItemPage = () => {
 
           {filter === "posts" && (
             <>
-              {/* Show only Posts */}
-              {savedPosts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
+              {savedPosts.length === 0 ? (
+                <p>No saved posts yet.</p>
+              ) : (
+                savedPosts.map((post) => (
+                  <PostCard key={post._id} post={post} />
+                ))
+              )}
             </>
           )}
 
