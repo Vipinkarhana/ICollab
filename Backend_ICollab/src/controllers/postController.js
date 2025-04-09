@@ -293,7 +293,6 @@ const deletePost = async (req, res, next) => {
   try {
     const { postid } = req.body;
     const username = req.user.username;
-    console.log(postid, username);
     const user = await userModel.findOne({ username: username });
 
     const post = await postModel.findOne({ _id: postid, user: user._id });

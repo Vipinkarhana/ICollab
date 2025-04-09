@@ -40,7 +40,8 @@ function PostCard({ post }) {
     dispatch(saveOrUnsavePost({ post: post}));
     setIsOpen(false);
   };
-  const bookmarked = savedPosts.includes(post._id);
+  // const bookmarked = savedPosts.includes(post._id);
+  const bookmarked = savedPosts.hasOwnProperty(post._id);
   useEffect(() => {
     console.log("bookmarked", bookmarked);
     console.log(post._id, "post id");

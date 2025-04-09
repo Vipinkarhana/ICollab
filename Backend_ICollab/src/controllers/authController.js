@@ -54,7 +54,6 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log('Login:', email, password);
 
   try {
     const user = await userModel.findOne({ email }).populate('profile');
@@ -120,7 +119,6 @@ const googleAuth = async (req, res, next) => {
     const { sub, email, name, picture } = response.data; // `sub` is the unique user ID
 
     let user = await userModel.findOne({ email }).populate('profile');
-    console.log('User:', user);
     const username = await generateUsername(email);
     const pass = Math.random().toString(36).slice(-8);
     const hashpass = await hashPassword(pass);
@@ -163,7 +161,7 @@ const googleAuth = async (req, res, next) => {
 
 const linkedin = async (req, res, next) => {
   try {
-    console.log('1');
+    
     const authURL =
       `https://www.linkedin.com/oauth/v2/authorization?` +
       `response_type=code&` +
@@ -172,7 +170,7 @@ const linkedin = async (req, res, next) => {
       `state=foobar&` +
       `scope=openid%20profile%20email`;
     res.redirect(authURL);
-    console.log('2');
+  
   } catch (err) {
     next(err);
   }

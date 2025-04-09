@@ -107,10 +107,8 @@ export const saveOrUnsavePost = createAsyncThunk(
   "post/saveOrUnsavePost",
   async ({ post }, { rejectWithValue }) => {
     try {
-      const postid = post._id; 
+      const postid = post._id;
       const response = await toggleSavePost(postid);
-      console.log("Response from saveOrUnsavePost:", response);
-      console.log("Post ID:", postid);
       if (response.status === "success") {
         return { postid, post };
       } else {
@@ -134,7 +132,7 @@ const initialState = {
     posts: [],
   },
   myPost: [],
-  savePost: [],
+  savePost: {},
   isStartPostModalOpen: false,
   error: null,
   loading: false,
@@ -198,16 +196,15 @@ const postSlice = createSlice({
       state.error = action.payload;
     });
     builder.addCase(saveOrUnsavePost.fulfilled, (state, action) => {
-      const { postid, message } = action.payload;
-      console.log("Post ID:", postid);
-      // Handle toggling in `savePost` array
-      const alreadySaved = state.savePost.includes(postid);
+      const { postid, post } = action.payload;
+
+      const alreadySaved = state.savePost.hasOwnProperty(postid);
       if (alreadySaved) {
         // Unsave the post
-        state.savePost = state.savePost.filter((id) => id !== postid);
+        delete state.savePost[postid];
       } else {
         // Save the post
-        state.savePost.push(postid);
+        state.savePost[postid] = post; // assuming `post` contains the post data
       }
     });
 
