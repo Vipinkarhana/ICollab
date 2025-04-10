@@ -71,8 +71,7 @@ export const suggestedNetwork = async () => {
 export const userNetwork = async () => {
     try {
         const response = await privateAxios.get("/network/usernetwork");
-
-        return response.data;
+        return response.data.data;
     } catch (error) {
         return error.response?.data || { error: "Post creation failed" };
     }
