@@ -17,7 +17,7 @@ import LandingPage from "./components/Pages/LandingPage/LandingPage";
 import ProjectPreview from "./components/Pages/ProjectsPage/ProjectPreview/ProjectPreview";
 import SavedItemPage from "./components/Pages/SavedItems/SavedItemPage";
 import NewProjectPage from "./components/Pages/NewProjectPage/NewProjectPage";
-
+import ProfilePageForm from "./components/Pages/ProfilePage/ProifePageForm/ProfilePageForm";
 
 function App() {
 
@@ -29,6 +29,7 @@ function App() {
           <Route element={<PrivateRoute element={<Layout />} />}>
             <Route path="/home" element={<HomePage />} />
             <Route path="/profile/:username" element={<ProfilePage />} />
+            <Route path="/profile/edit" element={<ProfilePageForm />}></Route>
             <Route path="/network" element={<NetworkPage />} />
             <Route path="/project" element={<ProjectPage />} />
             <Route path="/project/new" element={<NewProjectPage />}></Route>
