@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const config = require('../../config/config');
 const userModel = require('../models/user');
 const projectModel = require('../models/project');
+const allowedCategories = require('../../config/categories.json');
 const { URL } = require('url');
 const { generatePresignedUrl, deleteFromR2 } = require('../../config/s3');
 
@@ -71,6 +72,22 @@ const addProject = async (req, res, next) => {
     }
 };
 
+
+const categorySuggestions = (req, res, next) => {
+    try{
+        const query = req.query.qer || '';
+        const lowerQuery = query.toLowerCase();
+        const filteredCategories = allowedCategories.filter(category => category.toLowerCase().includes(lowerQuery));
+
+        res.status(200).json(filteredCategories);
+    }
+    catch(err){
+        next(err);
+    }
+};
+
+
 module.exports = {
-  addProject
+  addProject,
+  categorySuggestions
 };

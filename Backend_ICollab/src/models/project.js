@@ -1,4 +1,9 @@
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+
+const categoriesPath = path.join(__dirname, '../../config/categories.json');
+const allowedCategories = JSON.parse(fs.readFileSync(categoriesPath, 'utf8'));
 
 let projectschema = mongoose.Schema(
   {
@@ -17,6 +22,7 @@ let projectschema = mongoose.Schema(
     },
     category: {
         type: String,
+        enum: allowedCategories,
         required: true,
       },
     startDate: {

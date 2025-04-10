@@ -11,12 +11,6 @@ function CollaboratorCard({ person }) {
         <ProfilePic className="h-full w-full"/>
     </div>
     <div className="h-full w-auto">
-         {/* <div className="text-lg font-medium">
-            <p>Tanmay Sharma</p>
-         </div>
-         <div className="text-sm text-gray-600">
-            <p>Frontend developer</p>
-         </div> */}
          <Name_Designation
          name={person.name}
          designation={person.designation}
