@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ProfilePic from "../../Common/ProfilePic";
 import { Github, Linkedin, Globe, MapPin, UserPlus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function Intro() {
   const [activeTab, setActiveTab] = useState("Intro");
@@ -60,9 +61,9 @@ function Intro() {
               >
                 <Globe size={28} color="blue" strokeWidth={1.3} />
               </a>
-              <button className="border border-gray-300 rounded-md px-4 py-2 text-purple-700 hover:bg-gray-100 transition-colors text-lg font-semibold">
+              <Link to={"/profile/edit"} className="border border-gray-300 rounded-md px-4 py-2 text-purple-700 hover:bg-gray-100 transition-colors text-lg font-semibold">
                 Edit Profile
-              </button>
+              </Link>
             </div>
           </div>
           <div className=" w-auto h-[50%] flex flex-col justify-around">
