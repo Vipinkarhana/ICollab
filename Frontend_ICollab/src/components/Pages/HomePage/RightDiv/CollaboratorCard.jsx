@@ -5,7 +5,7 @@ import { Send } from 'lucide-react';
 
 function CollaboratorCard({ person }) {
   return (
-   <div className="flex justify-between items-center w-full h-14 border px-2">
+   <div className="flex justify-between items-center w-full h-16 border px-2">
     <div className="flex justify-start items-center gap-2">
     <div className="h-[2.5rem] w-[2.5rem] flex items-center justify-center">
         <ProfilePic className="h-full w-full"/>

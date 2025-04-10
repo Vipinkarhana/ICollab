@@ -1,43 +1,43 @@
 import React, { useState, useEffect } from "react";
 import CollaboratorCard from "./CollaboratorCard"; // adjust path if needed
-import { suggestedNetwork } from "../../../../Services/networkService";
+import { userNetwork, suggestedNetwork } from "../../../../Services/networkService";
 
-
-/*
-const collaborators = [
-  { name: "Alice Johnson", designation: "Frontend Developer" },
-  { name: "Bob Smith", designation: "Backend Developer" },
-  { name: "Charlie Brown", designation: "UI/UX Designer" },
-  { name: "Charlie Brown", designation: "UI/UX Designer" },
-  { name: "Charlie Brown", designation: "UI/UX Designer" },
-  { name: "Charlie Brown", designation: "UI/UX Designer" },
-  { name: "Charlie Brown", designation: "UI/UX Designer" },
-  { name: "Charlie Brown", designation: "UI/UX Designer" },
-  { name: "Charlie Brown", designation: "UI/UX Designer" },
- 
-];
-*/
 const RightDiv = ({ className = "" }) => {
-  const [collaborators, setCollaborators] = useState([]);
-
+  const [collaborators, setCollaborators, ] = useState([]);
+  const [headerText, setHeaderText] = useState("Network");
+  
   useEffect(() => {
-    const fetchSuggestedNetwork = async () => {
-      const data = await suggestedNetwork();
-      if (Array.isArray(data)) {
-        setCollaborators(data);
+    const fetchUserNetwork = async () => {
+      const data = await userNetwork();
+      const suggestData = await suggestedNetwork();
+      console.log(data.emptyNetwork);
+      if(!data.emptyNetwork){
+        setHeaderText("Network");
+      if (Array.isArray(data.connectedUserIds)) {
+        setCollaborators(data.connectedUserIds);
       } else {
-        console.error("Error fetching suggested network:", data);
+        console.error("Error fetching user network:", data.connectedUserIds);
       }
+    }
+    else{
+      setHeaderText("Suggested Network");
+      if (Array.isArray(suggestData)) {
+        setCollaborators(suggestData);
+      } else {
+        console.error("Error fetching user network:", data.connectedUserIds);
+      }
+    }
     };
+  
 
-    fetchSuggestedNetwork();
+    fetchUserNetwork();
   }, []);
 
   return (
     <div className={`w-[20%] h-auto flex flex-col justify-start items-center ${className}`}>
       <div className="w-full h-full bg-white border border-gray-300 rounded-md flex flex-col items-center">
-        <div className="h-12 w-full text-xl font-bold px-2 flex items-center justify-start">
-          <p>Network</p>
+        <div className="h-14 w-full text-xl font-bold px-2 flex items-center justify-start">
+          <p>{headerText}</p>
         </div>
 
         {/* Collaborator cards list */}
