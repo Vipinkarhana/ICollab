@@ -1,11 +1,10 @@
-import { useState } from "react";
 import ProfilePic from "../../Common/ProfilePic";
 import { Github, Linkedin, Globe, MapPin, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 
-function Intro() {
-  const [activeTab, setActiveTab] = useState("Intro");
-  const tabs = ["Intro", "Projects", "Resources"];
+function Intro({ activeTab, setActiveTab }) {
+  
+  const tabs = ["Intro", "Projects", "Resources", "Posts"];
 
   const skills = ["JavaScript", "React", "Node.js", "CSS", "Python"];
   return (
