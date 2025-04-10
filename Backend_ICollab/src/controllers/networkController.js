@@ -42,6 +42,7 @@ const userNetwork = async (req, res, next) => {
   console.log('user: ', user);
 
   try {
+    let emptyNetwork = false;
     const connections = await connectionModel
       .findOne({ user: user._id })
       .populate({
@@ -51,6 +52,8 @@ const userNetwork = async (req, res, next) => {
         },
       });
     const connectedUserIds = connections ? connections.connectedusers : [];
+    if(connectedUserIds.length === 0)
+      emptyNetwork = true;
 
     if (!connectedUserIds) {
       return next(
@@ -61,7 +64,7 @@ const userNetwork = async (req, res, next) => {
     res.status(200).json({
       message: 'Connected users fetched successfully',
       status: 'success',
-      data: connectedUserIds,
+      data: {connectedUserIds, emptyNetwork},
     });
   } catch (error) {
     next(error);
