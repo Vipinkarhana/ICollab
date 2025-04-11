@@ -1,7 +1,14 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import PostCard from "../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
 
 function Saved() {
   const [activeTab, setActiveTab] = useState("Posts");
+  const savePostsObjects = useSelector((state) => state.post.savePost);
+  console.log("savePostsObjects", savePostsObjects);
+
+  const savePosts = Object.values(savePostsObjects);
+  console.log("savePosts", savePosts);
 
   const tabs = ["Posts", "Projects"];
 
@@ -10,7 +17,7 @@ function Saved() {
       return (
         <div className="w-full px-6 py-4 flex justify-evenly gap-6 ">
           <div className="flex flex-col gap-3 w-[45svw] ">
-            {myPost
+            {savePosts
               .filter((_, index) => index % 2 === 0)
               .map((post) => (
                 <div key={post._id}>
@@ -19,7 +26,7 @@ function Saved() {
               ))}
           </div>
           <div className="flex flex-col gap-3 w-[45svw] ">
-            {myPost
+            {savePosts
               .filter((_, index) => index % 2 !== 0)
               .map((post) => (
                 <div key={post._id}>
