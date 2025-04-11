@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import Education from "./Education"; // Import the Education component
+import Education from "./Education"
 import Experience from "./Experience";
 import Links from "./Links";
 import Contact from "./Contact";
 import PageNavbar from "../../../Common/PageNavbar";
-function ProfilePageForm() {
 
+function ProfilePageForm() {
   const [activeTab, setActiveTab] = useState("ABOUT");
   const tabs = [
     "ABOUT",
@@ -14,9 +14,10 @@ function ProfilePageForm() {
     "LINKS",
     "CONTACT"
   ];
+
   return (
     <div className="w-[100svw] min-h-screen flex flex-col justify-start items-start m-0 p-0 mt-14">
-      <div className="flex justify-center items-center w-full h-[20svh] bg-white   p-4">
+      <div className="flex justify-center items-center w-full h-[20svh] bg-white p-4">
         <PageNavbar
           tabs={tabs}
           activeTab={activeTab}
@@ -70,27 +71,13 @@ function ProfilePageForm() {
             </section>
 
             {/* About You */}
-            <section className="bg-white p-6 rounded-lg shadow h-[100%]">
+            <section className="bg-white p-6 rounded-lg shadow h-full">
               <h2 className="text-2xl font-semibold mb-4">About you</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Bio
-                  </label>
-                  <textarea
-                    placeholder="Add a bio."
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2"
-                    rows="3"
-                  ></textarea>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    README.md
-                  </label>
+              <div className="space-y-2 ">
+                <div >
                   <textarea
                     placeholder="This is your chance to tell us more about yourself! Things you're good at, what drives you and interesting projects you've built."
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2"
+                    className="mt-1 block w-full h-[50svh]  border border-gray-300 rounded-md shadow-sm px-3 py-2"
                     rows="5"
                   ></textarea>
                 </div>
@@ -98,12 +85,20 @@ function ProfilePageForm() {
             </section>
           </div>
         )}
-        {activeTab === "EDUCATION" && <Education />}
-        {activeTab === "EXPERIENCE" && <Experience />}
-        {activeTab === "LINKS" && <Links />}
-        {activeTab === "CONTACT" && <Contact />}
+          {activeTab === "EDUCATION" && (
+        <div>
+        <Education />
+        </div>
+         )}
+          
+
+          {activeTab === "EXPERIENCE" && (
+        <div>
+        <Experience />
+        </div>
+         )}
       </main>
-    </div>
+    </div> // <- this was missing
   );
 }
 
