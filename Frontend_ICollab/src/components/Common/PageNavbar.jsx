@@ -6,7 +6,7 @@ function PageNavbar({ tabs, activeTab, setActiveTab, className="" }) {
   return (
     <div
     className={clsx(
-      'border w-[35%] h-[20%] bg-blue-100 rounded-md flex justify-evenly items-center',
+      'border w-auto h-full bg-blue-100 px-4 rounded-md flex justify-evenly items-center gap-2',
       className
     )}
   >

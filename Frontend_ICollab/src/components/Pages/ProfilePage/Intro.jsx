@@ -31,7 +31,7 @@ function Intro({ activeTab, setActiveTab }) {
                 <p className="text-xl text-gray-600 font-thin tracking-tight">
                   @Tanmaysharma36
                 </p>
-                <CollabButton/>
+                <CollabButton />
               </div>
             </div>
             <div className="w-[33%]  h-[80%] flex justify-evenly items-center">
@@ -59,7 +59,10 @@ function Intro({ activeTab, setActiveTab }) {
               >
                 <Globe size={28} color="blue" strokeWidth={1.3} />
               </a>
-              <Link to={"/profile/edit"} className="border border-gray-300 rounded-md px-4 py-2 text-purple-700 hover:bg-gray-100 transition-colors text-lg font-semibold">
+              <Link
+                to={"/profile/edit"}
+                className="border border-gray-300 rounded-md px-4 py-2 text-purple-700 hover:bg-gray-100 transition-colors text-lg font-semibold"
+              >
                 Edit Profile
               </Link>
             </div>
@@ -84,7 +87,13 @@ function Intro({ activeTab, setActiveTab }) {
           </div>
         </div>
       </div>
-      <PageNavbar tabs={tabs} setActiveTab={setActiveTab} activeTab={activeTab}/>
+      <div className="h-[20%] w-full flex justify-center items-center">
+        <PageNavbar
+          tabs={tabs}
+          setActiveTab={setActiveTab}
+          activeTab={activeTab}
+        />
+      </div>
     </div>
   );
 }

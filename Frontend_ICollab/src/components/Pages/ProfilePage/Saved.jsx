@@ -14,9 +14,17 @@ function Saved() {
 
   const renderContent = () => {
     if (activeTab === "Posts") {
+      if (savePosts.length === 0) {
+        return (
+          <div className="w-full text-center text-gray-500 py-10 text-xl">
+            No saved posts yet.
+          </div>
+        );
+      }
+
       return (
-        <div className="w-full px-6 py-4 flex justify-evenly gap-6 ">
-          <div className="flex flex-col gap-3 w-[45svw] ">
+        <div className="w-full px-6 py-4 flex justify-evenly gap-6">
+          <div className="flex flex-col gap-3 w-[45svw]">
             {savePosts
               .filter((_, index) => index % 2 === 0)
               .map((post) => (
@@ -25,7 +33,7 @@ function Saved() {
                 </div>
               ))}
           </div>
-          <div className="flex flex-col gap-3 w-[45svw] ">
+          <div className="flex flex-col gap-3 w-[45svw]">
             {savePosts
               .filter((_, index) => index % 2 !== 0)
               .map((post) => (
@@ -46,9 +54,10 @@ function Saved() {
     }
   };
 
+
   return (
-    <div className="w-full h-auto px-6 py-4 flex justify-evenly gap-6">
-      <div className="w-[80%]">
+    <div className="w-full h-auto px-6 py-4 flex justify-evenly gap-6 overflow-x-hidden">
+      <div className="w-[90%]">
         {/* Tabs */}
         <div className="flex space-x-0 relative z-10">
           {tabs.map((tab, index) => {
