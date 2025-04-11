@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Intro from "./Intro";
 import UserPosts from "./UserPosts";
+
 function ProfilePage() {
   const [activeTab, setActiveTab] = useState("Intro");
   return (
