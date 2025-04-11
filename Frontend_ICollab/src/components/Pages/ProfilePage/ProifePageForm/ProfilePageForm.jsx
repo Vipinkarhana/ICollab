@@ -26,7 +26,7 @@ function ProfilePageForm() {
       </div>
 
       {/* Main Content */}
-      <main className="w-[80svw] mx-auto px-4 py-8 m-20">
+      <main className="w-[80svw] mx-auto p-4">
         {activeTab === "ABOUT" && (
           <div className="grid md:grid-cols-2 gap-6">
             {/* Basic Information */}
