@@ -34,7 +34,7 @@ const Media = ({ media }) => {
     return (
       <div
         id="expanded-view"
-        className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4 overflow-hidden"
+        className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-6 mt-14 overflow-hidden "
         onClick={handleClose}
       >
         <div className="relative max-w-5xl w-full max-h-[90vh] bg-white rounded-lg overflow-hidden flex flex-col items-center">

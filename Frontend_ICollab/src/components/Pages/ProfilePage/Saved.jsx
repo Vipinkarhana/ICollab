@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import PostCard from "../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
-
+import ProjectCard from "../ProjectsPage/ProjectCard";
 function Saved() {
   const [activeTab, setActiveTab] = useState("Posts");
   const savePostsObjects = useSelector((state) => state.post.savePost);
@@ -11,6 +11,30 @@ function Saved() {
   console.log("savePosts", savePosts);
 
   const tabs = ["Posts", "Projects"];
+
+  // 👇 Mock saved projects (until backend integration)
+  const savedProjects = [
+    // {
+    //   _id: "p1",
+    //   title: "MitraPay Wallet",
+    //   description: "A secure digital wallet for smooth transactions.",
+    // },
+    // {
+    //   _id: "p2",
+    //   title: "CakeHeavens",
+    //   description: "An eCommerce platform for rural cake shops.",
+    // },
+    // {
+    //   _id: "p3",
+    //   title: "HabitLoop",
+    //   description: "Track and maintain your daily habits easily.",
+    // },
+    // {
+    //   _id: "p4",
+    //   title: "Emergency Ambulance Booking",
+    //   description: "Real-time ambulance tracking and AI hospital suggestions.",
+    // },
+  ];
 
   const renderContent = () => {
     if (activeTab === "Posts") {
@@ -45,15 +69,23 @@ function Saved() {
         </div>
       );
     } else if (activeTab === "Projects") {
+      if (savedProjects.length === 0) {
+        return (
+          <div className="w-full text-center text-gray-500 py-10 text-xl">
+            No saved projects yet.
+          </div>
+        );
+      }
+
       return (
-        <div>
-          <p>Saved Project 1</p>
-          <p>Saved Project 2</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-2">
+          {savedProjects.map((project) => (
+            <ProjectCard/>
+          ))}
         </div>
       );
     }
   };
-
 
   return (
     <div className="w-full h-auto px-6 py-4 flex justify-evenly gap-6 overflow-x-hidden">
