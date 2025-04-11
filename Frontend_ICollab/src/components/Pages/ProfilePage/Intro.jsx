@@ -2,6 +2,7 @@ import ProfilePic from "../../Common/ProfilePic";
 import { Github, Linkedin, Globe, MapPin, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 import CollabButton from "../../Common/CollabButton";
+import PageNavbar from "../../Common/PageNavbar";
 
 function Intro({ activeTab, setActiveTab }) {
   
@@ -83,22 +84,7 @@ function Intro({ activeTab, setActiveTab }) {
           </div>
         </div>
       </div>
-      <div className="border w-[35%] h-[20%] bg-blue-100 rounded-md flex justify-evenly items-center ">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-md text-lg transition-colors 
-              ${
-                activeTab === tab
-                  ? "bg-blue-600 text-white"
-                  : "bg-blue-100 text-black hover:bg-blue-300"
-              }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <PageNavbar tabs={tabs} setActiveTab={setActiveTab} activeTab={activeTab}/>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Intro from "./Intro";
 import UserPosts from "./UserPosts";
+import Saved from "./Saved";
 
 function ProfilePage() {
   const [activeTab, setActiveTab] = useState("Intro");
@@ -12,6 +13,9 @@ function ProfilePage() {
           <UserPosts />
         </div>
       )}
+      {activeTab === "Saved" && (
+        <Saved/>
+        )}
     </div>
   );
 }
