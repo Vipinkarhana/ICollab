@@ -17,12 +17,11 @@ function ProfilePageForm() {
 
   return (
     <div className="w-[100svw] min-h-screen flex flex-col justify-start items-start m-0 p-0 mt-14">
-      <div className="flex justify-center items-center w-full h-[20svh] bg-white p-4">
+      <div className="flex justify-center items-center w-full h-[15svh] bg-white p-4">
         <PageNavbar
           tabs={tabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          className="w-[50%] h-[11svh]"
         />
       </div>
 
