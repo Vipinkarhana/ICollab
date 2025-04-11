@@ -21,7 +21,7 @@ function ProfilePageForm() {
           tabs={tabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          className="w-[50%] h-[10svh]"
+          className="w-[50%] h-[11svh]"
         />
       </div>
 

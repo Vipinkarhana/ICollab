@@ -6,7 +6,7 @@ import PageNavbar from "../../Common/PageNavbar";
 
 function Intro({ activeTab, setActiveTab }) {
   
-  const tabs = ["Intro", "Projects", "Resources", "Posts"];
+  const tabs = ["Intro", "Projects", "Saved", "Posts"];
 
   const skills = ["JavaScript", "React", "Node.js", "CSS", "Python"];
   return (
