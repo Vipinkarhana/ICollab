@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { Pencil, Trash2, UserPlus, Ban } from "lucide-react";
+import { Pencil, Trash2, UserPlus, Ban, EllipsisVertical } from "lucide-react";
 import ProfilePic from "../../../../../../Common/ProfilePic";
 import Name_Designation from "../../../../../../Common/Name&Designation";
 import {
@@ -16,7 +16,6 @@ import {
   fetchMyPosts,
   saveOrUnsavePost
 } from "../../../../../../../Redux/Slices/PostSlice";
-import { EllipsisVertical } from "lucide-react";
 import Interaction from "../../../../../../Common/Interaction";
 import { sendRequest } from "../../../../../../../Services/networkService";
 
@@ -24,31 +23,43 @@ function PostCard({ post }) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [isConnected, setIsConnected] = useState(!post?.isConnection);
-  console.log("isConnected", isConnected);
   const savedPosts = useSelector((state) => state.post.savePost);
 
   const text = post?.content;
   const media = post?.media;
   const user = post?.user;
 
+  const dropdownRef = useRef(null); // ✅ New ref
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-  
-  
+
   const handleToggleSave = () => {
-    dispatch(saveOrUnsavePost({ post: post}));
+    dispatch(saveOrUnsavePost({ post: post }));
     setIsOpen(false);
   };
-  // const bookmarked = savedPosts.includes(post._id);
+
   const bookmarked = savedPosts.hasOwnProperty(post._id);
+
   useEffect(() => {
     console.log("bookmarked", bookmarked);
     console.log(post._id, "post id");
-    
   }, []);
-    
 
+  // ✅ Detect outside click to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);
   const currentUser = useSelector((state) => state.user.userData);
@@ -83,7 +94,6 @@ function PostCard({ post }) {
     setIsOpen(false);
   }
 
-
   return (
     <div className="w-[100%] h-auto border border-gray-300 mt-3 bg-white rounded-lg   flex flex-col justify-center items-center gap-2">
       <div className="h-14 w-full flex justify-between ">
@@ -111,7 +121,10 @@ function PostCard({ post }) {
                 <EllipsisVertical />
               </button>
               {isOpen && (
-                <div className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8 z-50 bg-white rounded-md w-36 border border-gray-300 shadow-xl ">
+                <div
+                  ref={dropdownRef}
+                  className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8 z-50 bg-white rounded-md w-36 border border-gray-300 shadow-xl "
+                >
                   <button
                     onClick={() => {
                       handleEdit();
@@ -142,7 +155,10 @@ function PostCard({ post }) {
                 <EllipsisVertical />
               </button>
               {isOpen && (
-                <div className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8 z-50 bg-white rounded-md w-36 border border-gray-300 shadow-xl ">
+                <div
+                  ref={dropdownRef}
+                  className="absolute mt-7 mr-3 sm:mr-6 sm:mt-8 z-50 bg-white rounded-md w-36 border border-gray-300 shadow-xl "
+                >
                   {isConnected ? (
                     <button
                       className=" text-xl text-blue-600 h-16 border-b w-full hover:bg-blue-50 rounded-md py-1  flex items-center justify-start gap-3 px-4"
