@@ -1,6 +1,7 @@
 import ProfilePic from "../../Common/ProfilePic";
 import { Github, Linkedin, Globe, MapPin, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
+import CollabButton from "../../Common/CollabButton";
 
 function Intro({ activeTab, setActiveTab }) {
   
@@ -29,10 +30,7 @@ function Intro({ activeTab, setActiveTab }) {
                 <p className="text-xl text-gray-600 font-thin tracking-tight">
                   @Tanmaysharma36
                 </p>
-                <button className="w-full  px-4 py-1 rounded flex items-center justify-center gap-1 bg-blue-500 text-white hover:bg-blue-600 transition-colors text-lg ">
-                  <UserPlus size={20} />
-                  Collab
-                </button>
+                <CollabButton/>
               </div>
             </div>
             <div className="w-[33%]  h-[80%] flex justify-evenly items-center">
