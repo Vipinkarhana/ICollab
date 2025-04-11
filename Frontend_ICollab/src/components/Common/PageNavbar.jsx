@@ -1,9 +1,15 @@
 import React from 'react'
+import clsx from 'clsx';
 
 function PageNavbar({ tabs, activeTab, setActiveTab, className="" }) {
-
+  console.log("className", className)
   return (
-    <div className={`border w-[35%] h-[20%] bg-blue-100 rounded-md flex justify-evenly items-center ${className}`}>
+    <div
+    className={clsx(
+      'border w-[35%] h-[20%] bg-blue-100 rounded-md flex justify-evenly items-center',
+      className
+    )}
+  >
       {tabs.map((tab) => (
         <button
           key={tab}

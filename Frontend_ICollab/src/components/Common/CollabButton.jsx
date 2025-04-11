@@ -1,8 +1,9 @@
 import React from 'react'
 import { UserPlus } from 'lucide-react';
-function CollabButton() {
+import clsx from 'clsx';
+function CollabButton({className=""}) {
   return (
-    <button className="w-full  px-4 py-1 rounded flex items-center justify-center gap-1 bg-blue-500 text-white hover:bg-blue-600 transition-colors text-lg ">
+    <button className={clsx("w-full  px-4 py-1 rounded flex items-center justify-center gap-1 bg-blue-500 text-white hover:bg-blue-600 transition-colors text-lg", className)}>
       <UserPlus size={20} />
       Collab
     </button>

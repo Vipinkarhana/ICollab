@@ -123,7 +123,7 @@ const Header = ({ id }) => {
       {/* Main Header Container */}
       <div
         id={id}
-        className="fixed w-full h-[9%] flex justify-center items-center z-[1] text-black bg-white shadow-sm"
+        className="fixed w-full h-[9%] flex justify-center items-center z-[1000] text-black bg-white shadow-sm"
       >
         <div className="w-11/12 lg:w-[90%] h-[99%] flex items-center justify-between md:justify-evenly md:gap-4">
           {/* Logo */}

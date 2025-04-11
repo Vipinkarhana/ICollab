@@ -16,7 +16,7 @@ import ActivityPage from "./components/Pages/ActivityPage/ActivityPage";
 import LandingPage from "./components/Pages/LandingPage/LandingPage";
 import ProjectPreview from "./components/Pages/ProjectsPage/ProjectPreview/ProjectPreview";
 import SavedItemPage from "./components/Pages/SavedItems/SavedItemPage";
-import NewProjectPage from "./components/Pages/NewProjectPage/NewProjectPage";
+import ProjectPreviewPage from "./components/Pages/ProjectPreviewPage/ProjectPreviewPage";
 import ProfilePageForm from "./components/Pages/ProfilePage/ProifePageForm/ProfilePageForm";
 
 function App() {
@@ -31,14 +31,14 @@ function App() {
             <Route path="/profile/:username" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<ProfilePageForm />}></Route>
             <Route path="/network" element={<NetworkPage />} />
-            <Route path="/project" element={<ProjectPage />} />
-            <Route path="/project/new" element={<NewProjectPage />}></Route>
+            <Route path="/projects" element={<ProjectPage />} />
             <Route path="/message" element={<MessagePage />} />
             <Route path="/notification" element={<NotificationPage />} />
             <Route path="/incubators" element={<IncubatorsPage />} />
             <Route path="/activity/:username" element={<ActivityPage />} />
             <Route path="/project_preview" element={<ProjectPreview/>} />
             <Route path="/saved_items" element={<SavedItemPage/>}></Route>
+            <Route path="/project" element={<ProjectPreviewPage />}></Route>
           </Route>
 
           {/* LandingPage with Layout, not a private route */}
