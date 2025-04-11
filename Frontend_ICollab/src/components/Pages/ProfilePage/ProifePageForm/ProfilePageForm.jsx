@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-
+import Education from "./Education"; // Import the Education component
+import Experience from "./Experience";
+import Links from "./Links";
+import Contact from "./Contact";
 function ProfilePageForm() {
   // State to track the active button
   const [activeButton, setActiveButton] = useState("ABOUT");
@@ -8,7 +11,8 @@ function ProfilePageForm() {
   const handleButtonClick = (button) => {
     setActiveButton(button);
   };
-
+  console.log(activeButton);
+  
   return (
     <div className="min-h-screen bg-gray-100 mt-16">
       {/* Header */}
@@ -64,7 +68,8 @@ function ProfilePageForm() {
 
       {/* Main Content */}
       <main className="w-[80svw] mx-auto px-4 py-8 m-20">
-        <div className="grid md:grid-cols-2 gap-6">
+        {activeButton === "ABOUT" && (
+          <div className="grid md:grid-cols-2 gap-6">
           {/* Basic Information */}
           <section className="bg-white p-6 rounded-lg shadow h-auto">
             <h2 className="text-2xl font-semibold mb-4">Basic information</h2>
@@ -133,6 +138,19 @@ function ProfilePageForm() {
             </div>
           </section>
         </div>
+        )}
+        {activeButton === "EDUCATION" && (
+          <Education/>
+        )}
+        {activeButton === "EXPERIENCE" && (
+         <Experience/>
+        )}
+        {activeButton === "LINKS" && (
+          <Links/>
+        )}
+        {activeButton === "CONTACT" && (
+          <Contact/>
+          )}
       </main>
     </div>
   );
