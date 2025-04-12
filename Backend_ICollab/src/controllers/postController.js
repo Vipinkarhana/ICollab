@@ -96,9 +96,9 @@ const addPostMedia = async (req, res, next) => {
 
 const likeAndUnlikepost = async (req, res, next) => {
   try {
-    const { postId } = req.query; //dummy post id
-    const userId = req.user._id;
-    //const userId = req.body.userid;
+    const { postid } = req.body;
+    const postId = postid;
+    const userId = req.user.id;
     let liked = 0,
       unliked = 0;
     let likeDoc = await likeModel.findOne({ postId });

@@ -7,15 +7,25 @@ import {
   MoreHorizontal,
   Send,
 } from "lucide-react";
-import ProfilePic from "./ProfilePic"; // ProfilePic component
+import ProfilePic from "./ProfilePic";
+import { toggleLikePost } from "../../Services/postService";
 
-const Interactions = () => {
-  const [likes, setLikes] = useState(0);
+const Interactions = ({data, type = "post"}) => {
+  const id = data?._id;
+  const [likes, setLikes] = useState(data?.likes || 0);
+  const [isLiked, setIsLiked] = useState(data?.isLiked || false);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [replyText, setReplyText] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
   const commentInputRef = useRef(null);
+
+  const addLike = () => {
+    setIsLiked(!isLiked);
+    setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
+    toggleLikePost(id);
+  };
+
   // Function to add a new comment
   const addComment = () => {
     if (commentText.trim() !== "") {
@@ -50,9 +60,13 @@ const Interactions = () => {
       <div className="flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-1 sm:pt-4">
         <button
           className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2"
-          onClick={() => setLikes(likes + 1)}
+          onClick={() => addLike()}
         >
-          <ThumbsUp size={18} />
+          {isLiked ? (
+            <ThumbsUp className="text-blue-500" size={18} />
+          ) : (
+            <ThumbsUp className="text-gray-500" size={18} />
+          )}
           <span className="hidden sm:inline">
             {likes > 0 ? `Like ${likes}` : "Like"}
           </span>
