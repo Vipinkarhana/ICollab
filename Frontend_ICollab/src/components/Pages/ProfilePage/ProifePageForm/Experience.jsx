@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import WorkExperienceForm from "./WorkExperienceForm";
 const roles = [
   "Designer",
   "Frontend Developer",
@@ -177,6 +177,10 @@ const Experience = () => {
         <p className="text-xs text-gray-500 mt-2 text-center">
           Make sure your resume is in .pdf format only (5MB max)
         </p>
+      </div>
+
+      <div >
+      <WorkExperienceForm />
       </div>
     </div>
   );

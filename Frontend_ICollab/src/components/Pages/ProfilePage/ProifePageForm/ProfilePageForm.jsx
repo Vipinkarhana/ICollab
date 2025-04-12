@@ -96,6 +96,16 @@ function ProfilePageForm() {
         <Experience />
         </div>
          )}
+          {activeTab === "CONTACT" && (
+        <div>
+        <Contact />
+        </div>
+         )}
+          {activeTab === "LINKS" && (
+        <div>
+        <Links />
+        </div>
+         )}
       </main>
     </div> // <- this was missing
   );
