@@ -8,6 +8,9 @@ const avatarsData = [
   { id: 4, image: "https://cdn-icons-png.flaticon.com/512/4140/4140048.png" },
   { id: 5, image: "https://cdn-icons-png.flaticon.com/512/4140/4140037.png" },
   { id: 6, image: "https://cdn-icons-png.flaticon.com/512/4140/4140061.png" },
+  { id: 7, image: "/Avatarman1.png" },
+  { id: 8, image: "/Avatarold-woman.png" },
+  { id: 9, image: "/Avatarold-man.png" },
 ];
 
 function ProfilePic() {
@@ -62,11 +65,11 @@ function ProfilePic() {
         </div>
 
         {/* Avatar Carousel */}
-        <div className="relative w-full flex items-center justify-center overflow-hidden">
+        <div className="relative w-full flex items-center justify-center">
           {/* Left Arrow */}
           <button
             onClick={handlePrev}
-            className="absolute md:left-36 left-2 sm:left-6 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition"
+            className="absolute md:left-36 left-1 sm:left-6 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition"
           >
             <ChevronLeft size={24} />
           </button>
@@ -76,22 +79,26 @@ function ProfilePic() {
             {visibleAvatars.map((avatar, index) => {
               const isCenter = index === 1;
               return (
-                <div className="relative group shrink-0" key={avatar.id}>
+                <div
+                  className="relative group shrink-0 transition-transform duration-300 ease-in-out"
+                  key={avatar.id}
+                >
                   <img
                     src={avatar.image}
                     alt="avatar"
-                    className={`rounded-full border-4 shadow-lg object-cover transition-transform duration-300 transform cursor-pointer mx-auto ${
+                    className={`rounded-full shadow-lg object-cover transform cursor-pointer mx-auto ${
                       isCenter
-                        ? "w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 border-blue-500 hover:scale-110"
-                        : "w-20 h-20 sm:w-24 sm:h-24 border-blue-300 opacity-80 hover:scale-105"
+                        ? "w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 hover:scale-110"
+                        : "w-24 h-24 sm:w-28 sm:h-28 opacity-80 hover:scale-105"
                     }`}
                   />
+                  {/* Pencil only on center avatar */}
                   {isCenter && (
                     <div
-                      className="absolute top-1 right-1 bg-blue-100 p-1 rounded-full cursor-pointer hover:bg-blue-200 transition"
+                      className="absolute top-1 right-1 bg-blue-100 p-2 rounded-full cursor-pointer hover:bg-blue-200 transition"
                       onClick={() => triggerFileInput(index)}
                     >
-                      <Pencil size={16} className="text-blue-600" />
+                      <Pencil size={24} className="text-blue-600" />
                     </div>
                   )}
                   <input
@@ -109,7 +116,7 @@ function ProfilePic() {
           {/* Right Arrow */}
           <button
             onClick={handleNext}
-            className="absolute md:right-36 right-2 sm:right-6 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition"
+            className="absolute md:right-36 right-1 sm:right-6 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition"
           >
             <ChevronRight size={24} />
           </button>
