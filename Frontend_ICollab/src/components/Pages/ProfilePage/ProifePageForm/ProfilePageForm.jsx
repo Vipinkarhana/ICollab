@@ -95,7 +95,7 @@ function ProfilePageForm() {
 
             {/* About You */}
             <section className="bg-white p-6 rounded-lg shadow h-full">
-              <h2 className="text-2xl font-semibold mb-4">About you</h2>
+              <h2 className="text-2xl font-semibold mb-4">README.MD</h2>
               <div className="space-y-2">
                 <div>
                   <textarea

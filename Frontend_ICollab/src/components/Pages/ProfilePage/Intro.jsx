@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import CollabButton from "../../Common/CollabButton";
 import PageNavbar from "../../Common/PageNavbar";
 import PhonePageNavbar from "../../Common/PhonePageNavbar";
+import { Pencil } from "lucide-react";
 
 function Intro({ activeTab, setActiveTab }) {
   
@@ -62,9 +63,10 @@ function Intro({ activeTab, setActiveTab }) {
               </a>
               <Link
                 to={"/profile/edit"}
-                className="border border-gray-300 rounded-md px-4 py-2 text-purple-700 hover:bg-gray-100 transition-colors text-lg font-semibold"
+                className="border border-gray-300 rounded-md px-3 py-2 text-purple-700 hover:bg-gray-100 transition-colors text-lg font-semibold flex justify-evenly items-center gap-2"
               >
-                Edit Profile
+                <Pencil size={24} />
+                Edit Readme
               </Link>
             </div>
           </div>
@@ -96,11 +98,11 @@ function Intro({ activeTab, setActiveTab }) {
         />
       </div>
       <div className="h-[20%] w-full flex justify-center items-center md:hidden">
-       <PhonePageNavbar
-            tabs={tabs}
-            setActiveTab={setActiveTab}
-            activeTab={activeTab}  
-            />
+        <PhonePageNavbar
+          tabs={tabs}
+          setActiveTab={setActiveTab}
+          activeTab={activeTab}
+        />
       </div>
     </div>
   );
