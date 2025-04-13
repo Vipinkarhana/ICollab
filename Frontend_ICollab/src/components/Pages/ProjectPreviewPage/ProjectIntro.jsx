@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import PageNavbar from '../../Common/PageNavbar';
 import CollabButton from '../../Common/CollabButton';
+import PhonePageNavbar from '../../Common/PhonePageNavbar';
 
 function ProjectIntro({tabs, activeTab, setActiveTab}) {
     return (
@@ -86,12 +87,19 @@ function ProjectIntro({tabs, activeTab, setActiveTab}) {
             </div>
           </div>
         </div>
-        <div className="h-[20%] w-full flex justify-center items-center">   
+        <div className="h-[20%] w-full md:flex justify-center items-center hidden">   
           <PageNavbar
             tabs={tabs}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
+        </div>
+        <div className="h-[20%] w-full md:hidden justify-center items-center flex">
+         <PhonePageNavbar
+             tabs={tabs}
+             activeTab={activeTab}
+             setActiveTab={setActiveTab}
+            />
         </div>
       </div>
     );

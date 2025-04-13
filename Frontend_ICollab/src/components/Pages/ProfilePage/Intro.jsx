@@ -3,6 +3,7 @@ import { Github, Linkedin, Globe, MapPin, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 import CollabButton from "../../Common/CollabButton";
 import PageNavbar from "../../Common/PageNavbar";
+import PhonePageNavbar from "../../Common/PhonePageNavbar";
 
 function Intro({ activeTab, setActiveTab }) {
   
@@ -87,12 +88,19 @@ function Intro({ activeTab, setActiveTab }) {
           </div>
         </div>
       </div>
-      <div className="h-[20%] w-full flex justify-center items-center">
+      <div className="h-[20%] w-full md:flex justify-center items-center hidden">
         <PageNavbar
           tabs={tabs}
           setActiveTab={setActiveTab}
           activeTab={activeTab}
         />
+      </div>
+      <div className="h-[20%] w-full flex justify-center items-center md:hidden">
+       <PhonePageNavbar
+            tabs={tabs}
+            setActiveTab={setActiveTab}
+            activeTab={activeTab}  
+            />
       </div>
     </div>
   );

@@ -59,7 +59,7 @@ function WorkExperienceForm() {
   const years = Array.from({ length: 30 }, (_, i) => 2025 - i);
 
   return (
-    <div className="p-6 bg-white rounded-xl shadow-md space-y-6 w-[42svw]">
+    <div className="sm:p-6 p-4 bg-white rounded-xl shadow-md space-y-6 w-full max-w-4xl mx-auto">
       <h2 className="text-2xl font-semibold">Work Experience</h2>
 
       <label className="flex items-center gap-2 text-gray-700">
@@ -78,8 +78,8 @@ function WorkExperienceForm() {
             key={index}
             className="border border-gray-200 p-5 rounded-xl space-y-6"
           >
-            <div className="block  ">
-            <span className="text-sm font-medium text-gray-700 ">Employer</span>
+            <div className="w-full md:w-1/2">
+              <label className="block text-sm font-medium text-gray-700">Employer</label>
               <input
                 type="text"
                 value={exp.employer}
@@ -88,11 +88,12 @@ function WorkExperienceForm() {
                 }
                 className="mt-1 w-full border rounded-md px-3 py-2 placeholder-gray-400"
               />
-                <span className="text-sm font-medium text-gray-700">Role</span>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Role</label>
               <input
-              
                 type="text"
-               
                 value={exp.role}
                 onChange={(e) =>
                   handleChange(index, "role", e.target.value)
@@ -101,7 +102,7 @@ function WorkExperienceForm() {
               />
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-[35svw]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <select
                 value={exp.fromMonth}
                 onChange={(e) =>
@@ -176,28 +177,17 @@ function WorkExperienceForm() {
               onChange={(e) =>
                 handleChange(index, "description", e.target.value)
               }
-              className="w-full border rounded-md px-3 py-2 placeholder-gray-400 h-[35svh]"
+              className="w-full border rounded-md px-3 py-2 placeholder-gray-400"
             ></textarea>
 
             <button
               onClick={() => deleteExperience(index)}
-              className="text-red-500 text-2xl hover:underline ml-40"
+              className="bg-red-600 text-white text-lg font-semibold py-2 px-4 rounded-md hover:bg-red-700 transition-all w-full mt-4"
             >
               Delete
             </button>
           </div>
         ))}
-      {/* <div className="flex flex-row justify-between items-center">
-  {!noExperience && (
-    <button
-      onClick={addExperience}
-      className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-    >
-      + Add another experience
-    </button>
-  )}
-</div> */}
-
     </div>
   );
 }

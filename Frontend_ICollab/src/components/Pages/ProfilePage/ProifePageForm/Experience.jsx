@@ -137,7 +137,7 @@ const Experience = () => {
       </div>
 
       {/* Resume Upload Section */}
-      <div className="bg-white p-6 rounded-lg shadow h-[60svh] md:col-span-2">
+      <div className="bg-white p-6 rounded-lg shadow sm:h-[55svh] h-[75svh] md:col-span-2">
         <h2 className="text-2xl font-semibold mb-4">Upload Your Resume</h2>
         <div
           onDrop={handleDrop}
