@@ -14,26 +14,26 @@ function Saved() {
 
   // 👇 Mock saved projects (until backend integration)
   const savedProjects = [
-    // {
-    //   _id: "p1",
-    //   title: "MitraPay Wallet",
-    //   description: "A secure digital wallet for smooth transactions.",
-    // },
-    // {
-    //   _id: "p2",
-    //   title: "CakeHeavens",
-    //   description: "An eCommerce platform for rural cake shops.",
-    // },
-    // {
-    //   _id: "p3",
-    //   title: "HabitLoop",
-    //   description: "Track and maintain your daily habits easily.",
-    // },
-    // {
-    //   _id: "p4",
-    //   title: "Emergency Ambulance Booking",
-    //   description: "Real-time ambulance tracking and AI hospital suggestions.",
-    // },
+    {
+      _id: "p1",
+      title: "MitraPay Wallet",
+      description: "A secure digital wallet for smooth transactions.",
+    },
+    {
+      _id: "p2",
+      title: "CakeHeavens",
+      description: "An eCommerce platform for rural cake shops.",
+    },
+    {
+      _id: "p3",
+      title: "HabitLoop",
+      description: "Track and maintain your daily habits easily.",
+    },
+    {
+      _id: "p4",
+      title: "Emergency Ambulance Booking",
+      description: "Real-time ambulance tracking and AI hospital suggestions.",
+    },
   ];
 
   const renderContent = () => {

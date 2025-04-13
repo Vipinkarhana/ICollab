@@ -15,8 +15,8 @@ import { Navigate } from 'react-router-dom';
  * @returns {boolean} True if the user is authenticated, otherwise false.
  */
 const isAuthenticated = () => {
-  // return !!localStorage.getItem('accessToken'); 
-  return true;
+  return !!localStorage.getItem('accessToken'); 
+  // return true;
 };
 
 /**
