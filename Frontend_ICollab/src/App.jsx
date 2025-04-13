@@ -18,6 +18,7 @@ import ProjectPreview from "./components/Pages/ProjectsPage/ProjectPreview/Proje
 import SavedItemPage from "./components/Pages/SavedItems/SavedItemPage";
 import ProjectPreviewPage from "./components/Pages/ProjectPreviewPage/ProjectPreviewPage";
 import ProfilePageForm from "./components/Pages/ProfilePage/ProifePageForm/ProfilePageForm";
+import ProjectForm from "./components/Pages/ProjectsPage/ProjectForm";
 
 function App() {
 
@@ -39,6 +40,7 @@ function App() {
             <Route path="/project_preview" element={<ProjectPreview/>} />
             <Route path="/saved_items" element={<SavedItemPage/>}></Route>
             <Route path="/project" element={<ProjectPreviewPage />}></Route>
+            <Route path="/project/create" element={<ProjectForm />}></Route>
           </Route>
 
           {/* LandingPage with Layout, not a private route */}
