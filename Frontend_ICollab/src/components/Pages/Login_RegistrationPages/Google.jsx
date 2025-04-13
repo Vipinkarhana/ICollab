@@ -17,13 +17,13 @@ const Google = () => {
 
       const response = await dispatch(googleLogin({ credential })).unwrap();
       
-      if (response.role === "admin") {
-        console.log("dimfutsfudtfd");
-        // window.location.href = import.meta.env.VITE_ADMIN_DOMAIN;
-      } else {
-        navigate("/home");
-      }
+      // if (response.role === "admin") {
+      //   window.location.href = import.meta.env.VITE_ADMIN_DOMAIN;
+      // } else {
+      //   navigate("/home");
+      // }
 
+      navigate("/home");
 
     } catch (error) {
       showError(error);
