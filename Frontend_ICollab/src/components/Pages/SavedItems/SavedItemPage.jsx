@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { BookmarkIcon as SolidBookmark } from "@heroicons/react/24/solid";
 import PostCard from "../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
-import ProjectCard from "../ProjectsPage/ProjectCard";
+import ProjectCard from "../../Common/ProjectCard";
 import { useSelector } from "react-redux";
 
 const SavedItemPage = () => {
   // State to track the selected filter
   const [filter, setFilter] = useState("all");
   const savedPostsObjects = useSelector((state) => state.post.savePost);
-  const [savedPosts, setSavedPosts] = useState(Object.values(savedPostsObjects));
+  const [savedPosts, setSavedPosts] = useState(
+    Object.values(savedPostsObjects)
+  );
 
   useEffect(() => {
     // Fetch saved posts from the Redux store or API if needed
     setSavedPosts(Object.values(savedPostsObjects));
-  }
-  , [savedPostsObjects]);
+  }, [savedPostsObjects]);
 
   return (
     <div className="flex min-h-screen bg-gray-100 m-16">
