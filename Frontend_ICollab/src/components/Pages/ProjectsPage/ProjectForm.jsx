@@ -41,7 +41,7 @@ const ProjectForm = () => {
   const textClass = "text-sm mt-1";
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 space-y-10 mt-14">
+    <div className="max-w-4xl mx-auto px-4 py-10 space-y-10 mt-16 bg-white rounded-md">
       {/* Project Name */}
       <div>
         <h2 className="text-3xl font-semibold">
