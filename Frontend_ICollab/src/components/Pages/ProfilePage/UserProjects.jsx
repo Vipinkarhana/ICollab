@@ -1,7 +1,7 @@
-import React from 'react'
-import ProjectCard from '../ProjectsPage/ProjectCard'
-import { Plus,Folder } from 'lucide-react'
-import { Link } from 'react-router-dom';
+import React from "react";
+import ProjectCard from "../../Common/ProjectCard";
+import { Plus, Folder } from "lucide-react";
+import { Link } from "react-router-dom";
 function UserProjects() {
   const savedProjects = [
     {
@@ -40,7 +40,10 @@ function UserProjects() {
           <ProjectCard />
         ))}
       </div>
-      <Link to={"/project/create"} className="w-60 h-80 bg-white rounded-2xl shadow-lg flex flex-col items-center justify-between p-4 transition hover:shadow-2xl cursor-pointer">
+      <Link
+        to={"/project/create"}
+        className="w-60 h-80 bg-white rounded-2xl shadow-lg flex flex-col items-center justify-between p-4 transition hover:shadow-2xl cursor-pointer"
+      >
         {/* Top placeholder */}
         <div className="w-full h-10 bg-gray-200 rounded-md" />
 
@@ -72,4 +75,4 @@ function UserProjects() {
   );
 }
 
-export default UserProjects
+export default UserProjects;

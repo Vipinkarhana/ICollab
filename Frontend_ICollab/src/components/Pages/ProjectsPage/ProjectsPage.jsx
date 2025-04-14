@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import ProfileCard from "../HomePage/LeftDiv/ProfileCard";
 import SearchBar from "./SearchBar";
-import ProjectCard from "./ProjectCard";
-import { Plus } from 'lucide-react';
-import TaskCard from './TaskCard';
-import { OngoingTasks, SavedTasks } from './TaskData';
-import ProjectForm from './ProjectForm';
+import ProjectCard from "../../Common/ProjectCard";
+import { Plus } from "lucide-react";
+import TaskCard from "./TaskCard";
+import { OngoingTasks, SavedTasks } from "./TaskData";
+import ProjectForm from "./ProjectForm";
 
 function ProjectsPage() {
   const [ongoingTaskCardsToShow, setOngoingTaskCardsToShow] = useState(6);
@@ -24,7 +24,9 @@ function ProjectsPage() {
     const ongoingContainerHeight = ongoingTaskContainerRef.current.clientHeight;
     const cardHeight = 150;
     const ongoingCardsVisible = Math.floor(ongoingContainerHeight / cardHeight);
-    setOngoingTaskCardsToShow(ongoingCardsVisible > 3 ? ongoingCardsVisible : 3);
+    setOngoingTaskCardsToShow(
+      ongoingCardsVisible > 3 ? ongoingCardsVisible : 3
+    );
 
     const savedContainerHeight = savedTaskContainerRef.current.clientHeight;
     const savedCardsVisible = Math.floor(savedContainerHeight / cardHeight);
@@ -82,15 +84,17 @@ function ProjectsPage() {
             </button>
           </div>
           <div className="w-full h-full flex items-center justify-evenly flex-col overflow-hidden gap-4">
-            {ongoingTasks.slice(0, ongoingTaskCardsToShow).map((task, index) => (
-              <TaskCard
-                key={index}
-                priority={task.priority}
-                title={task.title}
-                users={task.users}
-                comments={task.comments}
-              />
-            ))}
+            {ongoingTasks
+              .slice(0, ongoingTaskCardsToShow)
+              .map((task, index) => (
+                <TaskCard
+                  key={index}
+                  priority={task.priority}
+                  title={task.title}
+                  users={task.users}
+                  comments={task.comments}
+                />
+              ))}
           </div>
         </div>
       </div>

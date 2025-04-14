@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import PostCard from "../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
-import ProjectCard from "../ProjectsPage/ProjectCard";
+import ProjectCard from "../../Common/ProjectCard";
 function Saved() {
   const [activeTab, setActiveTab] = useState("Posts");
   const savePostsObjects = useSelector((state) => state.post.savePost);
@@ -80,7 +80,7 @@ function Saved() {
       return (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-2">
           {savedProjects.map((project) => (
-            <ProjectCard/>
+            <ProjectCard />
           ))}
         </div>
       );
