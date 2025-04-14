@@ -3,8 +3,8 @@ import ProfileCard from "../HomePage/LeftDiv/ProfileCard";
 import SearchBar from "./SearchBar";
 import ProjectCard from "../../Common/ProjectCard";
 import { Plus } from "lucide-react";
-import TaskCard from "./TaskCard";
-import { OngoingTasks, SavedTasks } from "./TaskData";
+// import TaskCard from "./TaskCard";
+// import { OngoingTasks, SavedTasks } from "./TaskData";
 import ProjectForm from "./ProjectForm";
 
 function ProjectsPage() {
@@ -84,17 +84,17 @@ function ProjectsPage() {
             </button>
           </div>
           <div className="w-full h-full flex items-center justify-evenly flex-col overflow-hidden gap-4">
-            {ongoingTasks
+            {/* {ongoingTasks
               .slice(0, ongoingTaskCardsToShow)
               .map((task, index) => (
-                <TaskCard
-                  key={index}
-                  priority={task.priority}
-                  title={task.title}
-                  users={task.users}
-                  comments={task.comments}
-                />
-              ))}
+                // <TaskCard
+                //   key={index}
+                //   priority={task.priority}
+                //   title={task.title}
+                //   users={task.users}
+                //   comments={task.comments}
+                // />
+              ))} */}
           </div>
         </div>
       </div>
@@ -132,7 +132,7 @@ function ProjectsPage() {
           ref={savedTaskContainerRef}
           className="w-full h-auto flex items-center justify-evenly flex-col overflow-hidden gap-4"
         >
-          {savedTasks.slice(0, savedTaskCardsToShow).map((task, index) => (
+          {/* {savedTasks.slice(0, savedTaskCardsToShow).map((task, index) => (
             <TaskCard
               key={index}
               priority={task.priority}
@@ -140,7 +140,7 @@ function ProjectsPage() {
               users={task.users}
               comments={task.comments}
             />
-          ))}
+          ))} */}
         </div>
       </div>
 

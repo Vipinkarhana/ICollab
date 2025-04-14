@@ -2,12 +2,11 @@ import ProfilePic from "../../Common/ProfilePic";
 import { Github, Linkedin, Globe, MapPin, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 import CollabButton from "../../Common/CollabButton";
-import PageNavbar from "../../Common/PageNavbar";
-import PhonePageNavbar from "../../Common/PhonePageNavbar";
+import PageNavbar from "../../Common/PageNavbar/PageNavbar";
+import PhonePageNavbar from "../../Common/PageNavbar/PhonePageNavbar";
 import { Pencil } from "lucide-react";
 
 function Intro({ activeTab, setActiveTab }) {
-  
   const tabs = ["Intro", "Projects", "Saved", "Posts"];
 
   const skills = ["JavaScript", "React", "Node.js", "CSS", "Python"];

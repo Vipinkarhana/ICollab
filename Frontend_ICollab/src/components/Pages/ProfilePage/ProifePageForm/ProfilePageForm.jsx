@@ -3,14 +3,21 @@ import Education from "./Education";
 import Experience from "./Experience";
 import Links from "./Links";
 import Contact from "./Contact";
-import PageNavbar from "../../../Common/PageNavbar";
-import PhonePageNavbar from "../../../Common/PhonePageNavbar";
+import PageNavbar from "../../../Common/PageNavbar/PageNavbar";
+import PhonePageNavbar from "../../../Common/PageNavbar/PhonePageNavbar";
 import ProfilePic from "./ProfilePic";
 
 function ProfilePageForm() {
   const [activeTab, setActiveTab] = useState("ABOUT");
- 
-  const tabs = ["PROFILE PIC", "ABOUT", "EDUCATION", "EXPERIENCE", "LINKS", "CONTACT"];
+
+  const tabs = [
+    "PROFILE PIC",
+    "ABOUT",
+    "EDUCATION",
+    "EXPERIENCE",
+    "LINKS",
+    "CONTACT",
+  ];
 
   // State for input fields
   const [firstName, setFirstName] = useState("Mohit");
@@ -33,16 +40,12 @@ function ProfilePageForm() {
           tabs={tabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-        
-
         />
       </div>
 
       {/* Main Content */}
       <main className="w-[80svw] mx-auto p-4">
-        {activeTab === "PROFILE PIC" && (
-          <ProfilePic />
-        )}
+        {activeTab === "PROFILE PIC" && <ProfilePic />}
         {activeTab === "ABOUT" && (
           <div className="grid md:grid-cols-2 gap-6">
             {/* Basic Information */}
