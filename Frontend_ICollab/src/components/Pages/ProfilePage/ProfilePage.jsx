@@ -5,6 +5,7 @@ import Saved from "./Saved";
 import UserProjects from "./UserProjects";
 import ProfileStats from "./ProfileStats";
 import Readme from "./Readme";
+import ProjectDisplay from "./ProjectDisplay";
 
 function ProfilePage() {
   const stats = {
@@ -34,7 +35,8 @@ function ProfilePage() {
       {activeTab === "Intro" && (
         <div className="w-full p-4 flex justify-start items-center flex-col gap-4">
           <ProfileStats stats={stats} />
-          <Readme paragraph={paragraph}/>
+          <Readme paragraph={paragraph} />
+          <ProjectDisplay activeTab={activeTab} setActiveTab={setActiveTab}/>
         </div>
       )}
     </div>
