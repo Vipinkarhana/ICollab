@@ -12,10 +12,7 @@ import Register from "./components/Pages/Login_RegistrationPages/Registration";
 import Layout from "./components/Layout/Layout";
 import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
 import PrivateRoute from "./utils/PrivateRoute";
-import ActivityPage from "./components/Pages/ActivityPage/ActivityPage";
 import LandingPage from "./components/Pages/LandingPage/LandingPage";
-import ProjectPreview from "./components/Pages/ProjectsPage/ProjectPreview/ProjectPreview";
-// import SavedItemPage from "./components/Pages/SavedItems/SavedItemPage";
 import ProjectPreviewPage from "./components/Pages/ProjectPreviewPage/ProjectPreviewPage";
 import ProfilePageForm from "./components/Pages/ProfilePage/ProifePageForm/ProfilePageForm";
 import ProjectForm from "./components/Pages/ProjectsPage/ProjectForm";
@@ -36,17 +33,13 @@ function App() {
             <Route path="/message" element={<MessagePage />} />
             <Route path="/notification" element={<NotificationPage />} />
             <Route path="/incubators" element={<IncubatorsPage />} />
-            <Route path="/activity/:username" element={<ActivityPage />} />
-            <Route path="/project_preview" element={<ProjectPreview/>} />
-            {/* <Route path="/saved_items" element={<SavedItemPage/>}></Route> */}
-            <Route path="/project" element={<ProjectPreviewPage />}></Route>
+            <Route path="/projectpreview" element={<ProjectPreviewPage />} />
+            <Route path="/project" element={<ProjectPage/>}></Route>
             <Route path="/project/create" element={<ProjectForm />}></Route>
           </Route>
 
           {/* LandingPage with Layout, not a private route */}
           <Route path="/" element={<LandingPage />} />
-
-          {/* Public routes: no authentication required */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
