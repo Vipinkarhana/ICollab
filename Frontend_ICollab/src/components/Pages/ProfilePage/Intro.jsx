@@ -65,7 +65,7 @@ function Intro({ activeTab, setActiveTab }) {
                 className="border border-gray-300 rounded-md px-3 py-2 text-purple-700 hover:bg-gray-100 transition-colors text-lg font-semibold flex justify-evenly items-center gap-2"
               >
                 <Pencil size={24} />
-                Edit Readme
+                Edit Profile
               </Link>
             </div>
           </div>

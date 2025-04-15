@@ -51,7 +51,7 @@ const ProjectCard = () => {
             information from text, PDFs, and Word files...
           </p>
           <Link
-            to="/project_preview"
+            to="/projectpreview"
             className="text-lg text-white bg-blue-600 hover:bg-blue-700 rounded-md px-2 py-2 mt-2 w-28 justify-center flex items-center"
           >
             View
