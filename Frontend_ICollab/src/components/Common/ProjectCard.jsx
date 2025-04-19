@@ -12,9 +12,8 @@ const ProjectCard = ({
   avatarSeeds = []
 }) => {
   return (
-    <Link
-      to={"/projectpreview"}
-      className="w-full  sm:min-w-[34rem] sm:h-[20rem]  bg-white p-5 sm:p-6 rounded-xl shadow-md flex flex-col justify-between font-sans border border-white hover:border-blue-500 transition-all duration-200"
+    <div
+      className="w-full sm:min-w-[34rem] sm:h-[20rem] bg-white p-5 sm:p-6 rounded-xl shadow-md flex flex-col justify-between font-sans border border-white hover:border-blue-500 transition-all duration-200"
     >
       {/* Title & Type */}
       <div className="mb-4">
@@ -52,15 +51,20 @@ const ProjectCard = ({
         </div>
       </div>
 
-      {/* Field, Start & End Dates */}
+      {/* Field, Start & End Dates + View Button */}
       <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-sm sm:text-base text-gray-800 font-medium">
         <button className="uppercase px-3 py-1 bg-blue-200 hover:bg-blue-400 rounded-md text-xs sm:text-lg">
           {field}
         </button>
         <span className="text-gray-700">Starts: {startDate}</span>
         <span className="text-gray-700">Ends: {endDate}</span>
+        <Link to="/projectpreview" className="ml-auto">
+          <button className="px-4 py-1.5 bg-blue-600 text-white text-xs sm:text-sm rounded-md hover:bg-blue-700 transition">
+            View
+          </button>
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 };
 
