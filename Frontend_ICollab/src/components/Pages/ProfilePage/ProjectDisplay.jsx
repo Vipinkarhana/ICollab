@@ -159,7 +159,7 @@ const ProjectDisplay = ({ activeTab, setActiveTab }) => {
               </div>
             </>
           ) : (
-            <p className="text-gray-500 min-h-20 flex flex-col justify-center items-center">
+            <p className="text-gray-500 min-h-72 flex flex-col justify-center items-center">
               No project selected.
             </p>
           )}
