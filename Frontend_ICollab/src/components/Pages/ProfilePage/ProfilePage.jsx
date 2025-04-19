@@ -28,7 +28,7 @@ function ProfilePage() {
         <Saved/>
       )}
       {activeTab === "Projects" && (
-        <div className="w-full p-4">
+        <div className="w-full h-auto p-4">
           <UserProjects />
         </div>
       )}
