@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import ProfilePic from "./ProfilePic"; // ProfilePic component
 
-const Interactions = () => {
+const Interactions = ({className=""}) => {
   const [likes, setLikes] = useState(0);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
@@ -47,7 +47,7 @@ const Interactions = () => {
   return (
     <div className="w-full max-w-full  px-2">
       {/* Post Actions (Like, Comment, Repost, Send) */}
-      <div className="flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-1 sm:pt-4">
+      <div className={`flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-1 sm:pt-4 ${className}`}>
         <button
           className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2"
           onClick={() => setLikes(likes + 1)}
