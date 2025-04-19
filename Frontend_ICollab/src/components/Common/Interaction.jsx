@@ -66,7 +66,7 @@ const Interactions = ({ postId, initialLikes, initialIsLiked }) => {
   return (
     <div className="w-full max-w-full  px-2">
       {/* Post Actions (Like, Comment, Repost, Send) */}
-      <div className="flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-1 sm:pt-4">
+      <div className={`flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-1 sm:pt-4 ${className}`}>
         <button
           className="flex items-center space-x-1 px-8 py-4 rounded-sm sm:px-4 sm:py-2 "
           onClick={handleLikeClick}
