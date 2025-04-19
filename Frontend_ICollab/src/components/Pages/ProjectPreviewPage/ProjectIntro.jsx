@@ -13,13 +13,13 @@ import { useState } from "react";
 import PageNavbar from "../../Common/PageNavbar/PageNavbar";
 import CollabButton from "../../Common/CollabButton";
 import PhonePageNavbar from "../../Common/PageNavbar/PhonePageNavbar";
-import Carousel from "../../Common/Carousel";
+import Carousel from "./Carousel"
 
 function ProjectIntro({ tabs, activeTab, setActiveTab }) {
   return (
     <div className="w-full bg-white h-[92svh] flex flex-col items-center gap-2 justify-evenly">
-      <div className="w-full h-[40%] flex items-start justify-center p-4 border-2">
-        <div className="h-full flex flex-col justify-start items-center w-[15%] p-2 border-2">
+      <div className="w-full h-[40%] flex items-start justify-center p-4">
+        <div className="h-full flex flex-col justify-start items-center w-[15%] p-2">
           <div className="h-28 w-28 rounded-md overflow-hidden">
             <img
               src="https://devfolio.co/_next/image?url=https%3A%2F%2Fassets.devfolio.co%2Fhackathons%2F77e90ba53cec4f1883f1a5d3350f6e82%2Fprojects%2F226d73c18e3148c8854d27868b6188c4%2Fa67a5df8-2e9a-4cfe-a6d0-bae79844512c.jpeg&w=1440&q=75"
@@ -27,7 +27,7 @@ function ProjectIntro({ tabs, activeTab, setActiveTab }) {
             />
           </div>
         </div>
-        <div className="h-full w-[50%] flex flex-col justify-center items-center border-2">
+        <div className="h-full w-[50%] flex flex-col justify-center items-center">
           <div className="h-32 w-full flex flex-col justify-center items-start ">
             <p className="font-bold text-[3.2rem] ">CareTrack</p>
             <p className="text-gray-500 text-[1.5rem] -mt-4">
@@ -53,7 +53,7 @@ function ProjectIntro({ tabs, activeTab, setActiveTab }) {
             </div>
           </div>
         </div>
-        <div className="h-full flex flex-col justify-start items-center w-[25%] border-2">
+        <div className="h-full flex flex-col justify-start items-center w-[25%]">
           <div className="h-auto w-full flex justify-evenly items-start gap-1 py-2 ">
             <a
               href="https://github.com/yourusername"
@@ -96,35 +96,9 @@ function ProjectIntro({ tabs, activeTab, setActiveTab }) {
           </div>
         </div>
       </div>
-      <div className="h-[50%] border-2 flex justify-center items-center w-full">
-        {/* <Carousel>
-          <div className="h-[80%] w-[15%]">Naman</div>
-          <div className="h-[80%] w-[15%]">Naman</div>
-          <div className="h-[80%] w-[15%]">Naman</div>
-          <div className="h-[80%] w-[15%]">Naman</div>
-          <div className="h-[80%] w-[15%]">Naman</div>
-          <div className="h-[80%] w-[15%]">Naman</div>
-          <div className="h-[80%] w-[15%]">Naman</div>
-          <div className="h-[80%] w-[15%]">Naman</div>
-          <div className="h-[80%] w-[15%]">Naman</div>
-          <div className="h-[80%] w-[15%]">Naman</div>
-          <div className="h-[80%] w-[15%]">Naman</div>
-        </Carousel> */}
+      <div className="h-[50%] flex justify-center items-center w-full">
 
         <Carousel>
-          
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
-        <div className="h-[80%] w-auto bg-green-100">Naman</div>
 
         </Carousel>
         
