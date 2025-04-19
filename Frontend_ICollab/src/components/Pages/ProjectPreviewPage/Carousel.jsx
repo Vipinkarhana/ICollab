@@ -24,7 +24,7 @@ function Carousel() {
   };
 
   return (
-    <div className="relative w-full max-w-screen-xl mx-auto p-4">
+    <div className="relative w-full max-w-screen  p-4">
       {/* Left Arrow */}
       <button
         onClick={() => scroll('left')}
@@ -48,7 +48,7 @@ function Carousel() {
         {images.map((src, index) => (
           <div
             key={index}
-            className="min-w-[300px] max-w-[300px] rounded-xl overflow-hidden shadow-md border transition-opacity duration-300"
+            className="min-w-[13rem] max-w-[13rem] rounded-xl overflow-hidden shadow-md border transition-opacity duration-300"
           >
             <img src={src} alt={`project-${index}`} className="w-full h-auto object-cover" />
           </div>
