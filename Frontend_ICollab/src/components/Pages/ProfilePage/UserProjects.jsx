@@ -1,7 +1,6 @@
 import React from "react";
 import ProjectCard from "../../Common/ProjectCard";
-import { Plus, Folder } from "lucide-react";
-import { Link } from "react-router-dom";
+import MoreProject from "../../Common/MoreProject";
 import CreateProjectButton from "../../Common/CreateProjectButton";
 function UserProjects() {
   const savedProjects = [
@@ -35,13 +34,14 @@ function UserProjects() {
     );
   }
   return (
-    <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
+    <div className="flex flex-col items-center justify-between gap-12 w-full h-full">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-2">
         {savedProjects.map((project) => (
           <ProjectCard />
         ))}
       </div>
       <CreateProjectButton/>
+      <MoreProject/>
     </div>
   );
 }
