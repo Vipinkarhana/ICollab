@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  fetchAnalytics,
-  trackPageView,
-} from "../../../services/adminService";
+import { fetchAnalytics } from "../../../services/adminService";
 import {
   FaUsers,
   FaUserPlus,
@@ -40,12 +37,12 @@ const Analytics = () => {
         console.log("Fetched analytics:", data);
 
         // Convert pageViewsPerPageDaily object into array format
-        const pageViewsArray = Object.entries(data.pageViewsPerPageDaily || {}).map(
-          ([page, views]) => ({
-            page,
-            views,
-          })
-        );
+        const pageViewsArray = Object.entries(
+          data.pageViewsPerPageDaily || {}
+        ).map(([page, views]) => ({
+          page,
+          views,
+        }));
 
         const pageViewsPerPage = {};
         pageViewsArray.forEach(({ page, views }) => {
@@ -89,12 +86,42 @@ const Analytics = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6 mb-4">
-        <StatsCard title="Total Users" value={stats.totalUsers} icon={<FaUsers />} color="#3B82F6" />
-        <StatsCard title="New Users (Today)" value={stats.newUsers} icon={<FaUserPlus />} color="#10B981" />
-        <StatsCard title="Active Users (5 min)" value={stats.activeUsers} icon={<FaChartLine />} color="#8B5CF6" />
-        <StatsCard title="Total Posts" value={stats.totalPosts} icon={<FaRegNewspaper />} color="#F97316" />
-        <StatsCard title="New Posts (Today)" value={stats.newPosts} icon={<FaGlobe />} color="#EF4444" />
-        <StatsCard title="User Retention Rate" value={`${stats.retentionRate}%`} icon={<FaUsers />} color="#14B8A6" />
+        <StatsCard
+          title="Total Users"
+          value={stats.totalUsers}
+          icon={<FaUsers />}
+          color="#3B82F6"
+        />
+        <StatsCard
+          title="New Users (Today)"
+          value={stats.newUsers}
+          icon={<FaUserPlus />}
+          color="#10B981"
+        />
+        <StatsCard
+          title="Active Users (5 min)"
+          value={stats.activeUsers}
+          icon={<FaChartLine />}
+          color="#8B5CF6"
+        />
+        <StatsCard
+          title="Total Posts"
+          value={stats.totalPosts}
+          icon={<FaRegNewspaper />}
+          color="#F97316"
+        />
+        <StatsCard
+          title="New Posts (Today)"
+          value={stats.newPosts}
+          icon={<FaGlobe />}
+          color="#EF4444"
+        />
+        <StatsCard
+          title="User Retention Rate"
+          value={`${stats.retentionRate}%`}
+          icon={<FaUsers />}
+          color="#14B8A6"
+        />
       </div>
 
       {/* Dropdown to Select Page */}
@@ -108,11 +135,21 @@ const Analytics = () => {
             value={selectedPage}
             onChange={(e) => setSelectedPage(e.target.value)}
           >
-            {stats.pageViews.map((entry) => (
-              <option key={entry.page} value={entry.page}>
-                {entry.page}
-              </option>
-            ))}
+            {stats.pageViews.map((entry) => {
+              const cleanedName =
+                entry.page === "/"
+                  ? "Dashboard"
+                  : entry.page
+                      .replace("/", "")
+                      .replace(/-/g, " ")
+                      .replace(/\b\w/g, (c) => c.toUpperCase());
+
+              return (
+                <option key={entry.page} value={entry.page}>
+                  {cleanedName}
+                </option>
+              );
+            })}
           </select>
         </div>
       )}

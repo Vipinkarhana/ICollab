@@ -22,12 +22,14 @@ const getAnalytics = async (req, res, next) => {
     const retentionRate = Math.floor((activeUsers / totalUsers) * 100);
 
     const pageViewsRaw = await pageViewModel.find({
-      createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }, // last 7 days
+      createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
     });
 
     const pageViewsGrouped = {};
     const browserUsage = {};
     const deviceUsage = {};
+
+    const uniqueUserSet = new Set();
 
     for (let view of pageViewsRaw) {
       const date = new Date(view.createdAt).toISOString().split("T")[0];
@@ -35,20 +37,39 @@ const getAnalytics = async (req, res, next) => {
       if (!pageViewsGrouped[view.page]) pageViewsGrouped[view.page] = {};
       pageViewsGrouped[view.page][date] = (pageViewsGrouped[view.page][date] || 0) + 1;
 
-      // Browser
-      const browserMatch = view.userAgent?.match(/(Firefox|Chrome|Safari|Edge)/i);
-      const browser = browserMatch ? browserMatch[1] : "Other";
-      browserUsage[browser] = (browserUsage[browser] || 0) + 1;
-
-      // Device
       const ua = view.userAgent || "";
-      const isMobile = /mobile/i.test(ua);
-      const isTablet = /tablet/i.test(ua);
-      const deviceType = isTablet ? "Tablet" : isMobile ? "Mobile" : "Desktop";
-      deviceUsage[deviceType] = (deviceUsage[deviceType] || 0) + 1;
+      const ip = view.ipAddress || "unknown";
+      const uniqueKey = ip + ua;
+
+      if (!uniqueUserSet.has(uniqueKey)) {
+        uniqueUserSet.add(uniqueKey);
+
+        // Detect Browser
+        let browser = "Other";
+        if (/Edg\//i.test(ua)) {
+          browser = "Edge";
+        } else if (/OPR|Opera/i.test(ua)) {
+          browser = "Opera";
+        } else if (/Firefox/i.test(ua)) {
+          browser = "Firefox";
+        } else if (/Chrome/i.test(ua) && !/Edg|OPR|Brave/i.test(ua)) {
+          browser = "Chrome";
+        } else if (/Safari/i.test(ua) && !/Chrome|Chromium|Edg|OPR/i.test(ua)) {
+          browser = "Safari";
+        }
+
+        browserUsage[browser] = (browserUsage[browser] || 0) + 1;
+
+        // Detect Device Type
+        const isMobile = /mobile/i.test(ua);
+        const isTablet = /tablet/i.test(ua);
+        const deviceType = isTablet ? "Tablet" : isMobile ? "Mobile" : "Desktop";
+
+        deviceUsage[deviceType] = (deviceUsage[deviceType] || 0) + 1;
+      }
     }
 
-    // Create pageViewsPerPageDaily in required format
+    // Convert pageViewsGrouped to frontend-friendly format
     const pageViewsPerPageDaily = {};
     for (const [page, data] of Object.entries(pageViewsGrouped)) {
       pageViewsPerPageDaily[page] = Object.entries(data)
@@ -75,7 +96,7 @@ const getAnalytics = async (req, res, next) => {
       totalPosts,
       newPosts,
       retentionRate,
-      pageViewsPerPageDaily, // ← 👈 This is what you’ll use for per-page daily views
+      pageViewsPerPageDaily,
       postGrowth: postGrowth.map((d) => ({ date: d._id, value: d.count })),
       deviceUsage,
       browserUsage,
@@ -85,6 +106,9 @@ const getAnalytics = async (req, res, next) => {
     res.status(500).json({ message: "Error fetching analytics" });
   }
 };
+
+module.exports = { getAnalytics };
+
 
 
 const trackPageView = async (req, res, next) => {
