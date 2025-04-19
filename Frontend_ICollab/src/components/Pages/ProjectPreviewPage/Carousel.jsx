@@ -11,7 +11,7 @@ const images = [
   'https://devfolio.co/_next/image?url=https%3A%2F%2Fassets.devfolio.co%2Fhackathons%2Fd64ead180bfc42bda8cee408f6d39b80%2Fprojects%2F84739795d17344eca8a79f49c1e1316f%2F97fa2051-3d80-46ab-b033-bf45971e78fa.jpeg&w=1440&q=75'
 ];
 
-export default function GameCarousel() {
+function Carousel() {
   const scrollRef = useRef(null);
 
   const scroll = (direction) => {
@@ -65,3 +65,5 @@ export default function GameCarousel() {
     </div>
   );
 }
+
+export default Carousel;
