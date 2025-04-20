@@ -2,6 +2,7 @@ import React from "react";
 import ProjectCard from "../../Common/ProjectCard";
 import MoreProject from "../../Common/MoreProject";
 import CreateProjectButton from "../../Common/CreateProjectButton";
+
 function UserProjects() {
   const savedProjects = [
     {
@@ -33,15 +34,16 @@ function UserProjects() {
       </div>
     );
   }
+
   return (
-    <div className="flex flex-col items-center justify-between gap-12 w-full h-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-2">
+    <div className="flex flex-col items-center justify-between gap-12 w-full h-full  sm:px-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
         {savedProjects.map((project) => (
-          <ProjectCard />
+          <ProjectCard key={project._id} />
         ))}
       </div>
-      <CreateProjectButton/>
-      <MoreProject/>
+      <CreateProjectButton />
+      <MoreProject />
     </div>
   );
 }
