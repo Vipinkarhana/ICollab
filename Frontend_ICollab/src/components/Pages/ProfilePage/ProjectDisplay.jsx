@@ -94,9 +94,9 @@ const ProjectDisplay = ({ activeTab, setActiveTab }) => {
 
   return (
     <>
-      <div className="flex bg-white p-4 rounded-xl shadow-lg w-[80%]">
+      <div className="flex flex-wrap md:flex-nowrap bg-white p-4 rounded-xl shadow-lg w-full md:w-[80%]">
         {/* Sidebar */}
-        <div className="w-1/4 border-r pr-4">
+        <div className="w-full md:w-1/4 border-r pr-4 mb-4 md:mb-0">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-gray-700 font-semibold text-2xl">Top Projects</h2>
             {topProjects.length < 3 && (
@@ -141,12 +141,12 @@ const ProjectDisplay = ({ activeTab, setActiveTab }) => {
         </div>
 
         {/* Info Panel */}
-        <div className="w-3/4 pl-6">
+        <div className="w-full md:w-3/4 sm:pl-6">
           {selectedProject ? (
             <>
               <h3 className="text-3xl font-bold">{selectedProject.name}</h3>
               <p className="text-gray-600 italic">{selectedProject.tagline}</p>
-              <p className="mt-2 text-gray-700">{selectedProject.description}</p>
+              <p className="mt-2 text-gray-700 text-justify">{selectedProject.description}</p>
               <div className="mt-4 grid grid-cols-2 gap-4">
                 {selectedProject.images.map((img, idx) => (
                   <img
@@ -175,7 +175,6 @@ const ProjectDisplay = ({ activeTab, setActiveTab }) => {
                 setShowModal(false);
                 setSelectedCards([]); 
               }}
-              
               className="absolute top-4 right-4 text-gray-600 hover:text-black"
             >
               <X size={24} />
