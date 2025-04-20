@@ -113,10 +113,24 @@ export const toggleSavePost = async (postid) => {
 
 export const getSavedPosts = async () => {
   try {
-    const response = await privateaxios.get("/posts/savedposts");
+    const response = await privateAxios.get("/posts/savedposts");
     return response.data.data;
   } catch (error) {
     console.error("Error fetching saved posts:", error);
     throw error;
   }
 };
+
+
+export const likeAndUnlikePost = async (postId) => {
+    try {
+        console.log("Reached postService");
+      const response = await privateAxios.post("posts/likeandunlikepost", {}, {
+        params: { postId }
+      });
+      console.log("Successfully hitted the route");
+      return response.data;
+    } catch (error) {
+      return error.response?.data || { error: "Failed to toggle like" };
+    }
+  };

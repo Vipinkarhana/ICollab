@@ -6,6 +6,7 @@ import {
   editPost,
   deletePost,
   toggleSavePost,
+  likeAndUnlikePost,
 } from "../../Services/postService";
 
 export const createPost = createAsyncThunk(
@@ -26,6 +27,19 @@ export const createPost = createAsyncThunk(
       }
     } catch (error) {
       console.log(error);
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const toggleLike = createAsyncThunk(
+  "post/toggleLike",
+  async (postId, { rejectWithValue }) => {
+    try {
+      console.log("Reached post slice and about to hit the route");
+      const response = await likeAndUnlikePost(postId);
+      return { postId, ...response.data };
+    } catch (error) {
       return rejectWithValue(error.message);
     }
   }
@@ -163,6 +177,34 @@ const postSlice = createSlice({
       state.feed.posts = [action.payload, ...state.feed.posts];
       state.post = initialState.post;
     });
+    builder.addCase(toggleLike.fulfilled, (state, action) => {
+      const { postId, liked } = action.payload;
+    
+      // Update feed posts
+      state.feed.posts = state.feed.posts.map(post => {
+        if (post._id === postId) {
+          return { 
+            ...post,
+            likes: liked ? post.likes + 1 : post.likes - 1,
+            isLiked: liked 
+          };
+        }
+        return post;
+      });
+  
+      // Update my posts
+      state.myPost = state.myPost.map(post => {
+        if (post._id === postId) {
+          return { 
+            ...post,
+            likes: liked ? post.likes + 1 : post.likes - 1,
+            isLiked: liked 
+          };
+        }
+        return post;
+      });
+    });
+
     builder.addCase(createPost.rejected, (state, action) => {
       state.error = action.payload;
     });

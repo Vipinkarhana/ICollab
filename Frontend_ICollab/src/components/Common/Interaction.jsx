@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import { useDispatch } from 'react-redux';
+import {toggleLike} from "../../Redux/Slices/PostSlice";
 import {
   MessageCircle,
   ThumbsUp,
@@ -9,8 +11,10 @@ import {
 } from "lucide-react";
 import ProfilePic from "./ProfilePic"; // ProfilePic component
 
-const Interactions = () => {
-  const [likes, setLikes] = useState(0);
+const Interactions = ({ postId, initialLikes, initialIsLiked }) => {
+  const dispatch = useDispatch();
+  const [likes, setLikes] = useState(initialLikes);
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [replyText, setReplyText] = useState({});
@@ -22,6 +26,13 @@ const Interactions = () => {
       setComments([...comments, { text: commentText, likes: 0, replies: [] }]);
       setCommentText("");
     }
+  };
+
+  const handleLikeClick = () => {
+    console.log("Reached handleClick function in interaction.jsx");
+    setLikes(prev => isLiked ? prev - 1 : prev + 1);
+    setIsLiked(!isLiked);
+    dispatch(toggleLike(postId));
   };
 
   const focusCommentInput = () => {
@@ -49,12 +60,12 @@ const Interactions = () => {
       {/* Post Actions (Like, Comment, Repost, Send) */}
       <div className="flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-1 sm:pt-4">
         <button
-          className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2"
-          onClick={() => setLikes(likes + 1)}
+          className="flex items-center space-x-1 px-8 py-4 rounded-sm sm:px-4 sm:py-2 "
+          onClick={handleLikeClick}
         >
-          <ThumbsUp size={18} />
+          <ThumbsUp size={18} fill={isLiked ? "currentColor" : "none"}/>
           <span className="hidden sm:inline">
-            {likes > 0 ? `Like ${likes}` : "Like"}
+            {likes > 0 ? `${likes} Like${likes !== 1 ? 's' : ''}` : "Like"}
           </span>
         </button>
 
