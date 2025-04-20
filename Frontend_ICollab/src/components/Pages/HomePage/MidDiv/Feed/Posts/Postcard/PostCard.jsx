@@ -14,7 +14,8 @@ import {
   openPostModal,
   removePost,
   fetchMyPosts,
-  saveOrUnsavePost
+  saveOrUnsavePost,
+  toggleLike,
 } from "../../../../../../../Redux/Slices/PostSlice";
 import Interaction from "../../../../../../Common/Interaction";
 import { sendRequest } from "../../../../../../../Services/networkService";
@@ -215,7 +216,11 @@ function PostCard({ post }) {
       </div>
       {!isCurrentUser && (
         <div className="w-full ">
-          <Interaction data={post}/>
+          <Interaction 
+          postId={post._id}
+          initialLikes={post.likes}
+          initialIsLiked={post.isLiked}
+          />
         </div>
       )}
     </div>

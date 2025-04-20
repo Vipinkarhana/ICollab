@@ -96,15 +96,20 @@ const addPostMedia = async (req, res, next) => {
 
 const likeAndUnlikepost = async (req, res, next) => {
   try {
-    const { postid } = req.body;
-    const postId = postid;
-    const userId = req.user.id;
+    const { postId } = req.query; //dummy post id
+    const username = req.user.username;
+    const user = await userModel.findOne({username});
+    //console.log(user);
+    const userId = user._id;
+    //const userId = req.body.userid;
+    //console.log("UserId: ",userId);
+    
     let liked = 0,
       unliked = 0;
     let likeDoc = await likeModel.findOne({ postId });
 
     if (!likeDoc) {
-      likeDoc = await likeModel.create({ postId, userId: [userId] });
+      likeDoc = await likeModel.create({ postId });
     }
 
     if (likeDoc) {
@@ -143,6 +148,8 @@ const likeAndUnlikepost = async (req, res, next) => {
 
 const feed = async (req, res, next) => {
   try {
+    const username = req.user.username;
+    const user = await userModel.findOne({username});
     const { timestamp } = req.query; // the timestamp sent by the frontend
 
     if (!timestamp) {
@@ -150,12 +157,13 @@ const feed = async (req, res, next) => {
     }
 
     const date = new Date(Number(timestamp));
-    const connection = await connectionModel.findOne({ user: req.user.id });
+    const connection = await connectionModel.findOne({ user: user._id });
     //const connection = await connectionModel.findOne({ user: req.body.userid });
     console.log('Connection: ', connection);
     const connectionIds = connection?.connectedusers || [];
     console.log('Connection IDs:', connectionIds);
-    const userId = req.user._id;
+    const userId = user._id;
+    console.log("UserId in feed: ",userId);
     //const userId = req.body.userid;
     const posts = await postModel.aggregate([
       {
