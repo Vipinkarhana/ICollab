@@ -6,7 +6,7 @@ function MoreProject() {
     <div className='flex flex-col gap-4 py-3 px-2 sm:px-4'>
       <div className="flex flex-row sm:flex-row sm:justify-between sm:items-center w-full sm:gap-2 gap-9">
         <h1 className='text-lg sm:text-3xl font-semibold tracking-tight'>People Also Viewed</h1>
-        <button className='bg-blue-500 hover:bg-blue-600 sm:px-4 sm:py-2 px-1 py-2 rounded-md text-white flex items-center gap-2 self-start sm:self-auto '>
+        <button className='bg-blue-500 hover:bg-blue-600 sm:px-4 sm:py-2 px-1 py-2 rounded-md text-white flex items-center gap-2 self-start sm:self-auto'>
           See more projects
           <span>{">"}</span>
         </button>

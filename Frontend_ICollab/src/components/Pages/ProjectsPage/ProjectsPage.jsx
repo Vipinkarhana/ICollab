@@ -122,20 +122,30 @@ const ProjectsPage = () => {
   return (
     <div className="min-h-screen flex flex-col  items-center w-full py-6 bg-gray-100  mt-16">
       <div className="max-w-6xl mx-auto">
-        {/* Search + Button */}
-        <div className="flex justify-center items-center w-full">
-          <div className="flex items-center justify-center gap-4 mb-6 w-full">
-            <div className="sm:w-[80%] w-full sm:mr-36">
-              <SearchBar />
-            </div>
-            <Link
-              to={`/profile/${username}`}
-              className="bg-blue-300 w-44 h-12 text-xl text-white px-4 py-2 rounded-full hover:bg-blue-400 md:flex items-center justify-center absolute top-1/4 transform -translate-y-14 right-28  hidden"
-            >
-              Your Project <span>{">"}</span>
-            </Link>
-          </div>
-        </div>
+       {/* Search + Button */}
+<div className="flex justify-center items-center w-full">
+  <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6 w-full sm:w-[90%] px-4">
+    
+    {/* Search bar */}
+    <div className="sm:w-[80%] w-full">
+      <SearchBar />
+    </div>
+
+    {/* Button - visible from md screens onwards */}
+    <div className="sm:w-[20%] w-full flex sm:items-start items-center justify-center sm:justify-end">
+      <Link
+        to={`/profile/${username}`}
+        className="bg-blue-300 w-44 h-12 text-xl text-white px-4 py-2 rounded-full hover:bg-blue-400 
+        hidden md:flex items-center justify-center gap-1 mt-5"
+      >
+        Your Project <span>{">"}</span>
+      </Link>
+    </div>
+
+  </div>
+</div>
+
+
 
         {/* Slider-like card display */}
         <div className="mt-6 flex justify-center gap-6 flex-wrap">
