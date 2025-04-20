@@ -9,7 +9,7 @@ const ProjectForm = () => {
     technologies: "",
     links: "",
     video: "",
-    coverImage: null,
+   
     pictures: [],
     logo: null,
   });
@@ -171,26 +171,9 @@ const ProjectForm = () => {
         />
       </div>
 
-      {/* Cover Image */}
-      <div>
-        <h2 className="text-3xl font-semibold">Cover Image</h2>
-        <p className="text-sm text-gray-600 mt-1">
-          Upload a cover image (Max 1MB, Recommended Dimensions: 1200x630)
-        </p>
-        <label className="mt-3 w-40 h-40 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:bg-gray-50 hover:border-blue-500">
-          +
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => handleFileChange(e, "coverImage")}
-            className="hidden"
-          />
-        </label>
-      </div>
-
       {/* Pictures */}
       <div>
-        <h2 className="text-3xl font-semibold">Pictures</h2>
+        <h2 className="text-3xl font-semibold">Media</h2>
         <p className="text-sm text-gray-600 mt-1">
           Upload a maximum of 5 pictures (Size: Max 1MB each)
         </p>

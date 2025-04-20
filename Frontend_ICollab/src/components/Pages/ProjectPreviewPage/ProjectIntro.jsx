@@ -13,11 +13,12 @@ import { useState } from "react";
 import PageNavbar from "../../Common/PageNavbar/PageNavbar";
 import CollabButton from "../../Common/CollabButton";
 import PhonePageNavbar from "../../Common/PageNavbar/PhonePageNavbar";
+import Carousel from "./Carousel"
 
 function ProjectIntro({ tabs, activeTab, setActiveTab }) {
   return (
-    <div className="w-full bg-white h-[59svh] flex flex-col items-center p-2 gap-2 justify-evenly">
-      <div className="w-full h-[80%] flex items-start justify-center p-2">
+    <div className="w-full bg-white h-[92svh] flex flex-col items-center gap-2 justify-evenly">
+      <div className="w-full h-[40%] flex items-start justify-center p-4">
         <div className="h-full flex flex-col justify-start items-center w-[15%] p-2">
           <div className="h-28 w-28 rounded-md overflow-hidden">
             <img
@@ -26,7 +27,7 @@ function ProjectIntro({ tabs, activeTab, setActiveTab }) {
             />
           </div>
         </div>
-        <div className="h-[80%] w-[50%] flex flex-col justify-center items-center">
+        <div className="h-full w-[50%] flex flex-col justify-center items-center">
           <div className="h-32 w-full flex flex-col justify-center items-start ">
             <p className="font-bold text-[3.2rem] ">CareTrack</p>
             <p className="text-gray-500 text-[1.5rem] -mt-4">
@@ -95,19 +96,12 @@ function ProjectIntro({ tabs, activeTab, setActiveTab }) {
           </div>
         </div>
       </div>
-      <div className="h-[20%] w-full md:flex justify-center items-center hidden">
-        <PageNavbar
-          tabs={tabs}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-      </div>
-      <div className="h-[20%] w-full md:hidden justify-center items-center flex">
-        <PhonePageNavbar
-          tabs={tabs}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
+      <div className="h-[50%] flex justify-center items-center w-full">
+
+        <Carousel>
+
+        </Carousel>
+        
       </div>
     </div>
   );
