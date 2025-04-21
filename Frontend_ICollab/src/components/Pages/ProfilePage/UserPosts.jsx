@@ -33,7 +33,8 @@ function UserPosts() {
   }
 
   return (
-    <div className="w-full px-6 py-4 flex justify-evenly gap-6 ">
+    <>
+    <div className="w-full hidden px-6 py-4 sm:flex justify-evenly gap-6 ">
      
         <div className="flex flex-col gap-3 w-[45svw] ">
           {myPost
@@ -54,6 +55,16 @@ function UserPosts() {
             ))}
         </div>
       </div>
+      <div className="">
+        <div className="flex flex-col gap-3 w-full sm:hidden ">
+          {myPost.map((post) => (
+            <div key={post._id}>
+              <PostCard post={post} />
+            </div>
+          ))}
+        </div>
+      </div>
+      </>
   );
 }
 
