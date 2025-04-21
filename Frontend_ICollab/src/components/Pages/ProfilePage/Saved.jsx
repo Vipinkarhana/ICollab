@@ -2,17 +2,14 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import PostCard from "../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
 import ProjectCard from "../../Common/ProjectCard";
+
 function Saved() {
   const [activeTab, setActiveTab] = useState("Posts");
   const savePostsObjects = useSelector((state) => state.post.savePost);
-  console.log("savePostsObjects", savePostsObjects);
-
   const savePosts = Object.values(savePostsObjects);
-  console.log("savePosts", savePosts);
 
   const tabs = ["Posts", "Projects"];
 
-  // 👇 Mock saved projects (until backend integration)
   const savedProjects = [
     {
       _id: "p1",
@@ -47,26 +44,38 @@ function Saved() {
       }
 
       return (
-        <div className="w-full px-6 py-4 flex justify-evenly gap-6">
-          <div className="flex flex-col gap-3 w-[45svw]">
-            {savePosts
-              .filter((_, index) => index % 2 === 0)
-              .map((post) => (
-                <div key={post._id}>
-                  <PostCard post={post} />
-                </div>
-              ))}
+        <>
+          {/* Desktop view (2 columns) */}
+          <div className="hidden md:flex w-full  py-4 justify-evenly gap-6">
+            <div className="flex flex-col gap-3 w-[45%]">
+              {savePosts
+                .filter((_, index) => index % 2 === 0)
+                .map((post) => (
+                  <div key={post._id}>
+                    <PostCard post={post} />
+                  </div>
+                ))}
+            </div>
+            <div className="flex flex-col gap-3 w-[45%]">
+              {savePosts
+                .filter((_, index) => index % 2 !== 0)
+                .map((post) => (
+                  <div key={post._id}>
+                    <PostCard post={post} />
+                  </div>
+                ))}
+            </div>
           </div>
-          <div className="flex flex-col gap-3 w-[45svw]">
-            {savePosts
-              .filter((_, index) => index % 2 !== 0)
-              .map((post) => (
-                <div key={post._id}>
-                  <PostCard post={post} />
-                </div>
-              ))}
+
+          {/* Mobile/Tablet view (single column) */}
+          <div className="flex flex-col gap-4 md:hidden px-1 py-4">
+            {savePosts.map((post) => (
+              <div key={post._id}>
+                <PostCard post={post} />
+              </div>
+            ))}
           </div>
-        </div>
+        </>
       );
     } else if (activeTab === "Projects") {
       if (savedProjects.length === 0) {
@@ -78,9 +87,9 @@ function Saved() {
       }
 
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-2">
+        <div className="grid grid-cols-1 px-1 py-4 sm:grid-cols-2 gap-6 ">
           {savedProjects.map((project) => (
-            <ProjectCard />
+            <ProjectCard key={project._id} {...project} />
           ))}
         </div>
       );
@@ -88,8 +97,8 @@ function Saved() {
   };
 
   return (
-    <div className="w-full h-auto px-6 py-4 flex justify-evenly gap-6 overflow-x-hidden">
-      <div className="w-[90%]">
+    <div className="w-full h-auto px-2 md:px-6 py-4 flex justify-center overflow-x-hidden">
+      <div className="w-full md:w-[90%]">
         {/* Tabs */}
         <div className="flex space-x-0 relative z-10">
           {tabs.map((tab, index) => {
@@ -100,7 +109,7 @@ function Saved() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-6 py-2 text-lg   
+                className={`flex-1 px-4 py-2 text-sm sm:text-base md:text-lg text-center
                   ${isFirst ? "rounded-tl-md" : "rounded-tr-md"}
                   ${
                     isActive
@@ -119,7 +128,7 @@ function Saved() {
         </div>
 
         {/* Content Area */}
-        <div className="w-full bg-white shadow-md border border-t-0 rounded-b-md -mt-1 z-20 relative p-4">
+        <div className="w-full bg-white shadow-md border border-t-0 rounded-b-md -mt-1 z-20 relative ">
           {renderContent()}
         </div>
       </div>
