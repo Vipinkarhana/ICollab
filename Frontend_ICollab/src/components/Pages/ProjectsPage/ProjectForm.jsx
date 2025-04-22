@@ -5,77 +5,90 @@ const ProjectForm = () => {
     projectName: "",
     tagline: "",
     problem: "",
-    challenges: "",
     technologies: "",
     links: "",
-    video: "",
+    videoDemo: "",
+    Challenges: "",
     startDate: "",
     endDate: "",
+    isOngoing: false,
     pictures: [],
     logo: null,
   });
 
   const [touchedFields, setTouchedFields] = useState({});
+  const [errors, setErrors] = useState({});
+  const [wordCounts, setWordCounts] = useState({
+    projectName: 0,
+    tagline: 0,
+    problem: 0,
+    technologies: 0,
+    Challenges: 0,
+    links: 0,
+    videoDemo: 0,
+  });
 
-  const handleChange = (e, key) => {
-    setFormData((prev) => ({ ...prev, [key]: e.target.value }));
+  const today = new Date().toISOString().split("T")[0];
+
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Update word count for text fields
+    if (e.target.type === "text" || e.target.type === "textarea") {
+      const wordCount = value.trim().split(/\s+/).length;
+      setWordCounts((prev) => ({ ...prev, [name]: wordCount }));
+    }
   };
 
-  const handleTagsChange = (e) => {
-    const tags = e.target.value.split(',').map((tag) => tag.trim()).filter(Boolean); // Split by commas and trim spaces
-    setFormData({ ...formData, tags });
-  };
-
-  const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      attachments: [...e.target.files]
-    });
+  const handleFileChange = (e, key, multiple = false) => {
+    if (multiple) {
+      setFormData({
+        ...formData,
+        [key]: [...e.target.files],
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [key]: e.target.files[0],
+      });
+    }
   };
 
   const handleOngoingChange = (e) => {
-    setIsOngoing(e.target.checked); // Update ongoing state based on checkbox
-    if (e.target.checked) {
-      setFormData({ ...formData, endDate: '' }); // Clear end date when ongoing
-    }
+    setFormData({
+      ...formData,
+      isOngoing: e.target.checked,
+      endDate: e.target.checked ? "" : formData.endDate,
+    });
   };
 
+  // Handle validation
   const validateForm = () => {
     const newErrors = {};
-    // Check required fields
-    if (!formData.title) newErrors.title = 'Project title is required.';
-    if (!formData.description) newErrors.description = 'Description is required.';
-    if (!formData.category) newErrors.category = 'Category is required.';
-    if (!formData.startDate) newErrors.startDate = 'Start date is required.';
-    if (!isOngoing && !formData.endDate) newErrors.endDate = 'End date is required.';
-    if (!formData.collaborators) newErrors.collaborators = 'Collaborators are required.';
-    if (!formData.roles) newErrors.roles = 'Role is required.';
-    if (formData.tags.length === 0) newErrors.tags = 'At least one tag is required.';
+    if (!formData.projectName) newErrors.projectName = "Project name is required.";
+    if (!formData.tagline) newErrors.tagline = "Tagline is required.";
+    if (!formData.problem) newErrors.problem = "Problem statement is required.";
+    if (!formData.technologies) newErrors.technologies = "Technologies are required.";
+    if (!formData.startDate) newErrors.startDate = "Start date is required.";
+    if (!formData.isOngoing && !formData.endDate) newErrors.endDate = "End date is required.";
+    if (!formData.Challenges) newErrors.Challenges = "Challenges are required.";
 
     setErrors(newErrors);
-
-    // Return true if no errors
     return Object.keys(newErrors).length === 0;
   };
 
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      onCreateProject(formData);
+      console.log("Form submitted with data:", formData);
+      // On success, you can call your submit function here, e.g. onCreateProject(formData);
     }
   };
 
-  const isRequiredFieldEmpty = (key) => {
-    return touchedFields[key] && !formData[key];
-  };
-
-  const isDateInvalid =
-  formData.startDate &&
-  formData.endDate &&
-  new Date(formData.endDate) < new Date(formData.startDate);
-
-
-  const inputClass = "w-full mt-2 p-2 rounded focus:outline-none";
+  const inputClass = "w-full p-2 border rounded-md mt-2 focus:outline-none";
   const textClass = "text-sm mt-1";
 
   return (
@@ -83,184 +96,221 @@ const ProjectForm = () => {
       {/* Project Name */}
       <div>
         <h2 className="text-3xl font-semibold">
-          Project Name<span className="text-red-500">*</span>
+          Project Name <span className="text-red-500">*</span>
         </h2>
-        <p className={`${textClass} uppercase font-semibold ${isRequiredFieldEmpty("projectName") ? "text-red-500" : "text-gray-600"}`}>
+        <p className={`${textClass} text-gray-600`}>
           What are you calling it?
         </p>
         <input
           type="text"
-          name="title"
-          value={formData.title}
+          name="projectName"
+          value={formData.projectName}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${errors.title ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          placeholder="Enter project title"
+          className={`w-full p-2 border ${errors.projectName ? "border-red-500" : "border-gray-300"} rounded-md`}
+          placeholder="Enter project name"
           required
         />
-        {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+        <p className="text-sm text-gray-600 mt-1">
+          {wordCounts.projectName} / 50
+        </p>
+        {wordCounts.projectName > 50 && (
+          <p className="text-red-500 text-sm">Maximum word count exceeded (50 words).</p>
+        )}
+        {errors.projectName && <p className="text-red-500 text-sm">{errors.projectName}</p>}
       </div>
 
-      {/* Description */}
+      {/* Tagline */}
       <div>
-        <label className="block font-medium">Description</label>
+        <h2 className="text-3xl font-semibold">
+          Tagline <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass} text-gray-600`}>
+          Write a short, sharp and on-point description of your project
+        </p>
+        <input
+          type="text"
+          name="tagline"
+          value={formData.tagline}
+          onChange={handleInputChange}
+          className={`w-full p-2 border ${errors.tagline ? "border-red-500" : "border-gray-300"} rounded-md`}
+          placeholder="Short tagline"
+          required
+        />
+        <p className="text-sm text-gray-600 mt-1">
+          {wordCounts.tagline} / 100
+        </p>
+        {wordCounts.tagline > 100 && (
+          <p className="text-red-500 text-sm">Maximum word count exceeded (100 words).</p>
+        )}
+        {errors.tagline && <p className="text-red-500 text-sm">{errors.tagline}</p>}
+      </div>
+
+      {/* Problem Statement */}
+      <div>
+        <h2 className="text-3xl font-semibold">
+          Problem Statement <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass} text-gray-600`}>
+          Describe what can people use it for, or how it makes existing tasks easier/safer, etc. (markdown supported)
+        </p>
         <textarea
-          name="description"
-          value={formData.description}
+          name="problem"
+          value={formData.problem}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          placeholder="Enter project description"
+          className={`w-full p-2 border ${errors.problem ? "border-red-500" : "border-gray-300"} rounded-md`}
+          placeholder="What problem does your project solve?"
           required
         />
-        {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
+        <p className="text-sm text-gray-600 mt-1">
+          {wordCounts.problem} / 200
+        </p>
+        {wordCounts.problem > 200 && (
+          <p className="text-red-500 text-sm">Maximum word count exceeded (200 words).</p>
+        )}
+        {errors.problem && <p className="text-red-500 text-sm">{errors.problem}</p>}
       </div>
 
-      {/* Category */}
+      {/* Links */}
       <div>
-        <label className="block font-medium">Category</label>
+        <h2 className="text-3xl font-semibold">
+          Links <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass} text-gray-600`}>
+          Add any links to your project, such as the live site, GitHub repository, etc. Please separate them with commas.
+        </p>
         <input
           type="text"
-          name="category"
-          value={formData.category}
+          name="links"
+          value={formData.links}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          placeholder="Enter project category"
+          className={`w-full p-2 border ${errors.links ? "border-red-500" : "border-gray-300"} rounded-md`}
+          placeholder="e.g., https://github.com/myproject, https://myproject.com"
           required
         />
-        {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
+        <p className="text-sm text-gray-600 mt-1">
+          {wordCounts.links} / 50
+        </p>
+        {wordCounts.links > 50 && (
+          <p className="text-red-500 text-sm">Maximum word count exceeded (50 words).</p>
+        )}
+        {errors.links && <p className="text-red-500 text-sm">{errors.links}</p>}
       </div>
 
-      {/* Start and End Date */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="w-full sm:w-1/2">
-          <label className="block font-medium">Start Date</label>
-          <input
-            type="date"
-            name="startDate"
-            value={formData.startDate}
-            onChange={handleInputChange}
-            className={`w-full p-2 border ${errors.startDate ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-            required
-            max={today} // Prevent future dates for the start date (allow today's date and earlier)
-          />
-          {errors.startDate && <p className="text-red-500 text-sm">{errors.startDate}</p>}
-        </div>
-
-        <div className="w-full sm:w-1/2">
-          <label className="block font-medium">End Date</label>
-          <input
-            type="date"
-            name="endDate"
-            value={formData.endDate}
-            onChange={handleInputChange}
-            className={`w-full p-2 border ${errors.endDate ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-            required={!isOngoing} // Disable requirement if ongoing
-            disabled={isOngoing} // Disable the field if ongoing
-            min={formData.startDate} // Set end date to not be before the start date
-            max={today} // Set end date to not be after today
-          />
-          {errors.endDate && <p className="text-red-500 text-sm">{errors.endDate}</p>}
-        </div>
-      </div>
-
-      {/* Ongoing Checkbox */}
+      {/* Video Demo */}
       <div>
-        <label className="inline-flex items-center">
-          <input
-            type="checkbox"
-            checked={isOngoing}
-            onChange={handleOngoingChange}
-            className="form-checkbox"
-          />
-          <span className="ml-2">This project is ongoing</span>
-        </label>
-      </div>
-
-      {/* Tags */}
-      <div>
-        <label className="block font-medium">Tags </label>
+        <h2 className="text-3xl font-semibold">
+          Video Demo <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass}  text-sm text-gray-600 mt-1 `}>
+          Provide a link to a video demo of your project (e.g., YouTube or Vimeo).
+        </p>
         <input
           type="text"
-          name="tags"
-          value={formData.tags.join(', ')} // join tags into a string
-          onChange={handleTagsChange}
-          className={`w-full p-2 border ${errors.tags ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          placeholder="Enter tags"
+          name="videoDemo"
+          value={formData.videoDemo}
+          onChange={handleInputChange}
+          className={`w-full p-2 border ${errors.videoDemo ? "border-red-500" : "border-gray-300"} rounded-md`}
+          placeholder="e.g., https://youtube.com/mydemo"
           required
         />
-        {errors.tags && <p className="text-red-500 text-sm">{errors.tags}</p>}
+        {errors.videoDemo && <p className="text-red-500 text-sm">{errors.videoDemo}</p>}
       </div>
 
-      {/* Team Members (Collaborators) */}
+      {/* Technologies */}
       <div>
-        <label className="block font-medium">Add Collaborators</label>
+        <h2 className="text-3xl font-semibold">
+          Technologies <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass}  text-sm text-gray-600 mt-1`}>
+          Write a comma-separated list of technologies you used in building the project.
+        </p>
+        <input
+          type="text"
+          name="technologies"
+          value={formData.technologies}
+          onChange={handleInputChange}
+          className={`w-full p-2 border ${errors.technologies ? "border-red-500" : "border-gray-300"} rounded-md`}
+          placeholder="Technologies used (e.g., React, Node, MongoDB)"
+          required
+        />
+        <p className="text-sm text-gray-600 mt-1">
+          {wordCounts.technologies} / 150
+        </p>
+        {wordCounts.technologies > 150 && (
+          <p className="text-red-500 text-sm">Maximum word count exceeded (150 words).</p>
+        )}
+        {errors.technologies && <p className="text-red-500 text-sm">{errors.technologies}</p>}
+      </div>
+
+      {/*Challenges I ran into */}
+      <div>
+        <h2 className="text-3xl font-semibold">
+        Challenges I ran into <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass} text-sm text-gray-600 mt-1`}>
+          Tell us who worked on this project.
+        </p>
         <input
           type="text"
           name="collaborators"
           value={formData.collaborators}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${errors.collaborators ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          placeholder="Add team members"
+          className={`w-full p-2 border ${errors.collaborators ? "border-red-500" : "border-gray-300"} rounded-md`}
+          placeholder="Who worked on this project?"
           required
         />
+        <p className="text-sm text-gray-600 mt-1">
+          {wordCounts.collaborators} / 100
+        </p>
+        {wordCounts.collaborators > 100 && (
+          <p className="text-red-500 text-sm">Maximum word count exceeded (100 words).</p>
+        )}
         {errors.collaborators && <p className="text-red-500 text-sm">{errors.collaborators}</p>}
       </div>
 
-      {/* Roles */}
-      <div>
-        <label className="block font-medium">Roles</label>
-        <input
-          type="text"
-          value={formData.video}
-          onChange={(e) => handleChange(e, "video")}
-          placeholder="Paste or type link here"
-          className={inputClass}
-          style={{ border: "none" }}
-        />
-      </div>
-
-
-       {/* Start Date */}
+      {/* Start Date */}
       <div>
         <h2 className="text-3xl font-semibold">Start Date</h2>
-        <p className={`${textClass} text-gray-600`}>When did you start this project?</p>
         <input
           type="date"
+          name="startDate"
           value={formData.startDate}
-          onChange={(e) => handleChange(e, "startDate")}
-          onBlur={() => handleBlur("startDate")}
-          className={inputClass}
-          max={new Date().toISOString().split("T")[0]}
+          onChange={handleInputChange}
+          className="w-full p-2 border rounded-md"
+          max={today}
+          required
         />
       </div>
 
       {/* End Date */}
       <div>
         <h2 className="text-3xl font-semibold">End Date</h2>
-        <p className={`${textClass} text-gray-600`}>When did you complete this project?</p>
         <input
           type="date"
+          name="endDate"
           value={formData.endDate}
-          onChange={(e) => handleChange(e, "endDate")}
-          onBlur={() => handleBlur("endDate")}
-          className={inputClass}
-          min={formData.startDate || new Date().toISOString().split("T")[0]}
+          onChange={handleInputChange}
+          className="w-full p-2 border rounded-md"
+          min={formData.startDate}
+          disabled={formData.isOngoing}
         />
-        {isDateInvalid && (
-          <p className="text-sm text-red-500 mt-1">
-            End date cannot be before start date
-          </p>
-        )}
       </div>
 
-
-
+      {/* Ongoing Project Checkbox */}
+      <div className="flex items-center mt-4">
+        <input
+          type="checkbox"
+          checked={formData.isOngoing}
+          onChange={handleOngoingChange}
+          className="mr-2"
+        />
+        <label>This project is ongoing</label>
+      </div>
 
       {/* Pictures */}
       <div>
-        <h2 className="text-3xl font-semibold">Media</h2>
-        <p className="text-sm text-gray-600 mt-1">
-          Upload a maximum of 5 pictures (Size: Max 1MB each)
-        </p>
+        <h2 className="text-3xl font-semibold"> Media</h2>
+        <p className="text-sm text-gray-600 mt-1">Upload up to 5 pictures (max 1MB each)</p>
         <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
           {[...Array(5)].map((_, i) => (
             <label
@@ -281,11 +331,9 @@ const ProjectForm = () => {
 
       {/* Logo */}
       <div>
-        <h2 className="text-3xl font-semibold">Logo</h2>
-        <p className="text-sm text-gray-600 mt-1">
-          Upload a logo to represent your project (Size: Max 1MB)
-        </p>
-               <label className="mt-3 w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:bg-gray-50 hover:border-blue-500">
+        <h2 className="text-3xl font-semibold"> Logo</h2>
+        <p className="text-sm text-gray-600 mt-1">Upload a logo for your project (max 1MB)</p>
+        <label className="mt-3 w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:bg-gray-50 hover:border-blue-500">
           +
           <input
             type="file"
@@ -296,33 +344,17 @@ const ProjectForm = () => {
         </label>
       </div>
 
-      {/* You can add a submit button here */}
+      {/* Submit Button */}
       <div className="pt-6">
         <button
-          onClick={() => console.log("Submitted data:", formData)}
+          onClick={handleSubmit}
           className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
         >
           Submit
         </button>
-        <div className="flex gap-4 w-full sm:w-auto">
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-md w-full sm:w-auto"
-          >
-            Create Project
-          </button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="bg-red-500 text-white px-4 py-2 rounded-md w-full sm:w-auto"
-          >
-            Cancel
-          </button>
-        </div>
       </div>
     </div>
   );
 };
 
 export default ProjectForm;
-
