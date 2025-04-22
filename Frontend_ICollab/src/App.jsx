@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-
+import useFetchSavedPosts from "./Hooks/useFetchSavedPosts";    
 const HomePage = lazy(() => import("./components/Pages/HomePage/HomePage"));
 const ProfilePage = lazy(() =>
   import("./components/Pages/ProfilePage/ProfilePage")
@@ -43,6 +43,7 @@ const Layout = lazy(() => import("./components/Layout/Layout"));
 const PrivateRoute = lazy(() => import("./utils/PrivateRoute"));
 
 function App() {
+  useFetchSavedPosts(); 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
