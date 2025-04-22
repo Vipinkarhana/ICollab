@@ -10,9 +10,8 @@ import {
   Send,
 } from "lucide-react";
 import ProfilePic from "./ProfilePic";
-import { toggleLikePost } from "../../Services/postService";
 
-const Interactions = ({ postId, initialLikes, initialIsLiked }) => {
+const Interactions = ({ postId, initialLikes, initialIsLiked, className="" }) => {
   const dispatch = useDispatch();
   const [likes, setLikes] = useState(initialLikes);
   const [isLiked, setIsLiked] = useState(initialIsLiked);
@@ -21,12 +20,6 @@ const Interactions = ({ postId, initialLikes, initialIsLiked }) => {
   const [replyText, setReplyText] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
   const commentInputRef = useRef(null);
-
-  const addLike = () => {
-    setIsLiked(!isLiked);
-    setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
-    toggleLikePost(id);
-  };
 
   // Function to add a new comment
   const addComment = () => {
