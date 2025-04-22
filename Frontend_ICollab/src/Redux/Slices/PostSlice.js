@@ -6,6 +6,7 @@ import {
   editPost,
   deletePost,
   toggleSavePost,
+  getSavedPosts,
   likeAndUnlikePost,
 } from "../../Services/postService";
 
@@ -134,6 +135,23 @@ export const saveOrUnsavePost = createAsyncThunk(
   }
 );
 
+export const fetchSavedPosts = createAsyncThunk(
+  "post/fetchSavedPosts",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getSavedPosts();
+      console.log("Saved posts response: ", response);
+      if (response.status === "success") {
+        return response.data; // should be an array of saved post objects
+      } else {
+        return rejectWithValue(response.message);
+      }
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
 const initialState = {
   post: {
     content: "",
@@ -252,6 +270,14 @@ const postSlice = createSlice({
 
     builder.addCase(saveOrUnsavePost.rejected, (state, action) => {
       state.error = action.payload;
+    });
+    builder.addCase(fetchSavedPosts.fulfilled, (state, action) => {
+      const postsArray = action.payload;
+      const savePostObj = {};
+      postsArray.forEach((post) => {
+        savePostObj[post.id] = post;
+      });
+      state.savePost = savePostObj;
     });
   },
 });

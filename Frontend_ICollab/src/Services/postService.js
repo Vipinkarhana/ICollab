@@ -114,7 +114,7 @@ export const toggleSavePost = async (postid) => {
 export const getSavedPosts = async () => {
   try {
     const response = await privateAxios.get("/posts/savedposts");
-    return response.data.data;
+    return response.data;
   } catch (error) {
     console.error("Error fetching saved posts:", error);
     throw error;
