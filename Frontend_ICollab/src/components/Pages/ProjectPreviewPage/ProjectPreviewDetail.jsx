@@ -3,7 +3,7 @@ import ProfilePic from "../../Common/ProfilePic";
 
 function ProjectPreviewDetail() {
   return (
-    <div className="flex flex-col lg:flex-row justify-between items-start w-full py-4 gap-6">
+    <div className="flex flex-col-reverse lg:flex-row justify-between items-start w-full py-4 gap-6">
       {/* Team Members Section */}
       <div className="w-full lg:w-[30%]">
         <div className="bg-white flex flex-col gap-4 p-4 rounded-xl shadow-md">

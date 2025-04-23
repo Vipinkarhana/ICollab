@@ -12,7 +12,7 @@ import Carousel from "./Carousel";
 
 function ProjectIntro({ tabs, activeTab, setActiveTab }) {
   return (
-    <div className="w-full bg-white min-h-screen flex flex-col items-center p-4">
+    <div className="w-[98svw] border bg-white min-h-screen flex flex-col items-center p-4">
         <div className="w-full flex justify-end sm:hidden"
       >
         <Link

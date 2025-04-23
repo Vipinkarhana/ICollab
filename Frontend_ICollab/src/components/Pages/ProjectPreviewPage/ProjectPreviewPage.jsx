@@ -9,7 +9,7 @@ const ProjectPreviewPage = () => {
   const tabs = ["Intro", "Timeline", "Messages", "Files", "Members"];
 
   return (
-    <div className="w-screen min-h-screen   bg-gray-50 pt-20 px-4 md:px-12 lg:px-24 py-4">
+    <div className="w-[98svw] min-h-screen   bg-gray-50 pt-20 px-4 md:px-12 lg:px-24 py-4">
       {/* Tabs / Project Header */}
       <div className="mb-6">
         <ProjectIntro 
