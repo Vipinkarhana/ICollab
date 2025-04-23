@@ -8,7 +8,7 @@ const connectionModel = require('../models/connections');
 const likeModel = require('../models/likes');
 const { URL } = require('url');
 const { generatePresignedUrl, deleteFromR2 } = require('../../config/s3');
-const SavedPost = require('../models/savedPost');
+const SavedItem = require('../models/savedItem');
 
 const addpost = async (req, res, next) => {
   try {
@@ -328,18 +328,19 @@ const deletePost = async (req, res, next) => {
   }
 };
 
+
 const toggleSavePost = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const { postid } = req.body;
 
-    let savedDoc = await SavedPost.findOne({ user: userId });
+    let savedDoc = await SavedItem.findOne({ user: userId });
 
-    // If no savedDoc exists for the user, create one and add the post
     if (!savedDoc) {
-      savedDoc = new SavedPost({
+      // If no saved document exists, create one with the post
+      savedDoc = new SavedItem({
         user: userId,
-        savedPosts: [postid],
+        savedPosts: [postid], // Add the post to the savedPosts array
       });
       await savedDoc.save();
 
@@ -349,7 +350,7 @@ const toggleSavePost = async (req, res, next) => {
       });
     }
 
-    // If post already saved, remove it (unsave)
+    // If post is already saved, remove it (unsave)
     const isAlreadySaved = savedDoc.savedPosts.includes(postid);
 
     if (isAlreadySaved) {
@@ -379,7 +380,7 @@ const getSavedPosts = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
-    const saved = await SavedPost.findOne({ user: userId }).populate({
+    const saved = await SavedItem.findOne({ user: userId }).populate({
       path: 'savedPosts',
       populate: {
         path: 'user',
@@ -396,6 +397,7 @@ const getSavedPosts = async (req, res, next) => {
     next(err);
   }
 };
+
 
 
 module.exports = {
