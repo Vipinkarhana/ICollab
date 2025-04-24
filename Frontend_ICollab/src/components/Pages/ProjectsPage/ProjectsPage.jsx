@@ -1,184 +1,223 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ProfileCard from "../HomePage/LeftDiv/ProfileCard";
+import React, { useState, useEffect } from "react";
+import ProjectCard from "../../Common/ProjectCard"; // Adjust path if needed
 import SearchBar from "./SearchBar";
-import ProjectCard from "./ProjectCard";
-import { Plus } from 'lucide-react';
-import TaskCard from './TaskCard';
-import { OngoingTasks, SavedTasks } from './TaskData';
-import ProjectForm from './ProjectForm';
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import CreateProjectButton from "../../Common/CreateProjectButton";
 
-function ProjectsPage() {
-  const [ongoingTaskCardsToShow, setOngoingTaskCardsToShow] = useState(6);
-  const [savedTaskCardsToShow, setSavedTaskCardsToShow] = useState(6);
-  const [modalData, setModalData] = useState([]);
-  const [showMore, setShowMore] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+const ProjectsPage = () => {
+  const currentUser = useSelector((state) => state.user.userData);
+  const username = currentUser?.username;
 
-  const ongoingTasks = OngoingTasks();
-  const savedTasks = SavedTasks();
+  const projectData = [
+    {
+      title: "LUFY - Law Understandable For You",
+      type: "AI Tool",
+      status: "Ongoing Project",
+      field: "Legal Tech",
+      collaborators: 356,
+      startDate: "21/04/25",
+      endDate: "12/09/25",
+      avatarSeeds: ["Sara", "Tom", "Riya"],
+      buttonText: "Join Now",
+    },
+    {
+      title: "GreenTech Innovators",
+      type: "Startup Challenge",
+      status: "Finished Project",
+      field: "Environmental",
+      collaborators: 98,
+      startDate: "05/02/25",
+      endDate: "12/09/25",
+      avatarSeeds: ["Alex", "Nina", "Dev"],
+      buttonText: "View Report",
+    },
+    {
+      title: "ByteCraft Hackathon",
+      type: "Hackathon",
+      status: "Upcoming Project",
+      field: "Open Source",
+      collaborators: 512,
+      startDate: "01/05/25",
+      endDate: "12/09/25",
+      avatarSeeds: ["Liam", "Emma", "Zed"],
+      buttonText: "Register",
+    },
+    {
+      title: "MedScan AI",
+      type: "AI Innovation",
+      status: "Ongoing Project",
+      field: "Healthcare",
+      collaborators: 274,
+      startDate: "18/04/25",
+      endDate: "12/09/25",
+      avatarSeeds: ["Ava", "John", "Sophia"],
+      buttonText: "Apply Now",
+    },
+    {
+      title: "Space & Beyond",
+      type: "Research Program",
+      status: "Finished Project",
+      field: "Astronomy",
+      collaborators: 78,
+      startDate: "11/03/25",
+      endDate: "12/09/25",
+      avatarSeeds: ["Neil", "Galileo", "Nova"],
+      buttonText: "Explore",
+    },
+  ];
 
-  const ongoingTaskContainerRef = useRef(null);
-  const savedTaskContainerRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [ongoingCount, setOngoingCount] = useState(2); // Initial ongoing projects count
+  const [finishedCount, setFinishedCount] = useState(2); // Initial finished projects count
+
+  const cardsPerPage = 2;
+  const totalPages = 2; // fixed to only 2 dots as requested
+
+  const ongoingProjects = projectData.filter(project => project.status === "Ongoing Project");
+  const finishedProjects = projectData.filter(project => project.status === "Finished Project");
+
+  const paginatedOngoingCards = ongoingProjects
+    .slice(0, ongoingCount)
+    .map((project, index) => (
+      <ProjectCard
+        key={index}
+        title={project.title}
+        type={project.type}
+        status={project.status}
+        field={project.field}
+        collaborators={project.collaborators}
+        startDate={project.startDate}
+        endDate={project.endDate}
+        avatarSeeds={project.avatarSeeds}
+        buttonText={project.buttonText}
+      />
+    ));
+
+  const paginatedFinishedCards = finishedProjects
+    .slice(0, finishedCount)
+    .map((project, index) => (
+      <ProjectCard
+        key={index}
+        title={project.title}
+        type={project.type}
+        status={project.status}
+        field={project.field}
+        collaborators={project.collaborators}
+        startDate={project.startDate}
+        endDate={project.endDate}
+        avatarSeeds={project.avatarSeeds}
+        buttonText={project.buttonText}
+      />
+    ));
 
   useEffect(() => {
-    const ongoingContainerHeight = ongoingTaskContainerRef.current.clientHeight;
-    const cardHeight = 150;
-    const ongoingCardsVisible = Math.floor(ongoingContainerHeight / cardHeight);
-    setOngoingTaskCardsToShow(ongoingCardsVisible > 3 ? ongoingCardsVisible : 3);
+    const interval = setInterval(() => {
+      setActiveIndex((prevIndex) => (prevIndex + 1) % totalPages);
+    }, 3000); // 3 seconds
 
-    const savedContainerHeight = savedTaskContainerRef.current.clientHeight;
-    const savedCardsVisible = Math.floor(savedContainerHeight / cardHeight);
-    setSavedTaskCardsToShow(savedCardsVisible > 3 ? savedCardsVisible : 3);
+    return () => clearInterval(interval);
   }, []);
 
-  const handleSeeMoreClick = (tasks) => {
-    setModalData(tasks);
-    setShowMore(true);
-  };
-
-  const handleAddNewClick = () => {
-    setShowForm(true);
-  };
-
-  const handleSaveDraft = (formData) => {
-    console.log("Draft saved:", formData);
-    setShowForm(false);
-  };
-
-  const handleCreateProject = (formData) => {
-    console.log("Project created:", formData);
-    setShowForm(false);
-  };
-
-  const handleCancel = () => {
-    setShowForm(false);
-  };
-
   return (
-    <div className="w-full mt-16 p-2 flex flex-wrap justify-evenly gap-4">
-      {/* Profile and task containers */}
-      <div className="w-full md:w-1/5 h-full flex-col justify-start items-center gap-2 m-4 hidden lg:flex">
-        <ProfileCard otherUser={null} />
-        <div
-          ref={ongoingTaskContainerRef}
-          className="w-full h-88 bg-white py-2 rounded-lg flex flex-col justify-start items-center border border-gray-300"
-        >
-          <div className="py-2 w-full text-xl font-semibold px-2 flex items-center justify-between border-b border-gray-300 m-4">
-            <h2 className="font-semibold text-xl">Ongoing Projects</h2>
-            <button
-              className="text-blue-500 hover:underline text-xl font-semibold"
-              onClick={() => handleSeeMoreClick(ongoingTasks)}
-            >
-              See All
-            </button>
-          </div>
-          <div className="flex items-start justify-center w-full">
-            <button
-              className="w-full sm:w-[80%] h-10 flex items-center justify-center gap-4 px-6 py-3 m-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 shadow-md"
-              onClick={handleAddNewClick}
-            >
-              <Plus size={20} />
-              <span className="text-lg font-medium">Add New</span>
-            </button>
-          </div>
-          <div className="w-full h-full flex items-center justify-evenly flex-col overflow-hidden gap-4">
-            {ongoingTasks.slice(0, ongoingTaskCardsToShow).map((task, index) => (
-              <TaskCard
-                key={index}
-                priority={task.priority}
-                title={task.title}
-                users={task.users}
-                comments={task.comments}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen flex flex-col  items-center w-full py-6 bg-gray-100  mt-16">
+      <div className="max-w-6xl mx-auto">
+       {/* Search + Button */}
+<div className="flex justify-center items-center w-full">
+  <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6 w-full sm:w-[90%] px-4">
+    
+    {/* Search bar */}
+    <div className="sm:w-[80%] w-full">
+      <SearchBar />
+    </div>
 
-      {/* Project cards and search */}
-      <div className="w-full sm:w-1/2 md:w-[80%] lg:w-2/5 h-auto flex flex-col justify-start items-center gap-2 py-1 m-2">
-        <SearchBar />
-        <div className="flex flex-col gap-4 items-center justify-center">
-          <ProjectCard />
-          <ProjectCard />
-          <ProjectCard />
-          <ProjectCard />
-          <ProjectCard />
-          <ProjectCard />
-          <ProjectCard />
-          <ProjectCard />
-          <ProjectCard />
-          <ProjectCard />
-          <ProjectCard />
-        </div>
-      </div>
+    {/* Button - visible from md screens onwards */}
+    <div className="sm:w-[20%] w-full flex sm:items-start items-center justify-center sm:justify-end">
+      <Link
+        to={`/profile/${username}`}
+        className="bg-blue-300 w-44 h-12 text-xl text-white px-4 py-2 rounded-full hover:bg-blue-400 
+        hidden md:flex items-center justify-center gap-1 mt-5"
+      >
+        Your Project <span>{">"}</span>
+      </Link>
+    </div>
 
-      {/* Saved Tasks */}
-      <div className="w-full md:w-1/5 h-[90%]  bg-white border border-gray-300 rounded-md flex-col justify-start items-center p-2 m-4 hidden lg:flex">
-        <div className="py-2 w-full text-xl font-semibold px-2 flex items-center justify-between border-b border-gray-300 m-4">
-          <p>Saved Projects</p>
-          <button
-            className="text-blue-500 hover:underline"
-            onClick={() => handleSeeMoreClick(savedTasks)}
-          >
-            See All
-          </button>
-        </div>
-        <div
-          ref={savedTaskContainerRef}
-          className="w-full h-auto flex items-center justify-evenly flex-col overflow-hidden gap-4"
-        >
-          {savedTasks.slice(0, savedTaskCardsToShow).map((task, index) => (
-            <TaskCard
-              key={index}
-              priority={task.priority}
-              title={task.title}
-              users={task.users}
-              comments={task.comments}
-            />
+  </div>
+</div>
+
+
+
+        {/* Slider-like card display */}
+        <div className="mt-6 flex justify-center gap-6 flex-wrap">
+          {paginatedOngoingCards.map((card, idx) => (
+            <div key={idx} className="flex-shrink-0 w-full sm:w-[48%]">
+              {card}
+            </div>
           ))}
         </div>
-      </div>
 
-      {/* Conditional Rendering for the Form */}
-      {showForm && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-3/4 overflow-auto">
-            <ProjectForm
-              onSaveDraft={handleSaveDraft}
-              onCreateProject={handleCreateProject}
-              onCancel={handleCancel}
-            />
-          </div>
-        </div>
-      )}
-
-      {showMore && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full sm:w-3/4 md:w-2/3 h-3/4 overflow-auto">
-            <h2 className="text-2xl font-semibold mb-4">All Projects</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {modalData.map((task, index) => (
-                <TaskCard
-                  key={index}
-                  priority={task.priority}
-                  title={task.title}
-                  users={task.users}
-                  comments={task.comments}
-                />
-              ))}
-            </div>
+        {/* Dot Navigation */}
+        <div className="mt-6 flex justify-center items-center gap-3">
+          {Array.from({ length: totalPages }).map((_, index) => (
             <button
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-full"
-              onClick={() => setShowMore(false)}
-            >
-              Close
-            </button>
-          </div>
+              key={index}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                activeIndex === index ? "bg-blue-500" : "bg-gray-300"
+              }`}
+              onClick={() => setActiveIndex(index)}
+            ></button>
+          ))}
         </div>
-      )}
+
+        {/* Ongoing Projects Section */}
+        <div className="mt-6 flex items-center justify-between">
+          <p className="sm:text-2xl text-3xl text-gray-800">Ongoing</p>
+          <button className="bg-blue-300 sm:w-40 h-14 text-white px-4 py-4 rounded-md hover:bg-blue-400 text-sm md:flex hidden">
+            All open projects <span>{">"}</span>
+          </button>
+        </div>
+
+        {/* Static Project Cards */}
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center">
+          {paginatedOngoingCards}
+        </div>
+
+        {/* More Button in the middle of the cards */}
+        <div className="mt-6 flex justify-center items-center">
+          <button
+            onClick={() => setOngoingCount(ongoingCount + 2)} // Increase by 2 to load more cards
+            className="bg-blue-300 sm:w-40 w-[40%] h-14 text-white sm:px-4 sm:py-2 rounded-md hover:bg-blue-400 text-sm"
+          >
+           Load More <span>{">"}</span>
+          </button>
+        </div>
+
+        {/* Finished Projects Section */}
+        <div className="mt-6 flex items-center justify-between">
+          <p className="sm:text-2xl text-3xl text-gray-800">Finished</p>
+          <button className="bg-blue-300 sm:w-40 h-14 text-white px-4 py-4 rounded-md hover:bg-blue-400 text-sm  md:flex hidden">
+            All open projects <span>{">"}</span>
+          </button>
+        </div>
+
+        {/* Static Project Cards */}
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center">
+          {paginatedFinishedCards}
+        </div>
+
+        {/* More Button in the middle of the cards */}
+        <div className="mt-6 flex justify-center items-center">
+          <button
+            onClick={() => setFinishedCount(finishedCount + 2)} // Increase by 2 to load more cards
+            className="bg-blue-300 sm:w-40 w-[40%]  h-14 text-white sm:px-4 sm:py-2 rounded-md hover:bg-blue-400 text-sm"
+          >
+           Load More <span>{">"}</span>
+          </button>
+        </div>
+      </div>
+      <CreateProjectButton/>
     </div>
   );
-}
+};
 
 export default ProjectsPage;

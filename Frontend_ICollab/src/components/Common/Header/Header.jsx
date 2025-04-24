@@ -13,6 +13,7 @@ import HamburgerMenu from "./Hamburegr";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../../Redux/Slices/UserSlice";
 import { useNavigate } from "react-router-dom";
+import NotificationDropdown from "../Notification";
 
 /**
  * @class Header
@@ -28,11 +29,11 @@ const Header = ({ id }) => {
   const location = useLocation(); ///< Retrieves the current route location.
   const currentUser = useSelector((state) => state.user.userData);
   const username = currentUser?.username;
- /**
+  /**
    * @brief State for hover effect styling.
    * @details Tracks the position, width, and opacity of the hover effect for menu items.
    */
-  
+
   const [hoverStyle, setHoverStyle] = useState({
     left: 0,
     width: 0,
@@ -49,7 +50,7 @@ const Header = ({ id }) => {
    */
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
- /**
+  /**
    * @brief List of navigation menu items.
    */
   const menuItems = [
@@ -59,9 +60,10 @@ const Header = ({ id }) => {
     { name: "Messages", path: "/message" },
     { name: "Incubators", path: "/incubators" },
     { name: "User Profile", path: `/profile/${username}` },
+    { name: "Notification"},
   ];
 
-    /**
+  /**
    * @brief Handles screen resize events to update mobile view state.
    */
   useEffect(() => {
@@ -74,10 +76,10 @@ const Header = ({ id }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-   /**
+  /**
    * @brief Handles hover effects on menu items.
    * @param {Event} e Mouse enter event.
-   */ 
+   */
   const handleMouseEnter = (e) => {
     const { left, width } = e.target.getBoundingClientRect();
     const navbarLeft = document
@@ -86,7 +88,7 @@ const Header = ({ id }) => {
     setHoverStyle({ left: left - navbarLeft, width: width, opacity: 1 });
   };
 
-   /**
+  /**
    * @brief Handles mouse leave event to remove hover effect.
    */
   const handleMouseLeave = () => {
@@ -100,16 +102,15 @@ const Header = ({ id }) => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-
   /**
    * @brief Handles user logout action.
    */
-  const handleLogout = () =>{
+  const handleLogout = () => {
     dispatch(logoutUser());
     navigate("/login");
-  }
+  };
 
-    /**
+  /**
    * @brief Checks if a menu item is currently active.
    * @param {string} path The path to check.
    * @return {boolean} True if the path matches the current route.
@@ -123,7 +124,7 @@ const Header = ({ id }) => {
       {/* Main Header Container */}
       <div
         id={id}
-        className="fixed w-full h-[9%] flex justify-center items-center z-[1] text-black bg-white shadow-sm"
+        className="fixed w-full h-[9%] flex justify-center items-center z-[1000] text-black bg-white shadow-sm"
       >
         <div className="w-11/12 lg:w-[90%] h-[99%] flex items-center justify-between md:justify-evenly md:gap-4">
           {/* Logo */}
@@ -170,19 +171,25 @@ const Header = ({ id }) => {
             ></div>
 
             {/* Mobile Menu Component */}
-            {menuItems.map((item, index) => (
-              <Link
-                key={index}
-                to={item.path}
-                className={`item rounded-lg w-auto flex justify-evenly items-center text-gray-500 font-semibold text-lg cursor-pointer relative z-20 ${
-                  isActive(item.path) ? "h-[100%] rounded-none" : ""
-                }`}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {menuItems.map((item, index) => {
+              if (item.name === "Notification") {
+                return <NotificationDropdown key={index} />;
+              }
+
+              return (
+                <Link
+                  key={index}
+                  to={item.path}
+                  className={`item rounded-lg w-auto flex justify-evenly items-center text-gray-500 font-semibold text-lg cursor-pointer relative z-20 ${
+                    isActive(item.path) ? "h-[100%] rounded-none" : ""
+                  }`}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
           </div>
 
           {!isMobile &&

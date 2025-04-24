@@ -5,99 +5,111 @@ const ApiError = require('../../utils/ApiError');
 
 const getAnalytics = async (req, res, next) => {
   try {
-    const totalUsers = await userModel.countDocuments();
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const [totalUsers, newUsers, activeUsers, totalPosts, newPosts] = await Promise.all([
+      userModel.countDocuments(),
+      userModel.countDocuments({
+        createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      }),
+      pageViewModel.distinct("ipAddress", {
+        createdAt: { $gte: new Date(Date.now() - 5 * 60 * 1000) },
+      }).then((ips) => ips.length),
+      postModel.countDocuments(),
+      postModel.countDocuments({
+        createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      }),
+    ]);
 
-    const newUsers = await userModel.countDocuments({
-      createdAt: { $gte: today },
-    });
-    const totalPosts = await postModel.countDocuments();
-    const newPosts = await postModel.countDocuments({
-      createdAt: { $gte: today },
-    });
-    const activeUsers = await userModel.countDocuments({
-      lastLogin: { $gte: today },
+    const retentionRate = Math.floor((activeUsers / totalUsers) * 100);
+
+    const pageViewsRaw = await pageViewModel.find({
+      createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
     });
 
-    // Post Growth (Last 7 Days)
+    const pageViewsGrouped = {};
+    const browserUsage = {};
+    const deviceUsage = {};
+
+    const uniqueUserSet = new Set();
+
+    for (let view of pageViewsRaw) {
+      const date = new Date(view.createdAt).toISOString().split("T")[0];
+
+      if (!pageViewsGrouped[view.page]) pageViewsGrouped[view.page] = {};
+      pageViewsGrouped[view.page][date] = (pageViewsGrouped[view.page][date] || 0) + 1;
+
+      const ua = view.userAgent || "";
+      const ip = view.ipAddress || "unknown";
+      const uniqueKey = ip + ua;
+
+      if (!uniqueUserSet.has(uniqueKey)) {
+        uniqueUserSet.add(uniqueKey);
+
+        // Detect Browser
+        let browser = "Other";
+        if (/Edg\//i.test(ua)) {
+          browser = "Edge";
+        } else if (/OPR|Opera/i.test(ua)) {
+          browser = "Opera";
+        } else if (/Firefox/i.test(ua)) {
+          browser = "Firefox";
+        } else if (/Chrome/i.test(ua) && !/Edg|OPR|Brave/i.test(ua)) {
+          browser = "Chrome";
+        } else if (/Safari/i.test(ua) && !/Chrome|Chromium|Edg|OPR/i.test(ua)) {
+          browser = "Safari";
+        }
+
+        browserUsage[browser] = (browserUsage[browser] || 0) + 1;
+
+        // Detect Device Type
+        const isMobile = /mobile/i.test(ua);
+        const isTablet = /tablet/i.test(ua);
+        const deviceType = isTablet ? "Tablet" : isMobile ? "Mobile" : "Desktop";
+
+        deviceUsage[deviceType] = (deviceUsage[deviceType] || 0) + 1;
+      }
+    }
+
+    // Convert pageViewsGrouped to frontend-friendly format
+    const pageViewsPerPageDaily = {};
+    for (const [page, data] of Object.entries(pageViewsGrouped)) {
+      pageViewsPerPageDaily[page] = Object.entries(data)
+        .map(([date, value]) => ({ date, value }))
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+    }
+
     const postGrowth = await postModel.aggregate([
       {
-        $match: {
-          createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-        },
-      },
-      {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+          },
           count: { $sum: 1 },
         },
       },
-      { $sort: { _id: 1 } },
+      { $sort: { "_id": 1 } },
     ]);
 
-    // Page Views (Last 7 Days)
-    const pageViews = await pageViewModel.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-        },
-      },
-      {
-        $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
-          count: { $sum: 1 },
-        },
-      },
-      { $sort: { _id: 1 } },
-    ]);
-
-    // Extract Device Usage and Browser Usage using Aggregation
-    const deviceUsage = {};
-    const browserUsage = {};
-
-    const pageViewsData = await pageViewModel.find({}, { userAgent: 1 });
-
-    pageViewsData.forEach(({ userAgent }) => {
-      if (!userAgent) return;
-
-      // Identify Device Type
-      let deviceType = 'Other';
-      if (/mobile/i.test(userAgent)) deviceType = 'Mobile';
-      else if (/tablet/i.test(userAgent)) deviceType = 'Tablet';
-      else if (/windows|macintosh|linux/i.test(userAgent))
-        deviceType = 'Desktop';
-
-      deviceUsage[deviceType] = (deviceUsage[deviceType] || 0) + 1;
-
-      // Improved Browser Detection
-      let browser = 'Other';
-      if (/edg/i.test(userAgent)) browser = 'Edge';
-      else if (/chrome|crios/i.test(userAgent) && !/edg/i.test(userAgent))
-        browser = 'Chrome';
-      else if (/firefox|fxios/i.test(userAgent)) browser = 'Firefox';
-      else if (/safari/i.test(userAgent) && !/chrome|crios/i.test(userAgent))
-        browser = 'Safari';
-      else if (/opr|opera/i.test(userAgent)) browser = 'Opera';
-
-      browserUsage[browser] = (browserUsage[browser] || 0) + 1;
-    });
-
-    res.status(200).json({
+    return res.json({
       totalUsers,
       newUsers,
+      activeUsers,
       totalPosts,
       newPosts,
-      activeUsers,
-      postGrowth,
-      pageViews,
+      retentionRate,
+      pageViewsPerPageDaily,
+      postGrowth: postGrowth.map((d) => ({ date: d._id, value: d.count })),
       deviceUsage,
       browserUsage,
     });
   } catch (err) {
-    next(new ApiError(500, 'Failed to fetch analytics'));
+    console.error("Analytics fetch error:", err);
+    res.status(500).json({ message: "Error fetching analytics" });
   }
 };
+
+module.exports = { getAnalytics };
+
+
 
 const trackPageView = async (req, res, next) => {
   try {
