@@ -16,6 +16,18 @@ const s3 = new S3Client({
   },
 });
 
+const uploadToR2 = async (key, buffer, contentType) => {
+  const command = new PutObjectCommand({
+    Bucket: config.S3_BUCKET_NAME,
+    Key: key,
+    Body: buffer,
+    ContentType: contentType,
+  });
+  await s3.send(command);
+  return key;
+};
+
+
 const deleteFromR2 = async (fileUrl) => {
   try {
     const urlObj = new URL(fileUrl);
@@ -45,4 +57,4 @@ async function generatePresignedUrl(filename, contentType) {
   return signedUrl;
 }
 
-module.exports = { generatePresignedUrl, deleteFromR2 };
+module.exports = { generatePresignedUrl, deleteFromR2, uploadToR2 };

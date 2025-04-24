@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
 const {
   addProject,
-  categorySuggestions
+  technologySuggestions
 } = require('../controllers/projectController');
 const { isloggedin } = require('../middlewares/auth');
-
-router.post('/addproject', isloggedin, addProject);
-router.get('/categorysuggestions', isloggedin, categorySuggestions);
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+router.post('/addproject', isloggedin, upload.fields([{name: 'logo', maxCount: 1}, {name: 'media', maxCount: 5}]) ,addProject);
+router.get('/technologysuggestions', isloggedin, technologySuggestions);
 
 module.exports = router;

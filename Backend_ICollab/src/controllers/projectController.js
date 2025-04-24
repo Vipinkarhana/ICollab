@@ -1,37 +1,36 @@
 const ApiError = require('../utils/ApiError');
-const mongoose = require('mongoose');
-const config = require('../../config/config');
 const userModel = require('../models/user');
 const projectModel = require('../models/project');
-const allowedCategories = require('../../config/categories.json');
-const { URL } = require('url');
-const { generatePresignedUrl, deleteFromR2 } = require('../../config/s3');
+const allowedTechnologies = require('../../config/technologies.json');
+const allowedTypes = require('../../config/types.json');
 
 const addProject = async (req, res, next) => {
+       let newProject;
     try{
-       // const username = req.user.username;
-        const {username, title, description, category, startDate, tags, collaborators, role, media, endDate, stillOngoing } = req.body;
+     
+        const username = req.user.username;
+        const {name, tagline, problem, challenges, technology, links, videoLink, media, logo, stillOngoing, startDate, endDate, type, description } = req.body;
         const user = await userModel.findOne({ username: username });
         if (!user) {
             return next(new ApiError(404, 'User not found'));
           }
-        if(!title){
-            return next(new ApiError(400, 'Title is required'));
+        if(!name){
+            return next(new ApiError(400, 'Name is required'));
         }
-        if(!description){
-            return next(new ApiError(400, 'Description is required'));
+        if(!tagline){
+            return next(new ApiError(400, 'Tagline is required'));
         }
-        if(!category){
-            return next(new ApiError(400, 'Category is required'));
+        if(!technology){
+            return next(new ApiError(400, 'Technology is required'));
+        }
+        if(!links){
+            return next(new ApiError(400, 'Link is required'));
         }
         if(!startDate){
-            return next(new ApiError(400, 'Starting Date is required'));
+            return next (new ApiError(400, 'A start date is required'));
         }
-        if(!tags){
-            return next(new ApiError(400, 'Minimum 1 tag is required'));
-        }
-        if(!role){
-            return next(new ApiError(400, 'Role is required'));
+        if(!type){
+            return next (new ApiError(400, 'A type is required'));
         }
         const isOngoing = (stillOngoing === true || stillOngoing === 'true');
         const projectEndDate = isOngoing ? null : endDate;
@@ -40,32 +39,66 @@ const addProject = async (req, res, next) => {
         }
         const newProject = new projectModel({
               user: user._id,
-              title,
-              description,
-              category,
-              startDate,
+              name,
+              tagline,
+              problem,
+              challenges,
               endDate: projectEndDate,
+              startDate,
               isOngoing,
-              tags,
-              collaborators,
-              role
+              technology,
+              links,
+              videoLink,
+              type,
+              description,
             });
         await newProject.save();
 
-        const mediaList = Array.isArray(media) ? media : [];
+        if (req.files?.logo) {
+            const logoFile = Array.isArray(req.files.logo) ? req.files.logo[0] : req.files.logo;
+            const logoKey = `projects/${newProject._id}/logo-${Date.now()}-${logoFile.originalname}`;
+            await uploadToR2(logoKey, logoFile.buffer, logoFile.mimetype);
+            newProject.logo = logoKey;
+          }
 
-        const presignedUrls = await Promise.all(
-              mediaList.map(async ({ fileType, fileName }) => {
-                const key = `projects/${newProject._id}/${Date.now()}-${fileName}`;
-                return await generatePresignedUrl(key, fileType);
-              })
-            );
+          const mediaFiles = req.files?.media || [];
+          const mediaKeys = [];
+          for (const mediaFile of mediaFiles) {
+            const mediaKey = `projects/${newProject._id}/media-${Date.now()}-${mediaFile.originalname}`;
+            await uploadToR2(mediaKey, mediaFile.buffer, mediaFile.mimetype);
+            mediaKeys.push(mediaKey);
+          }
+          newProject.media = mediaKeys;
+      
+          // Save project with media/logo keys
+          await newProject.save();
 
         res.status(201).json({
             message: 'Project created successfully',
-            data: { projectid: newProject._id, presignedUrls },
+            data: { projectid: newProject._id },
             status: 'success',
         });
+    }
+    catch(err){
+        if (newProject) {
+            await projectModel.findByIdAndDelete(newProject._id);
+            if (newProject.logo) await deleteFromR2(newProject.logo);
+            for (const mediaKey of newProject.media) {
+              await deleteFromR2(mediaKey);
+            }
+          }
+          next(new ApiError(500, 'Failed to create project', err.message));
+    }
+};
+
+
+const technologySuggestions = (req, res, next) => {
+    try{
+        const query = req.query.qer || '';
+        const lowerQuery = query.toLowerCase();
+        const filteredTechnologies = allowedTechnologies.filter(technology => technology.toLowerCase().includes(lowerQuery));
+
+        res.status(200).json(filteredTechnologies);
     }
     catch(err){
         next(err);
@@ -73,13 +106,13 @@ const addProject = async (req, res, next) => {
 };
 
 
-const categorySuggestions = (req, res, next) => {
+const typeSuggestions = (req, res, next) => {
     try{
         const query = req.query.qer || '';
         const lowerQuery = query.toLowerCase();
-        const filteredCategories = allowedCategories.filter(category => category.toLowerCase().includes(lowerQuery));
+        const filteredTypes = allowedTypes.filter(type => type.toLowerCase().includes(lowerQuery));
 
-        res.status(200).json(filteredCategories);
+        res.status(200).json(filteredTypes);
     }
     catch(err){
         next(err);
@@ -89,5 +122,6 @@ const categorySuggestions = (req, res, next) => {
 
 module.exports = {
   addProject,
-  categorySuggestions
+  technologySuggestions,
+  typeSuggestions,
 };
