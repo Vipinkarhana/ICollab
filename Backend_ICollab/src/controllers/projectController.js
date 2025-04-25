@@ -10,8 +10,14 @@ const addProject = async (req, res, next) => {
     try{
      
         const username = req.user.username;
-        const {name, tagline, problem, challenges, technology, links, videoLink, media, logo, stillOngoing, startDate, endDate, category, description } = req.body;
+        let {name, tagline, problem, challenges, technology, collaborator,links, videoLink, media, logo, stillOngoing, startDate, endDate, category, description } = req.body;
         const user = await userModel.findOne({ username: username });
+        technology = Array.isArray(req.body.technology) 
+                ? req.body.technology 
+                : [req.body.technology].filter(Boolean);
+        collaborator = Array.isArray(collaborator) 
+                ? req.body.collaborator 
+                : [req.body.collaborator].filter(Boolean);
         if (!user) {
             return next(new ApiError(404, 'User not found'));
           }
@@ -21,12 +27,43 @@ const addProject = async (req, res, next) => {
         if(!tagline){
             return next(new ApiError(400, 'Tagline is required'));
         }
-        if(!technology){
+        if(!technology || technology.length === 0){
             return next(new ApiError(400, 'Technology is required'));
         }
         if (!Array.isArray(technology) || technology.length === 0) {
             return next(new ApiError(400, 'Technology must be a non-empty array'));
           }
+
+            if(collaborator.length>0){
+                const collaboratorRegex = collaborator.map(c => 
+                    new RegExp(`^${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
+                );
+
+                const users = await userModel.find({
+                    $or: [
+                        { username: { $in: collaboratorRegex } },
+                        { email: { $in: collaboratorRegex } }
+                    ]
+                });
+
+                const validIdentifiers = new Set();
+                users.forEach(user => {
+                    validIdentifiers.add(user.username.toLowerCase());
+                    validIdentifiers.add(user.email.toLowerCase());
+                });
+
+                const invalidCollaborators = collaborator.filter(c => 
+                    !validIdentifiers.has(c.toLowerCase())
+                );
+
+                if (invalidCollaborators.length > 0) {
+                    return next(new ApiError(
+                        400, 
+                        `Invalid collaborators: ${invalidCollaborators.join(', ')}. ` +
+                        'They must be existing usernames or emails.'
+                    ));
+                }
+            }
         if(!links){
             return next(new ApiError(400, 'Link is required'));
         }
@@ -51,6 +88,7 @@ const addProject = async (req, res, next) => {
               startDate,
               isOngoing,
               technology,
+              collaborator,
               links,
               videoLink,
               category,
@@ -124,8 +162,36 @@ const categorySuggestions = (req, res, next) => {
 };
 
 
+
+const collaboratorSuggestions = async (req, res, next) => {
+    try{
+        const query = req.query.qer || '';
+        if (!query) return res.json([]);
+        const searchRegex = new RegExp(`^${query}`, 'i');
+        //const user = await userModel.findOne({ username: username });
+
+        const suggestions = await userModel.find({
+            $or: [
+                { username: searchRegex },
+                { email: searchRegex }
+            ]
+        })
+        .select('_id username email') // Return only necessary fields
+        .limit(5) // Limit to 5 results
+        .lean(); // Convert to plain JS object
+
+        res.status(200).json(suggestions);
+    }
+    catch(err){
+        next(err);
+    }
+};
+
+
+
 module.exports = {
   addProject,
   technologySuggestions,
   categorySuggestions,
+  collaboratorSuggestions,
 };
