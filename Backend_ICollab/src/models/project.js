@@ -1,12 +1,7 @@
 const mongoose = require('mongoose');
-const fs = require('fs');
-const path = require('path');
 
-const technologyPath = path.join(__dirname, '../../config/technologies.json');
-const allowedTechnologies = JSON.parse(fs.readFileSync(technologyPath, 'utf8'));
-
-const typePath = path.join(__dirname, '../../config/types.json');
-const allowedTypes = JSON.parse(fs.readFileSync(typePath, 'utf8'));
+const allowedTechnologies = require('../../config/technologies.json');
+const allowedCategories = require('../../config/category.json');
 
 let projectschema = mongoose.Schema(
   {
@@ -33,13 +28,13 @@ let projectschema = mongoose.Schema(
       type: String,
     },
     technology: {
-      type: String,
+      type: [String],
       enum: allowedTechnologies,
       required: true,
     },
-    type: {
+    category: {
       type: String,
-      enum: allowedTypes,
+      enum: allowedCategories,
       required: true,
     },
     links: {

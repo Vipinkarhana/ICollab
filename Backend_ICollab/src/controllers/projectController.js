@@ -2,14 +2,15 @@ const ApiError = require('../utils/ApiError');
 const userModel = require('../models/user');
 const projectModel = require('../models/project');
 const allowedTechnologies = require('../../config/technologies.json');
-const allowedTypes = require('../../config/types.json');
+const allowedCategories = require('../../config/category.json');
+const { uploadToR2, deleteFromR2 } = require('../../config/s3');
 
 const addProject = async (req, res, next) => {
        let newProject;
     try{
      
         const username = req.user.username;
-        const {name, tagline, problem, challenges, technology, links, videoLink, media, logo, stillOngoing, startDate, endDate, type, description } = req.body;
+        const {name, tagline, problem, challenges, technology, links, videoLink, media, logo, stillOngoing, startDate, endDate, category, description } = req.body;
         const user = await userModel.findOne({ username: username });
         if (!user) {
             return next(new ApiError(404, 'User not found'));
@@ -23,14 +24,17 @@ const addProject = async (req, res, next) => {
         if(!technology){
             return next(new ApiError(400, 'Technology is required'));
         }
+        if (!Array.isArray(technology) || technology.length === 0) {
+            return next(new ApiError(400, 'Technology must be a non-empty array'));
+          }
         if(!links){
             return next(new ApiError(400, 'Link is required'));
         }
         if(!startDate){
             return next (new ApiError(400, 'A start date is required'));
         }
-        if(!type){
-            return next (new ApiError(400, 'A type is required'));
+        if(!category){
+            return next (new ApiError(400, 'A category is required'));
         }
         const isOngoing = (stillOngoing === true || stillOngoing === 'true');
         const projectEndDate = isOngoing ? null : endDate;
@@ -49,7 +53,7 @@ const addProject = async (req, res, next) => {
               technology,
               links,
               videoLink,
-              type,
+              category,
               description,
             });
         await newProject.save();
@@ -106,13 +110,13 @@ const technologySuggestions = (req, res, next) => {
 };
 
 
-const typeSuggestions = (req, res, next) => {
+const categorySuggestions = (req, res, next) => {
     try{
         const query = req.query.qer || '';
         const lowerQuery = query.toLowerCase();
-        const filteredTypes = allowedTypes.filter(type => type.toLowerCase().includes(lowerQuery));
+        const filteredCategories = allowedCategories.filter(category => category.toLowerCase().includes(lowerQuery));
 
-        res.status(200).json(filteredTypes);
+        res.status(200).json(filteredCategories);
     }
     catch(err){
         next(err);
@@ -123,5 +127,5 @@ const typeSuggestions = (req, res, next) => {
 module.exports = {
   addProject,
   technologySuggestions,
-  typeSuggestions,
+  categorySuggestions,
 };
