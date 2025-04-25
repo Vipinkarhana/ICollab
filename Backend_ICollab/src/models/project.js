@@ -32,6 +32,9 @@ let projectschema = mongoose.Schema(
       enum: allowedTechnologies,
       required: true,
     },
+    collaborator: {
+      type: [String]
+    },
     category: {
       type: String,
       enum: allowedCategories,
