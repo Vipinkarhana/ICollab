@@ -206,10 +206,121 @@ const project = async (req, res, next) => {
 };
 
 
+const projectFeed = async (req, res, next) => {
+    try{
+        const feed = await projectModel.aggregate([
+            {
+                $facet: {
+                    ongoing: [
+                        {$match: {isOngoing: true}},
+                        {$sort: {createdAt: -1}},
+                        {$limit: 4},
+                        {$project: {
+                            id: '$_id',
+                            name: 1,
+                            tagline: 1,
+                            technology: 1,
+                            collaborator: 1,
+                            category: 1,
+                            startDate: 1,
+                        }},
+                    ],
+                    finished: [
+                        {$match: {isOngoing: false}},
+                        {$sort: {createdAt: -1}},
+                        {$limit: 4},
+                        {$project: {
+                            id: '_id',
+                            name: 1,
+                            tagline: 1,
+                            technology: 1,
+                            collaborator: 1,
+                            category: 1,
+                            startDate: 1,
+                            endDate: 1
+                        }},
+                    ]
+                }
+            }
+        ]);
+        res.status(200).json({
+            success: true,
+            data: {
+              ongoing: feed[0].ongoing,
+              finished: feed[0].finished
+            }
+          });
+    }
+    catch(err){
+        next(err);
+    }
+};
+
+
+
+const ongoingFeed = async (req, res, next) => {
+    try{
+        const { timestamp } = req.query; // the timestamp sent by the frontend
+
+        if (!timestamp) {
+            return next(new ApiError(400, 'Timestamp is required'));
+        }
+
+        const date = new Date(Number(timestamp));
+        if(isNaN(date.getTime())){
+            return next(new ApiError(400, 'Timestamp must be a number'));
+        }
+        const feed = await projectModel.find(
+            {createdAt: { $lt: date }, isOngoing: true, },
+            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1}
+        ).sort({createdAt: -1}).limit(10).lean();
+
+        res.status(200).json({
+            success: true,
+            data: feed
+          });
+    }
+    catch (err){
+        next(err);
+    }
+};
+
+const finishedFeed = async (req, res, next) => {
+    try{
+        const { timestamp } = req.query; // the timestamp sent by the frontend
+
+        if (!timestamp) {
+            return next(new ApiError(400, 'Timestamp is required'));
+        }
+
+        const date = new Date(Number(timestamp));
+        if(isNaN(date.getTime())){
+            return next(new ApiError(400, 'Timestamp must be a number'));
+        }
+        const feed = await projectModel.find(
+            {createdAt: { $lt: date }, isOngoing: false, },
+            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1, endDate: 1}
+        ).sort({createdAt: -1}).limit(10).lean();
+
+        res.status(200).json({
+            success: true,
+            data: feed
+          });
+    }
+    catch (err){
+        next(err);
+    }
+};
+
+
+
 module.exports = {
   addProject,
   technologySuggestions,
   categorySuggestions,
   collaboratorSuggestions,
   project,
+  projectFeed,
+  ongoingFeed,
+  finishedFeed,
 };
