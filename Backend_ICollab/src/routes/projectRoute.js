@@ -6,7 +6,10 @@ const {
   technologySuggestions,
   categorySuggestions,
   collaboratorSuggestions,
-  project
+  project,
+  projectFeed,
+  ongoingFeed,
+  finishedFeed,
 } = require('../controllers/projectController');
 const { isloggedin } = require('../middlewares/auth');
 const storage = multer.memoryStorage();
@@ -16,5 +19,8 @@ router.get('/technologysuggestions', isloggedin, technologySuggestions);
 router.get('/categorysuggestions', isloggedin, categorySuggestions);
 router.get('/collaboratorsuggestions', isloggedin, collaboratorSuggestions);
 router.get('/project', isloggedin, project);
+router.get('/projectfeed', isloggedin, projectFeed);
+router.get('/ongoingfeed', isloggedin, ongoingFeed);
+router.get('/finishedfeed', isloggedin, finishedFeed);
 
 module.exports = router;
