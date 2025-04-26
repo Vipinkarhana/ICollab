@@ -188,10 +188,28 @@ const collaboratorSuggestions = async (req, res, next) => {
 };
 
 
+const project = async (req, res, next) => {
+  try {
+    const {projectId} = req.body;
+    const project = await projectModel.findOne({_id: projectId}).populate('user');
+    if (!project) {
+          throw new ApiError(404, 'Project not found');
+        }
+    res.status(200).json({
+      message: 'Project fetched',
+      status: 'success',
+      data: project,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 module.exports = {
   addProject,
   technologySuggestions,
   categorySuggestions,
   collaboratorSuggestions,
+  project,
 };
