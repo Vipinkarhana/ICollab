@@ -160,7 +160,7 @@ const Analytics = () => {
           title={`Views for "${selectedPage}" Page`}
           data={
             stats.pageViews.find((p) => p.page === selectedPage)?.views || []
-          }
+          }          
           label="Views"
           color="rgba(255, 206, 86, 0.6)"
         />

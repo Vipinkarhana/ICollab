@@ -1,95 +1,104 @@
 const userModel = require('../../models/user');
 const postModel = require('../../models/post');
 const pageViewModel = require('../../models/pageView');
+const deviceUsageModel = require('../../models/deviceUsage');
 const ApiError = require('../../utils/ApiError');
 
 const getAnalytics = async (req, res, next) => {
   try {
-    const [totalUsers, newUsers, activeUsers, totalPosts, newPosts] = await Promise.all([
-      userModel.countDocuments(),
-      userModel.countDocuments({
-        createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-      }),
-      pageViewModel.distinct("ipAddress", {
-        createdAt: { $gte: new Date(Date.now() - 5 * 60 * 1000) },
-      }).then((ips) => ips.length),
-      postModel.countDocuments(),
-      postModel.countDocuments({
-        createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-      }),
-    ]);
+    const [totalUsers, newUsers, activeUsers, totalPosts, newPosts] =
+      await Promise.all([
+        userModel.countDocuments(),
+        userModel.countDocuments({
+          createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+        }),
+        deviceUsageModel.countDocuments({
+          createdAt: { $gte: new Date(Date.now() - 5 * 60 * 1000) },
+        }),
+        postModel.countDocuments(),
+        postModel.countDocuments({
+          createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+        }),
+      ]);
 
     const retentionRate = Math.floor((activeUsers / totalUsers) * 100);
 
-    const pageViewsRaw = await pageViewModel.find({
-      createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+    // 🔍 Fetch page views grouped
+    const pageViewsRaw = await pageViewModel.find();
+    const pageViewsPerPageDaily = {};
+    for (const doc of pageViewsRaw) {
+      var { page, views } = doc.toObject();
+      if (!views) continue;
+    
+      // console.log('Page:', page, 'Views:', views);
+    
+      // If views is a Map, convert it to an object
+      if (views instanceof Map) {
+        views = Object.fromEntries(views);
+      }
+    
+      const viewArray = Object.entries(views)
+        .map(([date, value]) => ({ date, value })) // Convert to array
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+      // console.log('Page:', page, 'View Array:', viewArray);  
+      pageViewsPerPageDaily[page] = viewArray;
+    }
+    
+
+    // Fetch device + browser usage from deviceUsageModel
+    const deviceUsageRaw = await deviceUsageModel.find({
+      createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
     });
 
-    const pageViewsGrouped = {};
     const browserUsage = {};
     const deviceUsage = {};
-
     const uniqueUserSet = new Set();
 
-    for (let view of pageViewsRaw) {
-      const date = new Date(view.createdAt).toISOString().split("T")[0];
-
-      if (!pageViewsGrouped[view.page]) pageViewsGrouped[view.page] = {};
-      pageViewsGrouped[view.page][date] = (pageViewsGrouped[view.page][date] || 0) + 1;
-
-      const ua = view.userAgent || "";
-      const ip = view.ipAddress || "unknown";
+    for (let device of deviceUsageRaw) {
+      const ua = device.userAgent || '';
+      const ip = device.ipAddress || 'unknown';
       const uniqueKey = ip + ua;
 
       if (!uniqueUserSet.has(uniqueKey)) {
         uniqueUserSet.add(uniqueKey);
 
-        // Detect Browser
-        let browser = "Other";
-        if (/Edg\//i.test(ua)) {
-          browser = "Edge";
-        } else if (/OPR|Opera/i.test(ua)) {
-          browser = "Opera";
-        } else if (/Firefox/i.test(ua)) {
-          browser = "Firefox";
-        } else if (/Chrome/i.test(ua) && !/Edg|OPR|Brave/i.test(ua)) {
-          browser = "Chrome";
-        } else if (/Safari/i.test(ua) && !/Chrome|Chromium|Edg|OPR/i.test(ua)) {
-          browser = "Safari";
-        }
+        // Browser Detection
+        let browser = 'Other';
+        if (/Edg\//i.test(ua)) browser = 'Edge';
+        else if (/OPR|Opera/i.test(ua)) browser = 'Opera';
+        else if (/Firefox/i.test(ua)) browser = 'Firefox';
+        else if (/Chrome/i.test(ua) && !/Edg|OPR|Brave/i.test(ua))
+          browser = 'Chrome';
+        else if (/Safari/i.test(ua) && !/Chrome|Chromium|Edg|OPR/i.test(ua))
+          browser = 'Safari';
 
         browserUsage[browser] = (browserUsage[browser] || 0) + 1;
 
-        // Detect Device Type
+        // Device Type Detection
         const isMobile = /mobile/i.test(ua);
         const isTablet = /tablet/i.test(ua);
-        const deviceType = isTablet ? "Tablet" : isMobile ? "Mobile" : "Desktop";
+        const deviceType = isTablet
+          ? 'Tablet'
+          : isMobile
+            ? 'Mobile'
+            : 'Desktop';
 
         deviceUsage[deviceType] = (deviceUsage[deviceType] || 0) + 1;
       }
     }
 
-    // Convert pageViewsGrouped to frontend-friendly format
-    const pageViewsPerPageDaily = {};
-    for (const [page, data] of Object.entries(pageViewsGrouped)) {
-      pageViewsPerPageDaily[page] = Object.entries(data)
-        .map(([date, value]) => ({ date, value }))
-        .sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
-
     const postGrowth = await postModel.aggregate([
       {
         $group: {
-          _id: {
-            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
-          },
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
           count: { $sum: 1 },
         },
       },
-      { $sort: { "_id": 1 } },
+      { $sort: { _id: 1 } },
     ]);
 
-    return res.json({
+    res.json({
       totalUsers,
       newUsers,
       activeUsers,
@@ -102,14 +111,10 @@ const getAnalytics = async (req, res, next) => {
       browserUsage,
     });
   } catch (err) {
-    console.error("Analytics fetch error:", err);
-    res.status(500).json({ message: "Error fetching analytics" });
+    console.error('Analytics fetch error:', err);
+    res.status(500).json({ message: 'Error fetching analytics' });
   }
 };
-
-module.exports = { getAnalytics };
-
-
 
 const trackPageView = async (req, res, next) => {
   try {
@@ -117,8 +122,20 @@ const trackPageView = async (req, res, next) => {
     const ipAddress =
       req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'];
+    const date = new Date().toISOString().split('T')[0];
 
-    await pageViewModel.create({ page, ipAddress, userAgent });
+    // Update page view count
+    await pageViewModel.updateOne(
+      { page },
+      { $inc: { [`views.${date}`]: 1 } },
+      { upsert: true }
+    );
+
+    // Store device usage only once per IP + UA combo
+    const existing = await deviceUsageModel.findOne({ ipAddress, userAgent });
+    if (!existing) {
+      await deviceUsageModel.create({ ipAddress, userAgent });
+    }
 
     res.status(201).json({ message: 'Page view recorded successfully' });
   } catch (err) {
@@ -126,4 +143,4 @@ const trackPageView = async (req, res, next) => {
   }
 };
 
-module.exports = { getAnalytics, trackPageView };
+module.exports = { trackPageView, getAnalytics };
