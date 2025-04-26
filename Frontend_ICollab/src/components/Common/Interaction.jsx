@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import { useDispatch } from 'react-redux';
+import {toggleLike} from "../../Redux/Slices/PostSlice";
 import {
   MessageCircle,
   ThumbsUp,
@@ -8,23 +10,16 @@ import {
   Send,
 } from "lucide-react";
 import ProfilePic from "./ProfilePic";
-import { toggleLikePost } from "../../Services/postService";
 
-const Interactions = ({data, type = "post"}) => {
-  const id = data?._id;
-  const [likes, setLikes] = useState(data?.likes || 0);
-  const [isLiked, setIsLiked] = useState(data?.isLiked || false);
+const Interactions = ({ postId, initialLikes, initialIsLiked, className="" }) => {
+  const dispatch = useDispatch();
+  const [likes, setLikes] = useState(initialLikes);
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [replyText, setReplyText] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
   const commentInputRef = useRef(null);
-
-  const addLike = () => {
-    setIsLiked(!isLiked);
-    setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
-    toggleLikePost(id);
-  };
 
   // Function to add a new comment
   const addComment = () => {
@@ -32,6 +27,13 @@ const Interactions = ({data, type = "post"}) => {
       setComments([...comments, { text: commentText, likes: 0, replies: [] }]);
       setCommentText("");
     }
+  };
+
+  const handleLikeClick = () => {
+    console.log("Reached handleClick function in interaction.jsx");
+    setLikes(prev => isLiked ? prev - 1 : prev + 1);
+    setIsLiked(!isLiked);
+    dispatch(toggleLike(postId));
   };
 
   const focusCommentInput = () => {
@@ -57,10 +59,10 @@ const Interactions = ({data, type = "post"}) => {
   return (
     <div className="w-full max-w-full  px-2">
       {/* Post Actions (Like, Comment, Repost, Send) */}
-      <div className="flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-1 sm:pt-4">
+      <div className={`flex justify-between items-center text-gray-600 text-sm border-t border-gray-300 pt-1 sm:pt-4 ${className}`}>
         <button
-          className="flex items-center space-x-1 px-8 py-4 rounded-sm lg:hover:bg-gray-200 sm:px-4 sm:py-2"
-          onClick={() => addLike()}
+          className="flex items-center space-x-1 px-8 py-4 rounded-sm sm:px-4 sm:py-2 "
+          onClick={handleLikeClick}
         >
           {isLiked ? (
             <ThumbsUp className="text-blue-500" size={18} />
@@ -68,7 +70,7 @@ const Interactions = ({data, type = "post"}) => {
             <ThumbsUp className="text-gray-500" size={18} />
           )}
           <span className="hidden sm:inline">
-            {likes > 0 ? `Like ${likes}` : "Like"}
+            {likes > 0 ? `${likes} Like${likes !== 1 ? 's' : ''}` : "Like"}
           </span>
         </button>
 

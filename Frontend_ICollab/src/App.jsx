@@ -1,54 +1,85 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import HomePage from "./components/Pages/HomePage/HomePage";
-import ProfilePage from "./components/Pages/ProfilePage/ProfilePage";
-import NetworkPage from "./components/Pages/NetworkPage/NetworkPage";
-import ProjectPage from "./components/Pages/ProjectsPage/ProjectsPage";
-import NotificationPage from "./components/Pages/NotificationPage/NotificationPage";
-import MessagePage from "./components/Pages/MessagePage/MessagePage";
-import Login from "./components/Pages/Login_RegistrationPages/Login";
-import Register from "./components/Pages/Login_RegistrationPages/Registration";
-import Layout from "./components/Layout/Layout";
-import IncubatorsPage from "./components/Pages/IncubatorsPage/IncubatorsPage";
-import PrivateRoute from "./components/Common/PrivateRoute";
-import ActivityPage from "./components/Pages/ActivityPage/ActivityPage";
-import LandingPage from "./components/Pages/LandingPage/LandingPage";
-import ProjectPreview from "./components/Pages/ProjectsPage/ProjectPreview/ProjectPreview";
-import SavedItemPage from "./components/Pages/SavedItems/SavedItemPage";
-
+import useFetchSavedPosts from "./Hooks/useFetchSavedPosts";    
+const HomePage = lazy(() => import("./components/Pages/HomePage/HomePage"));
+const ProfilePage = lazy(() =>
+  import("./components/Pages/ProfilePage/ProfilePage")
+);
+const ProfilePageForm = lazy(() =>
+  import("./components/Pages/ProfilePage/ProifePageForm/ProfilePageForm")
+);
+const NetworkPage = lazy(() =>
+  import("./components/Pages/NetworkPage/NetworkPage")
+);
+const ProjectPage = lazy(() =>
+  import("./components/Pages/ProjectsPage/ProjectsPage")
+);
+const MessagePage = lazy(() =>
+  import("./components/Pages/MessagePage/MessagePage")
+);
+const NotificationPage = lazy(() =>
+  import("./components/Pages/NotificationPage/NotificationPage")
+);
+const IncubatorsPage = lazy(() =>
+  import("./components/Pages/IncubatorsPage/IncubatorsPage")
+);
+const ProjectPreviewPage = lazy(() =>
+  import("./components/Pages/ProjectPreviewPage/ProjectPreviewPage")
+);
+const ProjectForm = lazy(() =>
+  import("./components/Pages/ProjectsPage/ProjectForm")
+);
+const Login = lazy(() =>
+  import("./components/Pages/Login_RegistrationPages/Login")
+);
+const Register = lazy(() =>
+  import("./components/Pages/Login_RegistrationPages/Registration")
+);
+const LandingPage = lazy(() =>
+  import("./components/Pages/LandingPage/LandingPage")
+);
+const Layout = lazy(() => import("./components/Layout/Layout"));
+const PrivateRoute = lazy(() => import("./utils/PrivateRoute"));
 
 function App() {
-
+  useFetchSavedPosts(); 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
-        <Routes>
-          {/* Private routes: wrapped with PrivateRoute via the Layout element */}
-          <Route element={<PrivateRoute element={<Layout />} />}>
-            <Route path="/home" element={<HomePage />} />
-            <Route path="/profile/:username" element={<ProfilePage />} />
-            <Route path="/network" element={<NetworkPage />} />
-            <Route path="/project" element={<ProjectPage />} />
-            <Route path="/message" element={<MessagePage />} />
-            <Route path="/notification" element={<NotificationPage />} />
-            <Route path="/incubators" element={<IncubatorsPage />} />
-            <Route path="/activity/:username" element={<ActivityPage />} />
-            <Route path="/project_preview" element={<ProjectPreview/>} />
-            <Route path="/saved_items" element={<SavedItemPage/>}></Route>
-          </Route>
+        {/* Wrap Routes with Suspense to handle loading fallback */}
+        <Suspense
+          fallback={
+            <div style={{ textAlign: "center", padding: "2rem" }}>
+              Loading...
+            </div>
+          }
+        >
+          <Routes>
+            {/* Private routes */}
+            <Route element={<PrivateRoute element={<Layout />} />}>
+              <Route path="/home" element={<HomePage />} />
+              <Route path="/profile/:username" element={<ProfilePage />} />
+              <Route path="/profile/edit" element={<ProfilePageForm />} />
+              <Route path="/network" element={<NetworkPage />} />
+              <Route path="/projects" element={<ProjectPage />} />
+              <Route path="/message" element={<MessagePage />} />
+              <Route path="/notification" element={<NotificationPage />} />
+              <Route path="/incubators" element={<IncubatorsPage />} />
+              <Route path="/projectpreview" element={<ProjectPreviewPage />} />
+              <Route path="/project" element={<ProjectPage />} />
+              <Route path="/project/create" element={<ProjectForm />} />
+            </Route>
 
-          {/* LandingPage with Layout, not a private route */}
-          <Route path="/" element={<LandingPage />} />
-
-          {/* Public routes: no authentication required */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
+            {/* Public routes */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </Suspense>
       </Router>
     </GoogleOAuthProvider>
   );
 }
-
 
 export default App;

@@ -1,283 +1,498 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
 
-function ProjectForm({ onSaveDraft, onCreateProject, onCancel }) {
+const ProjectForm = () => {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    category: '',
-    priority: '',
-    startDate: '',
-    endDate: '',
-    tags: [],
-    collaborators: '',
-    roles: '',
-    attachments: []
+    projectName: "",
+    tagline: "",
+    problem: "",
+    category: "",
+    collaborators: "",
+    technologies: "",
+    links: "",
+    videoDemo: "",
+    Challenges: "",
+    startDate: "",
+    endDate: "",
+    isOngoing: false,
+    pictures: [],
+    logo: null,
   });
 
+  const [touchedFields, setTouchedFields] = useState({});
   const [errors, setErrors] = useState({});
-  const [isOngoing, setIsOngoing] = useState(false); // New state for ongoing checkbox
-  const today = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
+  const [wordCounts, setWordCounts] = useState({
+    projectName: 0,
+    tagline: 0,
+    problem: 0,
+    technologies: 0,
+    Challenges: 0,
+    links: 0,
+    videoDemo: 0,
+  });
 
+  const collaboratorSuggestions = [
+    "Alice Johnson",
+    "Bob Smith",
+    "Charlie Lee",
+    "Diana Prince",
+    "Ethan Brown",
+    "Fay Zhang",
+    "Grace Kim",
+  ];
+
+  const categoryOptions = [
+    "Web Development",
+    "Mobile App",
+    "Machine Learning",
+    "Game Development",
+    "IoT",
+    "Blockchain",
+    "Data Science",
+    "AR/VR",
+  ];
+
+  const today = new Date().toISOString().split("T")[0];
+
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Update word count for text fields
+    if (e.target.type === "text" || e.target.type === "textarea") {
+      const wordCount = value.trim().split(/\s+/).length;
+      setWordCounts((prev) => ({ ...prev, [name]: wordCount }));
+    }
   };
 
-  const handleTagsChange = (e) => {
-    const tags = e.target.value.split(',').map((tag) => tag.trim()).filter(Boolean); // Split by commas and trim spaces
-    setFormData({ ...formData, tags });
-  };
-
-  const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      attachments: [...e.target.files]
-    });
+  const handleFileChange = (e, key, multiple = false) => {
+    if (multiple) {
+      setFormData({
+        ...formData,
+        [key]: [...e.target.files],
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [key]: e.target.files[0],
+      });
+    }
   };
 
   const handleOngoingChange = (e) => {
-    setIsOngoing(e.target.checked); // Update ongoing state based on checkbox
-    if (e.target.checked) {
-      setFormData({ ...formData, endDate: '' }); // Clear end date when ongoing
-    }
+    setFormData({
+      ...formData,
+      isOngoing: e.target.checked,
+      endDate: e.target.checked ? "" : formData.endDate,
+    });
   };
 
+  // Handle validation
   const validateForm = () => {
     const newErrors = {};
-    // Check required fields
-    if (!formData.title) newErrors.title = 'Project title is required.';
-    if (!formData.description) newErrors.description = 'Description is required.';
-    if (!formData.category) newErrors.category = 'Category is required.';
-    if (!formData.startDate) newErrors.startDate = 'Start date is required.';
-    if (!isOngoing && !formData.endDate) newErrors.endDate = 'End date is required.';
-    if (!formData.collaborators) newErrors.collaborators = 'Collaborators are required.';
-    if (!formData.roles) newErrors.roles = 'Role is required.';
-    if (formData.tags.length === 0) newErrors.tags = 'At least one tag is required.';
+    if (!formData.projectName)
+      newErrors.projectName = "Project name is required.";
+    if (!formData.tagline) newErrors.tagline = "Tagline is required.";
+    if (!formData.problem) newErrors.problem = "Problem statement is required.";
+    if (!formData.collaborators)
+      newErrors.collaborators = "Collaborators are required.";
+    if (!formData.category) newErrors.category = "Category is required.";
+    if (!formData.technologies)
+      newErrors.technologies = "Technologies are required.";
+    if (!formData.startDate) newErrors.startDate = "Start date is required.";
+    if (!formData.isOngoing && !formData.endDate)
+      newErrors.endDate = "End date is required.";
+    if (!formData.Challenges) newErrors.Challenges = "Challenges are required.";
 
     setErrors(newErrors);
-
-    // Return true if no errors
     return Object.keys(newErrors).length === 0;
   };
 
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      onCreateProject(formData);
+      console.log("Form submitted with data:", formData);
+      // On success, you can call your submit function here, e.g. onCreateProject(formData);
     }
   };
 
-  // Disable typing for date inputs
-  useEffect(() => {
-    const startDateInput = document.querySelector('input[name="startDate"]');
-    const endDateInput = document.querySelector('input[name="endDate"]');
-
-    // Disable typing for start date
-    if (startDateInput) {
-      startDateInput.addEventListener('keydown', (e) => {
-        e.preventDefault();
-      });
-    }
-
-    // Disable typing for end date
-    if (endDateInput) {
-      endDateInput.addEventListener('keydown', (e) => {
-        e.preventDefault();
-      });
-    }
-
-    return () => {
-      // Cleanup the event listeners when the component is unmounted
-      if (startDateInput) {
-        startDateInput.removeEventListener('keydown', (e) => {
-          e.preventDefault();
-        });
-      }
-      if (endDateInput) {
-        endDateInput.removeEventListener('keydown', (e) => {
-          e.preventDefault();
-        });
-      }
-    };
-  }, []);
+  const inputClass = "w-full p-2 border rounded-md mt-2 focus:outline-none";
+  const textClass = "text-sm mt-1";
 
   return (
-    <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit}>
-      <h2 className="text-xl font-semibold mb-4 text-center md:text-left">Create a New Project</h2>
-
-      {/* Project Title */}
+    <div className="max-w-4xl mx-auto px-4 py-10 space-y-10 mt-16 bg-white rounded-md">
+      {/* Project Name */}
       <div>
-        <label className="block font-medium">Project Title</label>
+        <h2 className="text-3xl font-semibold">
+          Project Name <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass} text-gray-600`}>What are you calling it?</p>
         <input
           type="text"
-          name="title"
-          value={formData.title}
+          name="projectName"
+          value={formData.projectName}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${errors.title ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          placeholder="Enter project title"
+          className={`w-full p-2 border ${
+            errors.projectName ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          placeholder="Enter project name"
           required
         />
-        {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+        <p className="text-sm text-gray-600 mt-1">
+          {wordCounts.projectName} / 50
+        </p>
+        {wordCounts.projectName > 50 && (
+          <p className="text-red-500 text-sm">
+            Maximum word count exceeded (50 words).
+          </p>
+        )}
+        {errors.projectName && (
+          <p className="text-red-500 text-sm">{errors.projectName}</p>
+        )}
       </div>
 
-      {/* Description */}
+      {/* Tagline */}
       <div>
-        <label className="block font-medium">Description</label>
+        <h2 className="text-3xl font-semibold">
+          Tagline <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass} text-gray-600`}>
+          Write a short, sharp and on-point description of your project
+        </p>
+        <input
+          type="text"
+          name="tagline"
+          value={formData.tagline}
+          onChange={handleInputChange}
+          className={`w-full p-2 border ${
+            errors.tagline ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          placeholder="Short tagline"
+          required
+        />
+        <p className="text-sm text-gray-600 mt-1">{wordCounts.tagline} / 100</p>
+        {wordCounts.tagline > 100 && (
+          <p className="text-red-500 text-sm">
+            Maximum word count exceeded (100 words).
+          </p>
+        )}
+        {errors.tagline && (
+          <p className="text-red-500 text-sm">{errors.tagline}</p>
+        )}
+      </div>
+
+      {/* Problem Statement */}
+      <div>
+        <h2 className="text-3xl font-semibold">
+          Problem Statement <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass} text-gray-600`}>
+          Describe what can people use it for, or how it makes existing tasks
+          easier/safer, etc. (markdown supported)
+        </p>
         <textarea
-          name="description"
-          value={formData.description}
+          name="problem"
+          value={formData.problem}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          placeholder="Enter project description"
+          className={`w-full p-2 border ${
+            errors.problem ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          placeholder="What problem does your project solve?"
           required
         />
-        {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
-      </div>
-
-      {/* Category */}
-      <div>
-        <label className="block font-medium">Category</label>
-        <input
-          type="text"
-          name="category"
-          value={formData.category}
-          onChange={handleInputChange}
-          className={`w-full p-2 border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          placeholder="Enter project category"
-          required
-        />
-        {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
-      </div>
-
-      {/* Start and End Date */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="w-full sm:w-1/2">
-          <label className="block font-medium">Start Date</label>
-          <input
-            type="date"
-            name="startDate"
-            value={formData.startDate}
-            onChange={handleInputChange}
-            className={`w-full p-2 border ${errors.startDate ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-            required
-            max={today} // Prevent future dates for the start date (allow today's date and earlier)
-          />
-          {errors.startDate && <p className="text-red-500 text-sm">{errors.startDate}</p>}
-        </div>
-
-        <div className="w-full sm:w-1/2">
-          <label className="block font-medium">End Date</label>
-          <input
-            type="date"
-            name="endDate"
-            value={formData.endDate}
-            onChange={handleInputChange}
-            className={`w-full p-2 border ${errors.endDate ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-            required={!isOngoing} // Disable requirement if ongoing
-            disabled={isOngoing} // Disable the field if ongoing
-            min={formData.startDate} // Set end date to not be before the start date
-            max={today} // Set end date to not be after today
-          />
-          {errors.endDate && <p className="text-red-500 text-sm">{errors.endDate}</p>}
-        </div>
-      </div>
-
-      {/* Ongoing Checkbox */}
-      <div>
-        <label className="inline-flex items-center">
-          <input
-            type="checkbox"
-            checked={isOngoing}
-            onChange={handleOngoingChange}
-            className="form-checkbox"
-          />
-          <span className="ml-2">This project is ongoing</span>
-        </label>
-      </div>
-
-      {/* Tags */}
-      <div>
-        <label className="block font-medium">Tags </label>
-        <input
-          type="text"
-          name="tags"
-          value={formData.tags.join(', ')} // join tags into a string
-          onChange={handleTagsChange}
-          className={`w-full p-2 border ${errors.tags ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          placeholder="Enter tags"
-          required
-        />
-        {errors.tags && <p className="text-red-500 text-sm">{errors.tags}</p>}
+        <p className="text-sm text-gray-600 mt-1">{wordCounts.problem} / 200</p>
+        {wordCounts.problem > 200 && (
+          <p className="text-red-500 text-sm">
+            Maximum word count exceeded (200 words).
+          </p>
+        )}
+        {errors.problem && (
+          <p className="text-red-500 text-sm">{errors.problem}</p>
+        )}
       </div>
 
       {/* Team Members (Collaborators) */}
-      <div>
-        <label className="block font-medium">Add Collaborators</label>
+      <div className="relative">
+        <h2 className="text-3xl font-semibold">
+          Add Collaborators <span className="text-red-500">*</span>
+        </h2>
         <input
           type="text"
           name="collaborators"
           value={formData.collaborators}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${errors.collaborators ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          placeholder="Add team members"
+          className={`w-full p-2 border ${
+            errors.collaborators ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          placeholder="Start typing to see suggestions"
+          autoComplete="off"
           required
         />
-        {errors.collaborators && <p className="text-red-500 text-sm">{errors.collaborators}</p>}
+        {formData.collaborators && (
+          <ul className="absolute z-10 bg-white border border-gray-300 w-full mt-1 rounded-md shadow-md max-h-40 overflow-y-auto">
+            {collaboratorSuggestions
+              .filter((name) =>
+                name
+                  .toLowerCase()
+                  .includes(formData.collaborators.toLowerCase())
+              )
+              .map((name, idx) => (
+                <li
+                  key={idx}
+                  className="p-2 hover:bg-blue-100 cursor-pointer"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      collaborators: name,
+                    }))
+                  }
+                >
+                  {name}
+                </li>
+              ))}
+          </ul>
+        )}
+        {errors.collaborators && (
+          <p className="text-red-500 text-sm">{errors.collaborators}</p>
+        )}
       </div>
 
-      {/* Roles */}
+      {/* Category */}
       <div>
-        <label className="block font-medium">Roles</label>
+        <h2 className="text-3xl font-semibold">
+          Category <span className="text-red-500">*</span>
+        </h2>
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleInputChange}
+          className={`w-full p-2 border ${
+            errors.category ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          required
+        >
+          <option value="">Select a category</option>
+          {categoryOptions.map((option, idx) => (
+            <option key={idx} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        {errors.category && (
+          <p className="text-red-500 text-sm">{errors.category}</p>
+        )}
+      </div>
+
+      {/* Links */}
+      <div>
+        <h2 className="text-3xl font-semibold">
+          Links <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass} text-gray-600`}>
+          Add any links to your project, such as the live site, GitHub
+          repository, etc. Please separate them with commas.
+        </p>
         <input
           type="text"
-          name="roles"
-          value={formData.roles}
+          name="links"
+          value={formData.links}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${errors.roles ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-          placeholder="Enter project role"
+          className={`w-full p-2 border ${
+            errors.links ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          placeholder="e.g., https://github.com/myproject, https://myproject.com"
           required
         />
-        {errors.roles && <p className="text-red-500 text-sm">{errors.roles}</p>}
+        <p className="text-sm text-gray-600 mt-1">{wordCounts.links} / 50</p>
+        {wordCounts.links > 50 && (
+          <p className="text-red-500 text-sm">
+            Maximum word count exceeded (50 words).
+          </p>
+        )}
+        {errors.links && <p className="text-red-500 text-sm">{errors.links}</p>}
       </div>
 
-      {/* File Upload */}
+      {/* Video Demo */}
       <div>
-        <label className="block font-medium">Upload Files</label>
+        <h2 className="text-3xl font-semibold">
+          Video Demo <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass}  text-sm text-gray-600 mt-1 `}>
+          Provide a link to a video demo of your project (e.g., YouTube or
+          Vimeo).
+        </p>
         <input
-          type="file"
-          multiple
-          name="attachments"
-          onChange={handleFileChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          type="text"
+          name="videoDemo"
+          value={formData.videoDemo}
+          onChange={handleInputChange}
+          className={`w-full p-2 border ${
+            errors.videoDemo ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          placeholder="e.g., https://youtube.com/mydemo"
+          required
+        />
+        {errors.videoDemo && (
+          <p className="text-red-500 text-sm">{errors.videoDemo}</p>
+        )}
+      </div>
+
+      {/* Technologies */}
+      <div>
+        <h2 className="text-3xl font-semibold">
+          Technologies <span className="text-red-500">*</span>
+        </h2>
+        <p className={`${textClass}  text-sm text-gray-600 mt-1`}>
+          Write a comma-separated list of technologies you used in building the
+          project.
+        </p>
+        <input
+          type="text"
+          name="technologies"
+          value={formData.technologies}
+          onChange={handleInputChange}
+          className={`w-full p-2 border ${
+            errors.technologies ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          placeholder="Technologies used (e.g., React, Node, MongoDB)"
+          required
+        />
+        <p className="text-sm text-gray-600 mt-1">
+          {wordCounts.technologies} / 150
+        </p>
+        {wordCounts.technologies > 150 && (
+          <p className="text-red-500 text-sm">
+            Maximum word count exceeded (150 words).
+          </p>
+        )}
+        {errors.technologies && (
+          <p className="text-red-500 text-sm">{errors.technologies}</p>
+        )}
+      </div>
+
+      {/*Challenges I ran into */}
+      <div>
+        <h2 className="text-3xl font-semibold">
+          Challenges I ran into <span className="text-red-500">*</span>
+        </h2>
+        <p className="text-sm text-gray-600 mt-1">
+          Tell us about the challenges you faced during the project.
+        </p>
+        <textarea
+          name="Challenges"
+          value={formData.Challenges}
+          onChange={handleInputChange}
+          className={`w-full p-2 border ${
+            errors.Challenges ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          placeholder="Describe any major roadblocks you faced"
+          required
+        />
+        <p className="text-sm text-gray-600 mt-1">
+          {wordCounts.Challenges} / 100
+        </p>
+        {wordCounts.Challenges > 100 && (
+          <p className="text-red-500 text-sm">
+            Maximum word count exceeded (100 words).
+          </p>
+        )}
+        {errors.Challenges && (
+          <p className="text-red-500 text-sm">{errors.Challenges}</p>
+        )}
+      </div>
+
+      {/* Start Date */}
+      <div>
+        <h2 className="text-3xl font-semibold">Start Date</h2>
+        <input
+          type="date"
+          name="startDate"
+          value={formData.startDate}
+          onChange={handleInputChange}
+          className="w-full p-2 border rounded-md"
+          max={today}
+          required
         />
       </div>
 
-      {/* Actions */}
-      <div className="flex flex-col sm:flex-row justify-between gap-4">
-        <button type="button" onClick={onSaveDraft} className="bg-gray-500 text-white px-4 py-2 rounded-md w-full sm:w-auto">
-          Save Draft
-        </button>
-        <div className="flex gap-4 w-full sm:w-auto">
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-md w-full sm:w-auto"
-          >
-            Create Project
-          </button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="bg-red-500 text-white px-4 py-2 rounded-md w-full sm:w-auto"
-          >
-            Cancel
-          </button>
+      {/* End Date */}
+      <div>
+        <h2 className="text-3xl font-semibold">End Date</h2>
+        <input
+          type="date"
+          name="endDate"
+          value={formData.endDate}
+          onChange={handleInputChange}
+          className="w-full p-2 border rounded-md"
+          min={formData.startDate}
+          disabled={formData.isOngoing}
+        />
+      </div>
+
+      {/* Ongoing Project Checkbox */}
+      <div className="flex items-center mt-4">
+        <input
+          type="checkbox"
+          checked={formData.isOngoing}
+          onChange={handleOngoingChange}
+          className="mr-2"
+        />
+        <label>This project is ongoing</label>
+      </div>
+
+      {/* Pictures */}
+      <div>
+        <h2 className="text-3xl font-semibold"> Media</h2>
+        <p className="text-sm text-gray-600 mt-1">
+          Upload up to 5 pictures (max 1MB each)
+        </p>
+        <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => (
+            <label
+              key={i}
+              className="w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:border-blue-500 hover:bg-gray-50"
+            >
+              +
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFileChange(e, "pictures", true)}
+                className="hidden"
+              />
+            </label>
+          ))}
         </div>
       </div>
-    </form>
+
+      {/* Logo */}
+      <div>
+        <h2 className="text-3xl font-semibold"> Logo</h2>
+        <p className="text-sm text-gray-600 mt-1">
+          Upload a logo for your project (max 1MB)
+        </p>
+        <label className="mt-3 w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:bg-gray-50 hover:border-blue-500">
+          +
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleFileChange(e, "logo")}
+            className="hidden"
+          />
+        </label>
+      </div>
+
+      {/* Submit Button */}
+      <div className="pt-6">
+        <button
+          onClick={handleSubmit}
+          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
   );
-}
+};
 
 export default ProjectForm;
