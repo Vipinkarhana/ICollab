@@ -27,18 +27,25 @@ let projectschema = mongoose.Schema(
     challenges: {
       type: String,
     },
+    // technology: {
+    //   type: [String],
+    //   enum: allowedTechnologies,
+    //   required: true,
+    // },
     technology: {
-      type: [String],
-      enum: allowedTechnologies,
-      required: true,
+      type: [String]
     },
     collaborator: {
       type: [String]
     },
+    // category: {
+    //   type: String,
+    //   enum: allowedCategories,
+    //   required: true,
+    // },
     category: {
       type: String,
-      enum: allowedCategories,
-      required: true,
+      required: true
     },
     links: {
       type: String,

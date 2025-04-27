@@ -95,6 +95,7 @@ const addProject = async (req, res, next) => {
               description,
             });
         await newProject.save();
+        console.log('Reached till here safely');
 
         if (req.files?.logo) {
             const logoFile = Array.isArray(req.files.logo) ? req.files.logo[0] : req.files.logo;
@@ -122,6 +123,7 @@ const addProject = async (req, res, next) => {
         });
     }
     catch(err){
+        next(err);
         if (newProject) {
             await projectModel.findByIdAndDelete(newProject._id);
             if (newProject.logo) await deleteFromR2(newProject.logo);
@@ -129,7 +131,7 @@ const addProject = async (req, res, next) => {
               await deleteFromR2(mediaKey);
             }
           }
-          next(new ApiError(500, 'Failed to create project', err.message));
+          
     }
 };
 
