@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ProjectForm = () => {
   const navigate = useNavigate();
-  const [logo, setLogo] = useState(null);              // holds the File
+  const [logo, setLogo] = useState(null); // holds the File
   const [logoPreview, setLogoPreview] = useState(null); // holds the blob-URL
   const textClass = "text-sm";
   const [formData, setFormData] = useState({
@@ -32,51 +32,50 @@ const ProjectForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
-// Add static categories
-const categoryOptions = [
-  "Website Development",
-    "App Development", 
-    "Machine Learning", 
-    "Artificial Intelligence", 
-    "Blockchain / Web3", 
-    "Aerospace", 
-    "Healthcare", 
-    "Fintech", 
-    "Finance", 
-    "Education", 
-    "Legal", 
-    "Civil", 
-    "Environment", 
-    "Business", 
-    "Life Science", 
-    "Cybersecurity", 
-    "DevOps", 
-    "IoT", 
-    "Entertainment", 
-    "Content Creation", 
-    "Geospatial"
-];
+  // Add static categories
+  const categoryOptions = [
+    "Website Development",
+    "App Development",
+    "Machine Learning",
+    "Artificial Intelligence",
+    "Blockchain / Web3",
+    "Aerospace",
+    "Healthcare",
+    "Fintech",
+    "Finance",
+    "Education",
+    "Legal",
+    "Civil",
+    "Environment",
+    "Business",
+    "Life Science",
+    "Cybersecurity",
+    "DevOps",
+    "IoT",
+    "Entertainment",
+    "Content Creation",
+    "Geospatial",
+  ];
 
-// useEffect for collaborator suggestions
-useEffect(() => {
-  const fetchSuggestions = async () => {
-    if (collaboratorInput.length > 0) {
-      try {
-        const response = await getCollaboratorSuggestions(collaboratorInput);
-        setSuggestions(response.data);
-      } catch (error) {
-        console.error("Error fetching suggestions:", error);
+  // useEffect for collaborator suggestions
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (collaboratorInput.length > 0) {
+        try {
+          const response = await getCollaboratorSuggestions(collaboratorInput);
+          setSuggestions(response.data);
+        } catch (error) {
+          console.error("Error fetching suggestions:", error);
+        }
       }
-    }
-  };
-  const debounceTimer = setTimeout(fetchSuggestions, 300);
-  return () => clearTimeout(debounceTimer);
-}, [collaboratorInput]);
-
+    };
+    const debounceTimer = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [collaboratorInput]);
 
   const [touchedFields, setTouchedFields] = useState({});
   const [errors, setErrors] = useState({});
-  const [wordCounts, setWordCounts] = useState({
+  const [charCounts, setCharCounts] = useState({
     projectName: 0,
     tagline: 0,
     problem: 0,
@@ -86,51 +85,52 @@ useEffect(() => {
     videoDemo: 0,
   });
 
-
- // New collaborator suggestion effect
- useEffect(() => {
-  const fetchSuggestions = async () => {
-    if (collaboratorInput.length > 0) {
-      try {
-        const response = await getCollaboratorSuggestions(collaboratorInput);
-        setSuggestions(response.data);
-      } catch (error) {
-        console.error("Error fetching suggestions:", error);
+  // New collaborator suggestion effect
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (collaboratorInput.length > 0) {
+        try {
+          const response = await getCollaboratorSuggestions(collaboratorInput);
+          setSuggestions(response.data);
+        } catch (error) {
+          console.error("Error fetching suggestions:", error);
+        }
       }
+    };
+    const debounceTimer = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [collaboratorInput]);
+
+  // Updated collaborator handlers
+  const handleCollaboratorSelect = (user) => {
+    if (!selectedCollaborators.find((c) => c.id === user._id)) {
+      setSelectedCollaborators([
+        ...selectedCollaborators,
+        {
+          id: user._id,
+          label: user.username,
+        },
+      ]);
     }
+    setCollaboratorInput("");
+    setSuggestions([]);
   };
-  const debounceTimer = setTimeout(fetchSuggestions, 300);
-  return () => clearTimeout(debounceTimer);
-}, [collaboratorInput]);
 
-
-// Updated collaborator handlers
-const handleCollaboratorSelect = (user) => {
-  if (!selectedCollaborators.find(c => c.id === user._id)) {
-    setSelectedCollaborators([...selectedCollaborators, {
-      id: user._id,
-      label: user.username
-    }]);
-  }
-  setCollaboratorInput("");
-  setSuggestions([]);
-};
-
-const removeCollaborator = (id) => {
-  setSelectedCollaborators(selectedCollaborators.filter(c => c.id !== id));
-};
+  const removeCollaborator = (id) => {
+    setSelectedCollaborators(selectedCollaborators.filter((c) => c.id !== id));
+  };
 
   const today = new Date().toISOString().split("T")[0];
 
-  // Handle input changes
+  // Handle input changes and update character count
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Update word count for text fields
+    // Update character count for text fields
     if (e.target.type === "text" || e.target.type === "textarea") {
-      const wordCount = value.trim().split(/\s+/).length;
-      setWordCounts((prev) => ({ ...prev, [name]: wordCount }));
+      const charCount = value.length; // Count the number of characters
+      setCharCounts((prev) => ({ ...prev, [name]: charCount }));
     }
   };
 
@@ -138,7 +138,7 @@ const removeCollaborator = (id) => {
 
   function handlePictureChange(e, idx) {
     const file = e.target.files[0];
-    setPictures(pics => {
+    setPictures((pics) => {
       const copy = [...pics];
       copy[idx] = file;
       return copy;
@@ -148,11 +148,10 @@ const removeCollaborator = (id) => {
   function handleLogoChange(e) {
     const file = e.target.files[0];
     if (!file) return;
-    setLogo(file);                              // remember for submit
-    setLogoPreview(URL.createObjectURL(file));  // generate preview URL
+    setLogo(file); // remember for submit
+    setLogoPreview(URL.createObjectURL(file)); // generate preview URL
     if (logoPreview) URL.revokeObjectURL(logoPreview);
   }
-  
 
   const handleOngoingChange = (e) => {
     setFormData({
@@ -174,8 +173,8 @@ const removeCollaborator = (id) => {
       newErrors.technologies = "Technologies are required.";
     if (!formData.startDate) newErrors.startDate = "Start date is required.";
     if (!formData.isOngoing && !formData.endDate) {
-        newErrors.endDate = "Either select an end date or mark as ongoing.";
-      }
+      newErrors.endDate = "Either select an end date or mark as ongoing.";
+    }
     if (!formData.Challenges) newErrors.Challenges = "Challenges are required.";
 
     setErrors(newErrors);
@@ -198,39 +197,39 @@ const handleSubmit = async (e) => {
   }
   setSubmitError(null);
 
-  try {
-    const formPayload = new FormData();
-    
-    // Append fields with corrected names to match backend
-    formPayload.append('name', formData.projectName);
-    formPayload.append('tagline', formData.tagline);
-    formPayload.append('problem', formData.problem);
-    formPayload.append('category', formData.category);
-    formPayload.append('links', formData.links);
-    formPayload.append('videoLink', formData.videoDemo);
-    //formPayload.append('technology', formData.technologies.split(','));
-    formData.technologies
-    .split(',')
-    .map(t => t.trim())
-    .forEach(tech => formPayload.append('technology', tech));    // one append per tech :contentReference[oaicite:7]{index=7}
+    try {
+      const formPayload = new FormData();
 
-    //formPayload.append('collaborator', selectedCollaborators.map(c => c.label));
-    selectedCollaborators
-    .map(c => c.label)
-    .forEach(label => formPayload.append('collaborator', label)); // one append per collaborator
-    formPayload.append('startDate', formData.startDate);
-    //formPayload.append('isOngoing', formData.isOngoing);
-    formPayload.append('stillOngoing', formData.isOngoing);
-    if (!formData.isOngoing) {
-      formPayload.append('endDate', formData.endDate);
-    }
-      formPayload.append('challenges', formData.Challenges);
+      // Append fields with corrected names to match backend
+      formPayload.append("name", formData.projectName);
+      formPayload.append("tagline", formData.tagline);
+      formPayload.append("problem", formData.problem);
+      formPayload.append("category", formData.category);
+      formPayload.append("links", formData.links);
+      formPayload.append("videoLink", formData.videoDemo);
+      //formPayload.append('technology', formData.technologies.split(','));
+      formData.technologies
+        .split(",")
+        .map((t) => t.trim())
+        .forEach((tech) => formPayload.append("technology", tech)); // one append per tech :contentReference[oaicite:7]{index=7}
+
+      //formPayload.append('collaborator', selectedCollaborators.map(c => c.label));
+      selectedCollaborators
+        .map((c) => c.label)
+        .forEach((label) => formPayload.append("collaborator", label)); // one append per collaborator
+      formPayload.append("startDate", formData.startDate);
+      //formPayload.append('isOngoing', formData.isOngoing);
+      formPayload.append("stillOngoing", formData.isOngoing);
+      if (!formData.isOngoing) {
+        formPayload.append("endDate", formData.endDate);
+      }
+      formPayload.append("challenges", formData.Challenges);
 
       if (logo) {
-        formPayload.append('logo', logo);   // backend expects req.files.logo
+        formPayload.append("logo", logo); // backend expects req.files.logo
       }
-      pictures.forEach(file => {
-        if (file) formPayload.append('media', file);
+      pictures.forEach((file) => {
+        if (file) formPayload.append("media", file);
       });
 
       const response = await addProject(formPayload);
@@ -239,17 +238,20 @@ const handleSubmit = async (e) => {
       toast.success('Project uploaded successfully!');
       console.log("Project created:", response.data);
       // Handle success (redirect/show message/etc)
-      
     } catch (error) {
-      setSubmitError(error.response?.data?.message || 'Failed to create project');
+      setSubmitError(
+        error.response?.data?.message || "Failed to create project"
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-
   return (
-    <form className="max-w-4xl mx-auto px-4 py-10 space-y-10 mt-16 bg-white rounded-md" onSubmit={handleSubmit} >
+    <form
+      className="max-w-4xl mx-auto px-4 py-10 space-y-10 mt-16 bg-white rounded-md"
+      onSubmit={handleSubmit}
+    >
       {/* Project Name */}
       <div>
         <h2 className="text-3xl font-semibold">
@@ -268,11 +270,11 @@ const handleSubmit = async (e) => {
           required
         />
         <p className="text-sm text-gray-600 mt-1">
-          {wordCounts.projectName} / 50
+          {charCounts.projectName}/50
         </p>
-        {wordCounts.projectName > 50 && (
+        {charCounts.projectName > 50 && (
           <p className="text-red-500 text-sm">
-            Maximum word count exceeded (50 words).
+            Maximum character count exceeded (50 characters).
           </p>
         )}
         {errors.projectName && (
@@ -299,8 +301,8 @@ const handleSubmit = async (e) => {
           placeholder="Short tagline"
           required
         />
-        <p className="text-sm text-gray-600 mt-1">{wordCounts.tagline} / 100</p>
-        {wordCounts.tagline > 100 && (
+        <p className="text-sm text-gray-600 mt-1">{charCounts.tagline} / 100</p>
+        {charCounts.tagline > 100 && (
           <p className="text-red-500 text-sm">
             Maximum word count exceeded (100 words).
           </p>
@@ -329,8 +331,8 @@ const handleSubmit = async (e) => {
           placeholder="What problem does your project solve?"
           required
         />
-        <p className="text-sm text-gray-600 mt-1">{wordCounts.problem} / 200</p>
-        {wordCounts.problem > 200 && (
+        <p className="text-sm text-gray-600 mt-1">{charCounts.problem} / 200</p>
+        {charCounts.problem > 200 && (
           <p className="text-red-500 text-sm">
             Maximum word count exceeded (200 words).
           </p>
@@ -346,8 +348,11 @@ const handleSubmit = async (e) => {
           Add Collaborators <span className="text-red-500"></span>
         </h2>
         <div className="flex flex-wrap gap-2 mb-2">
-          {selectedCollaborators.map(collaborator => (
-            <div key={collaborator.id} className="bg-blue-100 px-2 py-1 rounded flex items-center">
+          {selectedCollaborators.map((collaborator) => (
+            <div
+              key={collaborator.id}
+              className="bg-blue-100 px-2 py-1 rounded flex items-center"
+            >
               <span>{collaborator.label}</span>
               <button
                 type="button"
@@ -371,19 +376,18 @@ const handleSubmit = async (e) => {
           autoComplete="off"
           // required
         />
-        
+
         {suggestions.length > 0 && (
           <ul className="absolute z-10 bg-white border border-gray-300 w-full mt-1 rounded-md shadow-md max-h-40 overflow-y-auto">
-            {suggestions
-              .map((user, idx) => (
-                <li
-                  key={idx}
-                  className="p-2 hover:bg-blue-100 cursor-pointer"
-                  onClick={() => handleCollaboratorSelect(user)}
-                >
-                  {user.username} ({user.email})
-                </li>
-              ))}
+            {suggestions.map((user, idx) => (
+              <li
+                key={idx}
+                className="p-2 hover:bg-blue-100 cursor-pointer"
+                onClick={() => handleCollaboratorSelect(user)}
+              >
+                {user.username} ({user.email})
+              </li>
+            ))}
           </ul>
         )}
         {errors.collaborators && (
@@ -437,12 +441,7 @@ const handleSubmit = async (e) => {
           placeholder="e.g., https://github.com/myproject, https://myproject.com"
           required
         />
-        <p className="text-sm text-gray-600 mt-1">{wordCounts.links} / 50</p>
-        {wordCounts.links > 50 && (
-          <p className="text-red-500 text-sm">
-            Maximum word count exceeded (50 words).
-          </p>
-        )}
+      
         {errors.links && <p className="text-red-500 text-sm">{errors.links}</p>}
       </div>
 
@@ -492,9 +491,9 @@ const handleSubmit = async (e) => {
           required
         />
         <p className="text-sm text-gray-600 mt-1">
-          {wordCounts.technologies} / 150
+          {charCounts.technologies} / 150
         </p>
-        {wordCounts.technologies > 150 && (
+        {charCounts.technologies > 150 && (
           <p className="text-red-500 text-sm">
             Maximum word count exceeded (150 words).
           </p>
@@ -505,6 +504,7 @@ const handleSubmit = async (e) => {
       </div>
 
       {/*Challenges I ran into */}
+      {/* Challenges I ran into */}
       <div>
         <h2 className="text-3xl font-semibold">
           Challenges I ran into <span className="text-red-500">*</span>
@@ -523,11 +523,11 @@ const handleSubmit = async (e) => {
           required
         />
         <p className="text-sm text-gray-600 mt-1">
-          {wordCounts.Challenges} / 100
+          {charCounts.Challenges} / 100
         </p>
-        {wordCounts.Challenges > 100 && (
+        {charCounts.Challenges > 100 && (
           <p className="text-red-500 text-sm">
-            Maximum word count exceeded (100 words).
+            Maximum character count exceeded (100 characters).
           </p>
         )}
         {errors.Challenges && (
@@ -537,7 +537,9 @@ const handleSubmit = async (e) => {
 
       {/* Start Date */}
       <div>
-        <h2 className="text-3xl font-semibold">Start Date<span className="text-red-500">*</span></h2>
+        <h2 className="text-3xl font-semibold">
+          Start Date<span className="text-red-500">*</span>
+        </h2>
         <input
           type="date"
           name="startDate"
@@ -589,18 +591,19 @@ const handleSubmit = async (e) => {
               key={idx}
               className="w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:border-blue-500 hover:bg-gray-50"
             >
-               {file
-        ? <img
-            src={URL.createObjectURL(file)}
-            alt="preview"
-            className="object-cover w-full h-full rounded"
-          />
-        : "+"
-      }
+              {file ? (
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt="preview"
+                  className="object-cover w-full h-full rounded"
+                />
+              ) : (
+                "+"
+              )}
               <input
                 type="file"
                 accept="image/*"
-                onChange={e => handlePictureChange(e, idx)}
+                onChange={(e) => handlePictureChange(e, idx)}
                 className="hidden"
               />
             </label>
@@ -615,17 +618,15 @@ const handleSubmit = async (e) => {
           Upload a logo for your project (max 1MB)
         </p>
         <label className="mt-3 w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:bg-gray-50 hover:border-blue-500">
-        {logoPreview
-      ? (
-        <img
-          src={logoPreview}
-          alt="Logo preview"
-          className="object-contain w-full h-full p-1"
-        />
-      ) : (
-        <span className="text-gray-500 text-2xl">+</span>
-      )
-    }
+          {logoPreview ? (
+            <img
+              src={logoPreview}
+              alt="Logo preview"
+              className="object-contain w-full h-full p-1"
+            />
+          ) : (
+            <span className="text-gray-500 text-2xl">+</span>
+          )}
           <input
             type="file"
             accept="image/*"
@@ -636,15 +637,13 @@ const handleSubmit = async (e) => {
       </div>
       {/* Updated Submit Section */}
       <div className="pt-6">
-        {submitError && (
-          <div className="text-red-500 mb-4">{submitError}</div>
-        )}
+        {submitError && <div className="text-red-500 mb-4">{submitError}</div>}
         <button
-          type = "submit"
+          type="submit"
           className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Submitting...' : 'Submit'}
+          {isSubmitting ? "Submitting..." : "Submit"}
         </button>
       </div>
     </form>
