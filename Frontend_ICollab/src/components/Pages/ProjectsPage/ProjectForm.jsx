@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { addProject, getCollaboratorSuggestions } from "../../../Services/projectService";
-import privateAxios from "../../../Services/apiService";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
@@ -135,20 +134,6 @@ const removeCollaborator = (id) => {
     }
   };
 
-  const handleFileChange = (e, key, multiple = false) => {
-    if (multiple) {
-      setFormData({
-        ...formData,
-        [key]: [...e.target.files],
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [key]: e.target.files[0],
-      });
-    }
-  };
-
   const [pictures, setPictures] = useState([null, null, null, null, null]);
 
   function handlePictureChange(e, idx) {
@@ -200,9 +185,17 @@ const removeCollaborator = (id) => {
 // Updated submit handler
 const handleSubmit = async (e) => {
   e.preventDefault();
+  e.stopPropagation();
   if (!validateForm()) return;
 
   setIsSubmitting(true);
+  setIsSubmitting(true);
+  try {
+    await addProject(FormData);
+    // Reset form state
+  } finally {
+    setIsSubmitting(false);
+  }
   setSubmitError(null);
 
   try {
@@ -241,9 +234,9 @@ const handleSubmit = async (e) => {
       });
 
       const response = await addProject(formPayload);
-      await addProject(formPayload);
-      toast.success('Project uploaded successfully!');
+      
       navigate('/projects');
+      toast.success('Project uploaded successfully!');
       console.log("Project created:", response.data);
       // Handle success (redirect/show message/etc)
       
