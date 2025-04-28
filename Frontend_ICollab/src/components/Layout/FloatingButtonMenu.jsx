@@ -14,7 +14,7 @@ export default function FloatingButtonMenu() {
   const radius = 85; // Increased to give proper space
 
   return (
-    <div className="hidden  lg:block fixed bottom-5 left-5">
+    <div className="hidden z-50 lg:block fixed bottom-5 left-5">
       <div className="relative w-40 h-40">
         
         {/* Floating Buttons */}
