@@ -94,8 +94,6 @@ const addProject = async (req, res, next) => {
               category,
               description,
             });
-        await newProject.save();
-        console.log('Reached till here safely');
 
         if (req.files?.logo) {
             const logoFile = Array.isArray(req.files.logo) ? req.files.logo[0] : req.files.logo;
