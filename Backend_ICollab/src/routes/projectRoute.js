@@ -9,6 +9,7 @@ const {
   project,
   projectFeed,
   ongoingFeed,
+  fetchUserProjects,
   finishedFeed,
 } = require('../controllers/projectController');
 const { isloggedin } = require('../middlewares/auth');
@@ -22,5 +23,6 @@ router.get('/project', isloggedin, project);
 router.get('/projectfeed', isloggedin, projectFeed);
 router.get('/ongoingfeed', isloggedin, ongoingFeed);
 router.get('/finishedfeed', isloggedin, finishedFeed);
+router.get('/myprojects',isloggedin,fetchUserProjects)
 
 module.exports = router;

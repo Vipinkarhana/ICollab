@@ -315,6 +315,22 @@ const finishedFeed = async (req, res, next) => {
 };
 
 
+const fetchUserProjects = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const projects = await projectModel.find({ user: userId }).populate('user', 'username name profile_pic');
+
+    res.status(200).json({
+      message: 'User projects fetched successfully',
+      status: 'success',
+      data: projects,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 module.exports = {
   addProject,
@@ -324,5 +340,6 @@ module.exports = {
   project,
   projectFeed,
   ongoingFeed,
+  fetchUserProjects,
   finishedFeed,
 };

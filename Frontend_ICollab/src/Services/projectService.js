@@ -27,3 +27,18 @@ catch (err) {
     return err.response?.data || { error: "Project creation failed" };
 }
   };
+
+export const fetchUserProjects = async () => {
+    try {
+      const response = await privateAxios.get('/project/myprojects', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`, 
+        },
+      });
+  
+      return response.data;
+      console.log(response);
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Error fetching user projects');
+    }
+  };
