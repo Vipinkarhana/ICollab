@@ -135,6 +135,9 @@ const ProjectsPage = () => {
     <div className="sm:w-[20%] w-full flex sm:items-start items-center justify-center sm:justify-end">
       <Link
         to={`/profile/${username}`}
+        state={{
+          from: "projects",
+        }}
         className="bg-blue-300 w-44 h-12 text-xl text-white px-4 py-2 rounded-full hover:bg-blue-400 
         hidden md:flex items-center justify-center gap-1 mt-5"
       >
