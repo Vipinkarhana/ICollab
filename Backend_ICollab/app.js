@@ -19,6 +19,7 @@ var adminUserRouter = require('./src/Admin/routes/userRoute');
 var networkRouter = require('./src/routes/network');
 var adminPostRouter = require('./src/Admin/routes/postRoute');
 var adminAnalyticsRouter = require('./src/Admin/routes/analyticsRoute');
+var adminNotificationRouter = require('./src/Admin/routes/notificationRoute');
 
 var app = express();
 
@@ -51,6 +52,7 @@ app.use('/', indexRouter);
 app.use('/admin/user', adminUserRouter);
 app.use('/admin/posts', adminPostRouter);
 app.use('/admin/analytics', adminAnalyticsRouter);
+app.use('/admin/notifications', adminNotificationRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/profile', profileRouter);

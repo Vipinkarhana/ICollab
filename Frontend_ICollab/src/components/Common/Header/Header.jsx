@@ -173,7 +173,7 @@ const Header = ({ id }) => {
             {/* Mobile Menu Component */}
             {menuItems.map((item, index) => {
               if (item.name === "Notification") {
-                return <NotificationDropdown key={index} />;
+                return <NotificationDropdown username={username} key={index} />;
               }
 
               return (
