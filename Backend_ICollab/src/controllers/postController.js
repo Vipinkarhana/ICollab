@@ -159,11 +159,11 @@ const feed = async (req, res, next) => {
     const date = new Date(Number(timestamp));
     const connection = await connectionModel.findOne({ user: user._id });
     //const connection = await connectionModel.findOne({ user: req.body.userid });
-    console.log('Connection: ', connection);
+    //console.log('Connection: ', connection);
     const connectionIds = connection?.connectedusers || [];
-    console.log('Connection IDs:', connectionIds);
+    //console.log('Connection IDs:', connectionIds);
     const userId = user._id;
-    console.log("UserId in feed: ",userId);
+    //console.log("UserId in feed: ",userId);
     //const userId = req.body.userid;
     const posts = await postModel.aggregate([
       {

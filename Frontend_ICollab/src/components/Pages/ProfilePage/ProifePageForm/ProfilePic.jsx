@@ -13,7 +13,7 @@ const avatarsData = [
   { id: 9, image: "/Avatarold-man.png" },
 ];
 
-function ProfilePic() {
+function ProfilePic({ setActiveTab }) {
   const [avatars, setAvatars] = useState(avatarsData);
   const [startIndex, setStartIndex] = useState(0);
   const [selectedAvatarId, setSelectedAvatarId] = useState(null);
@@ -103,7 +103,7 @@ function ProfilePic() {
         </div>
 
         {/* Avatar Carousel */}
-        <div className="relative w-full flex items-center justify-center  mb-24">
+        <div className="relative w-full flex items-center justify-center mb-24">
           {/* Left Arrow */}
           <button
             onClick={handlePrev}
@@ -127,17 +127,16 @@ function ProfilePic() {
                     onClick={() => setSelectedAvatarId(avatar.id)}
                     className={`rounded-full shadow-lg object-cover transform cursor-pointer mx-auto border-none ${
                       isCenter
-                        ? "w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 hover:scale-110"
-                        : "w-24 h-24 sm:w-28 sm:h-28 opacity-80 hover:scale-105"
+                        ? "w-32 h-32 sm:w-36 sm:h-36 md:w-60 md:h-60 hover:scale-110"
+                        : "w-24 h-24 sm:w-36 sm:h-36 opacity-80 hover:scale-105"
                     }`}
                   />
-                  {/* Pencil icon (center avatar only) */}
                   {isCenter && (
                     <div
-                      className="absolute top-1 right-1 bg-blue-100 p-2 rounded-full cursor-pointer transition"
+                      className="absolute top-1 right-1 bg-blue-100 p-3 rounded-full cursor-pointer transition"
                       onClick={() => triggerFileInput(index)}
                     >
-                      <Pencil size={24} className="text-blue-600" />
+                      <Pencil size={32} className="text-blue-600" />
                     </div>
                   )}
                   <input
@@ -158,6 +157,16 @@ function ProfilePic() {
             className="absolute right-0 sm:right-32 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition"
           >
             <ChevronRight size={24} />
+          </button>
+        </div>
+
+        {/* ✅ Next Button */}
+        <div className="flex justify-end mt-8">
+          <button
+            onClick={() => setActiveTab("ABOUT")}
+            className="px-6 py-2 bg-blue-400 text-white font-semibold rounded hover:bg-blue-700 transition"
+          >
+            Next
           </button>
         </div>
       </div>

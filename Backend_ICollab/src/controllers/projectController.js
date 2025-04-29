@@ -94,7 +94,6 @@ const addProject = async (req, res, next) => {
               category,
               description,
             });
-        await newProject.save();
 
         if (req.files?.logo) {
             const logoFile = Array.isArray(req.files.logo) ? req.files.logo[0] : req.files.logo;
@@ -122,6 +121,7 @@ const addProject = async (req, res, next) => {
         });
     }
     catch(err){
+        next(err);
         if (newProject) {
             await projectModel.findByIdAndDelete(newProject._id);
             if (newProject.logo) await deleteFromR2(newProject.logo);
@@ -129,7 +129,7 @@ const addProject = async (req, res, next) => {
               await deleteFromR2(mediaKey);
             }
           }
-          next(new ApiError(500, 'Failed to create project', err.message));
+          
     }
 };
 
@@ -188,10 +188,156 @@ const collaboratorSuggestions = async (req, res, next) => {
 };
 
 
+const project = async (req, res, next) => {
+  try {
+    const {projectId} = req.body;
+    const project = await projectModel.findOne({_id: projectId}).populate('user');
+    if (!project) {
+          throw new ApiError(404, 'Project not found');
+        }
+    res.status(200).json({
+      message: 'Project fetched',
+      status: 'success',
+      data: project,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+const projectFeed = async (req, res, next) => {
+    try{
+        const feed = await projectModel.aggregate([
+            {
+                $facet: {
+                    ongoing: [
+                        {$match: {isOngoing: true}},
+                        {$sort: {createdAt: -1}},
+                        {$limit: 4},
+                        {$project: {
+                            id: '$_id',
+                            name: 1,
+                            tagline: 1,
+                            technology: 1,
+                            collaborator: 1,
+                            category: 1,
+                            startDate: 1,
+                        }},
+                    ],
+                    finished: [
+                        {$match: {isOngoing: false}},
+                        {$sort: {createdAt: -1}},
+                        {$limit: 4},
+                        {$project: {
+                            id: '_id',
+                            name: 1,
+                            tagline: 1,
+                            technology: 1,
+                            collaborator: 1,
+                            category: 1,
+                            startDate: 1,
+                            endDate: 1
+                        }},
+                    ]
+                }
+            }
+        ]);
+        res.status(200).json({
+            success: true,
+            data: {
+              ongoing: feed[0].ongoing,
+              finished: feed[0].finished
+            }
+          });
+    }
+    catch(err){
+        next(err);
+    }
+};
+
+
+
+const ongoingFeed = async (req, res, next) => {
+    try{
+        const { timestamp } = req.query; // the timestamp sent by the frontend
+
+        if (!timestamp) {
+            return next(new ApiError(400, 'Timestamp is required'));
+        }
+
+        const date = new Date(Number(timestamp));
+        if(isNaN(date.getTime())){
+            return next(new ApiError(400, 'Timestamp must be a number'));
+        }
+        const feed = await projectModel.find(
+            {createdAt: { $lt: date }, isOngoing: true, },
+            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1}
+        ).sort({createdAt: -1}).limit(10).lean();
+
+        res.status(200).json({
+            success: true,
+            data: feed
+          });
+    }
+    catch (err){
+        next(err);
+    }
+};
+
+const finishedFeed = async (req, res, next) => {
+    try{
+        const { timestamp } = req.query; // the timestamp sent by the frontend
+
+        if (!timestamp) {
+            return next(new ApiError(400, 'Timestamp is required'));
+        }
+
+        const date = new Date(Number(timestamp));
+        if(isNaN(date.getTime())){
+            return next(new ApiError(400, 'Timestamp must be a number'));
+        }
+        const feed = await projectModel.find(
+            {createdAt: { $lt: date }, isOngoing: false, },
+            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1, endDate: 1}
+        ).sort({createdAt: -1}).limit(10).lean();
+
+        res.status(200).json({
+            success: true,
+            data: feed
+          });
+    }
+    catch (err){
+        next(err);
+    }
+};
+
+
+const fetchUserProjects = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const projects = await projectModel.find({ user: userId }).populate('user', 'username name profile_pic');
+
+    res.status(200).json({
+      message: 'User projects fetched successfully',
+      status: 'success',
+      data: projects,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 module.exports = {
   addProject,
   technologySuggestions,
   categorySuggestions,
   collaboratorSuggestions,
+  project,
+  projectFeed,
+  ongoingFeed,
+  fetchUserProjects,
+  finishedFeed,
 };

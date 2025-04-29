@@ -5,7 +5,12 @@ const {
   addProject,
   technologySuggestions,
   categorySuggestions,
-  collaboratorSuggestions
+  collaboratorSuggestions,
+  project,
+  projectFeed,
+  ongoingFeed,
+  fetchUserProjects,
+  finishedFeed,
 } = require('../controllers/projectController');
 const { isloggedin } = require('../middlewares/auth');
 const storage = multer.memoryStorage();
@@ -14,5 +19,10 @@ router.post('/addproject', isloggedin, upload.fields([{name: 'logo', maxCount: 1
 router.get('/technologysuggestions', isloggedin, technologySuggestions);
 router.get('/categorysuggestions', isloggedin, categorySuggestions);
 router.get('/collaboratorsuggestions', isloggedin, collaboratorSuggestions);
+router.get('/project', isloggedin, project);
+router.get('/projectfeed', isloggedin, projectFeed);
+router.get('/ongoingfeed', isloggedin, ongoingFeed);
+router.get('/finishedfeed', isloggedin, finishedFeed);
+router.get('/myprojects',isloggedin,fetchUserProjects)
 
 module.exports = router;

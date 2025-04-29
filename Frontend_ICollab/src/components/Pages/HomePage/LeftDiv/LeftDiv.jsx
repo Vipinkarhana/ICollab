@@ -21,8 +21,8 @@ const LeftDiv = ({className=""}) => {
     <>
       <div className={`w-[80%] h-[100%]  flex flex-col justify-start items-center gap-2 ${className}`}>
         <ProfileCard otherUser={null}/>
-        <ProgressCard className="hidden md:block" />
-        <MyIncubatorsCard className="hidden md:block"/>
+        {/* <ProgressCard className="hidden md:block" /> */}
+        {/* <MyIncubatorsCard className="hidden md:block"/> */}
       </div>
     </>
   );

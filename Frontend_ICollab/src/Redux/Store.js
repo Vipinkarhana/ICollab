@@ -1,9 +1,10 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import storage from "redux-persist/lib/storage"; // Uses localStorage
+import storage from "redux-persist/lib/storage"; 
 import { persistReducer, persistStore } from "redux-persist";
 import indexedDBStorageAdapter from "./IndexedDBStorageAdapter";
 import userReducer from "./Slices/UserSlice";
 import postReducer from "./Slices/PostSlice";
+import projectReducer from "./Slices/ProjectSlice";
 
 const userPersistConfig = {
   key: "user",
@@ -17,12 +18,20 @@ const postPersistConfig = {
   whitelist: ["savePost"],
 };
 
+const projectPersistConfig = {
+  key: "projects",
+  storage,
+  whitelist: ["userProjects", "ongoingProjects", "finishedProjects"],
+};
+
+
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
   post: persistReducer(postPersistConfig, postReducer),
+  project: persistReducer(projectPersistConfig, projectReducer),
 });
 
-// Create store
+
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>

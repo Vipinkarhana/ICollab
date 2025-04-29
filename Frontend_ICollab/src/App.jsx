@@ -1,7 +1,9 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import useFetchSavedPosts from "./Hooks/useFetchSavedPosts";    
+import useFetchSavedPosts from "./Hooks/useFetchSavedPosts";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const HomePage = lazy(() => import("./components/Pages/HomePage/HomePage"));
 const ProfilePage = lazy(() =>
   import("./components/Pages/ProfilePage/ProfilePage")
@@ -46,6 +48,7 @@ function App() {
   useFetchSavedPosts(); 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <ToastContainer />
       <Router>
         {/* Wrap Routes with Suspense to handle loading fallback */}
         <Suspense
