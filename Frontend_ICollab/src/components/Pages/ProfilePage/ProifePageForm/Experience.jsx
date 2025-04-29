@@ -68,7 +68,7 @@ const Experience = () => {
     <div className="grid md:grid-cols-2 gap-6">
       {/* Role Selection Card */}
       <div className="bg-white p-6 rounded-lg shadow h-auto">
-        <h2 className="text-2xl font-semibold mb-4">Your Role</h2>
+        <h2 className="text-2xl font-semibold mb-4">Designation</h2>
         <p className="text-lg text-gray-700 mb-4">Which of the following describes you best?</p>
         <div className="space-y-3">
           {roles.map((role) => (
@@ -137,7 +137,7 @@ const Experience = () => {
       </div>
 
       {/* Resume Upload Section */}
-      <div className="bg-white p-6 rounded-lg shadow sm:h-[55svh] h-[75svh] md:col-span-2">
+      {/* <div className="bg-white p-6 rounded-lg shadow sm:h-[55svh] h-[75svh] md:col-span-2">
         <h2 className="text-2xl font-semibold mb-4">Upload Your Resume</h2>
         <div
           onDrop={handleDrop}
@@ -177,11 +177,11 @@ const Experience = () => {
         <p className="text-xs text-gray-500 mt-2 text-center">
           Make sure your resume is in .pdf format only (5MB max)
         </p>
-      </div>
+      </div> */}
 
-      <div >
+      {/* <div >
       <WorkExperienceForm />
-      </div>
+      </div> */}
     </div>
   );
 };

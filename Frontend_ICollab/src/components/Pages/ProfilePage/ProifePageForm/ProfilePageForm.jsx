@@ -8,15 +8,13 @@ import PhonePageNavbar from "../../../Common/PageNavbar/PhonePageNavbar";
 import ProfilePic from "./ProfilePic";
 
 function ProfilePageForm() {
-  const [activeTab, setActiveTab] = useState("ABOUT");
+  const [activeTab, setActiveTab] = useState("PROFILE PIC");
 
   const tabs = [
     "PROFILE PIC",
     "ABOUT",
-    "EDUCATION",
     "EXPERIENCE",
     "LINKS",
-    "CONTACT",
   ];
 
   // State for input fields

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { EllipsisVertical, UserPlus, Trash2  } from "lucide-react";
+import { EllipsisVertical, UserPlus, Trash2, PinOff  } from "lucide-react";
 import {
   BookmarkIcon as OutlineBookmark,
   BookmarkIcon as SolidBookmark,
@@ -67,13 +67,13 @@ const ProjectCard = ({
           </button>
           {menuOpen && (
             <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-10">
-              <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+              <button className="flex items-center gap-2 px-4 py-2 text-lg text-blue-600  hover:bg-gray-100 w-full text-left">
                 <UserPlus size={18} />
                 Collab
               </button>
               <button
                 onClick={handleToggleSave}
-                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                className="flex items-center gap-2 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 w-full text-left"
               >
                 {bookmarked ? (
                   <>
@@ -87,8 +87,14 @@ const ProjectCard = ({
                   </>
                 )}
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
-              < Trash2 color="gray" size={18} />
+             
+              <button className="flex items-center gap-2 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 w-full text-left">
+              < PinOff color="gray" size={18} />
+               <p>Pin</p>
+              </button>
+
+              <button className="flex items-center gap-2 px-4 py-2 text-lg text-red-700 hover:bg-gray-100 w-full text-left">
+              < Trash2 color="red" size={18} />
                <p>Delete</p>
               </button>
             </div>
