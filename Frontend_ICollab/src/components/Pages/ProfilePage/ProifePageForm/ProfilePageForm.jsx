@@ -10,17 +10,11 @@ import ProfilePic from "./ProfilePic";
 function ProfilePageForm() {
   const [activeTab, setActiveTab] = useState("PROFILE PIC");
 
-  const tabs = [
-    "PROFILE PIC",
-    "ABOUT",
-    "EXPERIENCE",
-    "LINKS",
-  ];
+  const tabs = ["PROFILE PIC", "ABOUT", "EXPERIENCE", "LINKS"];
 
-  // State for input fields
-  const [firstName, setFirstName] = useState("Mohit");
-  const [lastName, setLastName] = useState("Goel");
-  const [gender, setGender] = useState("Gender");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState(""); // Password input instead of gender
   const [about, setAbout] = useState("");
 
   return (
@@ -43,7 +37,10 @@ function ProfilePageForm() {
 
       {/* Main Content */}
       <main className="w-[80svw] mx-auto p-4">
-        {activeTab === "PROFILE PIC" && <ProfilePic />}
+        {activeTab === "PROFILE PIC" && (
+          <ProfilePic setActiveTab={setActiveTab} />
+        )}
+         
         {activeTab === "ABOUT" && (
           <div className="grid md:grid-cols-2 gap-6">
             {/* Basic Information */}
@@ -58,6 +55,7 @@ function ProfilePageForm() {
                     type="text"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Enter your first name"
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2"
                   />
                 </div>
@@ -70,6 +68,7 @@ function ProfilePageForm() {
                     type="text"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Enter your last name"
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2"
                   />
                 </div>
@@ -78,43 +77,54 @@ function ProfilePageForm() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    I Identify As
+                    Enter Password
                   </label>
-                  <select
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2"
-                  >
-                    <option>Gender</option>
-                    <option>Male</option>
-                    <option>Female</option>
-                    <option>Other</option>
-                  </select>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
               </div>
             </section>
 
             {/* About You */}
-            <section className="bg-white p-6 rounded-lg shadow h-full">
-              <h2 className="text-2xl font-semibold mb-4">README.MD</h2>
-              <div className="space-y-2">
-                <div>
-                  <textarea
-                    value={about}
-                    onChange={(e) => setAbout(e.target.value)}
-                    placeholder="This is your chance to tell us more about yourself! Things you're good at, what drives you and interesting projects you've built."
-                    className="mt-1 block w-full h-[50svh] border border-gray-300 rounded-md shadow-sm px-3 py-2"
-                    rows="5"
-                  ></textarea>
-                </div>
+            <section className="bg-white p-6 rounded-lg shadow h-full flex flex-col justify-between ">
+              <div>
+                <h2 className="text-2xl font-semibold mb-4">README.MD</h2>
+                <textarea
+                  value={about}
+                  onChange={(e) => setAbout(e.target.value)}
+                  placeholder="Tell us more about yourself! Projects, strengths, etc."
+                  className="block w-full h-[50svh] border border-gray-300 rounded-md shadow-sm px-3 py-2"
+                  rows="5"
+                ></textarea>
               </div>
             </section>
+
+            {/* Navigation Buttons */}
+            <div className="absolute bottom-0 right-0 p-2 flex justify-end space-x-4">
+              <button
+                onClick={() => setActiveTab("PROFILE PIC")}
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition"
+              >
+                ← Back
+              </button>
+              <button
+                onClick={() => setActiveTab("EXPERIENCE")}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              >
+                Next →
+              </button>
+            </div>
           </div>
         )}
 
         {activeTab === "EDUCATION" && <Education />}
-        {activeTab === "EXPERIENCE" && <Experience />}
-        {activeTab === "LINKS" && <Links />}
+        {activeTab === "EXPERIENCE" && <Experience setActiveTab={setActiveTab}  />}
+        {activeTab === "LINKS" && <Links setActiveTab={setActiveTab} />}
         {activeTab === "CONTACT" && <Contact />}
       </main>
     </div>

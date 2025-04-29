@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Github, Linkedin, Link as LinkIcon } from "lucide-react";
+import { Github, Linkedin, Globe } from "lucide-react";
 
-const Links = () => {
+const Links = ({setActiveTab}) => {
   const [links, setLinks] = useState(["", "", ""]);
 
   const handleLinkChange = (index, value) => {
@@ -16,10 +16,15 @@ const Links = () => {
     }
   };
 
+  const handleSave = () => {
+    console.log("Saved links:", links);
+   
+  };
+
   const icons = [
-    <Github key="github" className="w-5 h-5 text-gray-800 mr-2" />,
+    <Github key="github" className="w-5 h-5 text-blue-800 mr-2" />,
     <Linkedin key="linkedin" className="w-5 h-5 text-blue-600 mr-2" />,
-    <LinkIcon key="link" className="w-5 h-5 text-green-600 mr-2" />,
+    <Globe key="link" className="w-5 h-5 text-blue-600 mr-2" />,
   ];
 
   const placeholders = [
@@ -39,7 +44,8 @@ const Links = () => {
       {links.map((link, index) => (
         <div key={index} className="flex items-center mb-3">
           {icons[index] || (
-            <LinkIcon className="w-5 h-5 text-green-600 mr-2" />
+            <Globe className="w-5 h-5 text-blue-600 mr-2" />
+            
           )}
           <input
             type="url"
@@ -64,6 +70,24 @@ const Links = () => {
       >
         + Add Social Link
       </button>
+
+        {/* Navigation Buttons */}
+        <div className="bottom-0 ">
+        <div className="absolute  right-4 p-2 flex justify-end space-x-4">
+        <button
+          onClick={() => setActiveTab("EXPERIENCE")}
+          className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition"
+        >
+          ← Back
+        </button>
+        <button
+          onClick={handleSave}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+        >
+          Save
+        </button>
+      </div>
+      </div>
     </div>
   );
 };
