@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { EllipsisVertical, UserPlus } from "lucide-react";
+import { EllipsisVertical, UserPlus, Trash2  } from "lucide-react";
 import {
   BookmarkIcon as OutlineBookmark,
   BookmarkIcon as SolidBookmark,
@@ -87,8 +87,13 @@ const ProjectCard = ({
                   </>
                 )}
               </button>
+              <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+              < Trash2 color="gray" size={18} />
+               <p>Delete</p>
+              </button>
             </div>
           )}
+          
         </div>
       </div>
 
