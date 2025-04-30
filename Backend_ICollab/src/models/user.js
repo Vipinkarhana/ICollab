@@ -16,9 +16,6 @@ let userschma = mongoose.Schema(
       unique: true,
       match: /.+\@.+\..+/,
     },
-    designation: {
-      type: String,
-    },
     password: {
       type: String,
       required: true,

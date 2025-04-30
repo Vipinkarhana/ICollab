@@ -25,72 +25,44 @@ const profile = async (req, res, next) => {
   }
 };
 
-const changeUserInfo = async (req, res, next) => {
-  try {
-    const username = req.user.username;
-    let user = await userModel.findOne({ username: username });
-    const { name, designation } = req.body;
-    user = await userModel
-      .findByIdAndUpdate(
-        user._id,
-        { $set: { name: name, designation: designation } },
-        { new: true, lean: true }
-      )
-      .populate('profile');
+const updateProfile = async (req, res, next) => {
+  const { firstName, lastName, password, about, designation, skills, links } = req.body;
+  console.log(req.body);
+  const name = `${firstName} ${lastName}`;
+  const newProfileData = { about, designation, skills, links };
+  console.log(req.user);
+  const username = req.user.username;
+  try{
+    const user = await userModel.findOneAndUpdate(
+      { username: username },
+      { $set: {
+        name: name,
+        password: password
+      } },
+      { new: true }
+    )
+    console.log(user);
+    const profile = await profileModel.findOneAndUpdate(
+      { _id: user?.profile },
+      { $set: { 
+        about: about,
+        designation: designation,
+        skills: skills,
+        links: links
+      } },
+      { new: true }
+    )
+    console.log(profile)
 
     res.status(200).json({
-      message: 'Successfully updated User Info',
-      status: 'success',
-      data: user,
-    });
-  } catch (err) {
+      message: "User Profile Updated",
+      status: 'success'
+    })
+  }
+  catch(err){
     next(err);
   }
-};
-
-const changeAbout = async (req, res, next) => {
-  try {
-    const username = req.user.username;
-    const user = await userModel
-      .findOne({ username: username })
-      .populate('profile');
-    const { about } = req.body;
-    await profileModel.findByIdAndUpdate(user.profile._id, {
-      $set: { about: about },
-    });
-
-    await user.populate('profile');
-    res.status(200).json({
-      message: 'Successfully updated About',
-      status: 'success',
-      data: user,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-const changeExperience = async (req, res, next) => {
-  try {
-    const username = req.user.username;
-    const user = await userModel.findOne({ username: username });
-    const { company, startDate, endDate, role, desc } = req.body;
-    await profileModel.findByIdAndUpdate(user.profile._id, {
-      $set: {
-        experience: {
-          company: company,
-          startDate: startDate,
-          endDate: endDate,
-          role: role,
-          desc: desc,
-        },
-      },
-    });
-    res.status(200).json({ message: 'Successfully updated Experience' });
-  } catch (err) {
-    next(err);
-  }
-};
+}
 
 const userprofile = async (req, res, next) => {
   try {
@@ -114,8 +86,6 @@ const userprofile = async (req, res, next) => {
 
 module.exports = {
   profile,
-  changeUserInfo,
-  changeAbout,
-  changeExperience,
   userprofile,
+  updateProfile
 };

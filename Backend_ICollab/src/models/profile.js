@@ -3,8 +3,16 @@ const mongoose = require('mongoose');
 const profileSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'user',
     required: true
+  },
+
+  about: {
+    type: String
+  },
+  
+  designation: {
+    type: String,
   },
 
   address: {
@@ -21,6 +29,10 @@ const profileSchema = new mongoose.Schema({
   skills: {
     type: [String],
     validate: [arrayLimit, '{PATH} exceeds the limit of 5']
+  },
+
+  links: {
+    type: [String]
   },
 
   stats: {
