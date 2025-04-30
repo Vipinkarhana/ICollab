@@ -5,8 +5,8 @@ import CollabButton from "../../Common/CollabButton";
 import PageNavbar from "../../Common/PageNavbar/PageNavbar";
 import PhonePageNavbar from "../../Common/PageNavbar/PhonePageNavbar";
 
-function Intro({ activeTab, setActiveTab }) {
-  const tabs = ["Intro", "Projects", "Saved", "Posts"];
+function Intro({ activeTab, setActiveTab,user }) {
+  const tabs = ["Intro", "Projects", "Posts"];
   const skills = ["JavaScript", "React", "Node.js", "CSS", "Python"];
 
   return (
@@ -34,14 +34,14 @@ function Intro({ activeTab, setActiveTab }) {
             {/* Name, Username, Collab */}
             <div className="flex flex-col justify-center items-center w-full sm:items-start gap-2">
               <div className="flex w-full flex-col justify-center items-center sm:flex-row flex-wrap sm:justify-start sm:items-baseline  gap-2">
-                <p className="text-3xl md:text-3xl font-bold tracking-tight">Tanmay Sharma</p>
+                <p className="text-3xl md:text-3xl font-bold tracking-tight">{user?.name}</p>
                 <p className="text-gray-600 font-normal tracking-tight underline text-lg">
-                  Frontend Developer
+                  {user?.profile?.designation}
                 </p>
               </div>
               <div className="flex flex-wrap justify-start items-baseline gap-2">
                 <p className="text-base md:text-xl text-gray-800 font-thin tracking-tight">
-                  @Tanmaysharma36
+                  {user?.username}
                 </p>
                 <div className="hidden sm:flex justify-center items-center gap-2">
                   <CollabButton />
@@ -52,30 +52,30 @@ function Intro({ activeTab, setActiveTab }) {
 
             {/* Social Icons + Edit Profile */}
             <div className="w-full md:w-[45%] flex flex-wrap md:flex-nowrap justify-center sm:justify-start md:justify-evenly items-center gap-2">
-              <a
+              {/* <a
                 href="https://github.com/yourusername"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-blue-100 rounded-full p-3 sm:p-2 border-2 border-white hover:border-blue-600"
               >
                 <Github size={24} color="blue" strokeWidth={1.8} />
-              </a>
-              <a
+              </a> */}
+              {/* <a
                 href="https://linkedin.com/in/yourusername"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-blue-100 rounded-full p-3 sm:p-2 border-2 border-white hover:border-blue-600"
               >
                 <Linkedin size={24} color="blue" strokeWidth={1.8} />
-              </a>
-              <a
+              </a> */}
+              {/* <a
                 href="https://yourwebsite.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-blue-100 rounded-full p-3 sm:p-2 border-2 border-white hover:border-blue-600"
               >
                 <Globe size={24} color="blue" strokeWidth={1.8} />
-              </a>
+              </a> */}
               <Link
                 to="/profile/edit"
                 className="border border-gray-300 rounded-md px-3 py-2 text-purple-700 hover:bg-gray-100 transition text-sm md:text-lg font-semibold hidden  sm:flex justify-evenly items-center gap-2"
@@ -90,7 +90,7 @@ function Intro({ activeTab, setActiveTab }) {
           <div className="flex flex-col gap-3">
             {/* Skills */}
             <div className="flex flex-wrap justify-center items-center sm:justify-start sm:items-start gap-2">
-              {skills.map((skill, index) => (
+              {user?.profile?.skills.map((skill, index) => (
                 <button
                   key={index}
                   className="border border-purple-300 rounded-md px-6 md:px-8 py-1 md:py-2 hover:bg-purple-200 transition-colors text-md md:text-lg"
@@ -101,9 +101,9 @@ function Intro({ activeTab, setActiveTab }) {
             </div>
             {/* Location */}
             <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-center w-full md:w-[70%] sm:opacity-75 gap-2">
-              <p className="text-gray-600 font-normal tracking-tight text-base md:text-xl flex gap-2">
+              {/* <p className="text-gray-600 font-normal tracking-tight text-base md:text-xl flex gap-2">
                 <MapPin size={24} /> Delhi, India
-              </p>
+              </p> */}
               <div className="flex sm:hidden justify-center items-center gap-2">
                 <CollabButton />
               </div>

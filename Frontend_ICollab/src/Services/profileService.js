@@ -34,3 +34,14 @@ export const updateAbout = async (about) => {
         return error.response?.data || { error: "Post creation failed" };
     }
 };
+
+export const getUserProfile = async (username) => {
+    try {
+      const response = await privateAxios.get(`/profile/${username}`);
+      console.log("API response in service:", response.data);
+      // Backend responds with: { message, status, data: user }
+      return response.data.data; // This is the full user object with populated profile and projects
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch user profile');
+    }
+  };

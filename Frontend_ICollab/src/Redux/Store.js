@@ -5,6 +5,7 @@ import indexedDBStorageAdapter from "./IndexedDBStorageAdapter";
 import userReducer from "./Slices/UserSlice";
 import postReducer from "./Slices/PostSlice";
 import projectReducer from "./Slices/ProjectSlice";
+import userProfileReducer from "./Slices/UserProfileSlice"
 
 const userPersistConfig = {
   key: "user",
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
   post: persistReducer(postPersistConfig, postReducer),
   project: persistReducer(projectPersistConfig, projectReducer),
+  userProfile: userProfileReducer,
 });
 
 

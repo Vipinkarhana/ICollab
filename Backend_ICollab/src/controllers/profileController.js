@@ -1,7 +1,10 @@
 const ApiError = require('../utils/ApiError');
 const userModel = require('../models/user');
-const profileModel = require('../models/profile');
-const { late } = require('zod');
+const postModel = require('../models/post');
+const projectModel = require('../models/project');
+const SavedItem = require('../models/savedItem');
+const userConnections = require('../models/connections');
+const profileModel = require('../models/profile'); // Make sure this path is correct
 
 const profile = async (req, res, next) => {
   try {
@@ -27,57 +30,87 @@ const profile = async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
   const { firstName, lastName, password, about, designation, skills, links } = req.body;
-  console.log(req.body);
   const name = `${firstName} ${lastName}`;
-  const newProfileData = { about, designation, skills, links };
-  console.log(req.user);
-  const username = req.user.username;
-  try{
+  try {
+    const username = req.user.username;
     const user = await userModel.findOneAndUpdate(
       { username: username },
-      { $set: {
-        name: name,
-        password: password
-      } },
+      {
+        $set: {
+          name: name,
+          password: password,
+        },
+      },
       { new: true }
-    )
-    console.log(user);
+    );
     const profile = await profileModel.findOneAndUpdate(
       { _id: user?.profile },
-      { $set: { 
-        about: about,
-        designation: designation,
-        skills: skills,
-        links: links
-      } },
+      {
+        $set: {
+          about: about,
+          designation: designation,
+          skills: skills,
+          links: links,
+        },
+      },
       { new: true }
-    )
-    console.log(profile)
+    );
 
     res.status(200).json({
-      message: "User Profile Updated",
-      status: 'success'
-    })
-  }
-  catch(err){
+      message: 'User Profile Updated',
+      status: 'success',
+    });
+  } catch (err) {
     next(err);
   }
-}
+};
 
-const userprofile = async (req, res, next) => {
+const userProfile = async (req, res, next) => {
   try {
     const username = req.params.username;
+
     const user = await userModel
-      .findOne({ username: username })
+      .findOne({ username })
       .populate('profile')
-      .populate({ path: 'posts', populate: { path: 'user' } });
+      .populate({
+        path: 'profile.topProjects',
+        model: 'project',
+      });
+
     if (!user || !user.profile) {
       throw new ApiError(404, 'User profile not found');
     }
+
+    const postCount = await postModel.countDocuments({ user: user._id });
+    const projectCount = await projectModel.countDocuments({ user: user._id });
+
+    const userProjects = await projectModel.find({ user: user._id });
+
+    let collaboratorsSet = new Set();
+    userProjects.forEach((project) => {
+      project.collaborator?.forEach((collab) => {
+        collaboratorsSet.add(collab);
+      });
+    });
+    const collaboratorCount = collaboratorsSet.size;
+
+    const saved = await SavedItem.findOne({ user: user._id });
+    const savedPostsCount = saved?.savedPosts?.length || 0;
+    const savedProjectsCount = saved?.savedProjects?.length || 0;
+    const savedItemsCount = savedPostsCount + savedProjectsCount;
+
     res.status(200).json({
-      message: 'User profile fetched',
+      message: 'User profile fetched successfully',
       status: 'success',
-      data: user,
+      data: {
+        user,
+        stats: {
+          posts: postCount,
+          projects: projectCount,
+          collaborators: collaboratorCount,
+          saved: savedItemsCount,
+        },
+      },
     });
   } catch (err) {
     next(err);
@@ -86,6 +119,6 @@ const userprofile = async (req, res, next) => {
 
 module.exports = {
   profile,
-  userprofile,
-  updateProfile
+  userProfile,
+  updateProfile,
 };
