@@ -1,5 +1,15 @@
 import privateAxios from "./apiService";
-import axios from "axios";
+
+export const updateProfile = async (formData) => {
+    try {
+        const response = await privateAxios.post("/profile/updateprofile", formData);
+
+        return response.data;
+    } catch (error) {
+        return error.response?.data || { error: "Post creation failed" };
+    }
+}
+
 
 export const updateInfo = async ({name,designation,profile}) => {
     try {

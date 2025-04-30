@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import WorkExperienceForm from "./WorkExperienceForm";
+import React, { useState, useEffect } from "react";
 
 const roles = [
   "Designer",
@@ -10,24 +9,35 @@ const roles = [
 ];
 
 const suggestedSkills = [
-  "+ Python",
-  "+ React.js",
-  "+ Node.js",
-  "+ Rust",
-  "+ Shell",
-  "+ JavaScript",
-  "+ Go",
-  "+ Kotlin",
-  "+ Solidity",
-  "+ TypeScript",
+  "Python",
+  "React.js",
+  "Node.js",
+  "Rust",
+  "Shell",
+  "JavaScript",
+  "Go",
+  "Kotlin",
+  "Solidity",
+  "TypeScript",
 ];
 
-const Experience = ({setActiveTab}) => {
-  const [selectedRole, setSelectedRole] = useState("");
+const Experience = ({ setActiveTab, formData, updateField }) => {
+  const [selectedRole, setSelectedRole] = useState(formData?.designation || "");
   const [customRole, setCustomRole] = useState("");
-  const [skills, setSkills] = useState(["", "", "", "", ""]);
+  const [skills, setSkills] = useState(formData?.skills?.length ? formData.skills : ["", "", "", "", ""]);
   const [resumeFile, setResumeFile] = useState(null);
   const [error, setError] = useState("");
+
+  // Sync designation to parent
+  useEffect(() => {
+    const finalRole = selectedRole === "Other" ? customRole : selectedRole;
+    updateField("designation", finalRole);
+  }, [selectedRole, customRole]);
+
+  // Sync skills to parent
+  useEffect(() => {
+    updateField("skills", skills.filter(skill => skill.trim() !== ""));
+  }, [skills]);
 
   const handleSkillChange = (index, value) => {
     const updatedSkills = [...skills];
@@ -69,17 +79,13 @@ const Experience = ({setActiveTab}) => {
       {/* Role Selection Card */}
       <div className="bg-white p-6 rounded-lg shadow h-auto">
         <h2 className="text-2xl font-semibold mb-4">Designation</h2>
-        <p className="text-lg text-gray-700 mb-4">
-          Which of the following describes you best?
-        </p>
+        <p className="text-lg text-gray-700 mb-4">Which of the following describes you best?</p>
         <div className="space-y-3">
           {roles.map((role) => (
             <label
               key={role}
               className={`flex items-center p-3 border rounded-md cursor-pointer transition ${
-                selectedRole === role
-                  ? "bg-blue-100 border-blue-500"
-                  : "border-gray-300"
+                selectedRole === role ? "bg-blue-100 border-blue-500" : "border-gray-300"
               }`}
             >
               <input
@@ -89,7 +95,7 @@ const Experience = ({setActiveTab}) => {
                 checked={selectedRole === role}
                 onChange={() => {
                   setSelectedRole(role);
-                  setCustomRole(""); // Reset custom role
+                  setCustomRole("");
                 }}
                 className="mr-3"
               />
@@ -100,9 +106,7 @@ const Experience = ({setActiveTab}) => {
           {/* Other option */}
           <label
             className={`flex items-center p-3 border rounded-md cursor-pointer transition ${
-              selectedRole === "Other"
-                ? "bg-blue-100 border-blue-500"
-                : "border-gray-300"
+              selectedRole === "Other" ? "bg-blue-100 border-blue-500" : "border-gray-300"
             }`}
           >
             <input
@@ -116,7 +120,6 @@ const Experience = ({setActiveTab}) => {
             Other
           </label>
 
-          {/* Custom input for Other role */}
           {selectedRole === "Other" && (
             <input
               type="text"
@@ -164,7 +167,7 @@ const Experience = ({setActiveTab}) => {
                     }}
                     className="cursor-pointer text-sm bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
                   >
-                    {skill}
+                    + {skill}
                   </span>
                 );
               })}
@@ -172,7 +175,6 @@ const Experience = ({setActiveTab}) => {
           </div>
         </div>
       </div>
-    
 
       {/* Resume Upload Section */}
       {/* <div className="bg-white p-6 rounded-lg shadow sm:h-[55svh] h-[75svh] md:col-span-2">

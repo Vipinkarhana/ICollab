@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Github, Linkedin, Globe } from "lucide-react";
 
-const Links = ({setActiveTab}) => {
-  const [links, setLinks] = useState(["", "", ""]);
+const Links = ({ setActiveTab, formData, updateField, handleSave }) => {
+  const [links, setLinks] = useState(formData?.links || ["", "", ""]);
+
+  useEffect(() => {
+    updateField("links", links);
+  }, [links]);
 
   const handleLinkChange = (index, value) => {
     const updatedLinks = [...links];
@@ -14,11 +18,6 @@ const Links = ({setActiveTab}) => {
     if (links.length < 5) {
       setLinks([...links, ""]);
     }
-  };
-
-  const handleSave = () => {
-    console.log("Saved links:", links);
-   
   };
 
   const icons = [
@@ -43,10 +42,7 @@ const Links = ({setActiveTab}) => {
 
       {links.map((link, index) => (
         <div key={index} className="flex items-center mb-3">
-          {icons[index] || (
-            <Globe className="w-5 h-5 text-blue-600 mr-2" />
-            
-          )}
+          {icons[index] || <Globe className="w-5 h-5 text-blue-600 mr-2" />}
           <input
             type="url"
             value={link}
@@ -59,10 +55,10 @@ const Links = ({setActiveTab}) => {
 
       <button
         onClick={addNewProfile}
-        disabled={links.length >= 3}
+        disabled={links.length >= 5}
         className={`mt-4 px-4 py-2 rounded-md text-xl w-full sm:w-[60%] transition 
           ${
-            links.length >= 3
+            links.length >= 5
               ? "bg-gray-300 text-gray-600 cursor-not-allowed"
               : "bg-teal-200 text-black hover:bg-teal-300"
           }
@@ -71,9 +67,8 @@ const Links = ({setActiveTab}) => {
         + Add Social Link
       </button>
 
-        {/* Navigation Buttons */}
-        <div className="bottom-0 ">
-        <div className="absolute  right-4 p-2 flex justify-end space-x-4">
+      {/* Navigation Buttons */}
+      <div className="absolute right-4 p-2 flex justify-end space-x-4 bottom-0">
         <button
           onClick={() => setActiveTab("EXPERIENCE")}
           className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition"
@@ -81,12 +76,11 @@ const Links = ({setActiveTab}) => {
           ← Back
         </button>
         <button
-          onClick={handleSave}
+          onClick={() => handleSave()}
           className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
         >
           Save
         </button>
-      </div>
       </div>
     </div>
   );
