@@ -12,9 +12,9 @@ function UserProjects() {
   
   const projects = userProjects || [];
   
-  useEffect(() => {
-    dispatch(fetchUserProjectsData());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchUserProjectsData(username));
+  // }, [dispatch]);
 
   if (loading) return <div className="text-center">Loading...</div>;
 
@@ -23,7 +23,7 @@ function UserProjects() {
   if (projects.length === 0) {
     return (
       <div className="w-full text-center text-gray-500 py-10 text-xl">
-        No saved projects yet.
+        No  projects yet.
       </div>
     );
   }

@@ -9,7 +9,8 @@ import ProjectDisplay from "./ProjectDisplay";
 import { useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../../../Redux/Slices/UserProfileSlice";
-
+import { fetchMyPosts } from "../../../Redux/Slices/PostSlice";
+import { fetchUserProjectsData } from "../../../Redux/Slices/ProjectSlice";
 function ProfilePage() {
   const dispatch = useDispatch();
   const { username } = useParams();
@@ -18,11 +19,17 @@ function ProfilePage() {
   const [activeTab, setActiveTab] = useState(from === "projects" ? "Projects" : "Intro");
 
   const { data: user, loading, error } = useSelector((state) => state?.userProfile);
+  // const posts = useSelector((state) => state.post.otherUserPosts);
+
   console.log(user);
 
   useEffect(() => {
     if (username) {
       dispatch(fetchUserProfile(username));
+      dispatch(fetchMyPosts(username));
+      dispatch(fetchUserProjectsData(username));
+
+
     }
   }, [dispatch, username]);
 

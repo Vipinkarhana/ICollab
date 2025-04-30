@@ -44,7 +44,8 @@ const addpost = async (req, res, next) => {
 
 const getMyPost = async (req, res, next) => {
   try {
-    const username = req.user.username;
+    const username = req.params.username; // <-- use username from URL
+
     const user = await userModel.findOne({ username }).populate({
       path: 'posts',
       populate: {
@@ -66,6 +67,7 @@ const getMyPost = async (req, res, next) => {
     next(err);
   }
 };
+
 
 const addPostMedia = async (req, res, next) => {
   const { postid, media } = req.body;

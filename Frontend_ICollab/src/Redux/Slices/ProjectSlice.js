@@ -3,15 +3,16 @@ import { fetchUserProjects } from '../../Services/projectService';
 
 export const fetchUserProjectsData = createAsyncThunk(
   'projects/fetchUserProjects',
-  async (_, { rejectWithValue }) => {
+  async (username, { rejectWithValue }) => {
     try {
-      const data = await fetchUserProjects(); 
+      const data = await fetchUserProjects(username); 
       return data.data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
 
 const initialState = {
   userProjects: [], 

@@ -314,20 +314,32 @@ const finishedFeed = async (req, res, next) => {
 
 
 const fetchUserProjects = async (req, res, next) => {
-  try {
-    const userId = req.user.id;
-
-    const projects = await projectModel.find({ user: userId }).populate('user', 'username name profile_pic');
-
-    res.status(200).json({
-      message: 'User projects fetched successfully',
-      status: 'success',
-      data: projects,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+    try {
+      const { username } = req.params;
+  
+      const user = await userModel.findOne({ username });
+  
+      if (!user) {
+        return res.status(404).json({
+          message: 'User not found',
+          status: 'fail',
+        });
+      }
+  
+      const projects = await projectModel
+        .find({ user: user._id })
+        .populate('user', 'username name profile_pic');
+  
+      res.status(200).json({
+        message: 'User projects fetched successfully',
+        status: 'success',
+        data: projects,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+  
 
 
 module.exports = {

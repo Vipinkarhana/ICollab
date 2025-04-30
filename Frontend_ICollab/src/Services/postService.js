@@ -85,14 +85,16 @@ export const deletePost = async (postid) => {
     }
 }
 
-export const getMyPost = async () => {
+export const getMyPost = async (username) => {
     try {
-        const response = await privateAxios.get("/posts/mypost");
-        return response.data;
+      const response = await privateAxios.get(`/posts/mypost/${username}`);
+      return response.data;
     } catch (error) {
-        return error.response?.data || { error: "Failed to fetch feed" };
+      return error.response?.data || { error: "Failed to fetch posts" };
     }
-}
+  };
+  
+
 
 export const getFeed = async (timestamp) => {
     try {

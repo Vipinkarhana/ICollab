@@ -15,7 +15,7 @@ const { validatePost } = require('../middlewares/validation');
 const { isloggedin } = require('../middlewares/auth');
 
 router.post('/', isloggedin, addpost);
-router.get('/mypost', isloggedin, getMyPost);
+router.get('/mypost/:username', getMyPost);
 router.post('/addmedia', isloggedin, addPostMedia);
 router.post('/likeandunlikepost', isloggedin, likeAndUnlikepost);
 router.get('/feed', isloggedin, feed);

@@ -104,9 +104,9 @@ export const fetchFeed = createAsyncThunk(
 
 export const fetchMyPosts = createAsyncThunk(
   "post/fetchMyPosts",
-  async (_, { rejectWithValue }) => {
+  async (username, { rejectWithValue }) => {
     try {
-      const response = await getMyPost();
+      const response = await getMyPost(username);
       if (response.status === "success") {
         return response.data;
       } else {
@@ -117,6 +117,9 @@ export const fetchMyPosts = createAsyncThunk(
     }
   }
 );
+
+
+
 
 export const saveOrUnsavePost = createAsyncThunk(
   "post/saveOrUnsavePost",

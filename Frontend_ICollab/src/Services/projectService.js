@@ -28,17 +28,12 @@ catch (err) {
 }
   };
 
-export const fetchUserProjects = async () => {
+  export const fetchUserProjects = async (username) => {
     try {
-      const response = await privateAxios.get('/project/myprojects', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, 
-        },
-      });
-  
+      const response = await privateAxios.get(`/project/userprojects/${username}`);
       return response.data;
-      console.log(response);
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Error fetching user projects');
     }
   };
+  
