@@ -7,15 +7,42 @@ import {
 } from "@heroicons/react/24/solid";
 
 const ProjectCard = ({
-  title = "Project Title",
-  type = "Project Type",
-  status = "Status",
-  field = "Field",
-  collaborators = 0,
-  startDate = "DD/MM/YY",
-  endDate = "DD/MM/YY",
-  avatarSeeds = [],
+  project
 }) => {
+console.log("Project: ",project);
+
+  // Derived values
+  const status = project.isOngoing ? 'Ongoing Project' : 'Finished Project';
+  const avatarSeeds = project.collaborator.map(c => c.username || 'user');
+  const collaborators = project.collaborator.length;
+
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'N/A';
+      return date.toLocaleDateString('en-GB', {
+        year: '2-digit',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    } catch {
+      return 'N/A';
+    }
+  };
+
+  const startDate = formatDate(project.startDate);
+  const updatedDate = formatDate(project.updatedAt);
+  const endDate = formatDate(project.endDate);
+
+  // Rest of your existing component JSX remains the same
+  // Just update the date display part:
+  {status === 'Ongoing Project' ? (
+    <span className="text-gray-700">Last updated: {project.updatedAt}</span>
+  ) : (
+    <span className="text-gray-700">Ended: {project.endDate}</span>
+  )}
+
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
 
@@ -50,10 +77,11 @@ const ProjectCard = ({
       <div className="flex justify-between items-start mb-4">
         <div>
           <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 leading-snug">
-            {title}
+            {/* {title} */}
+            {project.name}
           </h2>
           <p className="text-sm sm:text-base text-gray-500 tracking-wide mt-1">
-            {type}
+            {project.type}
           </p>
         </div>
 
@@ -134,11 +162,16 @@ const ProjectCard = ({
       {/* Field, Dates & View Button */}
       <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-sm sm:text-base text-gray-800 font-medium">
         <button className="uppercase px-3 py-1 bg-blue-200 hover:bg-blue-400 rounded-md text-xs sm:text-lg">
-          {field}
+          {project.category}
+          {/* {Array.isArray(project.category) ? field.join(', ') : field} */}
         </button>
-        <span className="text-gray-700">Starts: {startDate}</span>
-        <span className="text-gray-700">Ends: {endDate}</span>
-        <Link to="/projectpreview" className="ml-auto">
+        <span className="text-gray-700">Started on: {startDate}</span>
+        {status === 'Ongoing Project' ? (
+    <span className="text-gray-700">Last updated on: {updatedDate}</span>
+  ) : (
+    <span className="text-gray-700">Ended: {endDate}</span>
+  )}
+        <Link to={`/project/${project._id || project.id}`} className="ml-auto" onClick={() => {(()=>{window.scrollTo({top:0, behavior:"smooth"})})}}>
           <button className="px-4 py-1.5 bg-blue-600 text-white text-xs sm:text-sm rounded-md hover:bg-blue-700 transition">
             View
           </button>

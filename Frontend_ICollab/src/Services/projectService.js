@@ -36,4 +36,45 @@ catch (err) {
       throw new Error(error.response?.data?.message || 'Error fetching user projects');
     }
   };
-  
+
+
+  // projectService.js
+export const getProjectFeed = async () => {
+  try {
+    const response = await privateAxios.get('/project/projectfeed');
+    return response.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getOngoingProjects = async (timestamp) => {
+  try {
+    const response = await privateAxios.get('/project/ongoingfeed', { 
+      params: { timestamp } 
+    });
+    return response.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getFinishedProjects = async (timestamp) => {
+  try {
+    const response = await privateAxios.get('/project/finishedfeed', { 
+      params: { timestamp } 
+    });
+    return response.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getProjectDetails = async (projectId) => {
+  try{
+    console.log("projectId in project service: ", projectId);
+  return await privateAxios.get(`/project/${projectId}`);
+  } catch(err){
+    next(err);
+  }
+};
