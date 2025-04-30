@@ -69,9 +69,9 @@ function App() {
               <Route path="/message" element={<MessagePage />} />
               <Route path="/notification" element={<NotificationPage />} />
               <Route path="/incubators" element={<IncubatorsPage />} />
-              <Route path="/projectpreview" element={<ProjectPreviewPage />} />
               <Route path="/project" element={<ProjectPage />} />
               <Route path="/project/create" element={<ProjectForm />} />
+              <Route path="/project/:id" element={<ProjectPreviewPage />} />
             </Route>
 
             {/* Public routes */}

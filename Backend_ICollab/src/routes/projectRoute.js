@@ -19,11 +19,10 @@ router.post('/addproject', isloggedin, upload.fields([{name: 'logo', maxCount: 1
 router.get('/technologysuggestions', isloggedin, technologySuggestions);
 router.get('/categorysuggestions', isloggedin, categorySuggestions);
 router.get('/collaboratorsuggestions', isloggedin, collaboratorSuggestions);
-router.get('/project', isloggedin, project);
 router.get('/projectfeed', isloggedin, projectFeed);
 router.get('/ongoingfeed', isloggedin, ongoingFeed);
 router.get('/finishedfeed', isloggedin, finishedFeed);
 router.get('/userprojects/:username', fetchUserProjects);
-
+router.get('/:projectId', isloggedin, project);
 
 module.exports = router;

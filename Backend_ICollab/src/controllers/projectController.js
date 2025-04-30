@@ -4,6 +4,7 @@ const projectModel = require('../models/project');
 const allowedTechnologies = require('../../config/technologies.json');
 const allowedCategories = require('../../config/category.json');
 const { uploadToR2, deleteFromR2 } = require('../../config/s3');
+const config = require('../../config/config');
 
 const addProject = async (req, res, next) => {
        let newProject;
@@ -190,15 +191,61 @@ const collaboratorSuggestions = async (req, res, next) => {
 
 const project = async (req, res, next) => {
   try {
-    const {projectId} = req.body;
-    const project = await projectModel.findOne({_id: projectId}).populate('user');
+    console.log("Backend hit by frontend");
+    const {projectId} = req.params;
+    console.log("projectId: ",projectId);
+    const project = await projectModel.findOne({_id: projectId})
+      .populate('user', 'username email profile_pic');;
     if (!project) {
           throw new ApiError(404, 'Project not found');
         }
+
+        let collaborators;
+        if (project.collaborator.length > 0 && typeof project.collaborator[0] === 'string') {
+
+
+
+            // Clean legacy collaborator strings
+      const cleanedCollaborators = project.collaborator.map(c => 
+        c.replace(/[^a-zA-Z0-9@._-]/g, '') // Remove special characters
+      );
+
+
+          // Legacy string-based collaborators (username/email)
+          const collaboratorRegex = cleanedCollaborators.map(c => 
+            new RegExp(`^${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
+          );
+    
+          collaborators = await userModel.find({
+            $or: [
+              { username: { $in: collaboratorRegex } },
+              { email: { $in: collaboratorRegex } }
+            ]
+          });
+        } else {
+          // ObjectId-based collaborators
+          collaborators = await userModel.find({
+            _id: { $in: project.collaborator }
+          }).select('username email profile_pic');
+        }
+
+
+        const generateR2Url = (key) => {
+            if (!key) return null;
+            const url = `${config.S3_PUBLIC_URL}/${key}`;
+            console.log(`Generated URL for ${key}: ${url}`);
+            return url;
+          };
+        const formattedProject = {
+            ...project.toObject(),
+            collaborator: collaborators,
+            logo: generateR2Url(project.logo),
+            media: project.media.map(generateR2Url)
+          };
     res.status(200).json({
       message: 'Project fetched',
       status: 'success',
-      data: project,
+      data: formattedProject,
     });
   } catch (err) {
     next(err);
@@ -223,6 +270,8 @@ const projectFeed = async (req, res, next) => {
                             collaborator: 1,
                             category: 1,
                             startDate: 1,
+                            createdAt: 1,
+                            updatedAt: 1,
                         }},
                     ],
                     finished: [
@@ -230,14 +279,15 @@ const projectFeed = async (req, res, next) => {
                         {$sort: {createdAt: -1}},
                         {$limit: 4},
                         {$project: {
-                            id: '_id',
+                            id: '$_id',
                             name: 1,
                             tagline: 1,
                             technology: 1,
                             collaborator: 1,
                             category: 1,
                             startDate: 1,
-                            endDate: 1
+                            endDate: 1,
+                            createdAt: 1,
                         }},
                     ]
                 }
@@ -272,7 +322,7 @@ const ongoingFeed = async (req, res, next) => {
         }
         const feed = await projectModel.find(
             {createdAt: { $lt: date }, isOngoing: true, },
-            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1}
+            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1,createdAt: 1,updatedAt: 1, isOngoing: 1}
         ).sort({createdAt: -1}).limit(10).lean();
 
         res.status(200).json({
@@ -299,7 +349,7 @@ const finishedFeed = async (req, res, next) => {
         }
         const feed = await projectModel.find(
             {createdAt: { $lt: date }, isOngoing: false, },
-            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1, endDate: 1}
+            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1, endDate: 1,createdAt: 1}
         ).sort({createdAt: -1}).limit(10).lean();
 
         res.status(200).json({

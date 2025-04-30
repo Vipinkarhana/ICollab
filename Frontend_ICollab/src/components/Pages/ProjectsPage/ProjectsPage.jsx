@@ -4,120 +4,137 @@ import SearchBar from "./SearchBar";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CreateProjectButton from "../../Common/CreateProjectButton";
+import * as projectService from "../../../Services/projectService";
 
 const ProjectsPage = () => {
   const currentUser = useSelector((state) => state.user.userData);
   const username = currentUser?.username;
 
-  const projectData = [
-    {
-      title: "LUFY - Law Understandable For You",
-      type: "AI Tool",
-      status: "Ongoing Project",
-      field: "Legal Tech",
-      collaborators: 356,
-      startDate: "21/04/25",
-      endDate: "12/09/25",
-      avatarSeeds: ["Sara", "Tom", "Riya"],
-      buttonText: "Join Now",
-    },
-    {
-      title: "GreenTech Innovators",
-      type: "Startup Challenge",
-      status: "Finished Project",
-      field: "Environmental",
-      collaborators: 98,
-      startDate: "05/02/25",
-      endDate: "12/09/25",
-      avatarSeeds: ["Alex", "Nina", "Dev"],
-      buttonText: "View Report",
-    },
-    {
-      title: "ByteCraft Hackathon",
-      type: "Hackathon",
-      status: "Upcoming Project",
-      field: "Open Source",
-      collaborators: 512,
-      startDate: "01/05/25",
-      endDate: "12/09/25",
-      avatarSeeds: ["Liam", "Emma", "Zed"],
-      buttonText: "Register",
-    },
-    {
-      title: "MedScan AI",
-      type: "AI Innovation",
-      status: "Ongoing Project",
-      field: "Healthcare",
-      collaborators: 274,
-      startDate: "18/04/25",
-      endDate: "12/09/25",
-      avatarSeeds: ["Ava", "John", "Sophia"],
-      buttonText: "Apply Now",
-    },
-    {
-      title: "Space & Beyond",
-      type: "Research Program",
-      status: "Finished Project",
-      field: "Astronomy",
-      collaborators: 78,
-      startDate: "11/03/25",
-      endDate: "12/09/25",
-      avatarSeeds: ["Neil", "Galileo", "Nova"],
-      buttonText: "Explore",
-    },
-  ];
+  // State for slider projects
+  const [sliderOngoing, setSliderOngoing] = useState([]);
+  const [sliderFinished, setSliderFinished] = useState([]);
 
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [ongoingCount, setOngoingCount] = useState(2); // Initial ongoing projects count
-  const [finishedCount, setFinishedCount] = useState(2); // Initial finished projects count
+  // State for ongoing projects
+  const [ongoingProjects, setOngoingProjects] = useState([]);
+  const [lastOngoingTS, setLastOngoingTS] = useState(Date.now());
+  const [hasMoreOngoing, setHasMoreOngoing] = useState(true);
+  const [loadingOngoing, setLoadingOngoing] = useState(false);
 
-  const cardsPerPage = 2;
-  const totalPages = 2; // fixed to only 2 dots as requested
+  // State for finished projects
+  const [finishedProjects, setFinishedProjects] = useState([]);
+  const [lastFinishedTS, setLastFinishedTS] = useState(Date.now());
+  const [hasMoreFinished, setHasMoreFinished] = useState(true);
+  const [loadingFinished, setLoadingFinished] = useState(false);
 
-  const ongoingProjects = projectData.filter(project => project.status === "Ongoing Project");
-  const finishedProjects = projectData.filter(project => project.status === "Finished Project");
 
-  const paginatedOngoingCards = ongoingProjects
-    .slice(0, ongoingCount)
-    .map((project, index) => (
-      <ProjectCard
-        key={index}
-        title={project.title}
-        type={project.type}
-        status={project.status}
-        field={project.field}
-        collaborators={project.collaborators}
-        startDate={project.startDate}
-        endDate={project.endDate}
-        avatarSeeds={project.avatarSeeds}
-        buttonText={project.buttonText}
-      />
-    ));
-
-  const paginatedFinishedCards = finishedProjects
-    .slice(0, finishedCount)
-    .map((project, index) => (
-      <ProjectCard
-        key={index}
-        title={project.title}
-        type={project.type}
-        status={project.status}
-        field={project.field}
-        collaborators={project.collaborators}
-        startDate={project.startDate}
-        endDate={project.endDate}
-        avatarSeeds={project.avatarSeeds}
-        buttonText={project.buttonText}
-      />
-    ));
-
+  // Fetch initial slider data
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prevIndex) => (prevIndex + 1) % totalPages);
-    }, 3000); // 3 seconds
-
-    return () => clearInterval(interval);
+    const fetchSliderData = async () => {
+      try {
+        const response = await projectService.getProjectFeed();
+        setSliderOngoing(response.data.data.ongoing);
+        setSliderFinished(response.data.data.finished);
+      } catch (error) {
+        console.error("Error fetching slider data:", error);
+      }
+    };
+    fetchSliderData();
   }, []);
+
+
+
+  // Fetch initial ongoing projects
+  useEffect(() => {
+    const fetchInitialOngoing = async () => {
+      try {
+        const response = await projectService.getOngoingProjects(Date.now());
+        setOngoingProjects(response.data);
+        updateOngoingPagination(response.data);
+      } catch (error) {
+        console.error("Error fetching ongoing projects:", error);
+      }
+    };
+    fetchInitialOngoing();
+  }, []);
+
+
+
+  // Fetch initial finished projects
+  useEffect(() => {
+    const fetchInitialFinished = async () => {
+      try {
+        const response = await projectService.getFinishedProjects(Date.now());
+        setFinishedProjects(response.data);
+        updateFinishedPagination(response.data);
+      } catch (error) {
+        console.error("Error fetching finished projects:", error);
+      }
+    };
+    fetchInitialFinished();
+  }, []);
+
+
+
+  const updateOngoingPagination = (newProjects) => {
+    if (newProjects.length > 0) {
+      const lastProject = newProjects[newProjects.length - 1];
+      setLastOngoingTS(new Date(lastProject.createdAt).getTime());
+      setHasMoreOngoing(newProjects.length === 10);
+    } else {
+      setHasMoreOngoing(false);
+    }
+  };
+
+
+
+
+  const updateFinishedPagination = (newProjects) => {
+    if (newProjects.length > 0) {
+      const lastProject = newProjects[newProjects.length - 1];
+      setLastFinishedTS(new Date(lastProject.createdAt).getTime());
+      setHasMoreFinished(newProjects.length === 10);
+    } else {
+      setHasMoreFinished(false);
+    }
+  };
+
+  const handleLoadMoreOngoing = async () => {
+    if (!hasMoreOngoing || loadingOngoing) return;
+    setLoadingOngoing(true);
+    try {
+      const response = await projectService.getOngoingProjects(lastOngoingTS);
+      setOngoingProjects(prev => [...prev, ...response.data]);
+      updateOngoingPagination(response.data);
+    } catch (error) {
+      console.error("Error loading more ongoing:", error);
+    } finally {
+      setLoadingOngoing(false);
+    }
+  };
+
+
+
+
+  const handleLoadMoreFinished = async () => {
+    if (!hasMoreFinished || loadingFinished) return;
+    setLoadingFinished(true);
+    try {
+      const response = await projectService.getFinishedProjects(lastFinishedTS);
+      setFinishedProjects(prev => [...prev, ...response.data]);
+      updateFinishedPagination(response.data);
+    } catch (error) {
+      console.error("Error loading more finished:", error);
+    } finally {
+      setLoadingFinished(false);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear().toString().slice(-2)}/${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}`;
+  };
 
   return (
     <div className="min-h-screen flex flex-col  items-center w-full py-6 bg-gray-100  mt-16">
@@ -150,75 +167,70 @@ const ProjectsPage = () => {
 
 
 
-        {/* Slider-like card display */}
-        <div className="mt-6 flex justify-center gap-6 flex-wrap">
-          {paginatedOngoingCards.map((card, idx) => (
-            <div key={idx} className="flex-shrink-0 w-full sm:w-[48%]">
-              {card}
+{/* Slider Section */}
+<div className="mt-6 flex justify-center gap-6 flex-wrap">
+          {sliderOngoing.map((project) => (
+            <div key={project._id} className="flex-shrink-0 w-full sm:w-[48%]">
+              <ProjectCard
+                project = {project}
+              />
             </div>
           ))}
         </div>
 
-        {/* Dot Navigation */}
-        <div className="mt-6 flex justify-center items-center gap-3">
-          {Array.from({ length: totalPages }).map((_, index) => (
-            <button
-              key={index}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                activeIndex === index ? "bg-blue-500" : "bg-gray-300"
-              }`}
-              onClick={() => setActiveIndex(index)}
-            ></button>
+         {/* Ongoing Projects Section */}
+         <div className="mt-6 flex items-center justify-between">
+          <p className="text-2xl text-gray-800">Ongoing</p>
+        </div>
+
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center">
+          {ongoingProjects.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project = {project}
+            />
           ))}
         </div>
 
-        {/* Ongoing Projects Section */}
-        <div className="mt-6 flex items-center justify-between">
-          <p className="sm:text-2xl text-3xl text-gray-800">Ongoing</p>
-          <button className="bg-blue-300 sm:w-40 h-14 text-white px-4 py-4 rounded-md hover:bg-blue-400 text-sm md:flex hidden">
-            All open projects <span>{">"}</span>
-          </button>
+        {hasMoreOngoing && (
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={handleLoadMoreOngoing}
+              disabled={loadingOngoing}
+              className="bg-blue-300 w-40 h-12 text-white rounded-md hover:bg-blue-400"
+            >
+              {loadingOngoing ? 'Loading...' : 'Load More >'}
+            </button>
+          </div>
+        )}
+
+ {/* Finished Projects Section */}
+ <div className="mt-6 flex items-center justify-between">
+          <p className="text-2xl text-gray-800">Finished</p>
         </div>
 
-        {/* Static Project Cards */}
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center">
-          {paginatedOngoingCards}
+          {finishedProjects.map((project) => (
+            <ProjectCard
+              key={project._id}
+              project = {project}
+            />
+          ))}
         </div>
 
-        {/* More Button in the middle of the cards */}
-        <div className="mt-6 flex justify-center items-center">
-          <button
-            onClick={() => setOngoingCount(ongoingCount + 2)} // Increase by 2 to load more cards
-            className="bg-blue-300 sm:w-40 w-[40%] h-14 text-white sm:px-4 sm:py-2 rounded-md hover:bg-blue-400 text-sm"
-          >
-           Load More <span>{">"}</span>
-          </button>
-        </div>
-
-        {/* Finished Projects Section */}
-        <div className="mt-6 flex items-center justify-between">
-          <p className="sm:text-2xl text-3xl text-gray-800">Finished</p>
-          <button className="bg-blue-300 sm:w-40 h-14 text-white px-4 py-4 rounded-md hover:bg-blue-400 text-sm  md:flex hidden">
-            All open projects <span>{">"}</span>
-          </button>
-        </div>
-
-        {/* Static Project Cards */}
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center">
-          {paginatedFinishedCards}
-        </div>
-
-        {/* More Button in the middle of the cards */}
-        <div className="mt-6 flex justify-center items-center">
-          <button
-            onClick={() => setFinishedCount(finishedCount + 2)} // Increase by 2 to load more cards
-            className="bg-blue-300 sm:w-40 w-[40%]  h-14 text-white sm:px-4 sm:py-2 rounded-md hover:bg-blue-400 text-sm"
-          >
-           Load More <span>{">"}</span>
-          </button>
-        </div>
+        {hasMoreFinished && (
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={handleLoadMoreFinished}
+              disabled={loadingFinished}
+              className="bg-blue-300 w-40 h-12 text-white rounded-md hover:bg-blue-400"
+            >
+              {loadingFinished ? 'Loading...' : 'Load More >'}
+            </button>
+          </div>
+        )}
       </div>
-      <CreateProjectButton/>
+      <CreateProjectButton />
     </div>
   );
 };
