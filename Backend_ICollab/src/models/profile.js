@@ -4,7 +4,7 @@ const profileSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    required: true
+    // required: true
   },
 
   about: {
@@ -18,11 +18,11 @@ const profileSchema = new mongoose.Schema({
   address: {
     state: {
       type: String,
-      required: true
+      // required: true
     },
     country: {
       type: String,
-      required: true
+      // required: true
     }
   },
 
