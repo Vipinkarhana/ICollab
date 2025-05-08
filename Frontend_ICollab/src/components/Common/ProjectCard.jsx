@@ -72,7 +72,7 @@ console.log("Project: ",project);
   }, [menuOpen]);
 
   return (
-    <div className="relative w-full sm:min-w-[34rem] sm:h-[20rem] bg-white p-5 sm:p-6 rounded-xl shadow-md flex flex-col justify-between font-sans border border-white hover:border-blue-500 transition-all duration-200">
+    <div className="relative w-full sm:min-w-[34rem] sm:h-[20rem] bg-white p-5 sm:p-6 rounded-xl shadow-md flex flex-col justify-between font-sans border border-white sm:hover:border-blue-500 transition-all duration-200">
       {/* Top Section: Title + Type + Menu */}
       <div className="flex justify-between items-start mb-4">
         <div>
@@ -116,10 +116,10 @@ console.log("Project: ",project);
                 )}
               </button>
              
-              <button className="flex items-center gap-2 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 w-full text-left">
+              {/* <button className="flex items-center gap-2 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 w-full text-left">
               < PinOff color="gray" size={18} />
                <p>Pin</p>
-              </button>
+              </button> */}
 
               <button className="flex items-center gap-2 px-4 py-2 text-lg text-red-700 hover:bg-gray-100 w-full text-left">
               < Trash2 color="red" size={18} />

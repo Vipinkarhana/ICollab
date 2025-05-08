@@ -31,7 +31,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 w-full">
+    <div className="w-full mt-4">
       {/* Search Bar */}
       <div className="relative flex items-center bg-white rounded-full h-12 shadow-sm p-2 mb-4">
         <Search className="absolute left-3 text-gray-500" />
@@ -50,7 +50,7 @@ const SearchBar = () => {
 
       {/* Conditional Filters Panel */}
       {showFilters && (
-        <>
+        <div className="bg-white rounded-xl shadow-md p-4">
           {/* Categories + Filters */}
           <div className="flex flex-col md:flex-row gap-6">
             {/* Categories */}
@@ -101,7 +101,7 @@ const SearchBar = () => {
               Apply Filters
             </button>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

@@ -109,19 +109,21 @@ function ProfilePageForm() {
             </section>
 
             {/* Navigation Buttons */}
-            <div className="absolute bottom-0 right-0 p-2 flex justify-end space-x-4">
-              <button
+            <div className="bottom-4 ">
+            <div className="absolute right-4 p-2 space-x-4 mt-4 md:-mt-6">
+              {/* <button
                 onClick={() => setActiveTab("PROFILE PIC")}
                 className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition"
               >
                 ← Back
-              </button>
+              </button> */}
               <button
                 onClick={() => setActiveTab("EXPERIENCE")}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
               >
                 Next →
               </button>
+            </div>
             </div>
           </div>
         )}

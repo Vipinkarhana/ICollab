@@ -33,6 +33,7 @@ const Links = ({ setActiveTab, formData, updateField, handleSave }) => {
   ];
 
   return (
+    <div className="relative h-auto pb-20">
     <div className="w-full sm:w-[80%] md:w-[60%] lg:w-[45%] mx-auto sm:p-4 p-4 bg-white rounded-lg shadow mt-14">
       <h2 className="text-2xl font-semibold mb-2">Online Profiles</h2>
       <p className="text-lg text-gray-600 mb-4">
@@ -68,7 +69,7 @@ const Links = ({ setActiveTab, formData, updateField, handleSave }) => {
       </button>
 
       {/* Navigation Buttons */}
-      <div className="absolute right-4 p-2 flex justify-end space-x-4 bottom-0">
+      <div className="sm:fixed absolute bottom-0  left-0 right-0 p-4 flex justify-between items-center sm:px-32 z-50 ">
         <button
           onClick={() => setActiveTab("EXPERIENCE")}
           className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition"
@@ -76,12 +77,13 @@ const Links = ({ setActiveTab, formData, updateField, handleSave }) => {
           ← Back
         </button>
         <button
-          onClick={() => handleSave()}
+          onClick={handleSave}
           className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
         >
           Save
         </button>
       </div>
+    </div>
     </div>
   );
 };

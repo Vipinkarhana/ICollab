@@ -223,17 +223,17 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
       <WorkExperienceForm />
       </div> */}
        {/* Bottom Right Navigation Buttons */}
-       <div className=" bottom-0 gap-2">
-       <div className="absolute  right-0 p-2 flex justify-end space-x-4">
+       <div className=" bottom-0  ">
+       <div className="absolute p-2 right-4 left-4 sm:left-32 sm:right-32 flex flex-row justify-between items-center space-x-4 mt-4">
         <button
           onClick={() => setActiveTab("ABOUT")}
-          className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition"
+          className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition "
         >
           ← Back
         </button>
         <button
           onClick={() => setActiveTab("LINKS")}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition "
         >
           Next →
         </button>
