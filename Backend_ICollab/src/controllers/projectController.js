@@ -1,6 +1,7 @@
 const ApiError = require('../utils/ApiError');
 const userModel = require('../models/user');
 const projectModel = require('../models/project');
+const collabRequestModel = require('../models/collaborationRequests');
 const allowedTechnologies = require('../../config/technologies.json');
 const allowedCategories = require('../../config/category.json');
 const { uploadToR2, deleteFromR2 } = require('../../config/s3');
@@ -528,6 +529,158 @@ const getSavedProjects = async (req, res, next) => {
 };
   
 
+const sendCollabRequest = async (req, res, next) => {
+  const { recieverUsername, projectid } = req.body;
+
+  
+  try {
+    const user = await userModel.findOne({ username: req.user.username }).lean();
+  const reciever = await userModel
+    .findOne({ username: recieverUsername })
+    .lean();
+    const project = await projectModel.findOne({_id: projectid, user: user._id});
+
+    if (!reciever) {
+      return next(new ApiError(400, 'Reciever does not exist'));
+    }
+
+    if (!user) {
+      return next(new ApiError(400, 'User does not exist'));
+    }
+
+    if(!project){
+      return next(new ApiError(400, 'Project does not exist or you are not the owner'));
+    }
+
+
+const requested = await collabRequestModel.exists({sender: user._id, reciever: reciever._id, project: projectid});
+
+const collaborated = project.collaborator.includes(reciever._id);
+
+    if (requested) {
+      return next(
+        new ApiError(
+          400,
+          'You have already sent the request! No need to send the request again.'
+        )
+      );
+    }
+    else if(collaborated){
+      return next(
+        new ApiError(400, 'You already have that user as collaborator in this project.')
+      );
+    }
+
+    const newRequest = await collabRequestModel.create({
+      sender: user._id,
+      reciever: reciever._id,
+      project: project,
+    });
+
+    res.status(200).json({
+      message: 'Request Created',
+      status: 'success',
+      data: newRequest,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+const acceptCollabRequest = async (req, res, next) => {
+  const { senderUsername, projectid } = req.body;
+  
+
+  try {
+    const sender = await userModel.findOne({ username: senderUsername }).lean();
+  const reciever = await userModel
+    .findOne({ username: req.user.username })
+    .lean();
+  const request = await collabRequestModel
+    .findOne({
+      sender: sender._id,
+      reciever: reciever._id,
+      project: projectid
+    })
+    .lean();
+
+    if (!request) {
+      return next(new ApiError(400, 'Request does not exist'));
+    }
+
+   await projectModel.findOneAndUpdate(
+      { _id: projectid },
+      { $addToSet: { collaborator: reciever._id } },
+      { new: true, upsert: true }
+    );
+
+    await collabRequestModel.findByIdAndDelete(request._id);
+
+    res.status(200).json({
+      message: 'Request Accepted',
+      status: 'success',
+      data: projectid,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+const rejectCollabRequest = async (req, res, next) => {
+  const { senderUsername, projectid} = req.body;
+  
+
+  try {
+    const sender = await userModel.findOne({ username: senderUsername }).lean();
+  const reciever = await userModel
+    .findOne({ username: req.user.username })
+    .lean();
+
+  const request = await collabRequestModel
+    .findOne({
+      sender: sender._id,
+      reciever: reciever._id,
+      project: projectid,
+    })
+    .lean();
+
+    if (!request) {
+      return next(new ApiError(400, 'Request is no longer available.'));
+    }
+
+    await collabRequestModel.findByIdAndDelete(request._id);
+
+    res.status(200).json({
+      message: 'Request Rejected',
+      status: 'success',
+      data: projectid,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+const getCollabRequest = async (req, res, next) => {
+  const user = await userModel.findOne({ username: req.user.username }).lean();
+  const requests = await collabRequestModel
+    .find({ reciever: user._id })
+    .populate('sender project');
+  try {
+
+    res.status(200).json({
+      message: 'Requests fetched successfully',
+      status: 'success',
+      data: requests,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 module.exports = {
   addProject,
   technologySuggestions,
@@ -540,4 +693,8 @@ module.exports = {
   finishedFeed,
   toggleSaveProject,
   getSavedProjects,
+  sendCollabRequest,
+  acceptCollabRequest,
+  rejectCollabRequest,
+  getCollabRequest,
 };
