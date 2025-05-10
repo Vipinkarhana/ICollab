@@ -5,6 +5,7 @@ const allowedTechnologies = require('../../config/technologies.json');
 const allowedCategories = require('../../config/category.json');
 const { uploadToR2, deleteFromR2 } = require('../../config/s3');
 const config = require('../../config/config');
+const SavedItem = require('../models/savedItem');
 
 const addProject = async (req, res, next) => {
        let newProject;
@@ -392,6 +393,81 @@ const fetchUserProjects = async (req, res, next) => {
   
 
 
+const toggleSaveProject = async (req, res, next) => {
+  try {
+    const username = req.user.username;
+    const user = await userModel.findOne({ username: username });
+    const userId = user._id;
+    const { projectid } = req.body;
+
+    let savedDoc = await SavedItem.findOne({ user: userId });
+
+    if (!savedDoc) {
+      // If no saved document exists, create one with the project
+      savedDoc = new SavedItem({
+        user: userId,
+        savedProjects: [projectid], // Add the project to the savedProjects array
+      });
+      await savedDoc.save();
+
+      return res.status(200).json({
+        message: 'Project saved successfully',
+        status: 'saved',
+      });
+    }
+
+    // If project is already saved, remove it (unsave)
+    const isAlreadySaved = savedDoc.savedProjects.includes(projectid);
+
+    if (isAlreadySaved) {
+      savedDoc.savedProjects.pull(projectid);
+      await savedDoc.save();
+
+      return res.status(200).json({
+        message: 'Project unsaved successfully',
+        status: 'unsaved',
+      });
+    } else {
+      // Else, save the post
+      savedDoc.savedProjects.push(projectid);
+      await savedDoc.save();
+
+      return res.status(200).json({
+        message: 'Project saved successfully',
+        status: 'saved',
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+const getSavedProjects = async (req, res, next) => {
+  try {
+    const username = req.user.username;
+    const user = await userModel.findOne({ username: username });
+    const userId = user._id;
+
+    const saved = await SavedItem.findOne({ user: userId }).populate({
+      path: 'savedProjects',
+      populate: {
+        path: 'user',
+        select: 'username profile_pic name designation',
+      },
+    });
+
+    res.status(200).json({
+      message: 'Saved projects fetched successfully',
+      data: saved?.savedProjects || [],
+      status: 'success',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+  
+
 module.exports = {
   addProject,
   technologySuggestions,
@@ -402,4 +478,6 @@ module.exports = {
   ongoingFeed,
   fetchUserProjects,
   finishedFeed,
+  toggleSaveProject,
+  getSavedProjects,
 };

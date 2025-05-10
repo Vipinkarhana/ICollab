@@ -11,6 +11,8 @@ const {
   ongoingFeed,
   fetchUserProjects,
   finishedFeed,
+  toggleSaveProject,
+  getSavedProjects,
 } = require('../controllers/projectController');
 const { isloggedin } = require('../middlewares/auth');
 const storage = multer.memoryStorage();
@@ -23,6 +25,8 @@ router.get('/projectfeed', isloggedin, projectFeed);
 router.get('/ongoingfeed', isloggedin, ongoingFeed);
 router.get('/finishedfeed', isloggedin, finishedFeed);
 router.get('/userprojects/:username', fetchUserProjects);
+router.post('/saveproject', isloggedin, toggleSaveProject);
+router.get('/savedprojects', isloggedin, getSavedProjects);
 router.get('/:projectId', isloggedin, project);
 
 module.exports = router;

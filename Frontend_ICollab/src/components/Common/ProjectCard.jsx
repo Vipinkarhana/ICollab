@@ -1,16 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { EllipsisVertical, UserPlus, Trash2, PinOff  } from "lucide-react";
+import { toggleSaveProject } from "../../Services/projectService";
 import {
   BookmarkIcon as OutlineBookmark,
   BookmarkIcon as SolidBookmark,
 } from "@heroicons/react/24/solid";
 
 const ProjectCard = ({
-  project
+  project,
+  onSave,
 }) => {
 console.log("Project: ",project);
 
+useEffect(() => {
+  setBookmarked(project.isSaved || false);
+}, [project.isSaved]);
   // Derived values
   const status = project.isOngoing ? 'Ongoing Project' : 'Finished Project';
   const avatarSeeds = project.collaborator.map(c => c.username || 'user');
@@ -44,12 +49,28 @@ console.log("Project: ",project);
 
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
+  const [bookmarked, setBookmarked] = useState(project.isSaved || false);
 
   const menuRef = useRef(null);
 
-  const handleToggleSave = () => {
-    setBookmarked((prev) => !prev);
+  const handleToggleSave = async () => {
+    try {
+      // Call the API to toggle save status
+      const response = await toggleSaveProject(project._id);
+      const isNowSaved = response.status === 'saved';
+      
+      // Update local state
+      setBookmarked(isNowSaved);
+      
+      // Notify parent component if provided
+      if (onSave) {
+        onSave(project._id, isNowSaved);
+      }
+    } catch (error) {
+      console.error('Failed to toggle save:', error);
+      // Revert UI state on error
+      setBookmarked(prev => !prev);
+    }
   };
 
   // Close dropdown on outside click
@@ -106,7 +127,7 @@ console.log("Project: ",project);
                 {bookmarked ? (
                   <>
                     <SolidBookmark className="w-5 h-5 text-blue-500" />
-                    Saved
+                    Unsave
                   </>
                 ) : (
                   <>
