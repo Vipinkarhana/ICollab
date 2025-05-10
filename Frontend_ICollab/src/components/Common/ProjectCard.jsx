@@ -13,9 +13,7 @@ const ProjectCard = ({
 }) => {
 console.log("Project: ",project);
 
-useEffect(() => {
-  setBookmarked(project.isSaved || false);
-}, [project.isSaved]);
+
   // Derived values
   const status = project.isOngoing ? 'Ongoing Project' : 'Finished Project';
   const avatarSeeds = project.collaborator.map(c => c.username || 'user');
@@ -51,6 +49,10 @@ useEffect(() => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [bookmarked, setBookmarked] = useState(project.isSaved || false);
 
+  useEffect(() => {
+    setBookmarked(project.isSaved);
+  }, [project.isSaved]);
+  
   const menuRef = useRef(null);
 
   const handleToggleSave = async () => {

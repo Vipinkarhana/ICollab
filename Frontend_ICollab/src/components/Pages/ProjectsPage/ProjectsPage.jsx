@@ -179,7 +179,8 @@ const ProjectsPage = () => {
           {sliderOngoing.map((project) => (
             <div key={project._id} className="flex-shrink-0 w-full sm:w-[48%]">
               <ProjectCard
-                project = {project}
+                key = {project._id}
+                project = {{ ...project, isSaved: project.isSaved }}
                 onSave={handleProjectSave}
               />
             </div>
