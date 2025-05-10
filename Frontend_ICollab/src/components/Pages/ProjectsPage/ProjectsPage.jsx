@@ -27,6 +27,8 @@ const ProjectsPage = () => {
   const [loadingFinished, setLoadingFinished] = useState(false);
 
 
+
+
   // Fetch initial slider data
   useEffect(() => {
     const fetchSliderData = async () => {
@@ -74,6 +76,17 @@ const ProjectsPage = () => {
   }, []);
 
 
+  const handleProjectSave = (projectId, isSaved) => {
+    const updateProjectInList = (projects) => 
+      projects.map(proj => 
+        proj._id === projectId ? { ...proj, isSaved } : proj
+      );
+  
+    setSliderOngoing(prev => updateProjectInList(prev));
+    setSliderFinished(prev => updateProjectInList(prev));
+    setOngoingProjects(prev => updateProjectInList(prev));
+    setFinishedProjects(prev => updateProjectInList(prev));
+  };
 
   const updateOngoingPagination = (newProjects) => {
     if (newProjects.length > 0) {
@@ -84,9 +97,6 @@ const ProjectsPage = () => {
       setHasMoreOngoing(false);
     }
   };
-
-
-
 
   const updateFinishedPagination = (newProjects) => {
     if (newProjects.length > 0) {
@@ -111,9 +121,6 @@ const ProjectsPage = () => {
       setLoadingOngoing(false);
     }
   };
-
-
-
 
   const handleLoadMoreFinished = async () => {
     if (!hasMoreFinished || loadingFinished) return;
@@ -172,7 +179,9 @@ const ProjectsPage = () => {
           {sliderOngoing.map((project) => (
             <div key={project._id} className="flex-shrink-0 w-full sm:w-[48%]">
               <ProjectCard
-                project = {project}
+                key = {project._id}
+                project = {{ ...project, isSaved: project.isSaved }}
+                onSave={handleProjectSave}
               />
             </div>
           ))}
@@ -188,6 +197,7 @@ const ProjectsPage = () => {
             <ProjectCard
               key={project.id}
               project = {project}
+              onSave={handleProjectSave}
             />
           ))}
         </div>
@@ -214,6 +224,7 @@ const ProjectsPage = () => {
             <ProjectCard
               key={project._id}
               project = {project}
+              onSave={handleProjectSave}
             />
           ))}
         </div>

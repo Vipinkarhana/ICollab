@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ProjectCard from "../Common/ProjectCard"
 import { getProjectFeed } from '../../Services/projectService';
 import { useNavigate } from 'react-router-dom';
+import {getOngoingProjects, getFinishedProjects} from '../../Services/projectService';
 
 
 function MoreProject({ currentProjectId }) {
@@ -28,11 +29,16 @@ function MoreProject({ currentProjectId }) {
   useEffect(() => {
     const fetchAndFilterProjects  = async () => {
       try {
-        const response = await getProjectFeed();
+        // const response = await getProjectFeed();
+        const [ongoing, finished] = await Promise.all([
+          getOngoingProjects(Date.now()),
+          getFinishedProjects(Date.now())
+        ]);
         const allProjects = [
-          ...(response.data.ongoing || []),
-          ...(response.data.finished || [])
+          ...(ongoing.data || []),
+          ...(finished.data || [])
         ];
+
         const filtered = allProjects
           .filter(project => project._id !== currentProjectId && (                        // keep if either…
                     project.isOngoing               //  • still ongoing

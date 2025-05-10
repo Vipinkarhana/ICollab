@@ -5,6 +5,7 @@ const allowedTechnologies = require('../../config/technologies.json');
 const allowedCategories = require('../../config/category.json');
 const { uploadToR2, deleteFromR2 } = require('../../config/s3');
 const config = require('../../config/config');
+const SavedItem = require('../models/savedItem');
 
 const addProject = async (req, res, next) => {
        let newProject;
@@ -191,6 +192,9 @@ const collaboratorSuggestions = async (req, res, next) => {
 
 const project = async (req, res, next) => {
   try {
+    const username = req.user.username;
+    const user = await userModel.findOne({ username: username });
+    const userId = user._id;
     console.log("Backend hit by frontend");
     const {projectId} = req.params;
     console.log("projectId: ",projectId);
@@ -199,6 +203,12 @@ const project = async (req, res, next) => {
     if (!project) {
           throw new ApiError(404, 'Project not found');
         }
+
+        const isSaved = await SavedItem.exists({
+          user: userId,
+          savedProjects: project._id
+      });
+
 
         let collaborators;
         if (project.collaborator.length > 0 && typeof project.collaborator[0] === 'string') {
@@ -239,6 +249,7 @@ const project = async (req, res, next) => {
         const formattedProject = {
             ...project.toObject(),
             collaborator: collaborators,
+            isSaved: !!isSaved,
             logo: generateR2Url(project.logo),
             media: project.media.map(generateR2Url)
           };
@@ -254,6 +265,11 @@ const project = async (req, res, next) => {
 
 
 const projectFeed = async (req, res, next) => {
+  const username = req.user.username;
+    const user = await userModel.findOne({ username: username });
+    const userId = user._id;
+  const savedItems = await SavedItem.findOne({ user: userId });
+        const savedProjectIds = savedItems?.savedProjects || [];
     try{
         const feed = await projectModel.aggregate([
             {
@@ -262,6 +278,13 @@ const projectFeed = async (req, res, next) => {
                         {$match: {isOngoing: true}},
                         {$sort: {createdAt: -1}},
                         {$limit: 4},
+                        {
+                          $addFields: {
+                              isSaved: {
+                                  $in: ["$_id", savedProjectIds]
+                              }
+                          }
+                      },
                         {$project: {
                             id: '$_id',
                             name: 1,
@@ -278,6 +301,13 @@ const projectFeed = async (req, res, next) => {
                         {$match: {isOngoing: false}},
                         {$sort: {createdAt: -1}},
                         {$limit: 4},
+                        {
+                          $addFields: {
+                              isSaved: {
+                                  $in: ["$_id", savedProjectIds]
+                              }
+                          }
+                      },
                         {$project: {
                             id: '$_id',
                             name: 1,
@@ -310,6 +340,9 @@ const projectFeed = async (req, res, next) => {
 
 const ongoingFeed = async (req, res, next) => {
     try{
+      const username = req.user.username;
+    const user = await userModel.findOne({ username: username });
+    const userId = user._id;
         const { timestamp } = req.query; // the timestamp sent by the frontend
 
         if (!timestamp) {
@@ -320,10 +353,17 @@ const ongoingFeed = async (req, res, next) => {
         if(isNaN(date.getTime())){
             return next(new ApiError(400, 'Timestamp must be a number'));
         }
+
+        const savedItems = await SavedItem.findOne({ user: userId });
+        const savedProjectIds = savedItems?.savedProjects || [];
+
         const feed = await projectModel.find(
             {createdAt: { $lt: date }, isOngoing: true, },
             {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1,createdAt: 1,updatedAt: 1, isOngoing: 1}
-        ).sort({createdAt: -1}).limit(10).lean();
+        ).sort({createdAt: -1}).limit(10).lean() .transform(results => results.map(project => ({
+          ...project,
+          isSaved: savedProjectIds.includes(project._id)
+      })));
 
         res.status(200).json({
             success: true,
@@ -337,6 +377,9 @@ const ongoingFeed = async (req, res, next) => {
 
 const finishedFeed = async (req, res, next) => {
     try{
+      const username = req.user.username;
+    const user = await userModel.findOne({ username: username });
+    const userId = user._id;
         const { timestamp } = req.query; // the timestamp sent by the frontend
 
         if (!timestamp) {
@@ -347,10 +390,17 @@ const finishedFeed = async (req, res, next) => {
         if(isNaN(date.getTime())){
             return next(new ApiError(400, 'Timestamp must be a number'));
         }
+
+        const savedItems = await SavedItem.findOne({ user: userId });
+        const savedProjectIds = savedItems?.savedProjects || [];
+
         const feed = await projectModel.find(
             {createdAt: { $lt: date }, isOngoing: false, },
             {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1, endDate: 1,createdAt: 1}
-        ).sort({createdAt: -1}).limit(10).lean();
+        ).sort({createdAt: -1}).limit(10).lean() .transform(results => results.map(project => ({
+          ...project,
+          isSaved: savedProjectIds.includes(project._id)
+      })));
 
         res.status(200).json({
             success: true,
@@ -380,10 +430,21 @@ const fetchUserProjects = async (req, res, next) => {
         .find({ user: user._id })
         .populate('user', 'username name profile_pic');
   
+
+        const savedItem = await SavedItem.findOne({ user: user._id });
+        const savedProjectIds = savedItem?.savedProjects || [];
+    
+        // Add isSaved status to each project
+        const projectsWithSavedStatus = projects.map(project => ({
+          ...project.toObject(),
+          isSaved: savedProjectIds.includes(project._id)
+        }));
+
+
       res.status(200).json({
         message: 'User projects fetched successfully',
         status: 'success',
-        data: projects,
+        data: projectsWithSavedStatus,
       });
     } catch (err) {
       next(err);
@@ -391,6 +452,81 @@ const fetchUserProjects = async (req, res, next) => {
   };
   
 
+
+const toggleSaveProject = async (req, res, next) => {
+  try {
+    const username = req.user.username;
+    const user = await userModel.findOne({ username: username });
+    const userId = user._id;
+    const { projectid } = req.body;
+
+    let savedDoc = await SavedItem.findOne({ user: userId });
+
+    if (!savedDoc) {
+      // If no saved document exists, create one with the project
+      savedDoc = new SavedItem({
+        user: userId,
+        savedProjects: [projectid], // Add the project to the savedProjects array
+      });
+      await savedDoc.save();
+
+      return res.status(200).json({
+        message: 'Project saved successfully',
+        status: 'saved',
+      });
+    }
+
+    // If project is already saved, remove it (unsave)
+    const isAlreadySaved = savedDoc.savedProjects.includes(projectid);
+
+    if (isAlreadySaved) {
+      savedDoc.savedProjects.pull(projectid);
+      await savedDoc.save();
+
+      return res.status(200).json({
+        message: 'Project unsaved successfully',
+        status: 'unsaved',
+      });
+    } else {
+      // Else, save the post
+      savedDoc.savedProjects.push(projectid);
+      await savedDoc.save();
+
+      return res.status(200).json({
+        message: 'Project saved successfully',
+        status: 'saved',
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+const getSavedProjects = async (req, res, next) => {
+  try {
+    const username = req.user.username;
+    const user = await userModel.findOne({ username: username });
+    const userId = user._id;
+
+    const saved = await SavedItem.findOne({ user: userId }).populate({
+      path: 'savedProjects',
+      populate: {
+        path: 'user',
+        select: 'username profile_pic name designation',
+      },
+    });
+
+    res.status(200).json({
+      message: 'Saved projects fetched successfully',
+      data: saved?.savedProjects || [],
+      status: 'success',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+  
 
 module.exports = {
   addProject,
@@ -402,4 +538,6 @@ module.exports = {
   ongoingFeed,
   fetchUserProjects,
   finishedFeed,
+  toggleSaveProject,
+  getSavedProjects,
 };

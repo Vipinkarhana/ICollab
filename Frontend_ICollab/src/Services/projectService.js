@@ -78,3 +78,8 @@ export const getProjectDetails = async (projectId) => {
     next(err);
   }
 };
+
+export const toggleSaveProject = async (projectid) => {
+  const response = await privateAxios.post("/project/saveproject",{projectid});
+  return response.data; // should return something like { status: "saved" } or { status: "unsaved" }
+};
