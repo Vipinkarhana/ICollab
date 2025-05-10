@@ -13,6 +13,10 @@ const {
   finishedFeed,
   toggleSaveProject,
   getSavedProjects,
+  sendCollabRequest,
+  acceptCollabRequest,
+  rejectCollabRequest,
+  getCollabRequest,
 } = require('../controllers/projectController');
 const { isloggedin } = require('../middlewares/auth');
 const storage = multer.memoryStorage();
@@ -27,6 +31,10 @@ router.get('/finishedfeed', isloggedin, finishedFeed);
 router.get('/userprojects/:username', fetchUserProjects);
 router.post('/saveproject', isloggedin, toggleSaveProject);
 router.get('/savedprojects', isloggedin, getSavedProjects);
+router.post('/sendcollabreq', isloggedin, sendCollabRequest);
+router.post('/acceptcollabreq', isloggedin, acceptCollabRequest);
+router.post('/rejectcollabreq', isloggedin, rejectCollabRequest);
+router.get('/getcollabreq', isloggedin, getCollabRequest);
 router.get('/:projectId', isloggedin, project);
 
 module.exports = router;
