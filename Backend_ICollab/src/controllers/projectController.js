@@ -296,6 +296,7 @@ const projectFeed = async (req, res, next) => {
                             startDate: 1,
                             createdAt: 1,
                             updatedAt: 1,
+                            user: 1,
                         }},
                     ],
                     finished: [
@@ -319,6 +320,7 @@ const projectFeed = async (req, res, next) => {
                             startDate: 1,
                             endDate: 1,
                             createdAt: 1,
+                            user: 1,
                         }},
                     ]
                 }
@@ -360,7 +362,7 @@ const ongoingFeed = async (req, res, next) => {
 
         const feed = await projectModel.find(
             {createdAt: { $lt: date }, isOngoing: true, },
-            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1,createdAt: 1,updatedAt: 1, isOngoing: 1}
+            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1,createdAt: 1,updatedAt: 1, isOngoing: 1, user:1}
         ).sort({createdAt: -1}).limit(10).lean() .transform(results => results.map(project => ({
           ...project,
           isSaved: savedProjectIds.includes(project._id)
@@ -397,7 +399,7 @@ const finishedFeed = async (req, res, next) => {
 
         const feed = await projectModel.find(
             {createdAt: { $lt: date }, isOngoing: false, },
-            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1, endDate: 1,createdAt: 1}
+            {_id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1, endDate: 1,createdAt: 1, user:1}
         ).sort({createdAt: -1}).limit(10).lean() .transform(results => results.map(project => ({
           ...project,
           isSaved: savedProjectIds.includes(project._id)
@@ -681,6 +683,25 @@ const getCollabRequest = async (req, res, next) => {
 };
 
 
+const deleteProject = async (req, res, next) => {
+  const user = await userModel.findOne({username: req.user.username});
+  const {projectid} = req.body;
+  console.log("ProjectId: ", projectid);
+  const deleteProject = await projectModel.findOneAndDelete({_id: projectid, user: user._id});
+  console.log("DeleteProject: ", deleteProject);
+  if(!deleteProject){
+    return next(new ApiError(400, 'No such project is available.'));
+  }
+  await SavedItem.updateMany({savedProjects: projectid}, {$pull: {savedProjects: projectid}});
+   res.status(200).json({
+      message: 'Project Deleted Successfully',
+      status: 'success',
+      data: projectid,
+    });
+};
+
+
+
 module.exports = {
   addProject,
   technologySuggestions,
@@ -697,4 +718,5 @@ module.exports = {
   acceptCollabRequest,
   rejectCollabRequest,
   getCollabRequest,
+  deleteProject,
 };
