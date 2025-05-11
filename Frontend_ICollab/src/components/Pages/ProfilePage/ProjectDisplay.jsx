@@ -1,49 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Plus, PinOff, X } from "lucide-react";
 import ProjectCard from "../../Common/ProjectCard";
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchUserProjectsData } from '../../../Redux/Slices/ProjectSlice';
+import { updateTopProjects } from '../../../Redux/Slices/UserProfileSlice';
 
-const initialProjects = [
-  {
-    id: 1,
-    name: "CareTrack",
-    tagline: "Navigating Your Health Journey with Care and Precision!",
-    description:
-      "CareTrack enhances healthcare efficiency by streamlining appointment scheduling, reducing administrative workload, optimizing resource allocation, and offering data-driven insights. It minimizes delays, improves patient flow, and enhances overall patient care.",
-    images: ["/LandingImage.png", "/LandingImage.png"],
-    logo: "/Avatarman1.png",
-    pinned: true,
-  },
-  {
-    id: 2,
-    name: "EduFlow",
-    tagline: "Redefining the Flow of Learning in a Digital Era!",
-    description:
-      "EduFlow is a smart learning management platform that helps institutes, teachers, and students streamline their education journey. Features include class scheduling, assignment tracking, progress analytics, and seamless virtual classrooms.",
-    images: ["/LandingImage.png", "/LandingImage.png"],
-    logo: "/Avatarman1.png",
-    pinned: true,
-  },
-  {
-    id: 3,
-    name: "AgroLink",
-    tagline: "Empowering Farmers with Modern Agri Solutions!",
-    description:
-      "AgroLink bridges the gap between farmers and agri-experts using digital advisory tools, weather insights, and crop recommendations. It helps increase yield and efficiency for farmers across the country.",
-    images: ["/LandingImage.png", "/LandingImage.png"],
-    logo: "/Avatarman1.png",
-    pinned: false,
-  },
-];
+const ProjectDisplay = ({ username }) => {
+  const dispatch = useDispatch();
+  const { userProjects, loading, error } = useSelector((state) => state.project);
+  const { data: profileData } = useSelector((state) => state.userProfile);
 
-const ProjectDisplay = ({ activeTab, setActiveTab }) => {
-  const [projects, setProjects] = useState(initialProjects);
+  useEffect(() => {
+    dispatch(fetchUserProjectsData(username));
+  }, [dispatch, username]);
+
+  const originalProjects = userProjects;
+  const [projects, setProjects] = useState(originalProjects);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [selectedCards, setSelectedCards] = useState([]); // State for selected cards
+  const [selectedCards, setSelectedCards] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  useEffect(()=>{
+    console.log("selectedCards:",selectedCards);
+  },[selectedCards])
 
   const topProjects = projects.filter((proj) => proj.pinned).slice(0, 3);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!selectedProject || !selectedProject.pinned) {
       setSelectedProject(topProjects[0] || null);
     }
@@ -55,35 +37,45 @@ const ProjectDisplay = ({ activeTab, setActiveTab }) => {
     );
     setProjects(updated);
     if (selectedProject?.id === projectId) {
-      const newTop = updated.filter((proj) => proj.pinned);
+      const newTop = updated?.filter((proj) => proj?.pinned);
       setSelectedProject(newTop[0] || null);
     }
+
+    const updatedPinnedProjects = updated?.filter((proj) => proj?.pinned);
+dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
+
   };
 
   const handlePinProject = (projectId) => {
-    const currentTop = projects.filter((proj) => proj.pinned);
+    const currentTop = projects?.filter((proj) => proj?.pinned);
     if (currentTop.length >= 3) return;
-    const updated = projects.map((proj) =>
-      proj.id === projectId ? { ...proj, pinned: true } : proj
+    const updated = projects?.map((proj) =>
+      proj?.id === projectId ? { ...proj, pinned: true } : proj
     );
     setProjects(updated);
     setShowModal(false);
-    setSelectedProject(updated.find((proj) => proj.id === projectId));
+    setSelectedProject(updated.find((proj) => proj?.id === projectId));
+
+    const updatedPinnedProjects = updated?.filter((proj) => proj?.pinned)?.map((proj) => proj?.id);
+    dispatch(updateTopProjects({ projectIds: updatedPinnedProjects, username }));
   };
 
   const handleSelectProject = () => {
-    // Pin all selected projects
-    const updatedProjects = projects.map((proj) =>
-      selectedCards.includes(proj.id)
-        ? { ...proj, pinned: true }
-        : proj
+    console.log("Selected crds",  selectedCards)
+    const updatedProjects = projects?.map((proj) =>
+      selectedCards.includes(proj?.id) ? { ...proj, pinned: true } : proj
     );
+
     setProjects(updatedProjects);
     setShowModal(false);
-    setSelectedCards([]); // Clear the selected cards after pinning
+    setSelectedCards([]);
+    console.log("updted projects:", updatedProjects)
+
+    const updatedPinnedProjects = updatedProjects?.filter((proj) => proj.pinned)?.map((proj) => proj);
+    console.log("pinned project",updatedPinnedProjects)
+    dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
   };
 
-  // Handle card selection inside modal
   const handleCardSelection = (projectId) => {
     setSelectedCards((prevSelected) =>
       prevSelected.includes(projectId)
@@ -99,7 +91,7 @@ const ProjectDisplay = ({ activeTab, setActiveTab }) => {
         <div className="w-full md:w-1/4 border-r pr-4 mb-4 md:mb-0">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-gray-700 font-semibold text-2xl">Top Projects</h2>
-            {topProjects.length < 3 && (
+            {topProjects?.length < 3 && (
               <button
                 onClick={() => setShowModal(true)}
                 className="text-green-600 hover:text-green-800"
@@ -111,24 +103,24 @@ const ProjectDisplay = ({ activeTab, setActiveTab }) => {
           </div>
 
           <div className="flex flex-col gap-4">
-            {topProjects.map((project) => (
+            {topProjects?.map((project) => (
               <div
-                key={project.id}
+                key={project?.id}
                 className={`relative cursor-pointer flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 ${selectedProject?.id === project.id ? "bg-gray-50" : ""
                   }`}
                 onClick={() => setSelectedProject(project)}
               >
                 <img
-                  src={project.logo}
+                  src={project?.logo}
                   alt="Logo"
                   className="w-10 h-10 object-contain"
                 />
-                <span className="font-medium">{project.name}</span>
+                <span className="font-medium">{project?.name}</span>
 
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleUnpinProject(project.id);
+                    handleUnpinProject(project?.id);
                   }}
                   className="absolute right-2 text-red-500 hover:bg-gray-200 p-2 rounded-full"
                   title="Unpin Project"
@@ -144,11 +136,11 @@ const ProjectDisplay = ({ activeTab, setActiveTab }) => {
         <div className="w-full md:w-3/4 sm:pl-6">
           {selectedProject ? (
             <>
-              <h3 className="text-3xl font-bold">{selectedProject.name}</h3>
-              <p className="text-gray-600 italic">{selectedProject.tagline}</p>
-              <p className="mt-2 text-gray-700 text-justify">{selectedProject.description}</p>
+              <h3 className="text-3xl font-bold">{selectedProject?.name}</h3>
+              <p className="text-gray-600 italic">{selectedProject?.tagline}</p>
+              <p className="mt-2 text-gray-700 text-justify">{selectedProject?.description}</p>
               <div className="mt-4 grid grid-cols-2 gap-4">
-                {selectedProject.images.map((img, idx) => (
+                {selectedProject?.images?.map((img, idx) => (
                   <img
                     key={idx}
                     src={img}
@@ -173,42 +165,47 @@ const ProjectDisplay = ({ activeTab, setActiveTab }) => {
             <button
               onClick={() => {
                 setShowModal(false);
-                setSelectedCards([]); 
+                setSelectedCards([]);
               }}
               className="absolute top-4 right-4 text-gray-600 hover:text-black"
             >
               <X size={24} />
             </button>
-            <h2 className="text-2xl font-semibold mb-4">Select a Project to Pin</h2>
+            <h2 className="text-2xl font-semibold mb-4">
+              Select a Project to Pin ({topProjects?.length + selectedCards?.length}/3)
+            </h2>
 
-            {/* Wrapping each ProjectCard inside a div and adding onClick */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {projects
-  .filter((project) => !project.pinned)
-  .map((project) => {
-    const isSelected = selectedCards.includes(project.id);
-    const selectionNumber = selectedCards.indexOf(project.id) + 1;
+              {projects
+                .filter((project) => !project.pinned)
+                .map((project) => {
+                  const isSelected = selectedCards.includes(project.id);
+                  const selectionNumber = selectedCards.indexOf(project.id) + 1;
+                  const canSelectMore = topProjects.length + selectedCards.length < 3;
 
-    return isSelected ? (
-      <div
-        key={project.id}
-        onClick={() => handleCardSelection(project.id)}
-        className="relative cursor-pointer transition-all duration-200 ease-in-out rounded-lg overflow-hidden ring-2 ring-blue-500"
-      >
-        {/* Selection number badge */}
-        <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full shadow-md z-10">
-          {selectionNumber}
-        </div>
-
-        <ProjectCard project={project} />
-      </div>
-    ) : (
-      <div key={project.id} onClick={() => handleCardSelection(project.id)}>
-        <ProjectCard project={project} />
-      </div>
-    );
-  })}
-
+                  return (
+                    <div
+                      key={project?.id}
+                      onClick={() => {
+                        if (isSelected) {
+                          handleCardSelection(project?.id);
+                        } else if (canSelectMore) {
+                          handleCardSelection(project?.id);
+                        }
+                      }}
+                      className={`relative cursor-pointer transition-all duration-200 ease-in-out rounded-lg overflow-hidden ${isSelected ? "ring-2 ring-blue-500" : "shadow-lg border"
+                        }`}
+                    >
+                      {isSelected && (
+                        <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full shadow-md z-10">
+                          {selectionNumber}
+                        </div>
+                      )}
+                      {project?.id}
+                      <ProjectCard project={project} />
+                    </div>
+                  );
+                })}
             </div>
 
             <div className="mt-4 flex justify-end">

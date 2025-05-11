@@ -11,6 +11,7 @@ const {
   ongoingFeed,
   fetchUserProjects,
   finishedFeed,
+  updateTopProjects,
   toggleSaveProject,
   getSavedProjects,
   sendCollabRequest,
@@ -38,5 +39,5 @@ router.post('/rejectcollabreq', isloggedin, rejectCollabRequest);
 router.get('/getcollabreq', isloggedin, getCollabRequest);
 router.post('/deleteproject', isloggedin, deleteProject);
 router.get('/:projectId', isloggedin, project);
-
+router.put('/topprojects', isloggedin, updateTopProjects);
 module.exports = router;

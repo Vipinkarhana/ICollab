@@ -6,7 +6,7 @@ import PageNavbar from "../../Common/PageNavbar/PageNavbar";
 import PhonePageNavbar from "../../Common/PageNavbar/PhonePageNavbar";
 
 function Intro({ activeTab, setActiveTab,user }) {
-  const tabs = ["Intro", "Projects", "Posts"];
+  const tabs = ["Intro", "Projects", "Posts","Saved"];
   const skills = ["JavaScript", "React", "Node.js", "CSS", "Python"];
 
   return (

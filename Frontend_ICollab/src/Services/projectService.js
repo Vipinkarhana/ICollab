@@ -79,6 +79,29 @@ export const getProjectDetails = async (projectId) => {
   }
 };
 
+export const updatePinnedProjects = async (projectIds) => {
+  try {
+    const response = await privateAxios.put("/project/topprojects", {
+      topProjectIds: projectIds, 
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update pinned projects:", error);
+    throw error;
+  }
+};
+
+// import privateAxios from '../api/privateAxios'; // must include Authorization headers
+
+// export const updatePinnedProjects = async (projectIds) => {
+//   console.log(projectIds);
+//   const response = await privateAxios.put('/project/topprojects', {
+//     topProjectIds: projectIds,
+//   });
+//   return response.data;
+// };
+
+
 export const toggleSaveProject = async (projectid) => {
   try{
   const response = await privateAxios.post("/project/saveproject",{projectid});

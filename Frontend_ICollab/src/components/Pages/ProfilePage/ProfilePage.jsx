@@ -55,7 +55,7 @@ function ProfilePage() {
         <div className="w-full p-2 sm:p-4 flex justify-start items-center flex-col gap-4">
           <ProfileStats stats={user?.stats} />
           <Readme paragraph={user?.user?.profile?.about} />
-          {/* <ProjectDisplay activeTab={activeTab} setActiveTab={setActiveTab} /> */}
+          <ProjectDisplay  username={username} topProjects={user?.user?.profile?.topProjects} />
         </div>
       )}
     </div>

@@ -10,7 +10,7 @@ import { updateProfile } from "../../../../Services/profileService";
 
 function ProfilePageForm() {
   const [activeTab, setActiveTab] = useState("ABOUT");
-  const tabs = [ "ABOUT", "EXPERIENCE", "LINKS"];
+  const tabs = ["PROFILE PIC", "ABOUT", "EXPERIENCE", "EDUCATION", "CONTACT", "LINKS"]
 
   const [formData, setFormData] = useState({
     profilePic: "",

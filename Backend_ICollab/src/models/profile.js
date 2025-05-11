@@ -35,25 +35,6 @@ const profileSchema = new mongoose.Schema({
     type: [String]
   },
 
-  stats: {
-    posts: {
-      type: Number,
-      default: 0
-    },
-    projects: {
-      type: Number,
-      default: 0
-    },
-    collaborators: {
-      type: Number,
-      default: 0
-    },
-    savedItems: {
-      type: Number,
-      default: 0
-    }
-  },
-
   topProjects: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'project'

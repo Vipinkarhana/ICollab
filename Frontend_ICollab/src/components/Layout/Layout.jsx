@@ -28,7 +28,7 @@ function Layout() {
       <Header id="Header" />
       {isOpen && <StartPostModal />}
       <BackToTopButton />
-      <FloatingButtonMenu/>
+      {/* <FloatingButtonMenu/> */}
       <main className="flex-grow flex items-center justify-center gap-3">
         <Tracker/>
         <Outlet />

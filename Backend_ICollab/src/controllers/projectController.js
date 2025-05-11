@@ -3,6 +3,7 @@ const userModel = require('../models/user');
 const projectModel = require('../models/project');
 const collabRequestModel = require('../models/collaborationRequests');
 const allowedTechnologies = require('../../config/technologies.json');
+const Profile = require('../models/profile');
 const allowedCategories = require('../../config/category.json');
 const { uploadToR2, deleteFromR2 } = require('../../config/s3');
 const config = require('../../config/config');
@@ -434,28 +435,67 @@ const fetchUserProjects = async (req, res, next) => {
         .populate('user', 'username name profile_pic');
   
 
-        const savedItem = await SavedItem.findOne({ user: user._id });
-        const savedProjectIds = savedItem?.savedProjects || [];
+        // const savedItem = await SavedItem.findOne({ user: user._id });
+        // const savedProjectIds = savedItem?.savedProjects || [];
     
-        // Add isSaved status to each project
-        const projectsWithSavedStatus = projects.map(project => ({
-          ...project.toObject(),
-          isSaved: savedProjectIds.includes(project._id)
-        }));
+        // // Add isSaved status to each project
+        // const projectsWithSavedStatus = projects.map(project => ({
+        //   ...project.toObject(),
+        //   isSaved: savedProjectIds.includes(project._id)
+        // }));
 
 
       res.status(200).json({
         message: 'User projects fetched successfully',
         status: 'success',
-        data: projectsWithSavedStatus,
+        data: projects,
       });
     } catch (err) {
       next(err);
     }
   };
   
-
-
+  const updateTopProjects = async (req, res) => {
+    try {
+      console.log(req.body)
+      const userId = req.user.id;
+      const { topProjectIds } = req.body;
+      console.log(topProjectIds);
+  
+      
+      if (!Array.isArray(topProjectIds)) {
+        return res.status(400).json({ success: false, error: 'topProjectIds must be an array' });
+      }
+  
+      if (topProjectIds.length > 3) {
+        return res.status(400).json({ success: false, error: 'You can only pin up to 3 projects.' });
+      }
+  
+      const isValidIds = topProjectIds.every(id => /^[0-9a-fA-F]{24}$/.test(id));
+      if (!isValidIds) {
+        return res.status(400).json({ success: false, error: 'One or more project IDs are invalid.' });
+      }
+  
+      const updatedProfile = await Profile.findOneAndUpdate(
+        { user: userId },
+        { topProjects: topProjectIds },
+        { new: true, upsert: true }
+      );
+      console.log("profile",updatedProfile);
+      return res.status(200).json({
+        success: true,
+        message: 'Top projects updated successfully',
+        topProjects: updatedProfile.topProjects,
+      });
+    } catch (error) {
+      console.error('Error updating top projects:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Server error while updating top projects',
+      });
+    }
+  };
+  
 const toggleSaveProject = async (req, res, next) => {
   try {
     const username = req.user.username;
@@ -711,6 +751,7 @@ module.exports = {
   projectFeed,
   ongoingFeed,
   fetchUserProjects,
+  updateTopProjects,
   finishedFeed,
   toggleSaveProject,
   getSavedProjects,
