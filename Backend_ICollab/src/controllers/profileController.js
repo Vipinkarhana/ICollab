@@ -70,12 +70,15 @@ const userProfile = async (req, res, next) => {
     const username = req.params.username;
 
     const user = await userModel
-      .findOne({ username })
-      .populate('profile')
-      .populate({
-        path: 'profile.topProjects',
-        model: 'project',
-      });
+    .findOne({ username })
+    .populate({
+      path: 'profile',
+      populate: {
+        path: 'topProjects'
+      }
+    });
+  
+    console.log("USER PROFILE:", user);
 
     if (!user || !user.profile) {
       throw new ApiError(404, 'User profile not found');

@@ -42,6 +42,8 @@ const register = async (req, res, next) => {
     // Update the user's profile field with the newly created profile's ID
     newUser.profile = newProfile._id;
     await newUser.save();
+    newProfile.user = newUser._id;
+    await newProfile.save();
     await sendVerificationEmail(newUser, newUser.emailToken);
     res.status(200).json({
       message: 'Verification email sent',
@@ -141,6 +143,8 @@ const googleAuth = async (req, res, next) => {
       // Update the user's profile field with the newly created profile's ID
       user.profile = newProfile._id;
       await user.save();
+      newProfile.user = user._id;
+      await newProfile.save();
     }
 
     const accessToken = generateAccessToken(user);

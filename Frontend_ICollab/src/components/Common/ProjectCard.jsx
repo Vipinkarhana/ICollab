@@ -17,9 +17,9 @@ console.log("Project: ",project);
 
 
   // Derived values
-  const status = project.isOngoing ? 'Ongoing Project' : 'Finished Project';
-  const avatarSeeds = project.collaborator.map(c => c.username || 'user');
-  const collaborators = project.collaborator.length;
+  const status = project?.isOngoing ? 'Ongoing Project' : 'Finished Project';
+  const avatarSeeds = project?.collaborator?.map(c => c.username || 'user');
+  const collaborators = project?.collaborator?.length;
 
   const formatDate = (dateString) => {
     try {
@@ -35,30 +35,30 @@ console.log("Project: ",project);
     }
   };
 
-  const startDate = formatDate(project.startDate);
-  const updatedDate = formatDate(project.updatedAt);
-  const endDate = formatDate(project.endDate);
+  const startDate = formatDate(project?.startDate);
+  const updatedDate = formatDate(project?.updatedAt);
+  const endDate = formatDate(project?.endDate);
 
   // Rest of your existing component JSX remains the same
   // Just update the date display part:
   {status === 'Ongoing Project' ? (
-    <span className="text-gray-700">Last updated: {project.updatedAt}</span>
+    <span className="text-gray-700">Last updated: {project?.updatedAt}</span>
   ) : (
-    <span className="text-gray-700">Ended: {project.endDate}</span>
+    <span className="text-gray-700">Ended: {project?.endDate}</span>
   )}
 
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [bookmarked, setBookmarked] = useState(project.isSaved || false);
+  const [bookmarked, setBookmarked] = useState(project?.isSaved || false);
 
   useEffect(() => {
-    setBookmarked(project.isSaved);
-  }, [project.isSaved]);
+    setBookmarked(project?.isSaved);
+  }, [project?.isSaved]);
   
   const menuRef = useRef(null);
 
-  const currentUser = useSelector((state) => state.user.userData);
-  const ownerId = project.user?._id || project.user; // Handle both populated and unpopulated user
+  const currentUser = useSelector((state) => state?.user?.userData);
+  const ownerId = project.user?._id || project?.user; // Handle both populated and unpopulated user
   const isOwner = String(currentUser?._id) === String(ownerId);
   console.log("Current User ID:", currentUser?._id);
 console.log("Project Owner ID:", ownerId);
@@ -66,8 +66,8 @@ console.log("Is Owner:", isOwner);
 
   const handleDelete = async () => {
     try {
-      await deleteProject(project._id);
-      if (onDelete) onDelete(project._id);
+      await deleteProject(project?._id);
+      if (onDelete) onDelete(project?._id);
     } catch (error) {
       console.error("Delete failed:", error.response?.data?.message || error.message);
     }
@@ -76,15 +76,15 @@ console.log("Is Owner:", isOwner);
   const handleToggleSave = async () => {
     try {
       // Call the API to toggle save status
-      const response = await toggleSaveProject(project._id);
-      const isNowSaved = response.status === 'saved';
+      const response = await toggleSaveProject(project?._id);
+      const isNowSaved = response?.status === 'saved';
       
       // Update local state
       setBookmarked(isNowSaved);
       
       // Notify parent component if provided
       if (onSave) {
-        onSave(project._id, isNowSaved);
+        onSave(project?._id, isNowSaved);
       }
     } catch (error) {
       console.error('Failed to toggle save:', error);
@@ -119,10 +119,10 @@ console.log("Is Owner:", isOwner);
         <div>
           <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 leading-snug">
             {/* {title} */}
-            {project.name}
+            {project?.name}
           </h2>
           <p className="text-sm sm:text-base text-gray-500 tracking-wide mt-1">
-            {project.type}
+            {project?.type}
           </p>
         </div>
 
@@ -186,7 +186,7 @@ console.log("Is Owner:", isOwner);
 
         <div className="flex items-center space-x-2">
           <div className="flex -space-x-2">
-            {(avatarSeeds || []).slice(0, 3).map((seed, index) => (
+            {(avatarSeeds || [])?.slice(0, 3)?.map((seed, index) => (
               <img
                 key={index}
                 src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${seed}`}
@@ -204,7 +204,7 @@ console.log("Is Owner:", isOwner);
       {/* Field, Dates & View Button */}
       <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-sm sm:text-base text-gray-800 font-medium">
         <button className="uppercase px-3 py-1 bg-blue-200 hover:bg-blue-400 rounded-md text-xs sm:text-lg">
-          {project.category}
+          {project?.category}
           {/* {Array.isArray(project.category) ? field.join(', ') : field} */}
         </button>
         <span className="text-gray-700">Started on: {startDate}</span>
@@ -213,7 +213,7 @@ console.log("Is Owner:", isOwner);
   ) : (
     <span className="text-gray-700">Ended: {endDate}</span>
   )}
-        <Link to={`/project/${project._id || project.id}`} className="ml-auto" onClick={() => {(()=>{window.scrollTo({top:0, behavior:"smooth"})})}}>
+        <Link to={`/project/${project?._id || project?.id}`} className="ml-auto" onClick={() => {(()=>{window.scrollTo({top:0, behavior:"smooth"})})}}>
           <button className="px-4 py-1.5 bg-blue-600 text-white text-xs sm:text-sm rounded-md hover:bg-blue-700 transition">
             View
           </button>

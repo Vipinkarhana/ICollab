@@ -17,6 +17,7 @@ export const updateTopProjects = createAsyncThunk(
       // thunkAPI.dispatch(fetchUserProfile(username));
 
       // Return full topProjects to update state
+      console.log("Top Projects in Redux Thunk:", topProjects);
       return topProjects;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

@@ -6,6 +6,8 @@ import { fetchUserProjectsData } from '../../../Redux/Slices/ProjectSlice';
 import { updateTopProjects } from '../../../Redux/Slices/UserProfileSlice';
 
 const ProjectDisplay = ({ username }) => {
+  const topProjects = useSelector((state) => state?.userProfile?.data?.user?.profile?.topProjects);
+  console.log("Hit 1:",topProjects);
   const dispatch = useDispatch();
   const { userProjects, loading, error } = useSelector((state) => state.project);
   const { data: profileData } = useSelector((state) => state.userProfile);
@@ -13,6 +15,10 @@ const ProjectDisplay = ({ username }) => {
   useEffect(() => {
     dispatch(fetchUserProjectsData(username));
   }, [dispatch, username]);
+
+  useEffect(() => {
+    console.log("topProjects:",topProjects);
+  }, [topProjects]);
 
   const originalProjects = userProjects;
   const [projects, setProjects] = useState(originalProjects);
@@ -23,11 +29,11 @@ const ProjectDisplay = ({ username }) => {
     console.log("selectedCards:",selectedCards);
   },[selectedCards])
 
-  const topProjects = projects.filter((proj) => proj.pinned).slice(0, 3);
+  const selectedProjects = projects.filter((proj) => proj.pinned).slice(0, 3);
 
   useEffect(() => {
     if (!selectedProject || !selectedProject.pinned) {
-      setSelectedProject(topProjects[0] || null);
+      setSelectedProject(selectedProjects[0] || null);
     }
   }, [projects]);
 
@@ -201,8 +207,7 @@ dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
                           {selectionNumber}
                         </div>
                       )}
-                      {project?.id}
-                      <ProjectCard project={project} />
+                      <ProjectCard key={project?.id} project={project} />
                     </div>
                   );
                 })}
