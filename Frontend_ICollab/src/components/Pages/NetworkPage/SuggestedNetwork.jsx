@@ -47,10 +47,10 @@ function SuggestedNetwork() {
   return (
     <div className="p-6 rounded-md w-full h-auto bg-white border border-gray-300">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">People you may know</h2>
+        <h2 className="text-2xl font-semibold">People you may know</h2>
         <button
           onClick={toggleShowAll}
-          className="text-blue-600 hover:underline font-medium"
+          className="text-blue-600 hover:underline font-medium text-lg"
         >
           {showAll ? "Show Less" : "Show All"}
         </button>
@@ -58,7 +58,7 @@ function SuggestedNetwork() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {visiblePeople.map((person, index) => (
-  <SuggestedNetworkCard key={person.id} person={person} collabStatus={collabStatus} onClick={handleCollabClick} />
+   <SuggestedNetworkCard key={person.id} person={person} collabStatus={collabStatus} onClick={handleCollabClick} />
 ))}
 
       </div>

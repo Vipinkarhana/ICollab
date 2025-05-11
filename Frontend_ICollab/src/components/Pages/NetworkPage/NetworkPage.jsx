@@ -6,6 +6,7 @@ import { Users } from "lucide-react";
 import CollaborationRequest from "./CollaborationRequest";
 import {getRequest} from "../../../Services/networkService";
 import { useEffect, useState } from "react";
+import Request from "./Request";
 
 function NetworkPage() {
 
@@ -75,6 +76,7 @@ function NetworkPage() {
 
       {/* Main Content (My Network and Suggested Network) */}
       <div className="w-full lg:w-[55%] flex flex-col gap-6">
+        <Request />
         <MyNetwork />
         <SuggestedNetwork />
       </div>
