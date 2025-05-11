@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { EllipsisVertical, UserPlus, Trash2, PinOff  } from "lucide-react";
-import { toggleSaveProject } from "../../Services/projectService";
+import { toggleSaveProject, deleteProject } from "../../Services/projectService";
 import {
   BookmarkIcon as OutlineBookmark,
   BookmarkIcon as SolidBookmark,
@@ -10,6 +11,7 @@ import {
 const ProjectCard = ({
   project,
   onSave,
+  onDelete,
 }) => {
 console.log("Project: ",project);
 
@@ -54,6 +56,22 @@ console.log("Project: ",project);
   }, [project.isSaved]);
   
   const menuRef = useRef(null);
+
+  const currentUser = useSelector((state) => state.user.userData);
+  const ownerId = project.user?._id || project.user; // Handle both populated and unpopulated user
+  const isOwner = String(currentUser?._id) === String(ownerId);
+  console.log("Current User ID:", currentUser?._id);
+console.log("Project Owner ID:", ownerId);
+console.log("Is Owner:", isOwner);
+
+  const handleDelete = async () => {
+    try {
+      await deleteProject(project._id);
+      if (onDelete) onDelete(project._id);
+    } catch (error) {
+      console.error("Delete failed:", error.response?.data?.message || error.message);
+    }
+  };
 
   const handleToggleSave = async () => {
     try {
@@ -143,11 +161,12 @@ console.log("Project: ",project);
               < PinOff color="gray" size={18} />
                <p>Pin</p>
               </button> */}
-
-              <button className="flex items-center gap-2 px-4 py-2 text-lg text-red-700 hover:bg-gray-100 w-full text-left">
+              {isOwner && (
+              <button onClick={handleDelete} className="flex items-center gap-2 px-4 py-2 text-lg text-red-700 hover:bg-gray-100 w-full text-left">
               < Trash2 color="red" size={18} />
                <p>Delete</p>
               </button>
+              )}
             </div>
           )}
           

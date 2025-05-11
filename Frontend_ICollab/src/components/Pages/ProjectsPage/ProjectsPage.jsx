@@ -88,6 +88,13 @@ const ProjectsPage = () => {
     setFinishedProjects(prev => updateProjectInList(prev));
   };
 
+  const handleDeleteProject = (deletedId) => {
+    setSliderOngoing(prev => prev.filter(p => p._id !== deletedId));
+    setSliderFinished(prev => prev.filter(p => p._id !== deletedId));
+    setOngoingProjects(prev => prev.filter(p => p._id !== deletedId));
+    setFinishedProjects(prev => prev.filter(p => p._id !== deletedId));
+  };
+
   const updateOngoingPagination = (newProjects) => {
     if (newProjects.length > 0) {
       const lastProject = newProjects[newProjects.length - 1];
@@ -182,6 +189,7 @@ const ProjectsPage = () => {
                 key = {project._id}
                 project = {{ ...project, isSaved: project.isSaved }}
                 onSave={handleProjectSave}
+                onDelete={handleDeleteProject}
               />
             </div>
           ))}
@@ -198,6 +206,7 @@ const ProjectsPage = () => {
               key={project.id}
               project = {project}
               onSave={handleProjectSave}
+              onDelete={handleDeleteProject}
             />
           ))}
         </div>
@@ -225,6 +234,7 @@ const ProjectsPage = () => {
               key={project._id}
               project = {project}
               onSave={handleProjectSave}
+              onDelete={handleDeleteProject}
             />
           ))}
         </div>

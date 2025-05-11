@@ -26,6 +26,10 @@ function MoreProject({ currentProjectId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+   const handleDeleteProject = (deletedId) => {
+    setFilteredProjects(prev => prev.filter(project => project._id !== deletedId));
+  };
+
   useEffect(() => {
     const fetchAndFilterProjects  = async () => {
       try {
@@ -77,6 +81,7 @@ function MoreProject({ currentProjectId }) {
             <ProjectCard
             key={project._id}
             project={project}
+            onDelete={handleDeleteProject} 
             />
           ))
         ) : (
