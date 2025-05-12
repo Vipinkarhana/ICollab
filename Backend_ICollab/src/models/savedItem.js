@@ -4,24 +4,22 @@ const savedItemSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      unique: true,
+      ref: 'user',
       required: true,
     },
-    savedPosts: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'post', // Reference to the Post model
-      },
-    ],
-    savedProjects: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'project', // Reference to the Project model
-      },
-    ],
+    item: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      refPath: 'itemType',
+    },
+    itemType: {
+      type: String,
+      required: true,
+      enum: ['post', 'project'],
+    },
   },
   { timestamps: true }
 );
+
 
 module.exports = mongoose.model('SavedItem', savedItemSchema);

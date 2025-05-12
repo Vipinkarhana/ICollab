@@ -20,6 +20,7 @@ var networkRouter = require('./src/routes/network');
 var adminPostRouter = require('./src/Admin/routes/postRoute');
 var adminAnalyticsRouter = require('./src/Admin/routes/analyticsRoute');
 var adminNotificationRouter = require('./src/Admin/routes/notificationRoute');
+var savedItemRouter = require('./src/routes/savedItemRoute');
 
 var app = express();
 
@@ -59,6 +60,7 @@ app.use('/api/profile', profileRouter);
 app.use('/api/announcement', surveyRouter);
 app.use('/api/network', networkRouter);
 app.use('/api/project', projectRouter);
+app.use('/api/saveditem', savedItemRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
