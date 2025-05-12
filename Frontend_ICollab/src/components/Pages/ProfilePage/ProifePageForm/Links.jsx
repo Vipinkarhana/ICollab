@@ -33,45 +33,46 @@ const Links = ({ setActiveTab, formData, updateField, handleSave }) => {
   ];
 
   return (
-    <div className="relative h-auto pb-20">
-    <div className="w-full sm:w-[80%] md:w-[60%] lg:w-[45%] mx-auto sm:p-4 p-4 bg-white rounded-lg shadow mt-14">
-      <h2 className="text-2xl font-semibold mb-2">Online Profiles</h2>
-      <p className="text-lg text-gray-600 mb-4">
-        Add links to your GitHub, LinkedIn, or any other online profile that
-        showcases your work.
-      </p>
+    <div className="relative h-auto pb-4">
+      <div className="w-full sm:w-[80%] md:w-[60%] lg:w-[45%] mx-auto sm:p-4 p-4 bg-white rounded-lg shadow mt-14">
+        <h2 className="text-2xl font-semibold mb-2">Online Profiles</h2>
+        <p className="text-lg text-gray-600 mb-4">
+          Add links to your GitHub, LinkedIn, or any other online profile that
+          showcases your work.
+        </p>
 
-      {links.map((link, index) => (
-        <div key={index} className="flex items-center mb-3">
-          {icons[index] || <Globe className="w-5 h-5 text-blue-600 mr-2" />}
-          <input
-            type="url"
-            value={link}
-            onChange={(e) => handleLinkChange(index, e.target.value)}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder={placeholders[index] || "https://your-link.com"}
-          />
-        </div>
-      ))}
+        {links.map((link, index) => (
+          <div key={index} className="flex items-center mb-3">
+            {icons[index] || <Globe className="w-5 h-5 text-blue-600 mr-2" />}
+            <input
+              type="url"
+              value={link}
+              onChange={(e) => handleLinkChange(index, e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder={placeholders[index] || "https://your-link.com"}
+            />
+          </div>
+        ))}
 
-      <button
-        onClick={addNewProfile}
-        disabled={links.length >= 5}
-        className={`mt-4 px-4 py-2 rounded-md text-xl w-full sm:w-[60%] transition 
+        <button
+          onClick={addNewProfile}
+          disabled={links.length >= 5}
+          className={`mt-4 px-4 py-2 rounded-md text-xl w-full sm:w-[60%] transition 
           ${
             links.length >= 5
               ? "bg-gray-300 text-gray-600 cursor-not-allowed"
               : "bg-teal-200 text-black hover:bg-teal-300"
           }
         `}
-      >
-        + Add Social Link
-      </button>
-
+        >
+          + Add Social Link
+        </button>
+      </div>
       {/* Navigation Buttons */}
-      <div className="sm:fixed absolute bottom-0  left-0 right-0 p-4 flex justify-between items-center sm:px-32 z-50 ">
+
+      <div className=" left-4 right-4 sm:left-32 sm:right-32 flex flex-row justify-between items-center space-x-4 mt-12  sm:mt-24">
         <button
-          onClick={() => setActiveTab("EXPERIENCE")}
+          onClick={() => setActiveTab("CONTACT")}
           className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition"
         >
           ← Back
@@ -83,7 +84,6 @@ const Links = ({ setActiveTab, formData, updateField, handleSave }) => {
           Save
         </button>
       </div>
-    </div>
     </div>
   );
 };

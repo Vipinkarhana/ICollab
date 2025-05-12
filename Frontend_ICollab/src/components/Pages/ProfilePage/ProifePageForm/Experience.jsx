@@ -232,7 +232,7 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
           ← Back
         </button>
         <button
-          onClick={() => setActiveTab("LINKS")}
+          onClick={() => setActiveTab("EDUCATION")}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition "
         >
           Next →

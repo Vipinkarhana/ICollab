@@ -127,7 +127,7 @@ function ProfilePic({ setActiveTab }) {
                     onClick={() => setSelectedAvatarId(avatar.id)}
                     className={`rounded-full shadow-lg object-cover transform cursor-pointer mx-auto border-none ${
                       isCenter
-                        ? "w-32 h-32 sm:w-36 sm:h-36 md:w-60 md:h-60 hover:scale-110"
+                        ? "w-36 h-36 sm:w-36 sm:h-36 md:w-60 md:h-60 hover:scale-110"
                         : "w-24 h-24 sm:w-36 sm:h-36 opacity-80 hover:scale-105"
                     }`}
                   />
@@ -136,7 +136,7 @@ function ProfilePic({ setActiveTab }) {
                       className="absolute top-1 right-1 bg-blue-100 p-3 rounded-full cursor-pointer transition"
                       onClick={() => triggerFileInput(index)}
                     >
-                      <Pencil size={32} className="text-blue-600" />
+                      <Pencil  className="text-blue-600 w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8" />
                     </div>
                   )}
                   <input

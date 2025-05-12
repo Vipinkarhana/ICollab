@@ -9,7 +9,7 @@ import ProfilePic from "./ProfilePic";
 import { updateProfile } from "../../../../Services/profileService";
 
 function ProfilePageForm() {
-  const [activeTab, setActiveTab] = useState("ABOUT");
+  const [activeTab, setActiveTab] = useState("PROFILE PIC");
   const tabs = ["PROFILE PIC", "ABOUT", "EXPERIENCE", "EDUCATION", "CONTACT", "LINKS"]
 
   const [formData, setFormData] = useState({
@@ -109,14 +109,14 @@ function ProfilePageForm() {
             </section>
 
             {/* Navigation Buttons */}
-            <div className="bottom-4 ">
-            <div className="absolute right-4 p-2 space-x-4 mt-4 md:-mt-6">
-              {/* <button
+          <div className=" bottom-0  ">
+          <div className="absolute p-2 right-4 left-4 sm:left-32 sm:right-32 flex flex-row justify-between items-center space-x-4 mt-4 sm:mt-8">
+              <button
                 onClick={() => setActiveTab("PROFILE PIC")}
                 className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition"
               >
                 ← Back
-              </button> */}
+              </button>
               <button
                 onClick={() => setActiveTab("EXPERIENCE")}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
@@ -128,10 +128,10 @@ function ProfilePageForm() {
           </div>
         )}
 
-        {activeTab === "EDUCATION" && <Education />}
+        {activeTab === "EDUCATION" && <Education setActiveTab={setActiveTab} />}
         {activeTab === "EXPERIENCE" && <Experience setActiveTab={setActiveTab} formData={formData} updateField={updateField} />}
         {activeTab === "LINKS" && <Links setActiveTab={setActiveTab} formData={formData} updateField={updateField} handleSave={handleSave}  />}
-        {activeTab === "CONTACT" && <Contact />}
+        {activeTab === "CONTACT" && <Contact setActiveTab={setActiveTab} />}
       </main>
     </div>
   );

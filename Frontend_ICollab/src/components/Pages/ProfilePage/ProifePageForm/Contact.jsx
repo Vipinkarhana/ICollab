@@ -1,8 +1,8 @@
 import React from "react";
 
-const Contact = () => {
+const Contact = ({setActiveTab}) => {
   return (
-    <div className="min-h-screen w-full overflow-x-hidden">
+    <div className="h-auto w-full overflow-x-hidden">
       <main className="w-full max-w-screen-lg mx-auto sm:p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-auto">
           {/* Left Column - Contact Info */}
@@ -15,7 +15,7 @@ const Contact = () => {
                   type="email"
                   className="mt-1 w-full bg-gray-100 px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:border-blue-400"
                   placeholder="Enter your email"
-                  defaultValue="mohitgoel524@gmail.com"
+                  defaultValue=" "
                 />
                 <div className="flex justify-between items-center mt-2">
                   <span className="bg-yellow-700 text-white text-sm font-semibold px-2 py-1 rounded-full">
@@ -73,8 +73,27 @@ const Contact = () => {
             </div>
           </div>
         </div>
+
+         
+
       </main>
-    </div>
+       <div className=" bottom-0">
+       <div className="absolute p-2 right-4 left-4 sm:left-32 sm:right-32 flex flex-row justify-between items-center space-x-4 mt-4">
+        <button
+          onClick={() => setActiveTab("EDUCATION")}
+          className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition "
+        >
+          ← Back
+        </button>
+        <button
+          onClick={() => setActiveTab("LINKS")}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition "
+        >
+          Next →
+        </button>
+      </div>
+      </div>
+     </div>
   );
 };
 

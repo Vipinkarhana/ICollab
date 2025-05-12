@@ -1,8 +1,8 @@
 import React from "react";
 
-const Education = () => {
+const Education = ({setActiveTab}) => {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center sm:p-4 ">
+    <div className="h-auto  bg-gray-100 flex items-center justify-center sm:p-4 ">
       <div className="w-full max-w-[95vw] sm:max-w-[80vw] md:max-w-[70vw] lg:max-w-[60vw] xl:max-w-[50vw] bg-white shadow-lg rounded-xl p-6 space-y-6 min-h-[20svh]">
         <h2 className="text-2xl sm:text-3xl font-semibold">Education</h2>
         <p className="text-base sm:text-xl text-gray-600">
@@ -90,8 +90,27 @@ const Education = () => {
             </div>
           </div>
         </div>
+
+         <div className=" bottom-0  ">
+       <div className="absolute p-2 right-4 left-4 sm:left-32 sm:right-32 flex flex-row justify-between items-center space-x-4 mt-10 sm:mt-14">
+        <button
+          onClick={() => setActiveTab("EXPERIENCE")}
+          className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition "
+        >
+          ← Back
+        </button>
+        <button
+          onClick={() => setActiveTab("CONTACT")}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition "
+        >
+          Next →
+        </button>
+      </div>
+      </div>
+
       </div>
     </div>
+    
   );
 };
 
