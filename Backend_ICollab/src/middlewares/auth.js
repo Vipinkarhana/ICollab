@@ -3,7 +3,11 @@ const config = require('../../config/config');
 
 const isloggedin = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader && authHeader.split(' ')[1];
+  } else if (req.query.token) {
+    token = req.query.token;
+  }
   console.log('Token:', token); // Log the token for debugging
   console.log('Auth Header:', authHeader); // Log the auth header for debugging
   if (!token) {

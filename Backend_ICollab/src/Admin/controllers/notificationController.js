@@ -1,4 +1,5 @@
 const Notification = require('../../models/notification.js');
+const { sendSSE } = require("../routes/sseRoute.js");
 
 // Send notification
 const sendNotification = async (req, res) => {
@@ -16,6 +17,7 @@ const sendNotification = async (req, res) => {
             { $push: { messages: { text: message } } },
             { upsert: true, new: true }
           );
+          sendSSE(recipient, { text: message, createdAt: new Date() });
         })
       );
     } else {
@@ -24,7 +26,9 @@ const sendNotification = async (req, res) => {
         { $push: { messages: { text: message } } },
         { upsert: true, new: true }
       );
+      sendSSE(recipient, { text: message });
     }
+
     res.status(200).json({ message: "Notification sent" });
   } catch (error) {
     console.error(error);

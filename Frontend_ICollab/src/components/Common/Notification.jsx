@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Bell } from "lucide-react";
-import { getNotification, markNotificationRead, deleteNotification } from "../../Services/adminService";
+import { subscribeToNotifications, getNotification, markNotificationRead, deleteNotification } from "../../Services/adminService";
 
 const Notification = ({ username }) => {
   const [open, setOpen] = useState(false);
@@ -32,12 +32,22 @@ const Notification = ({ username }) => {
   }, []);
 
   useEffect(() => {
-    if (username) {
-      fetchNotifications(); // initial fetch
-      const interval = setInterval(fetchNotifications, 7000); // poll every 7s
-      return () => clearInterval(interval);
-    }
-  }, [username]);
+  if (!username) return;
+
+  fetchNotifications(); // initial fetch
+
+  const sse = subscribeToNotifications(
+    username,
+    () => fetchNotifications(), // onMessage
+    (err) => console.error("SSE failed", err) // onError
+  );
+
+  return () => {
+    if (sse) sse.close();
+  };
+}, [username]);
+
+
 
   const handleMarkAsRead = async (id) => {
     await markNotificationRead(username, id);

@@ -7,11 +7,11 @@ const {
     getAllSavedItems,
 } = require("../controllers/saveItemController");
 
-const { isLoggedin } = require("../middlewares/auth");
+const { isloggedin } = require("../middlewares/auth");
 
-router.post('/saveitem', isLoggedin ,saveItem );
-router.post('/unsaveitem', isLoggedin, unsaveItem);
-router.get('/saveditems', isLoggedin, getAllSavedItems);
+router.post('/saveitem', isloggedin ,saveItem );
+router.post('/unsaveitem', isloggedin, unsaveItem);
+router.get('/saveditems', isloggedin, getAllSavedItems);
 
 module.exports = router;
 

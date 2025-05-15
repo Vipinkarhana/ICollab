@@ -1,4 +1,4 @@
-const SavedItem = require('../models/savedItemModel');
+const SavedItem = require('../models/savedItem');
 
 const saveItem = async (req, res) => {
   const { itemId, itemType } = req.body;
