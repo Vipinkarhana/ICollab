@@ -4,10 +4,10 @@ const router = express.Router();
 
 let clients = {};
 
-router.get("/notifications/stream/:username", isloggedin, (req, res) => {
+router.get("/notifications/stream/:username", (req, res) => {
   const { username } = req.params;
 
-  req.socket.setTimeout(0); // Keep connection open
+  req.socket.setTimeout(0);
 
   res.set({
     "Content-Type": "text/event-stream",
@@ -17,7 +17,6 @@ router.get("/notifications/stream/:username", isloggedin, (req, res) => {
 
   res.flushHeaders();
 
-  // Save this client's response object
   clients[username] = res;
 
   req.on("close", () => {
