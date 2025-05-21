@@ -49,7 +49,7 @@ function StartPostModal() {
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]">
       <div className="relative w-[35rem] h-[35rem] bg-white shadow-lg rounded-lg  flex flex-col justify-start overflow-y-auto scrollbar-hide">
         <div className="h-[13%] w-full flex px-4 justify-between bg-gray-50 rounded-t-lg">
           <div className="h-full w-auto flex justify-evenly items-center ">

@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../../../Redux/Slices/UserProfileSlice";
 import { fetchMyPosts } from "../../../Redux/Slices/PostSlice";
 import { fetchUserProjectsData } from "../../../Redux/Slices/ProjectSlice";
+import FloatingButtonMenu from "./FloatingButtonMenu";
 function ProfilePage() {
   const dispatch = useDispatch();
   const { username } = useParams();
@@ -39,6 +40,7 @@ function ProfilePage() {
 
   return (
     <div className="w-[99svw] sm:w-[98svw] min-h-screen flex flex-col justify-start items-start m-0 p-0 mt-14">
+      <FloatingButtonMenu  setActiveTab={setActiveTab}/>
       <Intro activeTab={activeTab} setActiveTab={setActiveTab} user={user?.user} />
       {activeTab === "Posts" && (
         <div className="w-full p-2 sm:p-4">
