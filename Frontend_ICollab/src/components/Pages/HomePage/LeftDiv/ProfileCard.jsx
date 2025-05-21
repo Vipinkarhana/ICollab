@@ -21,11 +21,9 @@ import { useSelector } from "react-redux";
 
 // TODO: Remove This dependency of otherUser (Take Prop user as input)
 const ProfileCard = ({otherUser}) => {
-  console.log("Other Profile in ProfileCard in Home Page: ", otherUser)
   const user = otherUser || useSelector((state) => state?.user?.userData);
   const profile = otherUser === null? useSelector((state) => state?.user?.profileData): otherUser?.profile;
   const username = user?.username;
-  console.log("In Home Page",profile);
   return (
     <>
       <div className="h-48 w-[100%] bg-white rounded-md flex flex-col justify-evenly py-3 border-gray-300 border px-4">

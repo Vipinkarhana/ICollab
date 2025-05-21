@@ -12,8 +12,6 @@ const {
   fetchUserProjects,
   finishedFeed,
   updateTopProjects,
-  toggleSaveProject,
-  getSavedProjects,
   sendCollabRequest,
   acceptCollabRequest,
   rejectCollabRequest,
@@ -31,8 +29,6 @@ router.get('/projectfeed', isloggedin, projectFeed);
 router.get('/ongoingfeed', isloggedin, ongoingFeed);
 router.get('/finishedfeed', isloggedin, finishedFeed);
 router.get('/userprojects/:username', fetchUserProjects);
-router.post('/saveproject', isloggedin, toggleSaveProject);
-router.get('/savedprojects', isloggedin, getSavedProjects);
 router.post('/sendcollabreq', isloggedin, sendCollabRequest);
 router.post('/acceptcollabreq', isloggedin, acceptCollabRequest);
 router.post('/rejectcollabreq', isloggedin, rejectCollabRequest);

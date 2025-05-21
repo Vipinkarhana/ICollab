@@ -102,15 +102,6 @@ export const updatePinnedProjects = async (projectIds) => {
 // };
 
 
-export const toggleSaveProject = async (projectid) => {
-  try{
-  const response = await privateAxios.post("/project/saveproject",{projectid});
-  return response.data; // should return something like { status: "saved" } or { status: "unsaved" }
-  }
-  catch(err){
-    next(err);
-  }
-};
 
 export const deleteProject = async (projectid) => {
   try{

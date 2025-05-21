@@ -17,7 +17,6 @@ import React from 'react';
 
 function ProfilePic({picture, className = "" }) {
   const ProfileImg = "/ProfilePic.png";
-  console.log("ProfilePic: ", picture);
   return (
     <div
       className={`h-16 w-16 rounded-full border-2 border-gray-400  overflow-hidden ${className}`}

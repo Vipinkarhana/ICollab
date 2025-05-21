@@ -6,6 +6,7 @@ import userReducer from "./Slices/UserSlice";
 import postReducer from "./Slices/PostSlice";
 import projectReducer from "./Slices/ProjectSlice";
 import userProfileReducer from "./Slices/UserProfileSlice"
+import saveItemReducer from "../Redux/Slices/SaveItemSlice";
 
 const userPersistConfig = {
   key: "user",
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   post: persistReducer(postPersistConfig, postReducer),
   project: persistReducer(projectPersistConfig, projectReducer),
   userProfile: userProfileReducer,
+  savedItem: saveItemReducer,
 });
 
 

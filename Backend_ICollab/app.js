@@ -62,7 +62,7 @@ app.use('/api/profile', profileRouter);
 app.use('/api/announcement', surveyRouter);
 app.use('/api/network', networkRouter);
 app.use('/api/project', projectRouter);
-app.use('/api/saveditem', savedItemRouter);
+app.use('/api/saveitems', savedItemRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
