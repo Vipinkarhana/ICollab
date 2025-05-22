@@ -52,7 +52,7 @@ const Header = () => {
             <img src={Logo} alt="Logo" className="h-10 w-auto object-contain" />
           </Link>
           <Link to={`/profile/${username}`}>
-            <ProfilePic className="md:hidden flex w-11 h-11 rounded-full" />
+            <ProfilePic className="md:hidden flex w-[2.8rem]  h-[2.8rem] rounded-full" />
           </Link>
           <div className="relative w-56 sm:w-36 md:w-64">
             <svg
