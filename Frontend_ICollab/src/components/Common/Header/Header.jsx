@@ -78,7 +78,7 @@ const Header = () => {
         </div>
 
         {/* Navigation Icons (Desktop Only) */}
-        <div className="hidden md:flex absolute left-1/2 ml-28 transform -translate-x-1/2 items-end gap-6 h-full  text-gray-600">
+        <div className="hidden md:flex absolute left-1/2 ml-28 transform -translate-x-1/2 items-end gap-5 h-full w-auto text-gray-600">
           {menuItems.map(({ icon, text, path }) => {
             const isActive = location.pathname === path;
             return (
