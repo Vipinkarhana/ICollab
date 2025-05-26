@@ -7,8 +7,9 @@ const rejectedRequestModel = require('../models/rejectedRequests');
 
 const suggestedNetwork = async (req, res, next) => {
   const username = req.user.username;
-  const user = await userModel.findOne({ username: username });
-  const connections = await connectionModel.findOne({ user: user._id });
+  // TODO: Fix This It Will give Performance Issue
+  const user = await userModel.findOne({ username: username }).lean();
+  const connections = await connectionModel.findOne({ user: user._id }).lean();
   const connectedUserIds = connections ? connections.connectedusers : [];
 
   try {
@@ -20,14 +21,25 @@ const suggestedNetwork = async (req, res, next) => {
 
     connectedUserIds.push(user._id);
 
-    const notConnectedUsers = await userModel.find({
-      _id: { $nin: connectedUserIds },
-    });
+    // TODO: Form an Algo for suggesting users
+    const notConnectedUsers = await userModel
+      .find({
+        _id: { $nin: connectedUserIds }
+      })
+      .populate({
+        path: 'profile',
+        select: 'designation -_id'
+      })
+      .select('name profile_pic username')
+      .limit(50)
+      // .lean();
+      
+      const response = notConnectedUsers.map(user => user.toJSON());
 
     res.status(200).json({
       message: 'Non-connected users fetched successfully',
       status: 'success',
-      data: notConnectedUsers,
+      data: response,
     });
   } catch (error) {
     next(error);
@@ -36,35 +48,36 @@ const suggestedNetwork = async (req, res, next) => {
 
 const userNetwork = async (req, res, next) => {
   const username = req.user.username;
-  console.log('username: ', username);
-  console.log('username: ', req.user);
-  const user = await userModel.findOne({ username: username });
-  console.log('user: ', user);
+  const user = await userModel.findOne({ username: username }).lean();
 
   try {
-    let emptyNetwork = false;
     const connections = await connectionModel
       .findOne({ user: user._id })
       .populate({
         path: 'connectedusers',
+        select: 'name profile_pic username -_id',
         populate: {
           path: 'profile',
-        },
-      });
-    const connectedUserIds = connections ? connections.connectedusers : [];
-    if(connectedUserIds.length === 0)
-      emptyNetwork = true;
+          select: 'designation about -_id'
+        }
+      })
+      .lean();
 
-    if (!connectedUserIds) {
-      return next(
-        new ApiError(400, 'Connected User Ids couldn not be fetched')
-      );
+      if (!connections) {
+        return next(
+          new ApiError(400, 'Connections Not Found')
+        );
+      }
+
+    const connectedUser = connections ? connections.connectedusers : [];
+    if(connectedUser.length === 0){
+      return next(new ApiError(400, 'No Users Connected'));
     }
 
     res.status(200).json({
       message: 'Connected users fetched successfully',
       status: 'success',
-      data: {connectedUserIds, emptyNetwork},
+      data: connectedUser,
     });
   } catch (error) {
     next(error);
@@ -72,16 +85,13 @@ const userNetwork = async (req, res, next) => {
 };
 
 const sendRequest = async (req, res, next) => {
-  console.log(req.body);
+
   const { recieverUsername } = req.body;
 
   const user = await userModel.findOne({ username: req.user.username }).lean();
   const reciever = await userModel
     .findOne({ username: recieverUsername })
     .lean();
-
-  console.log('reciever: ', reciever);
-  console.log('user: ', user);
 
   try {
     if (!reciever) {
@@ -139,14 +149,13 @@ const sendRequest = async (req, res, next) => {
 };
 
 const acceptRequest = async (req, res, next) => {
-  console.log(req.body);
+
   const { senderUsername } = req.body;
   const sender = await userModel.findOne({ username: senderUsername }).lean();
   const reciever = await userModel
     .findOne({ username: req.user.username })
     .lean();
-  console.log('reciever: ', reciever);
-  console.log('sender: ', sender);
+
   const request = await requestModel
     .findOne({
       sender: sender._id,
@@ -223,14 +232,15 @@ const rejectRequest = async (req, res, next) => {
   }
 };
 
-const getRequest = async (req, res, next) => {
+const collabRequest = async (req, res, next) => {
   const user = await userModel.findOne({ username: req.user.username }).lean();
   const requests = await requestModel
     .find({ reciever: user._id })
-    .populate('sender');
+    .populate('sender')
+    .lean();
   try {
     if (!requests) {
-      return next(new ApiError(400, 'Requests could not be fetched'));
+      return next(new ApiError(400, 'Collaboration Requests could not be fetched'));
     }
 
     res.status(200).json({
@@ -243,11 +253,39 @@ const getRequest = async (req, res, next) => {
   }
 };
 
+const myCollabRequest = async (req, res, next) => {
+  try {
+    const user = await userModel.findOne({ username: req.user.username }).lean();
+    const requests = await requestModel
+      .find({ sender: user._id })
+      .select('_id reciever')
+      .populate({
+        path: 'reciever',
+        select: 'name profile_pic username'
+    })
+
+    if (!requests) {
+      return next(new ApiError(400, 'Your Requests could not be fetched'));
+    }
+
+    const response = requests.map(request => request.toJSON())
+
+    res.status(200).json({
+      message: 'Requests fetched successfully',
+      status: 'success',
+      data: response,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   sendRequest,
   acceptRequest,
   rejectRequest,
   suggestedNetwork,
   userNetwork,
-  getRequest,
+  collabRequest,
+  myCollabRequest,
 };

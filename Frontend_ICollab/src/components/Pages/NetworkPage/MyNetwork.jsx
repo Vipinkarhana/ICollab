@@ -4,14 +4,14 @@ import { userNetwork } from "../../../Services/networkService"; // Adjust the im
 
 const MyNetwork = () => {
   const [showAll, setShowAll] = useState(false);
-  const [myNetwork, setmyNetwork] = useState([]);
+  const [myNetwork, setMyNetwork] = useState([]);
 
   useEffect(() => {
     const fetchNetworkData = async () => {
       try {
         const response = await userNetwork();
         if (response.status === "success") {
-          setmyNetwork(response.data);
+          setMyNetwork(response.data);
         }
       } catch (error) {
         console.error("Error fetching network data:", error);
@@ -21,7 +21,7 @@ const MyNetwork = () => {
   }, []);
 
   const toggleShowAll = () => setShowAll(!showAll);
-  const visiblemyNetwork = showAll ? myNetwork : myNetwork.slice(0, 6);
+  const visiblemyNetwork = myNetwork;
 
   return (
     <>

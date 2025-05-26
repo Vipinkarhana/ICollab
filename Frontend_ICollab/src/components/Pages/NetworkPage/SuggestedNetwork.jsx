@@ -14,7 +14,6 @@ function SuggestedNetwork() {
 
   // Function to handle button click
   const handleCollabClick = (personId) => {
-    console.log("Mohit see This:", personId);
     setCollabStatus((prevStatus) => ({
       ...prevStatus,
       [personId]: 'Pending',
@@ -22,14 +21,9 @@ function SuggestedNetwork() {
   };
 
   useEffect(() => {
-    console.log("Naman See This:", collabStatus)
-  }, [collabStatus])
-
-  useEffect(() => {
     const fetchNetworkData = async () => {
       try {
         const response = await suggestedNetwork();
-        console.log(response?.data);
         if (response.status === "success") {
           setPeople(response?.data);
         }
@@ -43,7 +37,7 @@ function SuggestedNetwork() {
   return (
     <div className="p-6 rounded-md w-full h-auto bg-white border border-gray-300">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">People you may know</h2>
+        <h2 className="text-2xl font-semibold">Suggested Network</h2>
         <button
           onClick={toggleShowAll}
           className="text-blue-600 hover:underline font-medium text-lg"

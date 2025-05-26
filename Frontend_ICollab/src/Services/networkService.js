@@ -12,10 +12,18 @@ export const updateInfo = async ({name,designation,profile}) => {
     }
 }
 
-export const getRequest = async () => {
+export const collabRequest = async () => {
     try {
-        const response = await privateAxios.get("/network/getrequest");
+        const response = await privateAxios.get("/network/collabrequest");
+        return response.data;
+    } catch (error) {
+        return error.response?.data || { error: "Post creation failed" };
+    }
+}
 
+export const myCollabRequest = async () => {
+    try {
+        const response = await privateAxios.get("/network/mycollabrequest");
         return response.data;
     } catch (error) {
         return error.response?.data || { error: "Post creation failed" };
@@ -71,7 +79,7 @@ export const suggestedNetwork = async () => {
 export const userNetwork = async () => {
     try {
         const response = await privateAxios.get("/network/usernetwork");
-        return response?.data.data;
+        return response?.data;
     } catch (error) {
         return error.response?.data || { error: "Post creation failed" };
     }

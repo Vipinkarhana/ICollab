@@ -36,7 +36,6 @@ function PostCard({ post }) {
   const text = post?.content;
   const media = post?.media;
   const user = post?.user;
-  console.log("user", user);
 
   const currentUser = useSelector((state) => state.user.userData);
   const [isFullTextVisible, setIsFullTextVisible] = useState(false);

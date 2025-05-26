@@ -25,8 +25,7 @@ let collabSchema = mongoose.Schema(
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
-        // delete ret.status; // TODO: Uncomment this line to hide the status field (v0)
-        // delete ret.updatedAt;
+        delete ret.updatedAt;
         return ret;
       },
     },
