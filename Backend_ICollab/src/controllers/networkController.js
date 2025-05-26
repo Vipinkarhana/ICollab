@@ -7,24 +7,36 @@ const rejectedRequestModel = require('../models/rejectedRequests');
 
 const suggestedNetwork = async (req, res, next) => {
   const username = req.user.username;
-  // TODO: Fix This It Will give Performance Issue
-  const user = await userModel.findOne({ username: username }).lean();
-  const connections = await connectionModel.findOne({ user: user._id }).lean();
-  const connectedUserIds = connections ? connections.connectedusers : [];
-
   try {
-    if (!connectedUserIds) {
-      return next(
-        new ApiError(400, 'Connected User Ids couldn not be fetched')
-      );
+    const user = await userModel.findOne({ username }).lean();
+    const userId = user._id;
+
+    const connections = await connectionModel.findOne({ user: userId }).lean();
+    const connectedUserIds = connections ? connections.connectedusers : [];
+
+    const requests = await requestModel.find({
+      $or: [{ sender: userId }, { reciever: userId }],
+    }).lean();
+
+    const requestedUserIds = new Set();
+    for (const req of requests) {
+      if (req.sender.toString() !== userId.toString()) {
+        requestedUserIds.add(req.sender.toString());
+      }
+      if (req.reciever.toString() !== userId.toString()) {
+        requestedUserIds.add(req.reciever.toString());
+      }
     }
 
-    connectedUserIds.push(user._id);
+    const excludedIds = new Set([
+      ...connectedUserIds.map(id => id.toString()),
+      ...requestedUserIds,
+      userId.toString(),
+    ]);
 
-    // TODO: Form an Algo for suggesting users
     const notConnectedUsers = await userModel
       .find({
-        _id: { $nin: connectedUserIds }
+        _id: { $nin: Array.from(excludedIds) }
       })
       .populate({
         path: 'profile',
@@ -32,9 +44,8 @@ const suggestedNetwork = async (req, res, next) => {
       })
       .select('name profile_pic username')
       .limit(50)
-      // .lean();
-      
-      const response = notConnectedUsers.map(user => user.toJSON());
+
+    const response = notConnectedUsers.map(user => user.toJSON());
 
     res.status(200).json({
       message: 'Non-connected users fetched successfully',
@@ -45,6 +56,7 @@ const suggestedNetwork = async (req, res, next) => {
     next(error);
   }
 };
+
 
 const userNetwork = async (req, res, next) => {
   const username = req.user.username;
@@ -63,14 +75,14 @@ const userNetwork = async (req, res, next) => {
       })
       .lean();
 
-      if (!connections) {
-        return next(
-          new ApiError(400, 'Connections Not Found')
-        );
-      }
+    if (!connections) {
+      return next(
+        new ApiError(400, 'Connections Not Found')
+      );
+    }
 
     const connectedUser = connections ? connections.connectedusers : [];
-    if(connectedUser.length === 0){
+    if (connectedUser.length === 0) {
       return next(new ApiError(400, 'No Users Connected'));
     }
 
@@ -262,7 +274,7 @@ const myCollabRequest = async (req, res, next) => {
       .populate({
         path: 'reciever',
         select: 'name profile_pic username'
-    })
+      })
 
     if (!requests) {
       return next(new ApiError(400, 'Your Requests could not be fetched'));
