@@ -16,8 +16,9 @@ function ProfilePage() {
   const dispatch = useDispatch();
   const { username } = useParams();
   const location = useLocation();
-  const { from } = location.state || {};
-  const [activeTab, setActiveTab] = useState(from === "projects" ? "Projects" : "Intro");
+const initialTab = location.state?.activeTab || "Intro";
+const [activeTab, setActiveTab] = useState(initialTab);
+
 
   const { data: user, loading, error } = useSelector((state) => state?.userProfile);
   // const posts = useSelector((state) => state.post.otherUserPosts);

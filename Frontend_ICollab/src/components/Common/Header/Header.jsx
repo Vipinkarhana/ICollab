@@ -10,7 +10,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import ProfileDropDown from "../../ProfileDropDown/ProfileDropDown";
+import ProfileDropDown from "./ProfileDropDown/ProfileDropDown";
 import { logoutUser } from "../../../Redux/Slices/UserSlice";
 import ProfilePic from "../ProfilePic";
 
