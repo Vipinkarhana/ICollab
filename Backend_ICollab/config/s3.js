@@ -29,13 +29,14 @@ const uploadToR2 = async (key, buffer, contentType) => {
 
 const deleteFromR2 = async (fileUrl) => {
   try {
-    const urlObj = new URL(fileUrl);
-    const encodedkey = urlObj.pathname.substring(1); // Remove leading "/"
-    const key = decodeURIComponent(encodedkey);
-
+    // console.log("Reached Delete in R2");
+    // const urlObj = new URL(fileUrl);
+    // const encodedkey = urlObj.pathname.substring(1); // Remove leading "/"
+    // const key = decodeURIComponent(encodedkey);
+    // console.log("Reached Delete in R2");
     const command = new DeleteObjectCommand({
       Bucket: config.S3_BUCKET_NAME,
-      Key: key,
+      Key: fileUrl,
     });
 
     await s3.send(command);

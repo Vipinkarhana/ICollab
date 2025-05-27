@@ -726,6 +726,162 @@ const deleteProject = async (req, res, next) => {
   }
 };
 
+const editProject = async (req, res, next) => {
+  try {
+      const user = await userModel.findOne({username: req.user.username});
+      const { projectId, name, tagline, problem, challenges, technology, collaborator,links, videoLink, media, removeLogo, stillOngoing, startDate, endDate, category, description } = req.body;
+  
+      const project = await projectModel.findOne({ _id: projectId, user: user._id });
+      if (!project) return next(new ApiError(404, 'Project not found or unauthorized'));
+  
+      if (name) {
+        project.name = name;
+      }
+      if (tagline) {
+        project.tagline = tagline;
+      }
+      if (problem) {
+        project.problem = problem;
+      }
+      if (challenges) {
+        project.challenges = challenges;
+      }
+      if (technology && technology.length>0) {
+        const techArr = Array.isArray(technology) 
+                ? technology 
+                : [technology].filter(Boolean);
+        project.technology = techArr;
+      }
+      if (collaborator !== undefined) {
+        const collaboratorArray = Array.isArray(collaborator) 
+                ? collaborator 
+                : [collaborator].filter(Boolean);
+        if(collaboratorArray.length>0){
+                const collaboratorRegex = collaboratorArray.map(c => 
+                    new RegExp(`^${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
+                );
+
+                const users = await userModel.find({
+                    $or: [
+                        { username: { $in: collaboratorRegex } },
+                        { email: { $in: collaboratorRegex } }
+                    ]
+                });
+
+                const validIdentifiers = new Set();
+                users.forEach(user => {
+                    validIdentifiers.add(user.username.toLowerCase());
+                    validIdentifiers.add(user.email.toLowerCase());
+                });
+
+                const invalidCollaborators = collaboratorArray.filter(c => 
+                    !validIdentifiers.has(c.toLowerCase())
+                );
+
+                if (invalidCollaborators.length > 0) {
+                    return next(new ApiError(
+                        400, 
+                        `Invalid collaborators: ${invalidCollaborators.join(', ')}. ` +
+                        'They must be existing usernames or emails.'
+                    ));
+                }
+                project.collaborator = collaboratorArray;
+            }
+            else{
+              project.collaborator = [];
+            }
+                
+      }
+      if (links) {
+        project.links = links;
+      }
+      if (videoLink) {
+        project.videoLink = videoLink;
+      }
+      if (stillOngoing!=undefined) {
+        const isOngoing = (stillOngoing === true || stillOngoing === 'true');
+        project.isOngoing = isOngoing;
+         if (!isOngoing && !endDate) {
+        return next(new ApiError(400, 'End Date is required for non-ongoing projects'));
+      }
+      }
+      if (startDate) {
+        project.startDate = startDate;
+      }
+      if (endDate) {
+        project.endDate = endDate;
+      }
+      if (category) {
+        project.category = category;
+      }
+      if (description) {
+        project.description = description;
+      }
+
+console.log("Entering");
+      if (media!==undefined) {
+        console.log("Entered");
+      try{
+        //  existingMediaArray = Array.isArray(media) ? media : [media];
+        //  project.media = project.media || [];
+        //  const mediaToDelete = project.media.filter(mediaKey => !existingMediaArray.includes(mediaKey));
+        //  await Promise.all(mediaToDelete.map(async (key) => {
+        //   await deleteFromR2(key);
+        // }));
+        // project.media = existingMediaArray;
+        const existingMediaArray = Array.isArray(media) ? media : [media].filter(Boolean);
+        const mediaToDelete = project.media.filter(mediaKey => !existingMediaArray.includes(mediaKey));
+        await Promise.all(mediaToDelete.map(key => deleteFromR2(key)));
+        project.media = existingMediaArray;
+      } catch (err) {
+        return next(new ApiError(400, 'Invalid media format'));
+      }
+    }
+
+     if (req.files?.media) {
+      const mediaFiles = Array.isArray(req.files.media) ? req.files.media : [req.files.media];
+      for (const mediaFile of mediaFiles) {
+        const mediaKey = `projects/${project._id}/media-${Date.now()}-${mediaFile.originalname}`;
+        await uploadToR2(mediaKey, mediaFile.buffer, mediaFile.mimetype);
+        project.media.push(mediaKey);
+      }
+    }
+
+    if (req.files?.logo) {
+      // Delete old logo
+      if (project.logo) {
+        await deleteFromR2(project.logo);
+      }
+      // Upload new logo
+      const logoFile = Array.isArray(req.files.logo) ? req.files.logo[0] : req.files.logo;
+      const logoKey = `projects/${project._id}/logo-${Date.now()}-${logoFile.originalname}`;
+      await uploadToR2(logoKey, logoFile.buffer, logoFile.mimetype);
+      project.logo = logoKey;
+    } else if (removeLogo === 'true') {
+      if (project.logo) {
+        await deleteFromR2(project.logo);
+        project.logo = null;
+      }
+    }
+
+      await project.save();
+  
+      return res.status(200).json({
+        message: 'Project updated successfully',
+        status: 'success',
+        data: {
+                projectid: project._id,
+                logo: project.logo ? `${config.S3_PUBLIC_URL}/${project.logo}` : null,
+                media: project.media.map(key => `${config.S3_PUBLIC_URL}/${key}`)
+  },
+      });
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+};
+
+
 module.exports = {
   addProject,
   technologySuggestions,
@@ -742,4 +898,5 @@ module.exports = {
   rejectCollabRequest,
   getCollabRequest,
   deleteProject,
+  editProject,
 };

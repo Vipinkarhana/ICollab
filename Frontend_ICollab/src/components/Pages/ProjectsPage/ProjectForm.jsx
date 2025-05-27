@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { addProject, getCollaboratorSuggestions } from "../../../Services/projectService";
+import { addProject, getCollaboratorSuggestions, getProjectDetails, updateProject } from "../../../Services/projectService";
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
-const ProjectForm = () => {
+const ProjectForm = ({ project: existingProject }) => {
+  const { projectId: urlProjectId } = useParams(); // Get project ID from URL
+   const isEditMode = !!urlProjectId;
+  //  const isEditMode = !!existingProject;
   const navigate = useNavigate();
+  // const [projectId, setProjectId] = useState(existingProject?._id || null);
+   const [projectId, setProjectId] = useState(urlProjectId || null);
   const [logo, setLogo] = useState(null); // holds the File
+  const [removeLogo, setRemoveLogo] = useState(false);
   const [logoPreview, setLogoPreview] = useState(null); // holds the blob-URL
+  // const [isLoading, setIsLoading] = useState(false);
   const textClass = "text-sm";
   const [formData, setFormData] = useState({
     projectName: "",
@@ -136,22 +143,57 @@ const ProjectForm = () => {
 
   const [pictures, setPictures] = useState([null, null, null, null, null]);
 
+  // function handlePictureChange(e, idx) {
+  //   const file = e.target.files[0];
+  //   setPictures((pics) => {
+  //     const copy = [...pics];
+  //     copy[idx] = file;
+  //     return copy;
+  //   });
+  // }
+
   function handlePictureChange(e, idx) {
-    const file = e.target.files[0];
-    setPictures((pics) => {
-      const copy = [...pics];
-      copy[idx] = file;
-      return copy;
-    });
+  const file = e.target.files[0];
+  setPictures(prev => {
+    const newPictures = [...prev];
+    newPictures[idx] = file ? {
+      file,
+      preview: URL.createObjectURL(file)
+    } : null;
+    return newPictures;
+  });
+}
+
+  // function handleLogoChange(e) {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+  //   setLogo(file); // remember for submit
+  //   setLogoPreview(URL.createObjectURL(file)); // generate preview URL
+  //   if (logoPreview) URL.revokeObjectURL(logoPreview);
+  // }
+
+  
+  const handleLogoChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  // Clear existing logo if in edit mode
+  if (isEditMode) {
+     setLogoPreview(null);
+    setLogo(null);
+    document.getElementById('removeLogo').value = 'false';
   }
 
-  function handleLogoChange(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    setLogo(file); // remember for submit
-    setLogoPreview(URL.createObjectURL(file)); // generate preview URL
-    if (logoPreview) URL.revokeObjectURL(logoPreview);
+  // Clean up previous preview if it was a blob URL
+  if (logoPreview && logoPreview.startsWith('blob:')) {
+    URL.revokeObjectURL(logoPreview);
   }
+
+  setLogo(file);
+  setLogoPreview(URL.createObjectURL(file));
+};
+
+
 
   const handleOngoingChange = (e) => {
     setFormData({
@@ -181,71 +223,233 @@ const ProjectForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+
+
+
+   // Add useEffect to fetch project details if in edit mode
+  useEffect(() => {
+    if (isEditMode) {
+      const fetchProjectDetails = async () => {
+        console.log("⏳ fetching project details for", urlProjectId);
+        // setIsLoading(true);
+        try {
+          // const response = await fetchProjectDetails(existingProject._id);
+          // const response = await getProjectDetails(urlProjectId);
+          // const { data: wrapper } = await getProjectDetails(urlProjectId);
+          // const projectData = response.data;
+          // const projectData = wrapper.data;
+
+           const {
+        data: { data: projectData }
+      } = await getProjectDetails(urlProjectId);
+          console.log("🎯 projectData keys:", Object.keys(projectData), projectData);
+          
+          // Transform project data to match form state
+          setFormData({
+            projectName: projectData.name,
+            tagline: projectData.tagline,
+            problem: projectData.problem,
+            category: projectData.category,
+            technologies: projectData.technology.join(', '),
+            links: projectData.links,
+            videoDemo: projectData.videoLink,
+            Challenges: projectData.challenges,
+            startDate: projectData.startDate.split('T')[0],
+            endDate: projectData.endDate?.split('T')[0] || '',
+            isOngoing: projectData.stillOngoing,
+          });
+
+          setSelectedCollaborators(projectData.collaborator.map(c => ({
+            id: c._id,
+            label: c.username
+          })));
+
+          // Handle existing media
+          const mediaFiles = projectData.media.map(url => ({
+            url, // Keep URL for preview
+            preview: url,
+            file: null // No file until user changes it
+          }))
+          || [];
+          while (mediaFiles.length < 5) mediaFiles.push(null);
+          setPictures(mediaFiles);
+
+          if (projectData.logo) {
+            setLogoPreview(projectData.logo);
+          }
+
+        } catch (error) {
+          console.error("🚨 getProjectDetails error:", error.response || error);
+          toast.error('Failed to load project data');
+          navigate('/projects');
+        }
+        // finally{
+        //    setIsLoading(false);
+        // }
+      };
+
+      fetchProjectDetails();
+    }
+  // }, [isEditMode, existingProject?._id, navigate]);
+  }, [isEditMode, urlProjectId, navigate]);
+
+
+
+
 // Updated submit handler
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  if (!validateForm()) return;
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+//   e.stopPropagation();
+//   if (!validateForm()) return;
 
-  setIsSubmitting(true);
-  setIsSubmitting(true);
-  try {
-    await addProject(FormData);
-    // Reset form state
-  } finally {
-    setIsSubmitting(false);
-  }
-  setSubmitError(null);
+//   setIsSubmitting(true);
+//   try {
+//     await addProject(FormData);
+//     // Reset form state
+//   } finally {
+//     setIsSubmitting(false);
+//   }
+//   setSubmitError(null);
 
+//     try {
+//       const formPayload = new FormData();
+
+//       // Append fields with corrected names to match backend
+//       formPayload.append("name", formData.projectName);
+//       formPayload.append("tagline", formData.tagline);
+//       formPayload.append("problem", formData.problem);
+//       formPayload.append("category", formData.category);
+//       formPayload.append("links", formData.links);
+//       formPayload.append("videoLink", formData.videoDemo);
+//       //formPayload.append('technology', formData.technologies.split(','));
+//       formData.technologies
+//         .split(",")
+//         .map((t) => t.trim())
+//         .forEach((tech) => formPayload.append("technology", tech)); // one append per tech :contentReference[oaicite:7]{index=7}
+
+//       //formPayload.append('collaborator', selectedCollaborators.map(c => c.label));
+//       selectedCollaborators
+//         .map((c) => c.label)
+//         .forEach((label) => formPayload.append("collaborator", label)); // one append per collaborator
+//       formPayload.append("startDate", formData.startDate);
+//       //formPayload.append('isOngoing', formData.isOngoing);
+//       formPayload.append("stillOngoing", formData.isOngoing);
+//       if (!formData.isOngoing) {
+//         formPayload.append("endDate", formData.endDate);
+//       }
+//       formPayload.append("challenges", formData.Challenges);
+
+//       if (logo) {
+//         formPayload.append("logo", logo); // backend expects req.files.logo
+//       }
+//       pictures.forEach((file) => {
+//         if (file) formPayload.append("media", file);
+//       });
+
+//       const response = await addProject(formPayload);
+      
+//       navigate('/projects');
+//       toast.success('Project uploaded successfully!');
+//       console.log("Project created:", response.data);
+//       // Handle success (redirect/show message/etc)
+//     } catch (error) {
+//       setSubmitError(
+//         error.response?.data?.message || "Failed to create project"
+//       );
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+
+
+
+// Modify handleSubmit to handle both create and update
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    
     try {
       const formPayload = new FormData();
-
-      // Append fields with corrected names to match backend
+      
+      // Common fields
+      formPayload.append("projectId", projectId);
       formPayload.append("name", formData.projectName);
       formPayload.append("tagline", formData.tagline);
       formPayload.append("problem", formData.problem);
       formPayload.append("category", formData.category);
       formPayload.append("links", formData.links);
       formPayload.append("videoLink", formData.videoDemo);
-      //formPayload.append('technology', formData.technologies.split(','));
-      formData.technologies
-        .split(",")
-        .map((t) => t.trim())
-        .forEach((tech) => formPayload.append("technology", tech)); // one append per tech :contentReference[oaicite:7]{index=7}
+      // split comma-separated techs into individual fields
+        formData.technologies
+          .split(",")
+          .map(t => t.trim())
+          .forEach(tech => formPayload.append("technology", tech));
 
-      //formPayload.append('collaborator', selectedCollaborators.map(c => c.label));
-      selectedCollaborators
-        .map((c) => c.label)
-        .forEach((label) => formPayload.append("collaborator", label)); // one append per collaborator
-      formPayload.append("startDate", formData.startDate);
-      //formPayload.append('isOngoing', formData.isOngoing);
-      formPayload.append("stillOngoing", formData.isOngoing);
-      if (!formData.isOngoing) {
-        formPayload.append("endDate", formData.endDate);
+        // collaborators (preferably by ID, not label)
+        selectedCollaborators
+          // .forEach(c => formPayload.append("collaborator", c.id));
+          .forEach(c => formPayload.append("collaborator", c.label));
+
+        formPayload.append("startDate", formData.startDate);
+        formPayload.append("stillOngoing", formData.isOngoing);
+        if (!formData.isOngoing) {
+          formPayload.append("endDate", formData.endDate);
+        }
+        if (logo) {
+  formPayload.append('logo', logo);
+}
+if (isEditMode && !logoPreview) {
+  formPayload.append('removeLogo', 'true');
+}
+
+        formPayload.append("challenges", formData.Challenges);
+          if (isEditMode) {
+        // formPayload.append("_id", projectId);
+        // Handle media updates
+        // pictures.forEach((file, index) => {
+        //   if (file instanceof File) {
+        //     formPayload.append("media", file);
+        //   } else if (typeof file === 'string') {
+        //     formPayload.append("media", file);
+        //   }
+        // });
+        pictures.forEach((pic) => {
+  if (pic) {
+    if (pic.file) {
+      formPayload.append("media", pic.file); // New file
+    } else if (pic.url) {
+      formPayload.append("media", pic.url); // Existing URL
+    }
+  }
+});
+      } else {
+        // New project media handling
+        pictures.forEach(pic => {
+          // if (file) formPayload.append("media", file);
+          if (pic && pic.file) {
+          formPayload.append("media", pic.file);
+        }
+        });
       }
-      formPayload.append("challenges", formData.Challenges);
 
-      if (logo) {
-        formPayload.append("logo", logo); // backend expects req.files.logo
-      }
-      pictures.forEach((file) => {
-        if (file) formPayload.append("media", file);
-      });
+      const response = isEditMode 
+        ? await updateProject(formPayload) 
+        : await addProject(formPayload);
 
-      const response = await addProject(formPayload);
-      
-      navigate('/projects');
-      toast.success('Project uploaded successfully!');
-      console.log("Project created:", response.data);
-      // Handle success (redirect/show message/etc)
+      navigate(isEditMode ? `/project/${projectId}` : '/projects');
+      toast.success(`Project ${isEditMode ? 'updated' : 'created'} successfully!`);
+
     } catch (error) {
-      setSubmitError(
-        error.response?.data?.message || "Failed to create project"
-      );
+      setSubmitError(error.response?.data?.message || "Operation failed");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+
 
   return (
     <form
@@ -593,7 +797,8 @@ const handleSubmit = async (e) => {
             >
               {file ? (
                 <img
-                  src={URL.createObjectURL(file)}
+                  // src={URL.createObjectURL(file)}
+                  src={file.preview || file.url}
                   alt="preview"
                   className="object-cover w-full h-full rounded"
                 />
@@ -612,7 +817,7 @@ const handleSubmit = async (e) => {
       </div>
 
       {/* Logo */}
-      <div>
+      {/* <div>
         <h2 className="text-3xl font-semibold"> Logo</h2>
         <p className="text-sm text-gray-600 mt-1">
           Upload a logo for your project (max 1MB)
@@ -634,7 +839,77 @@ const handleSubmit = async (e) => {
             className="hidden"
           />
         </label>
-      </div>
+      </div> */}
+
+
+
+<div>
+  <h2 className="text-3xl font-semibold">Logo</h2>
+  <p className="text-sm text-gray-600 mt-1">
+    {existingProject?.logo ? 'Update' : 'Upload'} Logo for your project (max 1MB)
+  </p>
+  
+  <label className="mt-3 w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:bg-gray-50 hover:border-blue-500 relative">
+    {logoPreview ? (
+      <>
+        <img
+          src={logoPreview}
+          alt="Logo preview"
+          className="object-contain w-full h-full p-1 rounded"
+        />
+        {/* Remove button */}
+        {isEditMode && (
+          <button
+            type="button"
+            onClick={() => {
+              setLogo(null);
+              setLogoPreview(null);
+              // Add hidden input to signal logo removal
+              setRemoveLogo(true);
+              document.getElementById('removeLogo').value = 'true';
+            }}
+            className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
+            aria-label="Remove logo"
+          >
+            ×
+          </button>
+        )}
+      </>
+    ) : (
+      <span className="text-gray-500 text-2xl">+</span>
+    )}
+    <input
+      type="file"
+      accept="image/*"
+      name="logo"
+      onChange={handleLogoChange}
+      className="hidden"
+    />
+  </label>
+  
+  {/* Hidden input for removeLogo flag */}
+  {isEditMode && (
+    <input
+      type="hidden"
+      id="removeLogo"
+      name="removeLogo"
+      value="false"
+    />
+  )}
+  
+  {/* Show existing logo info in edit mode */}
+  {isEditMode && existingProject?.logo && !logoPreview && (
+    <p className="text-sm text-gray-500 mt-2">
+      Current logo: {existingProject.logo.split('/').pop()}
+    </p>
+  )}
+</div>
+
+
+
+
+
+
       {/* Updated Submit Section */}
       <div className="pt-6">
         {submitError && <div className="text-red-500 mb-4">{submitError}</div>}
@@ -643,7 +918,8 @@ const handleSubmit = async (e) => {
           className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {/*isSubmitting ? "Submitting..." : "Submit"*/}
+          {isSubmitting ? "Saving..." : isEditMode ? "Update Project" : "Create Project"}
         </button>
       </div>
     </form>

@@ -17,6 +17,7 @@ const {
   rejectCollabRequest,
   getCollabRequest,
   deleteProject,
+  editProject,
 } = require('../controllers/projectController');
 const { isloggedin } = require('../middlewares/auth');
 const storage = multer.memoryStorage();
@@ -42,6 +43,8 @@ router.post('/acceptcollabreq', isloggedin, acceptCollabRequest);
 router.post('/rejectcollabreq', isloggedin, rejectCollabRequest);
 router.get('/getcollabreq', isloggedin, getCollabRequest);
 router.post('/deleteproject', isloggedin, deleteProject);
-router.get('/:projectId', isloggedin, project);
 router.put('/topprojects', isloggedin, updateTopProjects);
+router.put('/editproject', isloggedin, upload.fields([{name: 'logo', maxcount: 1}, {name: 'media', maxcount: 5}]), editProject);
+router.get('/:projectId', isloggedin, project);
+
 module.exports = router;
