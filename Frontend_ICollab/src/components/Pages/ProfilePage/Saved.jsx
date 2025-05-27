@@ -5,37 +5,16 @@ import ProjectCard from "../../Common/ProjectCard";
 
 function Saved() {
   const [activeTab, setActiveTab] = useState("Posts");
-  const savePostsObjects = useSelector((state) => state.post.savePost);
-  const savePosts = Object.values(savePostsObjects);
+  const savedPosts = useSelector((state) => state.savedItem.savedPosts);
+  // const savePosts = Object.values(savePostsObjects);
 
   const tabs = ["Posts", "Projects"];
 
-  const savedProjects = [
-    {
-      _id: "p1",
-      title: "MitraPay Wallet",
-      description: "A secure digital wallet for smooth transactions.",
-    },
-    {
-      _id: "p2",
-      title: "CakeHeavens",
-      description: "An eCommerce platform for rural cake shops.",
-    },
-    {
-      _id: "p3",
-      title: "HabitLoop",
-      description: "Track and maintain your daily habits easily.",
-    },
-    {
-      _id: "p4",
-      title: "Emergency Ambulance Booking",
-      description: "Real-time ambulance tracking and AI hospital suggestions.",
-    },
-  ];
+  const savedProjects = useSelector((state) => state.savedItem.savedProjects);
 
   const renderContent = () => {
     if (activeTab === "Posts") {
-      if (savePosts.length === 0) {
+      if (savedPosts.length === 0) {
         return (
           <div className="w-full text-center text-gray-500 py-10 text-xl">
             No saved posts yet.
@@ -48,7 +27,7 @@ function Saved() {
           {/* Desktop view (2 columns) */}
           <div className="hidden md:flex w-full  py-4 justify-evenly gap-6">
             <div className="flex flex-col gap-3 w-[45%]">
-              {savePosts
+              {savedPosts
                 .filter((_, index) => index % 2 === 0)
                 .map((post) => (
                   <div key={post._id}>
@@ -57,7 +36,7 @@ function Saved() {
                 ))}
             </div>
             <div className="flex flex-col gap-3 w-[45%]">
-              {savePosts
+              {savedPosts
                 .filter((_, index) => index % 2 !== 0)
                 .map((post) => (
                   <div key={post._id}>
@@ -69,7 +48,7 @@ function Saved() {
 
           {/* Mobile/Tablet view (single column) */}
           <div className="flex flex-col gap-4 md:hidden px-1 py-4">
-            {savePosts.map((post) => (
+            {savedPosts.map((post) => (
               <div key={post._id}>
                 <PostCard post={post} />
               </div>
@@ -88,8 +67,8 @@ function Saved() {
 
       return (
         <div className="grid grid-cols-1 px-1 py-4 sm:grid-cols-2 gap-6 ">
-          {savedProjects.map((project) => (
-            <ProjectCard key={project._id} {...project} />
+          {savedProjects.map((savedProject) => (
+            <ProjectCard key={savedProject.id} project={savedProject} />
           ))}
         </div>
       );

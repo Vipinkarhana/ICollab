@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 let collabSchema = mongoose.Schema(
   {
     project: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'project',
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'project',
+      required: true,
     },
     sender: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,8 +25,7 @@ let collabSchema = mongoose.Schema(
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
-        // delete ret.status; // TODO: Uncomment this line to hide the status field (v0)
-        // delete ret.updatedAt;
+        delete ret.updatedAt;
         return ret;
       },
     },

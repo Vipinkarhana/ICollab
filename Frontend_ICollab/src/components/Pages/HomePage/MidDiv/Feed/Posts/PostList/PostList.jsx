@@ -17,15 +17,12 @@ function PostList() {
   }, []);
 
   const fetchInitialPosts = async () => {
-    console.log("Fetching initial posts...");
+    
 
     try {
       const newPosts = await dispatch(
         fetchFeed(new Date().getTime() - 1)
       ).unwrap();
-
-      console.log(`✅ Initial posts received: ${newPosts.length}`);
-      console.log("📌 Posts Data:", newPosts);
 
       if (newPosts.length > 0) {
         // setAllPosts(newPosts);
@@ -34,7 +31,6 @@ function PostList() {
       }
 
       setApiCallCount((prev) => prev + 1);
-      console.log(`🔄 API calls made so far: ${apiCallCount + 1}`);
     } catch (error) {
       console.error("❌ Error fetching initial feed:", error);
     }
@@ -47,13 +43,8 @@ function PostList() {
       ? new Date(allPosts[allPosts.length - 1].createdAt).getTime() - 1
       : new Date().getTime() - 1;
 
-    console.log(`📡 Fetching more posts from timestamp: ${lastTimestamp}`);
-
     try {
       const newPosts = await dispatch(fetchFeed(lastTimestamp)).unwrap();
-
-      console.log(`✅ New posts received: ${newPosts.length}`);
-      console.log("📌 New Posts Data:", newPosts);
 
       if (newPosts.length > 0) {
         // setAllPosts((prev) => [...prev, ...newPosts]);
@@ -62,12 +53,8 @@ function PostList() {
       }
 
       setApiCallCount((prev) => prev + 1);
-      console.log(`🔄 API calls made so far: ${apiCallCount + 1}`);
-      console.log(
-        `📊 Total posts loaded: ${allPosts.length + newPosts.length}`
-      );
     } catch (error) {
-      console.error("❌ Error fetching more posts:", error);
+       console.error("❌ Error fetching more posts:", error);
     }
   };
 

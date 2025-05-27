@@ -2,16 +2,17 @@ const express = require('express');
 const router = express.Router();
 
 const {
-    saveItem,
-    unsaveItem,
-    getAllSavedItems,
-} = require("../controllers/saveItemController");
+  toggleSavedItem,
+  getSavedPosts,
+  getSavedProjects,
+} = require('../controllers/saveItemController');
 
-const { isloggedin } = require("../middlewares/auth");
+const { isloggedin } = require('../middlewares/auth');
 
-router.post('/saveitem', isloggedin ,saveItem );
-router.post('/unsaveitem', isloggedin, unsaveItem);
-router.get('/saveditems', isloggedin, getAllSavedItems);
+// Save and unsave items
+router.post('/toggle', isloggedin, toggleSavedItem);
+// Separate endpoints
+router.get('/posts', isloggedin, getSavedPosts);
+router.get('/projects', isloggedin, getSavedProjects);
 
 module.exports = router;
-

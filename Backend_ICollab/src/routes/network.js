@@ -6,12 +6,14 @@ const {
   rejectRequest,
   suggestedNetwork,
   userNetwork,
-  getRequest,
+  collabRequest,
+  myCollabRequest,
 } = require('../controllers/networkController');
 const { validatePost } = require('../middlewares/validation');
 const { isloggedin } = require('../middlewares/auth');
 
-router.get('/getrequest', isloggedin, getRequest);
+router.get('/collabrequest', isloggedin, collabRequest);
+router.get('/mycollabrequest', isloggedin, myCollabRequest);
 router.post('/sendrequest', isloggedin, sendRequest);
 router.post('/acceptrequest', isloggedin, acceptRequest);
 router.post('/rejectrequest', isloggedin, rejectRequest);

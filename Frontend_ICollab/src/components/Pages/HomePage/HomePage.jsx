@@ -5,6 +5,7 @@ import MidDiv from "./MidDiv/MidDiv";
 import RightDiv from "./RightDiv/RightDiv";
 import Survey from "../../Common/Survey";
 import WelcomeModal from "../Login_RegistrationPages/WelcomeModal";
+import ProfileCheckList from "./RightDiv/ProfileStatus/ProfileCheckList";
 
 const HomePage = () => {
     const [showModal, setShowModal] = useState(true);
@@ -27,6 +28,7 @@ const HomePage = () => {
         <LeftDiv className="hidden lg:flex lg:w-[20%]"/>
         <MidDiv className="sm:w-[95%] md:w-[95%] lg:w-[50%]"/>
         <RightDiv className="hidden lg:block" />
+        <ProfileCheckList className="hidden lg:block" />
       </div>
     </>
   ); 

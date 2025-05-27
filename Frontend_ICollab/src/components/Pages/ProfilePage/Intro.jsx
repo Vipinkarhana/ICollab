@@ -10,7 +10,7 @@ function Intro({ activeTab, setActiveTab,user }) {
   const skills = ["JavaScript", "React", "Node.js", "CSS", "Python"];
 
   return (
-    <div className="flex flex-col min-h-[55svh] justify-start items-center bg-white w-full px-4 sm:px-6 py-4 gap-3">
+    <div className="flex flex-col min-h-64 justify-start items-center bg-white w-full px-4 sm:px-6 py-4 gap-3">
       <div className="w-full flex justify-end sm:hidden"
       >
         <Link

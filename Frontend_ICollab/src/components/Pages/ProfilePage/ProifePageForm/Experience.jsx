@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import WorkExperienceForm from "./WorkExperienceForm";
 
 const roles = [
   "Designer",
@@ -77,7 +78,7 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
   return (
     <div className="grid md:grid-cols-2 gap-6">
       {/* Role Selection Card */}
-      <div className="bg-white p-6 rounded-lg shadow h-auto">
+      <div className="bg-white p-6 rounded-lg shadow h-auto  w-[18rem] sm:w-full">
         <h2 className="text-2xl font-semibold mb-4">Designation</h2>
         <p className="text-lg text-gray-700 mb-4">Which of the following describes you best?</p>
         <div className="space-y-3">
@@ -133,7 +134,7 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
       </div>
 
       {/* Skills Card */}
-      <div className="bg-white p-6 rounded-lg shadow h-auto">
+      <div className="bg-white p-6 rounded-lg shadow h-auto w-[18rem] sm:w-full">
         <h2 className="text-2xl font-semibold mb-4">Top Skills</h2>
         <div className="flex flex-col md:flex-row gap-6">
           {/* Skill Inputs */}
@@ -177,7 +178,7 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
       </div>
 
       {/* Resume Upload Section */}
-      {/* <div className="bg-white p-6 rounded-lg shadow sm:h-[55svh] h-[75svh] md:col-span-2">
+      <div className="bg-white p-6 rounded-lg shadow sm:h-[55svh] h-[75svh] md:col-span-2 w-[18rem] sm:w-full">
         <h2 className="text-2xl font-semibold mb-4">Upload Your Resume</h2>
         <div
           onDrop={handleDrop}
@@ -217,13 +218,13 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
         <p className="text-xs text-gray-500 mt-2 text-center">
           Make sure your resume is in .pdf format only (5MB max)
         </p>
-      </div> */}
+      </div>
 
-      {/* <div >
+      <div >
       <WorkExperienceForm />
-      </div> */}
+      </div>
        {/* Bottom Right Navigation Buttons */}
-       <div className=" bottom-0  ">
+       <div className=" bottom-0 sm:mt-[55rem] ">
        <div className="absolute p-2 right-4 left-4 sm:left-32 sm:right-32 flex flex-row justify-between items-center space-x-4 mt-4">
         <button
           onClick={() => setActiveTab("ABOUT")}

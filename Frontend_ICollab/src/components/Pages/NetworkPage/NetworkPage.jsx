@@ -4,7 +4,7 @@ import SuggestedNetwork from "./SuggestedNetwork";
 import ProfileCard from "../HomePage/LeftDiv/ProfileCard";
 import { Users } from "lucide-react";
 import CollaborationRequest from "./CollaborationRequest";
-import {getRequest} from "../../../Services/networkService";
+import {collabRequest} from "../../../Services/networkService";
 import { useEffect, useState } from "react";
 import Request from "./Request";
 
@@ -15,7 +15,7 @@ function NetworkPage() {
   useEffect(() => {
     const fetchCollaborationRequests = async () => {
       try {
-        const response = await getRequest();
+        const response = await collabRequest();
         if (response.status === "success") {
           setCollaborationRequests(response.data);
         } else {
@@ -29,10 +29,6 @@ function NetworkPage() {
     fetchCollaborationRequests();
   }
   , []);
-
-  useEffect(() => {
-    console.log("Collaboration Requests:", collaborationRequests);
-  }, [collaborationRequests]);
 
   return (
     <div className="w-full h-auto mt-20 py-1 flex flex-col lg:flex-row justify-center gap-4 px-4">

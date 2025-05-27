@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { EllipsisVertical, UserPlus, Trash2, PinOff , Edit2 as EditIcon } from "lucide-react";
-import { toggleSaveProject, deleteProject } from "../../Services/projectService";
+import { useSelector, useDispatch } from "react-redux";
+import { EllipsisVertical, UserPlus, Trash2, PinOff , Edit2 as EditIcon} from "lucide-react";
+import { deleteProject } from "../../Services/projectService";
+import { toggleSaveItemThunk } from "../../Redux/Slices/SaveItemSlice";
 import {
   BookmarkIcon as OutlineBookmark,
   BookmarkIcon as SolidBookmark,
@@ -13,9 +14,10 @@ const ProjectCard = ({
   onSave,
   onDelete,
 }) => {
-console.log("Project: ",project);
-
-
+  const dispatch = useDispatch();
+  const savedProjects = useSelector((state) => state.savedItem.savedProjects);
+  const isSaved = savedProjects.some((savedProject) => {
+    savedProject.id === project.id});
   // Derived values
   const status = project?.isOngoing ? 'Ongoing Project' : 'Finished Project';
   const avatarSeeds = project?.collaborator?.map(c => c.username || 'user');
@@ -41,56 +43,34 @@ console.log("Project: ",project);
 
   // Rest of your existing component JSX remains the same
   // Just update the date display part:
-  {status === 'Ongoing Project' ? (
-    <span className="text-gray-700">Last updated: {project?.updatedAt}</span>
-  ) : (
+  {
+    status === 'Ongoing Project' ? (
+      <span className="text-gray-700">Last updated: {project?.updatedAt}</span>
+    ) : (
     <span className="text-gray-700">Ended: {project?.endDate}</span>
-  )}
+  )
+  }
 
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [bookmarked, setBookmarked] = useState(project?.isSaved || false);
 
-  useEffect(() => {
-    setBookmarked(project?.isSaved);
-  }, [project?.isSaved]);
-  
   const menuRef = useRef(null);
 
   const currentUser = useSelector((state) => state?.user?.userData);
   const ownerId = project.user?._id || project?.user; // Handle both populated and unpopulated user
   const isOwner = String(currentUser?._id) === String(ownerId);
-  console.log("Current User ID:", currentUser?._id);
-console.log("Project Owner ID:", ownerId);
-console.log("Is Owner:", isOwner);
 
   const handleDelete = async () => {
     try {
       await deleteProject(project?._id);
       if (onDelete) onDelete(project?._id);
     } catch (error) {
-      console.error("Delete failed:", error.response?.data?.message || error.message);
+      console.error("Error deleting project:", error);
     }
   };
 
-  const handleToggleSave = async () => {
-    try {
-      // Call the API to toggle save status
-      const response = await toggleSaveProject(project?._id);
-      const isNowSaved = response?.status === 'saved';
-      
-      // Update local state
-      setBookmarked(isNowSaved);
-      
-      // Notify parent component if provided
-      if (onSave) {
-        onSave(project?._id, isNowSaved);
-      }
-    } catch (error) {
-      console.error('Failed to toggle save:', error);
-      // Revert UI state on error
-      setBookmarked(prev => !prev);
-    }
+  const handleSaveToggle = () => {
+    dispatch(toggleSaveItemThunk({ itemId: project._id, itemType: "projects", item: project }));
   };
 
   // Close dropdown on outside click
@@ -141,19 +121,19 @@ console.log("Is Owner:", isOwner);
                 Collab
               </button>
               <button
-                onClick={handleToggleSave}
+                onClick={handleSaveToggle}
                 className="flex items-center gap-2 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 w-full text-left"
               >
-                {bookmarked ? (
-                  <>
-                    <SolidBookmark className="w-5 h-5 text-blue-500" />
-                    Unsave
-                  </>
+                {isSaved ? (
+                  <div className="flex gap-3 text-xl">
+                    <SolidBookmark className="h-6 text-blue-400" />
+                    <p>Saved</p>
+                  </div>
                 ) : (
-                  <>
-                    <OutlineBookmark className="w-5 h-5 text-gray-500" />
-                    Save
-                  </>
+                  <div className="flex gap-3 text-xl">
+                    <OutlineBookmark className="h-6 text-gray-500" />
+                    <p>Save</p>
+                  </div>
                 )}
               </button>
 
@@ -172,14 +152,14 @@ console.log("Is Owner:", isOwner);
                <p>Pin</p>
               </button> */}
               {isOwner && (
-              <button onClick={handleDelete} className="flex items-center gap-2 px-4 py-2 text-lg text-red-700 hover:bg-gray-100 w-full text-left">
-              < Trash2 color="red" size={18} />
-               <p>Delete</p>
-              </button>
+                <button onClick={handleDelete} className="flex items-center gap-2 px-4 py-2 text-lg text-red-700 hover:bg-gray-100 w-full text-left">
+                  < Trash2 color="red" size={18} />
+                  <p>Delete</p>
+                </button>
               )}
             </div>
           )}
-          
+
         </div>
       </div>
 
@@ -219,11 +199,11 @@ console.log("Is Owner:", isOwner);
         </button>
         <span className="text-gray-700">Started on: {startDate}</span>
         {status === 'Ongoing Project' ? (
-    <span className="text-gray-700">Last updated on: {updatedDate}</span>
-  ) : (
-    <span className="text-gray-700">Ended: {endDate}</span>
-  )}
-        <Link to={`/project/${project?._id || project?.id}`} className="ml-auto" onClick={() => {(()=>{window.scrollTo({top:0, behavior:"smooth"})})}}>
+          <span className="text-gray-700">Last updated on: {updatedDate}</span>
+        ) : (
+          <span className="text-gray-700">Ended: {endDate}</span>
+        )}
+        <Link to={`/project/${project?._id || project?.id}`} className="ml-auto" onClick={() => { (() => { window.scrollTo({ top: 0, behavior: "smooth" }) }) }}>
           <button className="px-4 py-1.5 bg-blue-600 text-white text-xs sm:text-sm rounded-md hover:bg-blue-700 transition">
             View
           </button>

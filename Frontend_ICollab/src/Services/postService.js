@@ -107,22 +107,6 @@ export const getFeed = async (timestamp) => {
     }
 }
 
-export const toggleSavePost = async (postid) => {
-  const response = await privateAxios.post("/posts/savepost",{postid});
-  return response.data; // should return something like { status: "saved" } or { status: "unsaved" }
-};
-
-
-export const getSavedPosts = async () => {
-  try {
-    const response = await privateAxios.get("/posts/savedposts");
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching saved posts:", error);
-    throw error;
-  }
-};
-
 
 export const likeAndUnlikePost = async (postId) => {
     try {

@@ -1,68 +1,109 @@
 const SavedItem = require('../models/savedItem');
 
-const saveItem = async (req, res) => {
-  const { itemId, itemType } = req.body;
-  const userId = req.user.id;
-
-  if (!['post', 'project'].includes(itemType)) {
-    return res.status(400).json({ message: 'Invalid item type.' });
-  }
-
+const toggleSavedItem = async (req, res) => {
   try {
-    // Check if item is already saved
-    const existing = await SavedItem.findOne({ user: userId, item: itemId, itemType });
+    const userId = req?.user?.id;
+    const { itemId, itemType } = req?.body;
 
-    if (existing) {
-      return res.status(200).json({ message: `${itemType} already saved.` });
+    // Validate itemType
+    if (!['posts', 'projects'].includes(itemType)) {
+      return res.status(400).json({ message: 'Invalid item type' });
     }
 
-    const newSavedItem = new SavedItem({
-      user: userId,
-      item: itemId,
-      itemType,
+    // Find or create SavedItem document for the user
+    let savedItem = await SavedItem.findOne({ user: userId });
+
+    if (!savedItem) {
+      savedItem = await SavedItem.create({
+        user: userId,
+        posts: [],
+        projects: [],
+      });
+    }
+
+    // Toggle logic
+    const itemList = savedItem[itemType]?.map((id) => id?.toString());
+    const index = itemList.indexOf(itemId);
+
+    if (index === -1) {
+      // Save item
+      savedItem[itemType].push(itemId);
+      await savedItem.save();
+      return res
+        .status(200)
+        .json({ message: 'Item saved successfully', actionType: 'saved' });
+    } else {
+      // Unsave item
+      savedItem[itemType] = savedItem[itemType]?.filter(
+        (id) => id?.toString() !== itemId
+      );
+      await savedItem.save();
+      return res
+        .status(200)
+        .json({ message: 'Item unsaved successfully', actionType: 'unsaved' });
+    }
+  } catch (error) {
+    console.error('Error in toggleSavedItem:', error.message);
+    res
+      .status(500)
+      .json({ message: 'Internal server error', error: error.message });
+  }
+};
+
+const getSavedPosts = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const savedItem = await SavedItem.findOne({ user: userId }).populate(
+      'posts'
+    );
+    if (!savedItem) {
+      return res
+        .status(200)
+        .json({ success: true, message: 'No saved posts found.', data: [] });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Saved posts fetched successfully.',
+      data: savedItem.posts,
     });
-
-    await newSavedItem.save();
-
-    res.status(201).json({ message: `${itemType} saved successfully.` });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to save item.', error: error.message });
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch saved posts.',
+      error: error.message,
+    });
   }
 };
 
-const unsaveItem = async (req, res) => {
-  const { itemId, itemType } = req.body;
+const getSavedProjects = async (req, res) => {
   const userId = req.user.id;
-
   try {
-    const deleted = await SavedItem.findOneAndDelete({ user: userId, item: itemId, itemType });
-
-    if (!deleted) {
-      return res.status(404).json({ message: 'Saved item not found.' });
+    const savedItem = await SavedItem.findOne({ user: userId }).populate(
+      'projects'
+    );
+    if (!savedItem) {
+      return res
+        .status(200)
+        .json({ success: true, message: 'No saved projects found.', data: [] });
     }
 
-    res.status(200).json({ message: `${itemType} unsaved successfully.` });
+    res.status(200).json({
+      success: true,
+      message: 'Saved projects fetched successfully.',
+      data: savedItem.projects,
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to unsave item.', error: error.message });
-  }
-};
-
-const getAllSavedItems = async (req, res) => {
-  const userId = req.user.id;
-
-  try {
-    const savedItems = await SavedItem.find({ user: userId })
-      .populate('item') // Automatically populates post or project
-      .sort({ createdAt: -1 });
-
-    res.status(200).json(savedItems);
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch saved items.', error: error.message });
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch saved projects.',
+      error: error.message,
+    });
   }
 };
 
 module.exports = {
-  saveItem,
-  unsaveItem,
-  getAllSavedItems,
+  toggleSavedItem,
+  getSavedPosts,
+  getSavedProjects,
 };

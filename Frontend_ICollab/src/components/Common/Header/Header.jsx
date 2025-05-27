@@ -1,143 +1,62 @@
-/**
- * @file Header.js
- * @brief Header component for navigation, search, and user authentication controls.
- * @details This component displays the application header, including navigation links,
- *          a search bar, a logout button, and a responsive mobile menu.
- * @author Your Name
- * @date 2025-02-20
- */
-
-import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import HamburgerMenu from "./Hamburegr";
-import { useDispatch, useSelector } from "react-redux";
+import {
+  Bell,
+  FolderKanban,
+  Home,
+  MessageSquare,
+  Users,
+  Sprout,
+} from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import ProfileDropDown from "./ProfileDropDown/ProfileDropDown";
 import { logoutUser } from "../../../Redux/Slices/UserSlice";
-import { useNavigate } from "react-router-dom";
-import NotificationDropdown from "../Notification";
+import ProfilePic from "../ProfilePic";
 
-/**
- * @class Header
- * @brief Navigation header component.
- * @param {Object} props Component properties.
- * @param {string} props.id The ID of the header component.
- */
-
-const Header = ({ id }) => {
+const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const Logo = "/icollab.jpeg"; ///< Path to the logo image.
-  const location = useLocation(); ///< Retrieves the current route location.
-  const currentUser = useSelector((state) => state.user.userData);
-  const username = currentUser?.username;
-  /**
-   * @brief State for hover effect styling.
-   * @details Tracks the position, width, and opacity of the hover effect for menu items.
-   */
+  const location = useLocation();
+  const Logo = "/icollab.jpeg";
 
-  const [hoverStyle, setHoverStyle] = useState({
-    left: 0,
-    width: 0,
-    opacity: 0,
-  });
-
-  /**
-   * @brief State for mobile menu toggle.
-   */
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  /**
-   * @brief Determines if the viewport is mobile-sized.
-   */
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-  /**
-   * @brief List of navigation menu items.
-   */
   const menuItems = [
-    { name: "Home", path: "/home" },
-    { name: "My Networks", path: "/network" },
-    { name: "Projects", path: "/project" },
-    { name: "Messages", path: "/message" },
-    { name: "Incubators", path: "/incubators" },
-    { name: "User Profile", path: `/profile/${username}` },
-    { name: "Notification"},
+    { icon: <Home size={20} />, text: "Home", path: "/home" },
+    { icon: <Users size={20} />, text: "My Network", path: "/network" },
+    { icon: <FolderKanban size={20} />, text: "Projects", path: "/project" },
+    { icon: <MessageSquare size={20} />, text: "Messaging", path: "/message" },
+    { icon: <Sprout size={20} />, text: "Incubators", path: "/incubators" },
+    { icon: <Bell size={20} />, text: "Notifications", path: "#" },
   ];
 
-  /**
-   * @brief Handles screen resize events to update mobile view state.
-   */
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  /**
-   * @brief Handles hover effects on menu items.
-   * @param {Event} e Mouse enter event.
-   */
-  const handleMouseEnter = (e) => {
-    const { left, width } = e.target.getBoundingClientRect();
-    const navbarLeft = document
-      .querySelector(".navbar")
-      .getBoundingClientRect().left;
-    setHoverStyle({ left: left - navbarLeft, width: width, opacity: 1 });
-  };
-
-  /**
-   * @brief Handles mouse leave event to remove hover effect.
-   */
-  const handleMouseLeave = () => {
-    setHoverStyle({ ...hoverStyle, opacity: 0 });
-  };
-
-  /**
-   * @brief Toggles the mobile menu visibility.
-   */
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  /**
-   * @brief Handles user logout action.
-   */
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate("/login");
   };
 
-  /**
-   * @brief Checks if a menu item is currently active.
-   * @param {string} path The path to check.
-   * @return {boolean} True if the path matches the current route.
-   */
-  const isActive = (path) => location.pathname === path;
-  const isAuthenticated = () => {
-    return !!localStorage.getItem("accessToken");
-  };
+  const isAuthenticated = () => !!localStorage.getItem("accessToken");
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const currentUser = useSelector((state) => state.user.userData);
+  const username = currentUser?.username;
+
   return (
-    <div>
-      {/* Main Header Container */}
-      <div
-        id={id}
-        className="fixed w-full h-[9%] flex justify-center items-center z-[1000] text-black bg-white shadow-sm"
-      >
-        <div className="w-11/12 lg:w-[90%] h-[99%] flex items-center justify-between md:justify-evenly md:gap-4">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="h-14  w-28 lg:h-12 lg:w-28  ml-2 lg:mr-1  lg:-ml-1"
-          >
-            <img src={Logo} alt="Logo" className="h-[100%] w-[100%]" />
+    <header className="w-full bg-white shadow-sm fixed top-0 z-50 h-[64px]">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 h-full relative">
+        {/* Logo + Search */}
+        <div className="flex items-center gap-4">
+          <Link to="/" className="hidden md:flex items-center">
+            <img src={Logo} alt="Logo" className="h-10 w-auto object-contain" />
           </Link>
-          {/* Search Bar */}
-          <div className="w-auto h-full relative flex items-center">
+          <Link to={`/profile/${username}`}>
+            <ProfilePic className="md:hidden flex w-[2.8rem]  h-[2.8rem] rounded-full" />
+          </Link>
+          <div className="relative w-56 sm:w-36 md:w-64">
             <svg
-              className="absolute left-3 w-5 h-5 "
+              className="absolute left-3 w-4 h-4 sm:w-5 sm:h-5 text-gray-500 mt-2"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -150,83 +69,102 @@ const Header = ({ id }) => {
                 d="M21 21l-4.35-4.35M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0z"
               />
             </svg>
-            {/* Search Bar */}
             <input
               type="text"
-              className="h-10 lg:h-8 rounded-2xl w-11/12 md:w-60 placeholder:text-xl bg-gray-200 pl-10 text-center placeholder-gray-500 outline-none"
+              className="w-full pl-9 pr-4 py-2 rounded-md bg-gray-100 text-sm placeholder:text-gray-500 outline-none"
               placeholder="Search"
             />
           </div>
+        </div>
 
-          {/* Desktop Navigation Menu */}
-          <div className="navbar h-full hidden md:flex w-4/7  justify-center gap-4 items-center relative">
-            <div
-              className="hover-border absolute h-8 transition-all duration-300 pointer-events-none border-b-2 border-gray-800"
-              style={{
-                left: hoverStyle.left,
-                width: hoverStyle.width,
-                opacity: hoverStyle.opacity,
-                zIndex: 1,
-              }}
-            ></div>
-
-            {/* Mobile Menu Component */}
-            {menuItems.map((item, index) => {
-              if (item.name === "Notification") {
-                return <NotificationDropdown username={username} key={index} />;
-              }
-
-              return (
-                <Link
-                  key={index}
-                  to={item.path}
-                  className={`item rounded-lg w-auto flex justify-evenly items-center text-gray-500 font-semibold text-lg cursor-pointer relative z-20 ${
-                    isActive(item.path) ? "h-[100%] rounded-none" : ""
-                  }`}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  {item.name}
-                </Link>
-              );
-            })}
-          </div>
-
-          {!isMobile &&
-            (isAuthenticated() === false ? (
+        {/* Navigation Icons (Desktop Only) */}
+        <div className="hidden md:flex absolute left-1/2 ml-28 transform -translate-x-1/2 items-end gap-5 h-full w-auto text-gray-600">
+          {menuItems.map(({ icon, text, path }) => {
+            const isActive = location.pathname === path;
+            return (
               <Link
-                to="/login"
-                className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center"
+                key={text}
+                to={path}
+                className={`flex flex-col items-center justify-end text-sm transition duration-200 pb-2 ${
+                  isActive
+                    ? "text-blue-600 border-b-2 border-blue-600"
+                    : "text-gray-600 hover:text-blue-600 border-b-2 border-transparent"
+                }`}
               >
-                Login
+                <div>{icon}</div>
+                <span className="text-xs mt-1 hidden lg:block">{text}</span>
               </Link>
-            ) : (
+            );
+          })}
+          <div className="hidden sm:block -mb-1">
+            <ProfileDropDown />
+          </div>
+        </div>
+
+        {/* Auth + Hamburger (Right) */}
+        <div className="flex items-center gap-3">
+          {!isMenuOpen &&
+            (isAuthenticated() ? (
               <button
-                className="h-10 rounded-md w-[10%] bg-black text-white flex justify-center items-center"
                 onClick={handleLogout}
+                className="hidden md:flex items-center px-4 py-2 bg-black text-white rounded-md"
               >
                 Log Out
               </button>
+            ) : (
+              <Link
+                to="/login"
+                className="hidden md:flex items-center px-4 py-2 bg-black text-white rounded-md"
+              >
+                Login
+              </Link>
             ))}
+
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <button
-              className="text-gray-800 text-4xl -mr-5"
-              onClick={toggleMenu}
-            >
-              {isMenuOpen ? "☰" : "☰"}
+            <button className="text-gray-800 text-3xl" onClick={toggleMenu}>
+              ☰
             </button>
           </div>
         </div>
-        {/* Mobile Menu Component */}
-        {isMenuOpen && (
-          <HamburgerMenu
-            isMenuOpen={isMenuOpen}
-            menuItems={menuItems}
-            toggleMenu={toggleMenu}
-          />
-        )}
       </div>
-    </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white px-4 py-3 shadow-md space-y-2">
+          {menuItems.map(({ icon, text, path }) => (
+            <Link
+              key={text}
+              to={path}
+              onClick={toggleMenu}
+              className="flex items-center gap-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+            >
+              {icon}
+              <span>{text}</span>
+            </Link>
+          ))}
+          {isAuthenticated() ? (
+            <button
+              onClick={() => {
+                handleLogout();
+                toggleMenu();
+              }}
+              className="w-full text-left px-2 py-2 text-red-600 hover:bg-gray-100 rounded-md"
+            >
+              Log Out
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              onClick={toggleMenu}
+              className="block px-2 py-2 text-blue-600 hover:bg-gray-100 rounded-md"
+            >
+              Login
+            </Link>
+          )}
+        </div>
+      )}
+    </header>
   );
 };
 

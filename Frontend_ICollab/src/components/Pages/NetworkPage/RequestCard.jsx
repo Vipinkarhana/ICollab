@@ -7,15 +7,16 @@ function RequestCard({ person }) {
   return (
     <div className="bg-white p-4 shadow-md rounded-md border border-gray-300">
       {/* Profile Image */}
-      <ProfilePic className="w-20 h-20 mx-auto mb-2 rounded-full object-cover" />
+      <ProfilePic className="w-20 h-20 mx-auto mb-2 rounded-full object-cover" picture={person?.profile_pic} />
 
       {/* Name and Designation */}
       <div className="flex flex-col items-center justify-center">
         <Name_Designation
-          name={person.name}
-          designation={person.role}
+          name={person?.name}
+          designation={person?.role} // TODO: Send Designation
           nameClass="text-[1.0rem] font-semibold text-gray-800 text-center"
           designationClass="text-sm text-gray-600 text-center"
+          user={person}
         />
       </div>
 

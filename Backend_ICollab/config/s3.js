@@ -27,7 +27,6 @@ const uploadToR2 = async (key, buffer, contentType) => {
   return key;
 };
 
-
 const deleteFromR2 = async (fileUrl) => {
   try {
     // console.log("Reached Delete in R2");

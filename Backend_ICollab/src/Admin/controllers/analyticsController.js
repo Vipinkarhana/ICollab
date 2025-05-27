@@ -29,22 +29,21 @@ const getAnalytics = async (req, res, next) => {
     for (const doc of pageViewsRaw) {
       var { page, views } = doc.toObject();
       if (!views) continue;
-    
+
       // console.log('Page:', page, 'Views:', views);
-    
+
       // If views is a Map, convert it to an object
       if (views instanceof Map) {
         views = Object.fromEntries(views);
       }
-    
+
       const viewArray = Object.entries(views)
         .map(([date, value]) => ({ date, value })) // Convert to array
         .sort((a, b) => new Date(a.date) - new Date(b.date));
-    
-      // console.log('Page:', page, 'View Array:', viewArray);  
+
+      // console.log('Page:', page, 'View Array:', viewArray);
       pageViewsPerPageDaily[page] = viewArray;
     }
-    
 
     // Fetch device + browser usage from deviceUsageModel
     const deviceUsageRaw = await deviceUsageModel.find({

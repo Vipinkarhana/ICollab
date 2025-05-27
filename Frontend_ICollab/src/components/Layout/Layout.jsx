@@ -13,7 +13,7 @@ import { Outlet } from "react-router-dom";
 import BackToTopButton from "./BackToTopButton";
 import { useSelector } from "react-redux";
 import StartPostModal from "../Common/StartPostModal";
-import FloatingButtonMenu from "./FloatingButtonMenu";
+import FloatingButtonMenu from "../Pages/ProfilePage/FloatingButtonMenu";
 import Tracker from "../Common/Tracker";
 
 /**
@@ -28,7 +28,6 @@ function Layout() {
       <Header id="Header" />
       {isOpen && <StartPostModal />}
       <BackToTopButton />
-      {/* <FloatingButtonMenu/> */}
       <main className="flex-grow flex items-center justify-center gap-3">
         <Tracker/>
         <Outlet />

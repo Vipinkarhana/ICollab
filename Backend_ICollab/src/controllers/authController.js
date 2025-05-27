@@ -165,7 +165,6 @@ const googleAuth = async (req, res, next) => {
 
 const linkedin = async (req, res, next) => {
   try {
-    
     const authURL =
       `https://www.linkedin.com/oauth/v2/authorization?` +
       `response_type=code&` +
@@ -174,7 +173,6 @@ const linkedin = async (req, res, next) => {
       `state=foobar&` +
       `scope=openid%20profile%20email`;
     res.redirect(authURL);
-  
   } catch (err) {
     next(err);
   }

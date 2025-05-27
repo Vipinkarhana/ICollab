@@ -6,9 +6,9 @@ const allowedCategories = require('../../config/category.json');
 let projectschema = mongoose.Schema(
   {
     user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'user',
-          required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+      required: true,
     },
     name: {
       type: String,
@@ -33,10 +33,10 @@ let projectschema = mongoose.Schema(
     //   required: true,
     // },
     technology: {
-      type: [String]
+      type: [String],
     },
     collaborator: {
-      type: [String]
+      type: [String],
     },
     // category: {
     //   type: String,
@@ -45,11 +45,11 @@ let projectschema = mongoose.Schema(
     // },
     category: {
       type: String,
-      required: true
+      required: true,
     },
     links: {
       type: String,
-      required:true,
+      required: true,
     },
     videoLink: {
       type: String,
@@ -59,7 +59,7 @@ let projectschema = mongoose.Schema(
       required: true,
     },
     endDate: {
-        type: Date,
+      type: Date,
     },
     // role: {
     //     type: String,
@@ -78,8 +78,8 @@ let projectschema = mongoose.Schema(
     //     type: String,
     //   },
     isOngoing: {
-        type: Boolean
-    }
+      type: Boolean,
+    },
   },
   {
     timestamps: true,
