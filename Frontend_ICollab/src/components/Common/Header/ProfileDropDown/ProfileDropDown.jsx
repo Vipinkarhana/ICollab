@@ -25,39 +25,12 @@ function ProfileDropDown() {
   }, []);
 
   const handleClick = (item) => {
-  switch (item) {
-    case "Posts":
-      console.log("Navigating to Posts section");
-      navigate(`/profile/${username}`,{
-        state: { activeTab: "Posts" }
-      });
-      setOpen(false); // Close dropdown after navigation
-      break;
-    case "Intro":
-      console.log("Navigating to Intro section");
-      navigate(`/profile/${username}`,{
-        state: { activeTab: "Intro" }
-      });
-      setOpen(false); // Close dropdown after navigation
-      break;
-    case "Project":
-      console.log("Navigating to Project section");
-      navigate(`/profile/${username}`,{
-        state: { activeTab: "Projects" }
-      });
-      setOpen(false); // Close dropdown after navigation
-      break;
-    case "Saved":
-      console.log("Navigating to Saved section");
-     navigate(`/profile/${username}`,{
-        state: { activeTab: "Saved" }
-      });
-      setOpen(false); // Close dropdown after navigation
-      break;
-    default:
-      console.log("Unknown item");
+  navigate(`/profile/${username}`, {
+    state: { activeTab: item }
+  });
+  setOpen(false); 
   }
-};
+
 
 
   return (
