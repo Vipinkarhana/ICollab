@@ -21,7 +21,7 @@ var adminPostRouter = require('./src/Admin/routes/postRoute');
 var adminAnalyticsRouter = require('./src/Admin/routes/analyticsRoute');
 var adminNotificationRouter = require('./src/Admin/routes/notificationRoute');
 var savedItemRouter = require('./src/routes/savedItemRoute');
-var { router : sseRouter, sendSSE } = require("./src/Admin/routes/sseRoute");
+var { router: sseRouter, sendSSE } = require('./src/Admin/routes/sseRoute');
 
 var app = express();
 
@@ -55,7 +55,7 @@ app.use('/admin/user', adminUserRouter);
 app.use('/admin/posts', adminPostRouter);
 app.use('/admin/analytics', adminAnalyticsRouter);
 app.use('/admin/notifications', adminNotificationRouter);
-app.use('/sse', sseRouter);                 
+app.use('/sse', sseRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/profile', profileRouter);

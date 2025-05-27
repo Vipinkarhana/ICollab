@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 let collabSchema = mongoose.Schema(
   {
     project: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'project',
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'project',
+      required: true,
     },
     sender: {
       type: mongoose.Schema.Types.ObjectId,

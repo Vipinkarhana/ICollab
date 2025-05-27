@@ -14,9 +14,11 @@ const suggestedNetwork = async (req, res, next) => {
     const connections = await connectionModel.findOne({ user: userId }).lean();
     const connectedUserIds = connections ? connections.connectedusers : [];
 
-    const requests = await requestModel.find({
-      $or: [{ sender: userId }, { reciever: userId }],
-    }).lean();
+    const requests = await requestModel
+      .find({
+        $or: [{ sender: userId }, { reciever: userId }],
+      })
+      .lean();
 
     const requestedUserIds = new Set();
     for (const req of requests) {
@@ -29,23 +31,23 @@ const suggestedNetwork = async (req, res, next) => {
     }
 
     const excludedIds = new Set([
-      ...connectedUserIds.map(id => id.toString()),
+      ...connectedUserIds.map((id) => id.toString()),
       ...requestedUserIds,
       userId.toString(),
     ]);
 
     const notConnectedUsers = await userModel
       .find({
-        _id: { $nin: Array.from(excludedIds) }
+        _id: { $nin: Array.from(excludedIds) },
       })
       .populate({
         path: 'profile',
-        select: 'designation -_id'
+        select: 'designation -_id',
       })
       .select('name profile_pic username')
-      .limit(50)
+      .limit(50);
 
-    const response = notConnectedUsers.map(user => user.toJSON());
+    const response = notConnectedUsers.map((user) => user.toJSON());
 
     res.status(200).json({
       message: 'Non-connected users fetched successfully',
@@ -56,7 +58,6 @@ const suggestedNetwork = async (req, res, next) => {
     next(error);
   }
 };
-
 
 const userNetwork = async (req, res, next) => {
   const username = req.user.username;
@@ -70,15 +71,13 @@ const userNetwork = async (req, res, next) => {
         select: 'name profile_pic username -_id',
         populate: {
           path: 'profile',
-          select: 'designation about -_id'
-        }
+          select: 'designation about -_id',
+        },
       })
       .lean();
 
     if (!connections) {
-      return next(
-        new ApiError(400, 'Connections Not Found')
-      );
+      return next(new ApiError(400, 'Connections Not Found'));
     }
 
     const connectedUser = connections ? connections.connectedusers : [];
@@ -97,7 +96,6 @@ const userNetwork = async (req, res, next) => {
 };
 
 const sendRequest = async (req, res, next) => {
-
   const { recieverUsername } = req.body;
 
   const user = await userModel.findOne({ username: req.user.username }).lean();
@@ -134,8 +132,7 @@ const sendRequest = async (req, res, next) => {
           'You are already connected with this user! No need to send the request again.'
         )
       );
-    }
-    else if (requested) {
+    } else if (requested) {
       return next(
         new ApiError(
           400,
@@ -161,7 +158,6 @@ const sendRequest = async (req, res, next) => {
 };
 
 const acceptRequest = async (req, res, next) => {
-
   const { senderUsername } = req.body;
   const sender = await userModel.findOne({ username: senderUsername }).lean();
   const reciever = await userModel
@@ -252,7 +248,9 @@ const collabRequest = async (req, res, next) => {
     .lean();
   try {
     if (!requests) {
-      return next(new ApiError(400, 'Collaboration Requests could not be fetched'));
+      return next(
+        new ApiError(400, 'Collaboration Requests could not be fetched')
+      );
     }
 
     res.status(200).json({
@@ -267,20 +265,22 @@ const collabRequest = async (req, res, next) => {
 
 const myCollabRequest = async (req, res, next) => {
   try {
-    const user = await userModel.findOne({ username: req.user.username }).lean();
+    const user = await userModel
+      .findOne({ username: req.user.username })
+      .lean();
     const requests = await requestModel
       .find({ sender: user._id })
       .select('_id reciever')
       .populate({
         path: 'reciever',
-        select: 'name profile_pic username'
-      })
+        select: 'name profile_pic username',
+      });
 
     if (!requests) {
       return next(new ApiError(400, 'Your Requests could not be fetched'));
     }
 
-    const response = requests.map(request => request.toJSON())
+    const response = requests.map((request) => request.toJSON());
 
     res.status(200).json({
       message: 'Requests fetched successfully',

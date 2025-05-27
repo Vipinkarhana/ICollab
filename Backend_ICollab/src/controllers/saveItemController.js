@@ -22,37 +22,44 @@ const toggleSavedItem = async (req, res) => {
     }
 
     // Toggle logic
-    const itemList = savedItem[itemType]?.map(id => id?.toString());
+    const itemList = savedItem[itemType]?.map((id) => id?.toString());
     const index = itemList.indexOf(itemId);
 
     if (index === -1) {
       // Save item
       savedItem[itemType].push(itemId);
       await savedItem.save();
-      return res.status(200).json({ message: 'Item saved successfully',
-        actionType: 'saved',
-       });
+      return res
+        .status(200)
+        .json({ message: 'Item saved successfully', actionType: 'saved' });
     } else {
       // Unsave item
-      savedItem[itemType] = savedItem[itemType]?.filter(id => id?.toString() !== itemId);
+      savedItem[itemType] = savedItem[itemType]?.filter(
+        (id) => id?.toString() !== itemId
+      );
       await savedItem.save();
-      return res.status(200).json({ message: 'Item unsaved successfully',
-        actionType: 'unsaved',
-       });
+      return res
+        .status(200)
+        .json({ message: 'Item unsaved successfully', actionType: 'unsaved' });
     }
-
   } catch (error) {
     console.error('Error in toggleSavedItem:', error.message);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
+    res
+      .status(500)
+      .json({ message: 'Internal server error', error: error.message });
   }
 };
 
 const getSavedPosts = async (req, res) => {
   const userId = req.user.id;
   try {
-    const savedItem = await SavedItem.findOne({ user: userId }).populate('posts');
+    const savedItem = await SavedItem.findOne({ user: userId }).populate(
+      'posts'
+    );
     if (!savedItem) {
-      return res.status(200).json({ success: true, message: 'No saved posts found.', data: [] });
+      return res
+        .status(200)
+        .json({ success: true, message: 'No saved posts found.', data: [] });
     }
 
     res.status(200).json({
@@ -69,13 +76,16 @@ const getSavedPosts = async (req, res) => {
   }
 };
 
-
 const getSavedProjects = async (req, res) => {
   const userId = req.user.id;
   try {
-    const savedItem = await SavedItem.findOne({ user: userId }).populate('projects');
+    const savedItem = await SavedItem.findOne({ user: userId }).populate(
+      'projects'
+    );
     if (!savedItem) {
-      return res.status(200).json({ success: true, message: 'No saved projects found.', data: [] });
+      return res
+        .status(200)
+        .json({ success: true, message: 'No saved projects found.', data: [] });
     }
 
     res.status(200).json({
@@ -91,8 +101,6 @@ const getSavedProjects = async (req, res) => {
     });
   }
 };
-
-
 
 module.exports = {
   toggleSavedItem,

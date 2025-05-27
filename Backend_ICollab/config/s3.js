@@ -27,7 +27,6 @@ const uploadToR2 = async (key, buffer, contentType) => {
   return key;
 };
 
-
 const deleteFromR2 = async (fileUrl) => {
   try {
     const urlObj = new URL(fileUrl);

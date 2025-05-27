@@ -5,9 +5,9 @@ const {
   toggleSavedItem,
   getSavedPosts,
   getSavedProjects,
-} = require("../controllers/saveItemController");
+} = require('../controllers/saveItemController');
 
-const { isloggedin } = require("../middlewares/auth");
+const { isloggedin } = require('../middlewares/auth');
 
 // Save and unsave items
 router.post('/toggle', isloggedin, toggleSavedItem);

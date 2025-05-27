@@ -68,7 +68,6 @@ const getMyPost = async (req, res, next) => {
   }
 };
 
-
 const addPostMedia = async (req, res, next) => {
   const { postid, media } = req.body;
   try {
@@ -100,12 +99,12 @@ const likeAndUnlikepost = async (req, res, next) => {
   try {
     const { postId } = req.query; //dummy post id
     const username = req.user.username;
-    const user = await userModel.findOne({username});
+    const user = await userModel.findOne({ username });
     //console.log(user);
     const userId = user._id;
     //const userId = req.body.userid;
     //console.log("UserId: ",userId);
-    
+
     let liked = 0,
       unliked = 0;
     let likeDoc = await likeModel.findOne({ postId });
@@ -151,7 +150,7 @@ const likeAndUnlikepost = async (req, res, next) => {
 const feed = async (req, res, next) => {
   try {
     const username = req.user.username;
-    const user = await userModel.findOne({username});
+    const user = await userModel.findOne({ username });
     const { timestamp } = req.query; // the timestamp sent by the frontend
 
     if (!timestamp) {
@@ -330,7 +329,6 @@ const deletePost = async (req, res, next) => {
   }
 };
 
-
 const toggleSavePost = async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -400,8 +398,6 @@ const getSavedPosts = async (req, res, next) => {
   }
 };
 
-
-
 module.exports = {
   addpost,
   getMyPost,
@@ -411,5 +407,5 @@ module.exports = {
   editPost,
   deletePost,
   toggleSavePost,
-  getSavedPosts
+  getSavedPosts,
 };

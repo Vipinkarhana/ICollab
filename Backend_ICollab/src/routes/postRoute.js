@@ -9,7 +9,7 @@ const {
   editPost,
   deletePost,
   toggleSavePost,
-  getSavedPosts,  
+  getSavedPosts,
 } = require('../controllers/postController');
 const { validatePost } = require('../middlewares/validation');
 const { isloggedin } = require('../middlewares/auth');

@@ -1,5 +1,5 @@
 const Notification = require('../../models/notification.js');
-const { sendSSE } = require("../routes/sseRoute.js");
+const { sendSSE } = require('../routes/sseRoute.js');
 
 // Send notification
 const sendNotification = async (req, res) => {
@@ -8,8 +8,8 @@ const sendNotification = async (req, res) => {
     return res.status(400).json({ error: 'All fields required' });
 
   try {
-    if (recipient === "all") {
-      const users = await Notification.find({}, "username");
+    if (recipient === 'all') {
+      const users = await Notification.find({}, 'username');
       await Promise.all(
         users.map(async (user) => {
           await Notification.findOneAndUpdate(
@@ -29,10 +29,10 @@ const sendNotification = async (req, res) => {
       sendSSE(recipient, { text: message });
     }
 
-    res.status(200).json({ message: "Notification sent" });
+    res.status(200).json({ message: 'Notification sent' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -53,7 +53,7 @@ const getUserNotifications = async (req, res) => {
     const notif = await Notification.findOne({ username });
     res.json(notif?.messages || []);
   } catch (error) {
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -61,12 +61,12 @@ const markAsRead = async (req, res) => {
   const { username, messageId } = req.body;
   try {
     await Notification.updateOne(
-      { username, "messages._id": messageId },
-      { $set: { "messages.$.read": true } }
+      { username, 'messages._id': messageId },
+      { $set: { 'messages.$.read': true } }
     );
-    res.status(200).json({ message: "Marked as read" });
+    res.status(200).json({ message: 'Marked as read' });
   } catch (error) {
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -77,18 +77,16 @@ const deleteNotification = async (req, res) => {
       { username },
       { $pull: { messages: { _id: messageId } } }
     );
-    res.status(200).json({ message: "Deleted" });
+    res.status(200).json({ message: 'Deleted' });
   } catch (error) {
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: 'Server error' });
   }
 };
-
-
 
 module.exports = {
   sendNotification,
   getLatestNotifications,
   getUserNotifications,
   markAsRead,
-  deleteNotification
+  deleteNotification,
 };
