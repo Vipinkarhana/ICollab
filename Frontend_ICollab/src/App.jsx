@@ -71,6 +71,7 @@ function App() {
               <Route path="/incubators" element={<IncubatorsPage />} />
               <Route path="/project" element={<ProjectPage />} />
               <Route path="/project/create" element={<ProjectForm />} />
+              <Route path="/projects/edit/:projectId" element={<ProjectForm />} />
               <Route path="/project/:id" element={<ProjectPreviewPage />} />
             </Route>
 

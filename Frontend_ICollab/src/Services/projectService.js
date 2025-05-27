@@ -9,7 +9,6 @@ export const addProject = async (projectData) => {
         //'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     });
-    console.log("Project service response: ", response.data);
     return response.data;
 }
 catch (err) {
@@ -117,5 +116,20 @@ export const deleteProject = async (projectid) => {
     return await privateAxios.post("/project/deleteproject", {projectid});
   }catch (err){
     next(err);
+  }
+};
+
+
+export const updateProject = async (projectData) => {
+  try {
+    console.log("-----------------------------------------------------------------------------------------------------------------------------------------Project Data:"+Array.from(projectData.entries()));
+    const response = await privateAxios.put('/project/editproject', projectData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || { error: "Project update failed" };
   }
 };

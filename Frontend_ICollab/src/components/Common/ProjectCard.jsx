@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { EllipsisVertical, UserPlus, Trash2, PinOff  } from "lucide-react";
+import { EllipsisVertical, UserPlus, Trash2, PinOff , Edit2 as EditIcon } from "lucide-react";
 import { toggleSaveProject, deleteProject } from "../../Services/projectService";
 import {
   BookmarkIcon as OutlineBookmark,
@@ -156,6 +156,16 @@ console.log("Is Owner:", isOwner);
                   </>
                 )}
               </button>
+
+              {isOwner && (
+              <Link 
+                  to={`/projects/edit/${project._id}`}
+                  className="flex items-center gap-2 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 w-full text-left"
+              >
+              <EditIcon size={18} />
+                Edit
+              </Link>
+           )}
              
               {/* <button className="flex items-center gap-2 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 w-full text-left">
               < PinOff color="gray" size={18} />
