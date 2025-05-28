@@ -1,6 +1,7 @@
 import { useState } from "react";
 import AddExperience from "./Add Experience";
 
+
 function WorkExperienceForm() {
   const [experiences, setExperiences] = useState([
     {
@@ -244,9 +245,10 @@ function WorkExperienceForm() {
       </div>
 
       {/* Right Side Summary Panel */}
-      <div className="sm:flex-grow  ">
+      <div className="sm:flex-grow">
         <AddExperience submittedExperiences={submittedExperiences} />
-      </div>
+      </div> 
+
     </div>
   );
 }
