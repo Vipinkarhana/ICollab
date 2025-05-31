@@ -4,7 +4,7 @@ const toggleSavedItem = async (req, res) => {
   try {
     const userId = req?.user?.id;
     const { itemId, itemType } = req?.body;
-
+    
     // Validate itemType
     if (!['posts', 'projects'].includes(itemType)) {
       return res.status(400).json({ message: 'Invalid item type' });

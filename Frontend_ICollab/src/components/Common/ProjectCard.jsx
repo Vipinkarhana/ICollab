@@ -70,7 +70,7 @@ const ProjectCard = ({
   };
 
   const handleSaveToggle = () => {
-    dispatch(toggleSaveItemThunk({ itemId: project._id, itemType: "projects", item: project }));
+    dispatch(toggleSaveItemThunk({ itemId: project?.id, itemType: "projects", item: project }));
   };
 
   // Close dropdown on outside click

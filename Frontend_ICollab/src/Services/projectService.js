@@ -36,17 +36,6 @@ catch (err) {
     }
   };
 
-
-  // projectService.js
-export const getProjectFeed = async () => {
-  try {
-    const response = await privateAxios.get('/project/projectfeed');
-    return response.data;
-  } catch (err) {
-    throw err;
-  }
-};
-
 export const getOngoingProjects = async (timestamp) => {
   try {
     const response = await privateAxios.get('/project/ongoingfeed', { 

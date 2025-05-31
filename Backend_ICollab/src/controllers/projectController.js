@@ -80,7 +80,7 @@ const addProject = async (req, res, next) => {
           new ApiError(
             400,
             `Invalid collaborators: ${invalidCollaborators.join(', ')}. ` +
-              'They must be existing usernames or emails.'
+            'They must be existing usernames or emails.'
           )
         );
       }
@@ -278,83 +278,6 @@ const project = async (req, res, next) => {
   }
 };
 
-const projectFeed = async (req, res, next) => {
-  const username = req.user.username;
-  const user = await userModel.findOne({ username: username });
-  const userId = user._id;
-  const savedItems = await SavedItem.findOne({ user: userId });
-  const savedProjectIds = savedItems?.savedProjects || [];
-  try {
-    const feed = await projectModel.aggregate([
-      {
-        $facet: {
-          ongoing: [
-            { $match: { isOngoing: true } },
-            { $sort: { createdAt: -1 } },
-            { $limit: 4 },
-            {
-              $addFields: {
-                isSaved: {
-                  $in: ['$_id', savedProjectIds],
-                },
-              },
-            },
-            {
-              $project: {
-                id: '$_id',
-                name: 1,
-                tagline: 1,
-                technology: 1,
-                collaborator: 1,
-                category: 1,
-                startDate: 1,
-                createdAt: 1,
-                updatedAt: 1,
-                user: 1,
-              },
-            },
-          ],
-          finished: [
-            { $match: { isOngoing: false } },
-            { $sort: { createdAt: -1 } },
-            { $limit: 4 },
-            {
-              $addFields: {
-                isSaved: {
-                  $in: ['$_id', savedProjectIds],
-                },
-              },
-            },
-            {
-              $project: {
-                id: '$_id',
-                name: 1,
-                tagline: 1,
-                technology: 1,
-                collaborator: 1,
-                category: 1,
-                startDate: 1,
-                endDate: 1,
-                createdAt: 1,
-                user: 1,
-              },
-            },
-          ],
-        },
-      },
-    ]);
-    res.status(200).json({
-      success: true,
-      data: {
-        ongoing: feed[0].ongoing,
-        finished: feed[0].finished,
-      },
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
 const ongoingFeed = async (req, res, next) => {
   try {
     const username = req.user.username;
@@ -371,7 +294,7 @@ const ongoingFeed = async (req, res, next) => {
       return next(new ApiError(400, 'Timestamp must be a number'));
     }
 
-    const savedItems = await SavedItem.findOne({ user: userId });
+    const savedItems = await SavedItem.findOne({ user: userId }).lean();
     const savedProjectIds = savedItems?.savedProjects || [];
 
     const feed = await projectModel
@@ -395,9 +318,10 @@ const ongoingFeed = async (req, res, next) => {
       .limit(10)
       .lean()
       .transform((results) =>
-        results.map((project) => ({
-          ...project,
-          isSaved: savedProjectIds.includes(project._id),
+        results.map(({ _id, ...rest }) => ({
+          id: _id,
+          ...rest,
+          isSaved: savedProjectIds.includes(_id)
         }))
       );
 
@@ -449,9 +373,10 @@ const finishedFeed = async (req, res, next) => {
       .limit(10)
       .lean()
       .transform((results) =>
-        results.map((project) => ({
-          ...project,
-          isSaved: savedProjectIds.includes(project._id),
+        results.map(({ _id, ...rest }) => ({
+          id: _id,
+          ...rest,
+          isSaved: savedProjectIds.includes(_id),
         }))
       );
 
@@ -728,100 +653,100 @@ const deleteProject = async (req, res, next) => {
 
 const editProject = async (req, res, next) => {
   try {
-      const user = await userModel.findOne({username: req.user.username});
-      const { projectId, name, tagline, problem, challenges, technology, collaborator,links, videoLink, media, removeLogo, stillOngoing, startDate, endDate, category, description } = req.body;
-  
-      const project = await projectModel.findOne({ _id: projectId, user: user._id });
-      if (!project) return next(new ApiError(404, 'Project not found or unauthorized'));
-  
-      if (name) {
-        project.name = name;
-      }
-      if (tagline) {
-        project.tagline = tagline;
-      }
-      if (problem) {
-        project.problem = problem;
-      }
-      if (challenges) {
-        project.challenges = challenges;
-      }
-      if (technology && technology.length>0) {
-        const techArr = Array.isArray(technology) 
-                ? technology 
-                : [technology].filter(Boolean);
-        project.technology = techArr;
-      }
-      if (collaborator !== undefined) {
-        const collaboratorArray = Array.isArray(collaborator) 
-                ? collaborator 
-                : [collaborator].filter(Boolean);
-        if(collaboratorArray.length>0){
-                const collaboratorRegex = collaboratorArray.map(c => 
-                    new RegExp(`^${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
-                );
+    const user = await userModel.findOne({ username: req.user.username });
+    const { projectId, name, tagline, problem, challenges, technology, collaborator, links, videoLink, media, removeLogo, stillOngoing, startDate, endDate, category, description } = req.body;
 
-                const users = await userModel.find({
-                    $or: [
-                        { username: { $in: collaboratorRegex } },
-                        { email: { $in: collaboratorRegex } }
-                    ]
-                });
+    const project = await projectModel.findOne({ _id: projectId, user: user._id });
+    if (!project) return next(new ApiError(404, 'Project not found or unauthorized'));
 
-                const validIdentifiers = new Set();
-                users.forEach(user => {
-                    validIdentifiers.add(user.username.toLowerCase());
-                    validIdentifiers.add(user.email.toLowerCase());
-                });
+    if (name) {
+      project.name = name;
+    }
+    if (tagline) {
+      project.tagline = tagline;
+    }
+    if (problem) {
+      project.problem = problem;
+    }
+    if (challenges) {
+      project.challenges = challenges;
+    }
+    if (technology && technology.length > 0) {
+      const techArr = Array.isArray(technology)
+        ? technology
+        : [technology].filter(Boolean);
+      project.technology = techArr;
+    }
+    if (collaborator !== undefined) {
+      const collaboratorArray = Array.isArray(collaborator)
+        ? collaborator
+        : [collaborator].filter(Boolean);
+      if (collaboratorArray.length > 0) {
+        const collaboratorRegex = collaboratorArray.map(c =>
+          new RegExp(`^${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
+        );
 
-                const invalidCollaborators = collaboratorArray.filter(c => 
-                    !validIdentifiers.has(c.toLowerCase())
-                );
+        const users = await userModel.find({
+          $or: [
+            { username: { $in: collaboratorRegex } },
+            { email: { $in: collaboratorRegex } }
+          ]
+        });
 
-                if (invalidCollaborators.length > 0) {
-                    return next(new ApiError(
-                        400, 
-                        `Invalid collaborators: ${invalidCollaborators.join(', ')}. ` +
-                        'They must be existing usernames or emails.'
-                    ));
-                }
-                project.collaborator = collaboratorArray;
-            }
-            else{
-              project.collaborator = [];
-            }
-                
+        const validIdentifiers = new Set();
+        users.forEach(user => {
+          validIdentifiers.add(user.username.toLowerCase());
+          validIdentifiers.add(user.email.toLowerCase());
+        });
+
+        const invalidCollaborators = collaboratorArray.filter(c =>
+          !validIdentifiers.has(c.toLowerCase())
+        );
+
+        if (invalidCollaborators.length > 0) {
+          return next(new ApiError(
+            400,
+            `Invalid collaborators: ${invalidCollaborators.join(', ')}. ` +
+            'They must be existing usernames or emails.'
+          ));
+        }
+        project.collaborator = collaboratorArray;
       }
-      if (links) {
-        project.links = links;
+      else {
+        project.collaborator = [];
       }
-      if (videoLink) {
-        project.videoLink = videoLink;
-      }
-      if (stillOngoing!=undefined) {
-        const isOngoing = (stillOngoing === true || stillOngoing === 'true');
-        project.isOngoing = isOngoing;
-         if (!isOngoing && !endDate) {
+
+    }
+    if (links) {
+      project.links = links;
+    }
+    if (videoLink) {
+      project.videoLink = videoLink;
+    }
+    if (stillOngoing != undefined) {
+      const isOngoing = (stillOngoing === true || stillOngoing === 'true');
+      project.isOngoing = isOngoing;
+      if (!isOngoing && !endDate) {
         return next(new ApiError(400, 'End Date is required for non-ongoing projects'));
       }
-      }
-      if (startDate) {
-        project.startDate = startDate;
-      }
-      if (endDate) {
-        project.endDate = endDate;
-      }
-      if (category) {
-        project.category = category;
-      }
-      if (description) {
-        project.description = description;
-      }
+    }
+    if (startDate) {
+      project.startDate = startDate;
+    }
+    if (endDate) {
+      project.endDate = endDate;
+    }
+    if (category) {
+      project.category = category;
+    }
+    if (description) {
+      project.description = description;
+    }
 
-console.log("Entering");
-      if (media!==undefined) {
-        console.log("Entered");
-      try{
+    console.log("Entering");
+    if (media !== undefined) {
+      console.log("Entered");
+      try {
         //  existingMediaArray = Array.isArray(media) ? media : [media];
         //  project.media = project.media || [];
         //  const mediaToDelete = project.media.filter(mediaKey => !existingMediaArray.includes(mediaKey));
@@ -838,7 +763,7 @@ console.log("Entering");
       }
     }
 
-     if (req.files?.media) {
+    if (req.files?.media) {
       const mediaFiles = Array.isArray(req.files.media) ? req.files.media : [req.files.media];
       for (const mediaFile of mediaFiles) {
         const mediaKey = `projects/${project._id}/media-${Date.now()}-${mediaFile.originalname}`;
@@ -864,21 +789,21 @@ console.log("Entering");
       }
     }
 
-      await project.save();
-  
-      return res.status(200).json({
-        message: 'Project updated successfully',
-        status: 'success',
-        data: {
-                projectid: project._id,
-                logo: project.logo ? `${config.S3_PUBLIC_URL}/${project.logo}` : null,
-                media: project.media.map(key => `${config.S3_PUBLIC_URL}/${key}`)
-  },
-      });
-    } catch (err) {
-      console.error(err);
-      next(err);
-    }
+    await project.save();
+
+    return res.status(200).json({
+      message: 'Project updated successfully',
+      status: 'success',
+      data: {
+        projectid: project._id,
+        logo: project.logo ? `${config.S3_PUBLIC_URL}/${project.logo}` : null,
+        media: project.media.map(key => `${config.S3_PUBLIC_URL}/${key}`)
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
 };
 
 
@@ -888,7 +813,6 @@ module.exports = {
   categorySuggestions,
   collaboratorSuggestions,
   project,
-  projectFeed,
   ongoingFeed,
   fetchUserProjects,
   updateTopProjects,
