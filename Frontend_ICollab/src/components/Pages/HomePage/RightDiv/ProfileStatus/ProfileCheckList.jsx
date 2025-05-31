@@ -5,7 +5,7 @@ const ProfileCheckList = ({ tasks = [], progress = 0 }) => {
   if (progress < 100) return null;
 
   return (
-    <div className="h-auto w-72 px-2">
+    <div className="h-auto w-[22rem] px-2">
       <div className="bg-white rounded-xl shadow-md p-6 w-full text-center">
         <div className="flex justify-center mb-4">
           <div className="bg-green-500 rounded-full p-2 flex items-center justify-center">
