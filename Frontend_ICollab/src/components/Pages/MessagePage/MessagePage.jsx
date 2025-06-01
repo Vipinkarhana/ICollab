@@ -1,17 +1,16 @@
-import React from "react";
-import UnderConstruction from "/UnderConstruction.png"
-import MoreProject from "../../Common/MoreProject";
-import ProjectCardSkeleton from "../../Common/ProjectcardSkeleton";
+import {useState} from "react";
+import ChatSearchBar from "./Chats/ChatSearchBar";
+import GroupList from "./Chats/GroupList";
 const MessagePage = () => {
   return (
-    <div className="flex flex-col gap-4">
-      <div className="text-black w-full h-svh flex  justify-center items-center">
-        <img src={UnderConstruction} alt="" />
+    <div className="flex w-[100svw] h-[89svh] bg-white mt-16 border-2 border-red-500 ">
+      <div className="flex flex-col w-[30%] h-full border-r-2 border-gray-300">
+          <ChatSearchBar />
+          <GroupList />
       </div>
-      <div>
-        {/* <MoreProject /> */}
-        <ProjectCardSkeleton/>
-      </div>
+      <div className=""></div>
+      
+      
     </div>
   );
 }
