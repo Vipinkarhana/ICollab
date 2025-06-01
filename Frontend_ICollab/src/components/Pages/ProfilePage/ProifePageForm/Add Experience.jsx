@@ -11,7 +11,7 @@ function AddExperience({ submittedExperiences }) {
       </h3>
 
       {/* Scrollable list of experiences */}
-      <div className="space-y-10  overflow-y-auto max-h-[42rem] overflow-x-hidden pr-4 custom-scrollbar">
+      <div className="space-y-10  overflow-y-auto max-h-[42rem] overflow-x-hidden pr-4  scrollbar-hide">
         <div className="relative pl-10 space-y-10">
         {/* Vertical timeline line */}
         <div className="absolute sm:left-8 left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-800 rounded-full shadow-md shadow-blue-400/50 animate-pulse" />
@@ -19,7 +19,7 @@ function AddExperience({ submittedExperiences }) {
         {submittedExperiences.map((exp, idx) => (
           <div
             key={idx}
-            className="relative sm:ml-10 sm:w-[21rem] w-44  max-w-7xl rounded-xl border border-blue-200 bg-white/30 backdrop-blur-md p-6 shadow-lg hover:shadow-xl transition-all duration-300"
+            className="relative sm:ml-10 sm:w-[21rem] w-48  max-w-7xl rounded-xl border border-blue-200 bg-white/30 backdrop-blur-md p-6 shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <div className="absolute sm:-left-14 -left-10 top-8 w-5 h-5 bg-blue-600 rounded-full border-4 border-white shadow-md" />
 
