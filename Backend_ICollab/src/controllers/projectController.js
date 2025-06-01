@@ -393,7 +393,7 @@ const fetchUserProjects = async (req, res, next) => {
   try {
     const { username } = req.params;
 
-    const user = await userModel.findOne({ username });
+    const user = await userModel.findOne({ username }).lean();
 
     if (!user) {
       return res.status(404).json({
@@ -407,10 +407,15 @@ const fetchUserProjects = async (req, res, next) => {
       .populate('user', 'username name profile_pic')
       .lean();
 
+    const response = projects.map(({ _id, ...rest }) => ({
+      id: _id,
+      ...rest
+    }));
+
     res.status(200).json({
       message: 'User projects fetched successfully',
       status: 'success',
-      data: projects,
+      data: response,
     });
   } catch (err) {
     next(err);

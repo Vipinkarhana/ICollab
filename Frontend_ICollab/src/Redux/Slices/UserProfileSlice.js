@@ -12,10 +12,6 @@ export const updateTopProjects = createAsyncThunk(
       // Send only IDs to backend
       const data = await updatePinnedProjects(projectIds);
 
-      // No need to fetch full profile again, we have topProjects already
-      // If needed, uncomment this line
-      // thunkAPI.dispatch(fetchUserProfile(username));
-
       // Return full topProjects to update state
       console.log("Top Projects in Redux Thunk:", topProjects);
       return topProjects;
@@ -74,11 +70,10 @@ const userProfileSlice = createSlice({
       .addCase(updateTopProjects.fulfilled, (state, action) => {
         state.loading = false;
         if (state.data?.user?.profile) {
+          console.log("HIT MAIN: ", action.payload);
           state.data.user.profile.topProjects = action.payload;
         }
       })
-      
-
       .addCase(updateTopProjects.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Failed to update top projects';

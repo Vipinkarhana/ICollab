@@ -3,7 +3,6 @@ import ProjectCard from "../Common/ProjectCard"
 import { useNavigate } from 'react-router-dom';
 import {getOngoingProjects, getFinishedProjects} from '../../Services/projectService';
 
-
 function MoreProject({ currentProjectId }) {
 
   const navigate = useNavigate();

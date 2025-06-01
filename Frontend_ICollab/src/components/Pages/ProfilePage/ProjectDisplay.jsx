@@ -7,17 +7,12 @@ import { updateTopProjects } from '../../../Redux/Slices/UserProfileSlice';
 
 const ProjectDisplay = ({ username }) => {
   const topProjects = useSelector((state) => state?.userProfile?.data?.user?.profile?.topProjects);
-  console.log("Hit 1:",topProjects);
   const dispatch = useDispatch();
   const { userProjects, loading, error } = useSelector((state) => state.project);
   const { data: profileData } = useSelector((state) => state.userProfile);
 
   useEffect(() => {
-    dispatch(fetchUserProjectsData(username));
-  }, [dispatch, username]);
-
-  useEffect(() => {
-    console.log("topProjects:",topProjects);
+    console.log("topProjects:", topProjects);
   }, [topProjects]);
 
   const originalProjects = userProjects;
@@ -25,9 +20,9 @@ const ProjectDisplay = ({ username }) => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedCards, setSelectedCards] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  useEffect(()=>{
-    console.log("selectedCards:",selectedCards);
-  },[selectedCards])
+  useEffect(() => {
+    console.log("selectedCards:", selectedCards);
+  }, [selectedCards])
 
   const selectedProjects = projects.filter((proj) => proj.pinned).slice(0, 3);
 
@@ -48,28 +43,29 @@ const ProjectDisplay = ({ username }) => {
     }
 
     const updatedPinnedProjects = updated?.filter((proj) => proj?.pinned);
-dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
-
+    dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
   };
 
-  const handlePinProject = (projectId) => {
-    const currentTop = projects?.filter((proj) => proj?.pinned);
-    if (currentTop.length >= 3) return;
-    const updated = projects?.map((proj) =>
-      proj?.id === projectId ? { ...proj, pinned: true } : proj
-    );
-    setProjects(updated);
-    setShowModal(false);
-    setSelectedProject(updated.find((proj) => proj?.id === projectId));
+  // const handlePinProject = (projectId) => {
+  //   const currentTop = projects?.filter((proj) => proj?.pinned);
+  //   if (currentTop.length >= 3) return;
+  //   const updated = projects?.map((proj) =>
+  //     proj?.id === projectId ? { ...proj, pinned: true } : proj
+  //   );
+  //   setProjects(updated);
+  //   setShowModal(false);
+  //   setSelectedProject(updated.find((proj) => proj?.id === projectId));
 
-    const updatedPinnedProjects = updated?.filter((proj) => proj?.pinned)?.map((proj) => proj?.id);
-    dispatch(updateTopProjects({ projectIds: updatedPinnedProjects, username }));
-  };
+  //   const updatedPinnedProjects = updated?.filter((proj) => proj?.pinned)?.map((proj) => proj?.id);
+  //   dispatch(updateTopProjects({ projectIds: updatedPinnedProjects, username }));
+  // };
 
   const handleSelectProject = () => {
-    console.log("Selected crds",  selectedCards)
+    console.log("Selected crds", selectedCards)
     const updatedProjects = projects?.map((proj) =>
-      selectedCards.includes(proj?.id) ? { ...proj, pinned: true } : proj
+      selectedCards.some(card => card.id === proj?.id)
+        ? { ...proj, pinned: true }
+        : proj
     );
 
     setProjects(updatedProjects);
@@ -77,16 +73,16 @@ dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
     setSelectedCards([]);
     console.log("updted projects:", updatedProjects)
 
-    const updatedPinnedProjects = updatedProjects?.filter((proj) => proj.pinned)?.map((proj) => proj);
-    console.log("pinned project",updatedPinnedProjects)
+    const updatedPinnedProjects = updatedProjects?.filter((proj) => proj.pinned);
+    console.log("pinned project", updatedPinnedProjects)
     dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
   };
 
-  const handleCardSelection = (projectId) => {
+  const handleCardSelection = (project) => {
     setSelectedCards((prevSelected) =>
-      prevSelected.includes(projectId)
-        ? prevSelected.filter((id) => id !== projectId)
-        : [...prevSelected, projectId]
+      prevSelected.includes(project)
+        ? prevSelected.filter((preProject) => preProject.id !== project.id)
+        : [...prevSelected, project]
     );
   };
 
@@ -117,7 +113,7 @@ dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
                 onClick={() => setSelectedProject(project)}
               >
                 <img
-                  src={project?.logo}
+                  src={`https://test.ircollab.com/${project?.logo}`}
                   alt="Logo"
                   className="w-10 h-10 object-contain"
                 />
@@ -146,10 +142,10 @@ dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
               <p className="text-gray-600 italic">{selectedProject?.tagline}</p>
               <p className="mt-2 text-gray-700 text-justify">{selectedProject?.description}</p>
               <div className="mt-4 grid grid-cols-2 gap-4">
-                {selectedProject?.images?.map((img, idx) => (
+                {selectedProject?.media?.map((img, idx) => (
                   <img
                     key={idx}
-                    src={img}
+                    src={`https://test.ircollab.com/${img}`}
                     alt={`Screenshot ${idx + 1}`}
                     className="rounded-md border shadow"
                   />
@@ -185,8 +181,8 @@ dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
               {projects
                 .filter((project) => !project.pinned)
                 .map((project) => {
-                  const isSelected = selectedCards.includes(project.id);
-                  const selectionNumber = selectedCards.indexOf(project.id) + 1;
+                  const isSelected = selectedCards.some(card => card.id === project.id);
+                  const selectionNumber = selectedCards.findIndex(card => card.id === project.id) + 1;
                   const canSelectMore = topProjects.length + selectedCards.length < 3;
 
                   return (
@@ -194,9 +190,9 @@ dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
                       key={project?.id}
                       onClick={() => {
                         if (isSelected) {
-                          handleCardSelection(project?.id);
+                          handleCardSelection(project);
                         } else if (canSelectMore) {
-                          handleCardSelection(project?.id);
+                          handleCardSelection(project);
                         }
                       }}
                       className={`relative cursor-pointer transition-all duration-200 ease-in-out rounded-lg overflow-hidden ${isSelected ? "ring-2 ring-blue-500" : "shadow-lg border"
