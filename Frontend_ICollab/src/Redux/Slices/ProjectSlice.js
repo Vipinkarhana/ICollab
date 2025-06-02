@@ -16,6 +16,7 @@ export const fetchUserProjectsData = createAsyncThunk(
 
 const initialState = {
   userProjects: [], 
+  currentProject: null,
   loading: false,
   error: null,
 };
@@ -23,7 +24,14 @@ const initialState = {
 const projectSlice = createSlice({
   name: 'projects',
   initialState,
-  reducers: {},
+  reducers: {
+     setCurrentProject: (state, action) => {
+      state.currentProject = action.payload;
+    },
+    clearCurrentProject: (state) => {
+      state.currentProject = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserProjectsData.pending, (state) => {
@@ -41,4 +49,5 @@ const projectSlice = createSlice({
   },
 });
 
+export const { setCurrentProject, clearCurrentProject } = projectSlice.actions;
 export default projectSlice.reducer;

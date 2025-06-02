@@ -2,7 +2,6 @@ import privateAxios from "./apiService";
 
 export const addProject = async (projectData) => {
     try{
-    console.log("Reached project service");
     const response = await privateAxios.post('/project/addproject', projectData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -71,7 +70,6 @@ export const getFinishedProjects = async (timestamp) => {
 
 export const getProjectDetails = async (projectId) => {
   try{
-    console.log("projectId in project service: ", projectId);
   return await privateAxios.get(`/project/${projectId}`);
   } catch(err){
     next(err);
@@ -90,18 +88,6 @@ export const updatePinnedProjects = async (projectIds) => {
   }
 };
 
-// import privateAxios from '../api/privateAxios'; // must include Authorization headers
-
-// export const updatePinnedProjects = async (projectIds) => {
-//   console.log(projectIds);
-//   const response = await privateAxios.put('/project/topprojects', {
-//     topProjectIds: projectIds,
-//   });
-//   return response.data;
-// };
-
-
-
 export const deleteProject = async (projectid) => {
   try{
     return await privateAxios.post("/project/deleteproject", {projectid});
@@ -113,7 +99,6 @@ export const deleteProject = async (projectid) => {
 
 export const updateProject = async (projectData) => {
   try {
-    console.log("-----------------------------------------------------------------------------------------------------------------------------------------Project Data:"+Array.from(projectData.entries()));
     const response = await privateAxios.put('/project/editproject', projectData, {
       headers: {
         'Content-Type': 'multipart/form-data',

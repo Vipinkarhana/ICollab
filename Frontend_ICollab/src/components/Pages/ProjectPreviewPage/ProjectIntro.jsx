@@ -25,7 +25,7 @@ function ProjectIntro({  project, tabs, activeTab, setActiveTab }) {
         <div className="w-full flex justify-end sm:hidden"
       >
         <Link
-          to="/project/create"
+          to={`/projects/edit/${project._id}`}
           className="border border-gray-400 rounded-full p-4 text-purple-700 hover:bg-gray-100 transition text-sm md:text-lg font-semibold flex  sm:hidden justify-evenly items-center gap-2"
         >
           <Pencil size={24} strokeWidth={2.1}/>
@@ -107,7 +107,7 @@ function ProjectIntro({  project, tabs, activeTab, setActiveTab }) {
               <Globe size={24} strokeWidth={1.5} />
             </a>
             <Link
-              to={"/profile/edit"}
+              to={`/projects/edit/${project._id}`}
               className="border hidden sm:block border-gray-300 rounded-md px-3 py-2 text-purple-700 hover:bg-gray-100 text-sm font-semibold"
             >
               Edit Project

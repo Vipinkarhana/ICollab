@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { addProject, getCollaboratorSuggestions, getProjectDetails, updateProject } from "../../../Services/projectService";
+import { useSelector, useDispatch } from 'react-redux';
+import { addProject, getCollaboratorSuggestions,  updateProject} from "../../../Services/projectService";
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
+import { setCurrentProject, clearCurrentProject, fetchUserProjectsData, } from '../../../Redux/Slices/ProjectSlice';
 
-
-const ProjectForm = ({ project: existingProject }) => {
+const ProjectForm = () => {
+  const dispatch = useDispatch();
   const { projectId: urlProjectId } = useParams(); // Get project ID from URL
-   const isEditMode = !!urlProjectId;
-  //  const isEditMode = !!existingProject;
+    const isEditMode = Boolean(urlProjectId);
   const navigate = useNavigate();
-  // const [projectId, setProjectId] = useState(existingProject?._id || null);
+   const { currentProject, userProjects , loading: projectsLoading } = useSelector((state) => state.project);
+   const username = useSelector((state) => state.user.userData?.username);
    const [projectId, setProjectId] = useState(urlProjectId || null);
   const [logo, setLogo] = useState(null); // holds the File
   const [removeLogo, setRemoveLogo] = useState(false);
   const [logoPreview, setLogoPreview] = useState(null); // holds the blob-URL
-  // const [isLoading, setIsLoading] = useState(false);
   const textClass = "text-sm";
   const [formData, setFormData] = useState({
     projectName: "",
     tagline: "",
     problem: "",
     category: "",
-    // collaborators: "",
     technologies: "",
     links: "",
     videoDemo: "",
@@ -38,6 +38,24 @@ const ProjectForm = ({ project: existingProject }) => {
   const [selectedCollaborators, setSelectedCollaborators] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+
+
+  const [touchedFields, setTouchedFields] = useState({});
+  const [errors, setErrors] = useState({});
+  const [charCounts, setCharCounts] = useState({
+    projectName: 0,
+    tagline: 0,
+    problem: 0,
+    technologies: 0,
+    Challenges: 0,
+    links: 0,
+    videoDemo: 0,
+  });
+
+  // We will store up to 5 pictures.  In “create” mode they’ll all be null.  In “edit” mode, we’ll fill this from currentProject.media.
+  const [pictures, setPictures] = useState([null, null, null, null, null]);
+
+  const today = new Date().toISOString().split("T")[0];
 
   // Add static categories
   const categoryOptions = [
@@ -80,18 +98,6 @@ const ProjectForm = ({ project: existingProject }) => {
     return () => clearTimeout(debounceTimer);
   }, [collaboratorInput]);
 
-  const [touchedFields, setTouchedFields] = useState({});
-  const [errors, setErrors] = useState({});
-  const [charCounts, setCharCounts] = useState({
-    projectName: 0,
-    tagline: 0,
-    problem: 0,
-    technologies: 0,
-    Challenges: 0,
-    links: 0,
-    videoDemo: 0,
-  });
-
   // New collaborator suggestion effect
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -127,8 +133,6 @@ const ProjectForm = ({ project: existingProject }) => {
     setSelectedCollaborators(selectedCollaborators.filter((c) => c.id !== id));
   };
 
-  const today = new Date().toISOString().split("T")[0];
-
   // Handle input changes and update character count
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -140,21 +144,9 @@ const ProjectForm = ({ project: existingProject }) => {
       setCharCounts((prev) => ({ ...prev, [name]: charCount }));
     }
   };
-
-  const [pictures, setPictures] = useState([null, null, null, null, null]);
-
-  // function handlePictureChange(e, idx) {
-  //   const file = e.target.files[0];
-  //   setPictures((pics) => {
-  //     const copy = [...pics];
-  //     copy[idx] = file;
-  //     return copy;
-  //   });
-  // }
-
   function handlePictureChange(e, idx) {
   const file = e.target.files[0];
-  setPictures(prev => {
+  setPictures((prev) => {
     const newPictures = [...prev];
     newPictures[idx] = file ? {
       file,
@@ -163,26 +155,9 @@ const ProjectForm = ({ project: existingProject }) => {
     return newPictures;
   });
 }
-
-  // function handleLogoChange(e) {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-  //   setLogo(file); // remember for submit
-  //   setLogoPreview(URL.createObjectURL(file)); // generate preview URL
-  //   if (logoPreview) URL.revokeObjectURL(logoPreview);
-  // }
-
-  
   const handleLogoChange = (e) => {
   const file = e.target.files[0];
   if (!file) return;
-
-  // Clear existing logo if in edit mode
-  if (isEditMode) {
-     setLogoPreview(null);
-    setLogo(null);
-    document.getElementById('removeLogo').value = 'false';
-  }
 
   // Clean up previous preview if it was a blob URL
   if (logoPreview && logoPreview.startsWith('blob:')) {
@@ -191,9 +166,13 @@ const ProjectForm = ({ project: existingProject }) => {
 
   setLogo(file);
   setLogoPreview(URL.createObjectURL(file));
+
+  // Clear removeLogo flag when new file is selected
+  if (isEditMode) {
+    setRemoveLogo(false);
+    document.getElementById('removeLogo').value = 'false';
+  }
 };
-
-
 
   const handleOngoingChange = (e) => {
     setFormData({
@@ -223,146 +202,116 @@ const ProjectForm = ({ project: existingProject }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+useEffect(() => {
+    if (!isEditMode) return;
 
-
-
-   // Add useEffect to fetch project details if in edit mode
-  useEffect(() => {
-    if (isEditMode) {
-      const fetchProjectDetails = async () => {
-        console.log("⏳ fetching project details for", urlProjectId);
-        // setIsLoading(true);
-        try {
-          // const response = await fetchProjectDetails(existingProject._id);
-          // const response = await getProjectDetails(urlProjectId);
-          // const { data: wrapper } = await getProjectDetails(urlProjectId);
-          // const projectData = response.data;
-          // const projectData = wrapper.data;
-
-           const {
-        data: { data: projectData }
-      } = await getProjectDetails(urlProjectId);
-          console.log("🎯 projectData keys:", Object.keys(projectData), projectData);
-          
-          // Transform project data to match form state
-          setFormData({
-            projectName: projectData.name,
-            tagline: projectData.tagline,
-            problem: projectData.problem,
-            category: projectData.category,
-            technologies: projectData.technology.join(', '),
-            links: projectData.links,
-            videoDemo: projectData.videoLink,
-            Challenges: projectData.challenges,
-            startDate: projectData.startDate.split('T')[0],
-            endDate: projectData.endDate?.split('T')[0] || '',
-            isOngoing: projectData.stillOngoing,
-          });
-
-          setSelectedCollaborators(projectData.collaborator.map(c => ({
-            id: c._id,
-            label: c.username
-          })));
-
-          // Handle existing media
-          const mediaFiles = projectData.media.map(url => ({
-            url, // Keep URL for preview
-            preview: url,
-            file: null // No file until user changes it
-          }))
-          || [];
-          while (mediaFiles.length < 5) mediaFiles.push(null);
-          setPictures(mediaFiles);
-
-          if (projectData.logo) {
-            setLogoPreview(projectData.logo);
-          }
-
-        } catch (error) {
-          console.error("🚨 getProjectDetails error:", error.response || error);
-          toast.error('Failed to load project data');
-          navigate('/projects');
-        }
-        // finally{
-        //    setIsLoading(false);
-        // }
-      };
-
-      fetchProjectDetails();
+    // (a) Dispatch the thunk to load all the user’s projects if they haven’t been loaded yet
+    //     We assume you have the username somewhere in Redux (e.g. state.user.userData.username).
+    //     Replace `state.user.userData.username` with however you store it.
+    // const username = useSelector(s => s.user.userData?.username);
+    if (username) {
+      dispatch(fetchUserProjectsData(username));
     }
-  // }, [isEditMode, existingProject?._id, navigate]);
-  }, [isEditMode, urlProjectId, navigate]);
+  }, [dispatch, isEditMode, username]);
 
+  // (b) Once userProjects array is populated, find the single project by ID and dispatch setCurrentProject
+  useEffect(() => {
+    if (!isEditMode || !Array.isArray(userProjects) || userProjects.length === 0) return;
 
+    const found = userProjects.find((p) => p._id === urlProjectId);
+    if (found) {
+      dispatch(setCurrentProject(found));
+    }
+  }, [dispatch, isEditMode, userProjects, urlProjectId]);
 
+  // (c) When the component unmounts (or if urlProjectId changes), clear out currentProject
+  useEffect(() => {
+    return () => {
+      if (isEditMode) {
+        dispatch(clearCurrentProject());
+      }
+    };
+  }, [dispatch, isEditMode, urlProjectId]);
 
-// Updated submit handler
-// const handleSubmit = async (e) => {
-//   e.preventDefault();
-//   e.stopPropagation();
-//   if (!validateForm()) return;
+// As soon as Redux’s `currentProject` exists, map its fields into formData:
+useEffect(() => {
+  if (isEditMode && currentProject) {
+    // Populate the local form fields from Redux
+    setFormData({
+      projectName: currentProject.name || "",
+      tagline: currentProject.tagline || "",
+      problem: currentProject.problem || "",
+      category: currentProject.category || "",
+      technologies: (currentProject.technology || []).join(", "),
+      links: currentProject.links || "",
+      videoDemo: currentProject.videoLink || "",
+      Challenges: currentProject.challenges || "",
+      startDate: currentProject.startDate
+        ? currentProject.startDate.split("T")[0]
+        : "",
+      endDate: currentProject.endDate
+        ? currentProject.endDate.split("T")[0]
+        : "",
+      isOngoing: !!currentProject.isOngoing,
+    });
 
-//   setIsSubmitting(true);
-//   try {
-//     await addProject(FormData);
-//     // Reset form state
-//   } finally {
-//     setIsSubmitting(false);
-//   }
-//   setSubmitError(null);
+    setSelectedCollaborators(
+      (currentProject.collaborator || []).map((c) => {
+        // If collaborator is a string (username)
+        if (typeof c === 'string') {
+          return {
+            id: c, // use username as ID since we don't have actual ID
+            label: c
+          };
+        }
+        // If collaborator is an object (from populated query)
+        return {
+          id: c._id,
+          label: c.username
+        };
+      })
+    );
 
-//     try {
-//       const formPayload = new FormData();
+    // Map existing media URLs into a 5‐slot array:
+    const mediaFiles = (currentProject.media || []).map((url) => {
+try{
+  const urlObj = new URL(url);
+    const rawKey = urlObj.pathname.startsWith("/")
+      ? urlObj.pathname.slice(1)
+      : urlObj.pathname;
+return{
+      url,
+      preview: url,
+      file: null,
+      key: rawKey,
+};
+}catch{
+  return {
+    file: null,
+    url: url,
+    key: url,
+    preview: url,
+  };
+}});
+    while (mediaFiles.length < 5) {
+      mediaFiles.push(null);
+    }
+    setPictures(mediaFiles);
 
-//       // Append fields with corrected names to match backend
-//       formPayload.append("name", formData.projectName);
-//       formPayload.append("tagline", formData.tagline);
-//       formPayload.append("problem", formData.problem);
-//       formPayload.append("category", formData.category);
-//       formPayload.append("links", formData.links);
-//       formPayload.append("videoLink", formData.videoDemo);
-//       //formPayload.append('technology', formData.technologies.split(','));
-//       formData.technologies
-//         .split(",")
-//         .map((t) => t.trim())
-//         .forEach((tech) => formPayload.append("technology", tech)); // one append per tech :contentReference[oaicite:7]{index=7}
+    // If there’s already a logo saved in the project, preview it:
+    if (currentProject.logo) {
+      setLogoPreview(currentProject.logo);
+    }
+  }
+}, [isEditMode, currentProject]);
 
-//       //formPayload.append('collaborator', selectedCollaborators.map(c => c.label));
-//       selectedCollaborators
-//         .map((c) => c.label)
-//         .forEach((label) => formPayload.append("collaborator", label)); // one append per collaborator
-//       formPayload.append("startDate", formData.startDate);
-//       //formPayload.append('isOngoing', formData.isOngoing);
-//       formPayload.append("stillOngoing", formData.isOngoing);
-//       if (!formData.isOngoing) {
-//         formPayload.append("endDate", formData.endDate);
-//       }
-//       formPayload.append("challenges", formData.Challenges);
-
-//       if (logo) {
-//         formPayload.append("logo", logo); // backend expects req.files.logo
-//       }
-//       pictures.forEach((file) => {
-//         if (file) formPayload.append("media", file);
-//       });
-
-//       const response = await addProject(formPayload);
-      
-//       navigate('/projects');
-//       toast.success('Project uploaded successfully!');
-//       console.log("Project created:", response.data);
-//       // Handle success (redirect/show message/etc)
-//     } catch (error) {
-//       setSubmitError(
-//         error.response?.data?.message || "Failed to create project"
-//       );
-//     } finally {
-//       setIsSubmitting(false);
-//     }
-//   };
-
-
-
+const removePicture = (idx) => {
+  setPictures(prev => {
+    const newPictures = [...prev];
+    newPictures[idx] = null;
+    return newPictures;
+  });
+};
 
 // Modify handleSubmit to handle both create and update
   const handleSubmit = async (e) => {
@@ -373,6 +322,12 @@ const ProjectForm = ({ project: existingProject }) => {
     
     try {
       const formPayload = new FormData();
+
+       // Add existingMedia field (JSON string of keys to keep)
+    const existingMediaKeys = pictures
+      .filter(pic => pic && pic.key) // Only existing media has key
+      .map(pic => pic.key);
+    formPayload.append("existingMedia", JSON.stringify(existingMediaKeys));
       
       // Common fields
       formPayload.append("projectId", projectId);
@@ -389,46 +344,39 @@ const ProjectForm = ({ project: existingProject }) => {
           .forEach(tech => formPayload.append("technology", tech));
 
         // collaborators (preferably by ID, not label)
+        if(selectedCollaborators.length > 0) {
         selectedCollaborators
-          // .forEach(c => formPayload.append("collaborator", c.id));
-          .forEach(c => formPayload.append("collaborator", c.label));
-
+          .forEach(c => {
+            formPayload.append("collaborator", c.label);
+           });
+          } else {
+            // Force an empty “collaborator” field so backend sees it as defined
+            formPayload.append("collaborator", "");
+          }
         formPayload.append("startDate", formData.startDate);
         formPayload.append("stillOngoing", formData.isOngoing);
         if (!formData.isOngoing) {
           formPayload.append("endDate", formData.endDate);
         }
         if (logo) {
-  formPayload.append('logo', logo);
-}
-if (isEditMode && !logoPreview) {
-  formPayload.append('removeLogo', 'true');
-}
+          formPayload.append('logo', logo);
+        }
+        if (isEditMode && !logoPreview) {
+          formPayload.append('removeLogo', 'true');
+        }
 
         formPayload.append("challenges", formData.Challenges);
           if (isEditMode) {
-        // formPayload.append("_id", projectId);
-        // Handle media updates
-        // pictures.forEach((file, index) => {
-        //   if (file instanceof File) {
-        //     formPayload.append("media", file);
-        //   } else if (typeof file === 'string') {
-        //     formPayload.append("media", file);
-        //   }
-        // });
         pictures.forEach((pic) => {
-  if (pic) {
-    if (pic.file) {
-      formPayload.append("media", pic.file); // New file
-    } else if (pic.url) {
-      formPayload.append("media", pic.url); // Existing URL
-    }
-  }
+        if (pic) {
+          if (pic.file) {
+          formPayload.append("media", pic.file); // New file
+        } 
+      }
 });
       } else {
         // New project media handling
         pictures.forEach(pic => {
-          // if (file) formPayload.append("media", file);
           if (pic && pic.file) {
           formPayload.append("media", pic.file);
         }
@@ -791,6 +739,7 @@ if (isEditMode && !logoPreview) {
         </p>
         <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
           {pictures.map((file, idx) => (
+            <div key={idx} className="relative">
             <label
               key={idx}
               className="w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:border-blue-500 hover:bg-gray-50"
@@ -812,41 +761,25 @@ if (isEditMode && !logoPreview) {
                 className="hidden"
               />
             </label>
+            {file && (
+        <button
+          type="button"
+          onClick={() => removePicture(idx)}
+          className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
+          aria-label="Remove media"
+        >
+          ×
+        </button>
+      )}
+    </div>
           ))}
         </div>
       </div>
 
-      {/* Logo */}
-      {/* <div>
-        <h2 className="text-3xl font-semibold"> Logo</h2>
-        <p className="text-sm text-gray-600 mt-1">
-          Upload a logo for your project (max 1MB)
-        </p>
-        <label className="mt-3 w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:bg-gray-50 hover:border-blue-500">
-          {logoPreview ? (
-            <img
-              src={logoPreview}
-              alt="Logo preview"
-              className="object-contain w-full h-full p-1"
-            />
-          ) : (
-            <span className="text-gray-500 text-2xl">+</span>
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => handleLogoChange(e, "logo")}
-            className="hidden"
-          />
-        </label>
-      </div> */}
-
-
-
 <div>
   <h2 className="text-3xl font-semibold">Logo</h2>
   <p className="text-sm text-gray-600 mt-1">
-    {existingProject?.logo ? 'Update' : 'Upload'} Logo for your project (max 1MB)
+    {currentProject?.logo ? 'Update' : 'Upload'} Logo for your project (max 1MB)
   </p>
   
   <label className="mt-3 w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:bg-gray-50 hover:border-blue-500 relative">
@@ -858,10 +791,12 @@ if (isEditMode && !logoPreview) {
           className="object-contain w-full h-full p-1 rounded"
         />
         {/* Remove button */}
-        {isEditMode && (
+        {isEditMode && logoPreview && (
           <button
             type="button"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
               setLogo(null);
               setLogoPreview(null);
               // Add hidden input to signal logo removal
@@ -898,18 +833,12 @@ if (isEditMode && !logoPreview) {
   )}
   
   {/* Show existing logo info in edit mode */}
-  {isEditMode && existingProject?.logo && !logoPreview && (
+  {isEditMode && currentProject?.logo && !logoPreview && (
     <p className="text-sm text-gray-500 mt-2">
-      Current logo: {existingProject.logo.split('/').pop()}
+      Current logo: {currentProject.logo.split('/').pop()}
     </p>
   )}
 </div>
-
-
-
-
-
-
       {/* Updated Submit Section */}
       <div className="pt-6">
         {submitError && <div className="text-red-500 mb-4">{submitError}</div>}
