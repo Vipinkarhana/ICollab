@@ -25,7 +25,7 @@ function MoreProject({ currentProjectId }) {
   const [error, setError] = useState(null);
 
    const handleDeleteProject = (deletedId) => {
-    setFilteredProjects(prev => prev.filter(project => project._id !== deletedId));
+    setFilteredProjects(prev => prev.filter(project => project.id !== deletedId));
   };
 
   useEffect(() => {
@@ -41,7 +41,7 @@ function MoreProject({ currentProjectId }) {
         ];
 
         const filtered = allProjects
-          .filter(project => project._id !== currentProjectId && (                        // keep if either…
+          .filter(project => project.id !== currentProjectId && (                        // keep if either…
                     project.isOngoing               //  • still ongoing
                     || project.endDate              //  • or has a (truthy) endDate
                   ))
@@ -76,7 +76,7 @@ function MoreProject({ currentProjectId }) {
       {filteredProjects.length > 0 ? (
           filteredProjects.map(project => (
             <ProjectCard
-            key={project._id}
+            key={project.id}
             project={project}
             onDelete={handleDeleteProject} 
             />

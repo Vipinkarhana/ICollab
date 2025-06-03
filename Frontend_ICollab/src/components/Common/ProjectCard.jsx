@@ -57,13 +57,13 @@ const ProjectCard = ({
   const menuRef = useRef(null);
 
   const currentUser = useSelector((state) => state?.user?.userData);
-  const ownerId = project.user?._id || project?.user; // Handle both populated and unpopulated user
-  const isOwner = String(currentUser?._id) === String(ownerId);
+  const ownerId = project.user?.id || project?.user; // Handle both populated and unpopulated user
+  const isOwner = String(currentUser?.id) === String(ownerId);
 
   const handleDelete = async () => {
     try {
-      await deleteProject(project?._id);
-      if (onDelete) onDelete(project?._id);
+      await deleteProject(project?.id);
+      if (onDelete) onDelete(project?.id);
     } catch (error) {
       console.error("Error deleting project:", error);
     }
@@ -139,8 +139,9 @@ const ProjectCard = ({
 
               {isOwner && (
               <Link 
-                  to={`/projects/edit/${project._id}`}
+                  to={`/projects/edit/${project.id}`}
                   className="flex items-center gap-2 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100 w-full text-left"
+                  onClick={() => dispatch(setCurrentProject(project))}
               >
               <EditIcon size={18} />
                 Edit

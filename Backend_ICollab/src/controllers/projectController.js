@@ -205,14 +205,18 @@ const collaboratorSuggestions = async (req, res, next) => {
   }
 };
 
+function generateR2Url(key) {
+      if (!key) return null;
+      const url = `${config.S3_PUBLIC_URL}/${key}`;
+      return url;
+    };
+
 const project = async (req, res, next) => {
   try {
     const username = req.user.username;
     const user = await userModel.findOne({ username: username });
     const userId = user._id;
-    console.log('Backend hit by frontend');
     const { projectId } = req.params;
-    console.log('projectId: ', projectId);
     const project = await projectModel
       .findOne({ _id: projectId })
       .populate('user', 'username email profile_pic');
@@ -255,12 +259,7 @@ const project = async (req, res, next) => {
         .select('username email profile_pic');
     }
 
-    const generateR2Url = (key) => {
-      if (!key) return null;
-      const url = `${config.S3_PUBLIC_URL}/${key}`;
-      console.log(`Generated URL for ${key}: ${url}`);
-      return url;
-    };
+    
     const formattedProject = {
       ...project.toObject(),
       collaborator: collaborators,
@@ -402,20 +401,37 @@ const fetchUserProjects = async (req, res, next) => {
       });
     }
 
-    const projects = await projectModel
+    const rawprojects = await projectModel
       .find({ user: user._id })
       .populate('user', 'username name profile_pic')
       .lean();
 
-    const response = projects.map(({ _id, ...rest }) => ({
-      id: _id,
-      ...rest
-    }));
+       // Map each raw project into a “formatted” project, converting logo & media keys → full URLs
+    const projects = rawprojects.map((proj) => {
+      // a) Turn proj.logo (which might be something like "projects/abc/logo.png")
+      //    into a real URL, or null if it’s falsy
+      const fullLogo = proj.logo
+        ? generateR2Url(proj.logo)
+        : null;
+
+      // b) Map each element in proj.media (e.g. ["projects/abc/img1.png", ...])
+      //    into generateR2Url(...)
+      const fullMediaArray = Array.isArray(proj.media)
+        ? proj.media.map((relPath) => generateR2Url(relPath)).filter((u) => u)
+        : [];
+
+      // c) Return a shallow‐copy of the proj object, but overwrite logo+media
+      return {
+        ...proj,
+        logo: fullLogo,
+        media: fullMediaArray,
+      };
+    });
 
     res.status(200).json({
       message: 'User projects fetched successfully',
       status: 'success',
-      data: response,
+      data: projects,
     });
   } catch (err) {
     next(err);
@@ -456,7 +472,6 @@ const updateTopProjects = async (req, res) => {
       { topProjects: topProjectIds },
       { new: true, upsert: true }
     );
-    console.log('profile', updatedProfile);
     return res.status(200).json({
       success: true,
       message: 'Top projects updated successfully',
@@ -633,12 +648,10 @@ const deleteProject = async (req, res, next) => {
   try {
     const user = await userModel.findOne({ username: req.user.username });
     const { projectid } = req.body;
-    console.log('ProjectId: ', projectid);
     const deleteProject = await projectModel.findOneAndDelete({
       _id: projectid,
       user: user._id,
     });
-    console.log('DeleteProject: ', deleteProject);
     if (!deleteProject) {
       return next(new ApiError(400, 'No such project is available.'));
     }
@@ -734,41 +747,44 @@ const editProject = async (req, res, next) => {
       if (!isOngoing && !endDate) {
         return next(new ApiError(400, 'End Date is required for non-ongoing projects'));
       }
-    }
-    if (startDate) {
-      project.startDate = startDate;
-    }
-    if (endDate) {
-      project.endDate = endDate;
-    }
-    if (category) {
-      project.category = category;
-    }
-    if (description) {
-      project.description = description;
+      }
+      if (startDate) {
+        project.startDate = startDate;
+      }
+      if (endDate) {
+        project.endDate = endDate;
+      }
+      if (category) {
+        project.category = category;
+      }
+      if (description) {
+        project.description = description;
+      }
+      try{
+    let existingMedia = [];
+    try {
+      if (req.body.existingMedia) {
+        existingMedia = JSON.parse(req.body.existingMedia);
+      }
+    } catch (e) {
+      return next(new ApiError(400, 'Invalid existingMedia format'));
     }
 
-    console.log("Entering");
-    if (media !== undefined) {
-      console.log("Entered");
-      try {
-        //  existingMediaArray = Array.isArray(media) ? media : [media];
-        //  project.media = project.media || [];
-        //  const mediaToDelete = project.media.filter(mediaKey => !existingMediaArray.includes(mediaKey));
-        //  await Promise.all(mediaToDelete.map(async (key) => {
-        //   await deleteFromR2(key);
-        // }));
-        // project.media = existingMediaArray;
-        const existingMediaArray = Array.isArray(media) ? media : [media].filter(Boolean);
-        const mediaToDelete = project.media.filter(mediaKey => !existingMediaArray.includes(mediaKey));
-        await Promise.all(mediaToDelete.map(key => deleteFromR2(key)));
-        project.media = existingMediaArray;
+    // Delete media not in existingMedia list
+    const mediaToDelete = project.media.filter(
+      mediaKey => !existingMedia.includes(mediaKey)
+    );
+    
+    await Promise.all(
+      mediaToDelete.map(key => deleteFromR2(key))
+    );
+    
+    // Update project media with kept files
+    project.media = existingMedia;
       } catch (err) {
         return next(new ApiError(400, 'Invalid media format'));
       }
-    }
-
-    if (req.files?.media) {
+     if (req.files?.media) {
       const mediaFiles = Array.isArray(req.files.media) ? req.files.media : [req.files.media];
       for (const mediaFile of mediaFiles) {
         const mediaKey = `projects/${project._id}/media-${Date.now()}-${mediaFile.originalname}`;

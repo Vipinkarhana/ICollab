@@ -5,7 +5,7 @@ const isloggedin = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   token = authHeader && authHeader.split(' ')[1];
 
-  console.log('Auth Header:', authHeader); // Log the auth header for debugging
+  //console.log('Auth Header:', authHeader); // Log the auth header for debugging
   if (!token) {
     return res.status(401).json({ message: 'Access token missing' });
   }

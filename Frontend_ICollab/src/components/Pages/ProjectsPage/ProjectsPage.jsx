@@ -79,7 +79,7 @@ const ProjectsPage = () => {
   const handleProjectSave = (projectId, isSaved) => {
     const updateProjectInList = (projects) => 
       projects.map(proj => 
-        proj._id === projectId ? { ...proj, isSaved } : proj
+        proj.id === projectId ? { ...proj, isSaved } : proj
       );
   
     setSliderOngoing(prev => updateProjectInList(prev));
@@ -89,10 +89,10 @@ const ProjectsPage = () => {
   };
 
   const handleDeleteProject = (deletedId) => {
-    setSliderOngoing(prev => prev.filter(p => p._id !== deletedId));
-    setSliderFinished(prev => prev.filter(p => p._id !== deletedId));
-    setOngoingProjects(prev => prev.filter(p => p._id !== deletedId));
-    setFinishedProjects(prev => prev.filter(p => p._id !== deletedId));
+    setSliderOngoing(prev => prev.filter(p => p.id !== deletedId));
+    setSliderFinished(prev => prev.filter(p => p.id !== deletedId));
+    setOngoingProjects(prev => prev.filter(p => p.id !== deletedId));
+    setFinishedProjects(prev => prev.filter(p => p.id !== deletedId));
   };
 
   const updateOngoingPagination = (newProjects) => {
@@ -184,9 +184,9 @@ const ProjectsPage = () => {
 {/* Slider Section */}
 <div className="mt-6 flex justify-center gap-6 flex-wrap">
           {sliderOngoing.map((project) => (
-            <div key={project._id} className="flex-shrink-0 w-full sm:w-[48%]">
+            <div key={project.id} className="flex-shrink-0 w-full sm:w-[48%]">
               <ProjectCard
-                key = {project._id}
+                key = {project.id}
                 project = {{ ...project, isSaved: project.isSaved }}
                 onSave={handleProjectSave}
                 onDelete={handleDeleteProject}
@@ -231,7 +231,7 @@ const ProjectsPage = () => {
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center">
           {finishedProjects.map((project) => (
             <ProjectCard
-              key={project._id}
+              key={project.id}
               project = {project}
               onSave={handleProjectSave}
               onDelete={handleDeleteProject}
