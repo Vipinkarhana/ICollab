@@ -27,6 +27,30 @@ export default function ExperienceDisplay({ submittedExperiences = [] }) {
       description:
         "Maintaining the startup’s main website and developing new features to enhance user experience.",
     },
+     {
+      role: "Python",
+      employer: "Tech Solutions Inc.2.0",
+      fromMonth: "January",
+      fromYear: "2023",
+      toMonth: "December",
+      toYear: "2023",
+      currentlyWorking: false,
+      workTypes: "Internship",
+      description:
+        "Worked on building responsive web pages using React and Tailwind CSS. Improved performance by optimizing components.",
+    },
+    {
+      role: "Data Analysis",
+      employer: "StartupX 2.0",
+      fromMonth: "February",
+      fromYear: "2024",
+      toMonth: "",
+      toYear: "",
+      currentlyWorking: true,
+      workTypes: "Current-time",
+      description:
+        "Maintaining the startup’s main website and developing new features to enhance user experience.",
+    },
   ];
 
   return (
@@ -37,18 +61,18 @@ export default function ExperienceDisplay({ submittedExperiences = [] }) {
           Experience
         </h1>
         <div className="flex gap-2">
-          <button className="p-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-600">
-            <Plus size={20} />
+          <button className="p-2 rounded-full text-purple-700">
+            <Plus size={24} />
           </button>
-          <button className="p-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-600">
-            <Pencil size={20} />
+          <button className="p-2 rounded-full  text-purple-700">
+            <Pencil size={24} />
           </button>
         </div>
       </div>
 
       <div className="mb-6 border-b border-gray-600  " />
 
-      <div className="space-y-8">
+      <div className="grid grid-cols-2 gap-2">
         {dummyExperiences.map((exp, idx) => (
           <div
             key={idx}
@@ -60,7 +84,7 @@ export default function ExperienceDisplay({ submittedExperiences = [] }) {
             </div>
 
             {/* Header */}
-            <div className="bg-blue-50 px-4 py-2 rounded-md mb-4  w-fit max-w-full">
+            <div className="bg-blue-50 px-4 py-2 rounded-md mb-4  w-fit max-w-full ">
               <h4 className="text-lg font-semibold text-blue-700">
                 {exp.role}{" "}
                 <span className="text-blue-500 ">@ {exp.employer}</span>
@@ -71,7 +95,7 @@ export default function ExperienceDisplay({ submittedExperiences = [] }) {
             <div className="space-y-4 text-sm text-gray-800">
               <div className="flex ">
                 <div className="font-semibold w-28">Duration:</div>
-                <div>
+                <div >
                   {exp.fromMonth} {exp.fromYear} -{" "}
                   {exp.currentlyWorking
                     ? "Present"
@@ -79,14 +103,14 @@ export default function ExperienceDisplay({ submittedExperiences = [] }) {
                 </div>
               </div>
 
-              <div className="flex">
+              <div className="flex ">
                 <div className="font-semibold w-28">Work Type:</div>
                 <div>{exp.workTypes}</div>
               </div>
 
-              <div className="flex items-start">
+              <div className="flex items-start gap-4">
                 <div className="font-semibold w-28">Description:</div>
-                <div className="text-gray-700 whitespace-pre-line">
+                <div className="text-gray-700 whitespace-pre-line ">
                   {exp.description}
                 </div>
               </div>

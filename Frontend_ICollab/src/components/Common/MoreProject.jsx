@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ProjectCard from "../Common/ProjectCard"
-import { getProjectFeed } from '../../Services/projectService';
 import { useNavigate } from 'react-router-dom';
 import {getOngoingProjects, getFinishedProjects} from '../../Services/projectService';
-
 
 function MoreProject({ currentProjectId }) {
 
@@ -27,13 +25,12 @@ function MoreProject({ currentProjectId }) {
   const [error, setError] = useState(null);
 
    const handleDeleteProject = (deletedId) => {
-    setFilteredProjects(prev => prev.filter(project => project._id !== deletedId));
+    setFilteredProjects(prev => prev.filter(project => project.id !== deletedId));
   };
 
   useEffect(() => {
     const fetchAndFilterProjects  = async () => {
       try {
-        // const response = await getProjectFeed();
         const [ongoing, finished] = await Promise.all([
           getOngoingProjects(Date.now()),
           getFinishedProjects(Date.now())
@@ -44,7 +41,7 @@ function MoreProject({ currentProjectId }) {
         ];
 
         const filtered = allProjects
-          .filter(project => project._id !== currentProjectId && (                        // keep if either…
+          .filter(project => project.id !== currentProjectId && (                        // keep if either…
                     project.isOngoing               //  • still ongoing
                     || project.endDate              //  • or has a (truthy) endDate
                   ))
@@ -79,7 +76,7 @@ function MoreProject({ currentProjectId }) {
       {filteredProjects.length > 0 ? (
           filteredProjects.map(project => (
             <ProjectCard
-            key={project._id}
+            key={project.id}
             project={project}
             onDelete={handleDeleteProject} 
             />

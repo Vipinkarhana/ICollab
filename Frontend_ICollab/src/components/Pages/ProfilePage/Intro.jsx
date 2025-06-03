@@ -4,10 +4,13 @@ import { Link } from "react-router-dom";
 import CollabButton from "../../Common/CollabButton";
 import PageNavbar from "../../Common/PageNavbar/PageNavbar";
 import PhonePageNavbar from "../../Common/PageNavbar/PhonePageNavbar";
+import { useSelector } from "react-redux";
 
-function Intro({ activeTab, setActiveTab,user }) {
-  const tabs = ["Intro", "Projects", "Posts","Saved"];
-  const skills = ["JavaScript", "React", "Node.js", "CSS", "Python"];
+function Intro({ activeTab, setActiveTab, user }) {
+const currentUser = useSelector((state) => state?.user?.userData);
+const isOwner = currentUser.username === user.username;
+
+const tabs = ["Intro", "Projects", "Posts", ...(isOwner ? ["Saved"] : [])];
 
   return (
     <div className="flex flex-col min-h-64 justify-start items-center bg-white w-full px-4 sm:px-6 py-4 gap-3">
@@ -17,7 +20,7 @@ function Intro({ activeTab, setActiveTab,user }) {
           to="/profile/edit"
           className="border border-gray-400 rounded-full p-4 text-purple-700 hover:bg-gray-100 transition text-sm md:text-lg font-semibold flex  sm:hidden justify-evenly items-center gap-2"
         >
-          <Pencil size={24} strokeWidth={2.1}/>
+          <Pencil size={24} strokeWidth={2.1} />
         </Link>
       </div>
       {/* Main Flex Container */}
@@ -76,13 +79,15 @@ function Intro({ activeTab, setActiveTab,user }) {
               >
                 <Globe size={24} color="blue" strokeWidth={1.8} />
               </a> */}
-              <Link
-                to="/profile/edit"
-                className="border border-gray-300 rounded-md px-3 py-2 text-purple-700 hover:bg-gray-100 transition text-sm md:text-lg font-semibold hidden  sm:flex justify-evenly items-center gap-2"
-              >
-                <Pencil size={20} />
-                Edit Profile
-              </Link>
+              {isOwner && (
+                <Link
+                  to="/profile/edit"
+                  className="border border-gray-300 rounded-md px-3 py-2 text-purple-700 hover:bg-gray-100 transition text-sm md:text-lg font-semibold hidden  sm:flex justify-evenly items-center gap-2"
+                >
+                  <Pencil size={20} />
+                  Edit Profile
+                </Link>
+              )}
             </div>
           </div>
 

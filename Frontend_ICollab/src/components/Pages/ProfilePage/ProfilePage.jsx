@@ -31,8 +31,6 @@ const [activeTab, setActiveTab] = useState(initialTab);
       dispatch(fetchUserProfile(username));
       dispatch(fetchMyPosts(username));
       dispatch(fetchUserProjectsData(username));
-
-
     }
   }, [dispatch, username]);
 

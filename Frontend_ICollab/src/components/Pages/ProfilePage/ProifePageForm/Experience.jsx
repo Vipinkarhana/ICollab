@@ -76,7 +76,7 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div className="grid md:grid-cols-2 gap-6 -ml-5 sm:ml-0">
       {/* Role Selection Card */}
       <div className="bg-white p-6 rounded-lg shadow h-auto  w-[18rem] sm:w-full">
         <h2 className="text-2xl font-semibold mb-4">Designation</h2>
@@ -224,7 +224,7 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
       <WorkExperienceForm />
       </div>
        {/* Bottom Right Navigation Buttons */}
-       <div className=" bottom-0 sm:mt-[55rem] ">
+       <div className=" bottom-0 sm:mt-[52rem] ">
        <div className="absolute p-2 right-4 left-4 sm:left-32 sm:right-32 flex flex-row justify-between items-center space-x-4 mt-4">
         <button
           onClick={() => setActiveTab("ABOUT")}

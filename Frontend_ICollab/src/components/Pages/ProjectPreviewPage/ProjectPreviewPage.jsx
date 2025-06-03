@@ -59,7 +59,7 @@ const ProjectPreviewPage = () => {
         <Interaction className='border-t-0'/>
       </div> */}
       <div className="mt-10">
-        <MoreProject currentProjectId={project._id}/>
+        <MoreProject currentProjectId={project.id}/>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React from "react";
 import UnderConstruction from "/UnderConstruction.png"
 import MoreProject from "../../Common/MoreProject";
+import ProjectCardSkeleton from "../../Common/ProjectcardSkeleton";
 const MessagePage = () => {
   return (
     <div className="flex flex-col gap-4">
@@ -8,7 +9,8 @@ const MessagePage = () => {
         <img src={UnderConstruction} alt="" />
       </div>
       <div>
-        <MoreProject />
+        {/* <MoreProject /> */}
+        <ProjectCardSkeleton/>
       </div>
     </div>
   );

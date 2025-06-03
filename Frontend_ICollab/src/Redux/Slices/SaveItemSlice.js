@@ -97,7 +97,7 @@ const savedItemSlice = createSlice({
               state.savedProjects.push(item); // Optional: update to full object if available
             }
           } else if (actionType === 'unsaved') {
-            state.savedProjects = state.savedProjects.filter(p => p._id !== itemId);
+            state.savedProjects = state.savedProjects.filter(p => p.id !== itemId);
           }
         }
       })

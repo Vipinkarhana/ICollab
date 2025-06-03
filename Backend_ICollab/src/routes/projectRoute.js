@@ -7,7 +7,6 @@ const {
   categorySuggestions,
   collaboratorSuggestions,
   project,
-  projectFeed,
   ongoingFeed,
   fetchUserProjects,
   finishedFeed,
@@ -34,7 +33,6 @@ router.post(
 router.get('/technologysuggestions', isloggedin, technologySuggestions);
 router.get('/categorysuggestions', isloggedin, categorySuggestions);
 router.get('/collaboratorsuggestions', isloggedin, collaboratorSuggestions);
-router.get('/projectfeed', isloggedin, projectFeed);
 router.get('/ongoingfeed', isloggedin, ongoingFeed);
 router.get('/finishedfeed', isloggedin, finishedFeed);
 router.get('/userprojects/:username', fetchUserProjects);

@@ -77,7 +77,7 @@ const userProfile = async (req, res, next) => {
       },
     });
 
-    console.log('USER PROFILE:', user);
+    console.log("User Profile: ",user);
 
     if (!user || !user.profile) {
       throw new ApiError(404, 'User profile not found');

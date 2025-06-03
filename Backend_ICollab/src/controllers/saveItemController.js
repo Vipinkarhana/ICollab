@@ -4,7 +4,7 @@ const toggleSavedItem = async (req, res) => {
   try {
     const userId = req?.user?.id;
     const { itemId, itemType } = req?.body;
-
+    
     // Validate itemType
     if (!['posts', 'projects'].includes(itemType)) {
       return res.status(400).json({ message: 'Invalid item type' });
@@ -53,9 +53,14 @@ const toggleSavedItem = async (req, res) => {
 const getSavedPosts = async (req, res) => {
   const userId = req.user.id;
   try {
-    const savedItem = await SavedItem.findOne({ user: userId }).populate(
-      'posts'
-    );
+    const savedItem = await SavedItem.findOne({ user: userId }).populate({
+      path: 'posts',
+      populate: {
+        path: 'user',
+        select: 'name username profile_pic'
+      }
+    });
+
     if (!savedItem) {
       return res
         .status(200)

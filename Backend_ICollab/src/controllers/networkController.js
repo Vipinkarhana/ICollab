@@ -68,7 +68,7 @@ const userNetwork = async (req, res, next) => {
       .findOne({ user: user._id })
       .populate({
         path: 'connectedusers',
-        select: 'name profile_pic username -_id',
+        select: 'name profile_pic username',
         populate: {
           path: 'profile',
           select: 'designation about -_id',
@@ -85,10 +85,15 @@ const userNetwork = async (req, res, next) => {
       return next(new ApiError(400, 'No Users Connected'));
     }
 
+    const response = connectedUser.map(({ _id, ...rest }) => ({
+      id: _id,
+      ...rest
+    }));
+
     res.status(200).json({
       message: 'Connected users fetched successfully',
       status: 'success',
-      data: connectedUser,
+      data: response,
     });
   } catch (error) {
     next(error);
