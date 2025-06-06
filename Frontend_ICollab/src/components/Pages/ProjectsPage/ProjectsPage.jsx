@@ -5,45 +5,23 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CreateProjectButton from "../../Common/CreateProjectButton";
 import * as projectService from "../../../Services/projectService";
+import ProjectCardSkeleton from "../../Common/ProjectcardSkeleton";
 
 const ProjectsPage = () => {
   const currentUser = useSelector((state) => state.user.userData);
   const username = currentUser?.username;
 
-  // State for slider projects
-  const [sliderOngoing, setSliderOngoing] = useState([]);
-  const [sliderFinished, setSliderFinished] = useState([]);
-
   // State for ongoing projects
   const [ongoingProjects, setOngoingProjects] = useState([]);
   const [lastOngoingTS, setLastOngoingTS] = useState(Date.now());
   const [hasMoreOngoing, setHasMoreOngoing] = useState(true);
-  const [loadingOngoing, setLoadingOngoing] = useState(false);
+  const [loadingOngoing, setLoadingOngoing] = useState(true);
 
   // State for finished projects
   const [finishedProjects, setFinishedProjects] = useState([]);
   const [lastFinishedTS, setLastFinishedTS] = useState(Date.now());
   const [hasMoreFinished, setHasMoreFinished] = useState(true);
-  const [loadingFinished, setLoadingFinished] = useState(false);
-
-
-
-
-  // Fetch initial slider data
-  useEffect(() => {
-    const fetchSliderData = async () => {
-      try {
-        const response = await projectService.getProjectFeed();
-        setSliderOngoing(response.data.data.ongoing);
-        setSliderFinished(response.data.data.finished);
-      } catch (error) {
-        console.error("Error fetching slider data:", error);
-      }
-    };
-    fetchSliderData();
-  }, []);
-
-
+  const [loadingFinished, setLoadingFinished] = useState(true);
 
   // Fetch initial ongoing projects
   useEffect(() => {
@@ -55,11 +33,12 @@ const ProjectsPage = () => {
       } catch (error) {
         console.error("Error fetching ongoing projects:", error);
       }
+      finally {
+      setLoadingOngoing(false);
+    }
     };
     fetchInitialOngoing();
   }, []);
-
-
 
   // Fetch initial finished projects
   useEffect(() => {
@@ -71,6 +50,9 @@ const ProjectsPage = () => {
       } catch (error) {
         console.error("Error fetching finished projects:", error);
       }
+      finally {
+      setLoadingFinished(false);
+    }
     };
     fetchInitialFinished();
   }, []);
@@ -82,15 +64,11 @@ const ProjectsPage = () => {
         proj.id === projectId ? { ...proj, isSaved } : proj
       );
   
-    setSliderOngoing(prev => updateProjectInList(prev));
-    setSliderFinished(prev => updateProjectInList(prev));
     setOngoingProjects(prev => updateProjectInList(prev));
     setFinishedProjects(prev => updateProjectInList(prev));
   };
 
   const handleDeleteProject = (deletedId) => {
-    setSliderOngoing(prev => prev.filter(p => p.id !== deletedId));
-    setSliderFinished(prev => prev.filter(p => p.id !== deletedId));
     setOngoingProjects(prev => prev.filter(p => p.id !== deletedId));
     setFinishedProjects(prev => prev.filter(p => p.id !== deletedId));
   };
@@ -179,29 +157,17 @@ const ProjectsPage = () => {
   </div>
 </div>
 
-
-
-{/* Slider Section */}
-<div className="mt-6 flex justify-center gap-6 flex-wrap">
-          {sliderOngoing.map((project) => (
-            <div key={project.id} className="flex-shrink-0 w-full sm:w-[48%]">
-              <ProjectCard
-                key = {project.id}
-                project = {{ ...project, isSaved: project.isSaved }}
-                onSave={handleProjectSave}
-                onDelete={handleDeleteProject}
-              />
-            </div>
-          ))}
-        </div>
-
          {/* Ongoing Projects Section */}
          <div className="mt-6 flex items-center justify-between">
           <p className="text-2xl text-gray-800">Ongoing</p>
         </div>
 
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center">
-          {ongoingProjects.map((project) => (
+          {loadingOngoing
+            ? Array.from({ length: 4 }).map((_, idx) => (
+            <ProjectCardSkeleton key={idx} />
+            ))
+        : ongoingProjects.map((project) => (
             <ProjectCard
               key={project.id}
               project = {project}
@@ -229,7 +195,11 @@ const ProjectsPage = () => {
         </div>
 
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center">
-          {finishedProjects.map((project) => (
+          {loadingFinished
+           ? Array.from({ length: 4 }).map((_, idx) => (
+          <ProjectCardSkeleton key={idx} />
+          ))
+            :finishedProjects.map((project) => (
             <ProjectCard
               key={project.id}
               project = {project}
