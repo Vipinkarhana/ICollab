@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../../Redux/Slices/UserSlice";
 import useAlert from "../../Common/UseAlert";
-
+import OTPModal from "../../Common/OtpModal";
 
 const Login = () => {
   const Logo = "/ICollab.png";
@@ -16,24 +16,30 @@ const Login = () => {
   const [showSuccess, showWarning, showError] = useAlert();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+   const [isOtpModalVisible, setOtpModalVisible] = useState(false);
 
   const handleFormSubmit = async () => {
     try {
       const response = await dispatch(loginUser({ email, password })).unwrap();
 
-      if (response.role === 'admin') {
+      if (response.role === "admin") {
         window.location.href = import.meta.env.VITE_ADMIN_DOMAIN;
       } else {
         navigate("/home");
       }
-
-
     } catch (error) {
       showError(error);
     }
   };
 
+   const handleOTPVerify = (otpValue) => {
+    console.log("Entered OTP:", otpValue);
+    setOtpModalVisible(false);
+    showSuccess("OTP Verified!");
+  };
+
   return (
+    <>
     <div className="h-[99svh] w-[99svw] flex justify-center items-center   py-2">
       <div className="h-auto w-[100%] lg:w-[50%] flex flex-col justify-center items-center rounded-lg bg-white border border-gray-300">
         <div className="h-14 w-[100%] flex justify-start items-center px-4">
@@ -86,6 +92,15 @@ const Login = () => {
               </div>
             </div>
 
+             <div className="w-full flex justify-end pr-10 mt-1">
+                <button
+                  onClick={() => setOtpModalVisible(true)}
+                  className="text-sm text-blue-600 hover:underline font-medium -mr-10 -mt-2"
+                >
+                  Forgot Password?
+                </button>
+              </div>
+
             <div className="h-12 lg:h-10 w-[100%] flex justify-center items-center mt-2">
               <button
                 className="h-[100%] w-[60%] bg-black text-white rounded-md text-xl"
@@ -120,6 +135,13 @@ const Login = () => {
         </div>
       </div>
     </div>
+
+     <OTPModal
+        isVisible={isOtpModalVisible}
+        onClose={() => setOtpModalVisible(false)}
+        onVerify={handleOTPVerify}
+      />
+      </>
   );
 };
 
