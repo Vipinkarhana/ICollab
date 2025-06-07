@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Smile, Paperclip, Send } from "lucide-react";
-
+import EmojiButton from "../../HomePage/MidDiv/Feed/Posts/StartPost/EmojiButton";
 const MessageInput = () => {
   const [text, setText] = useState("");
 
@@ -14,7 +14,7 @@ const MessageInput = () => {
   return (
     <div className="border-t border-gray-200 px-4 py-3 flex items-center gap-3 bg-white">
       <button className="text-gray-600 hover:text-violet-600">
-        <Smile className="w-5 h-5" />
+        <EmojiButton onSelectEmoji={(emoji) => setText(text + emoji)} />
       </button>
       <button className="text-gray-600 hover:text-violet-600">
         <Paperclip className="w-5 h-5" />

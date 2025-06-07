@@ -12,6 +12,9 @@ const ChatWindow = ({ chatData }) => {
         avatar={chatData.avatar}
         name={chatData.name}
         isOnline={chatData.isOnline}
+        members={chatData.members}
+        isGroup={chatData.isGroup}
+
       />
       <MessageList messages={chatData.messages} isGroup={chatData.isGroup} />
       <MessageInput />

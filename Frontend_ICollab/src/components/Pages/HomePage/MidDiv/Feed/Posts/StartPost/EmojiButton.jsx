@@ -34,7 +34,7 @@ const EmojiButton = ({ onSelectEmoji }) => {
           setShowPicker(!showPicker);
         }}
       >
-        <SmilePlus color="gray" size={26} /> 
+        <SmilePlus className="w-5 h-5" /> 
       </button>
       {showPicker && (
         <div ref={pickerRef} className="absolute -right-96 bottom-12 shadow-lg ">

@@ -1,16 +1,27 @@
 import React from 'react';
 
-const MessageBubble = ({ message, isSender, timestamp, sender, isGroup }) => {
+const MessageBubble = ({
+  message,
+  isSender,
+  timestamp,
+  sender,
+  isGroup,
+  showTimestamp,
+  showSenderName,
+}) => {
+  const formattedTime = new Date(timestamp).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+
   return (
     <div
       className={`flex flex-col ${
         isSender ? 'items-end' : 'items-start'
       } w-full px-4`}
     >
-      {!isSender && isGroup && (
-        <span className="text-xs text-gray-700 mb-1 ml-2">{sender}</span>
-      )}
-      {isSender && isGroup && (
+      {isGroup && showSenderName && (
         <span className="text-xs text-gray-700 mb-1 ml-2">{sender}</span>
       )}
 
@@ -23,12 +34,18 @@ const MessageBubble = ({ message, isSender, timestamp, sender, isGroup }) => {
       >
         {message}
       </div>
-      <span className="text-[10px] text-gray-700 mt-1">
-        {timestamp}
-      </span>
+
+      {showTimestamp && (
+        <span className="text-[10px] text-gray-700 mt-1">
+          {formattedTime}
+        </span>
+      )}
     </div>
   );
 };
 
 export default MessageBubble;
+
+
+
 
