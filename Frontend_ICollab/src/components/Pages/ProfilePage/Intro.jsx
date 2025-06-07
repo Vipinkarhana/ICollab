@@ -5,10 +5,15 @@ import CollabButton from "../../Common/CollabButton";
 import PageNavbar from "../../Common/PageNavbar/PageNavbar";
 import PhonePageNavbar from "../../Common/PageNavbar/PhonePageNavbar";
 import { useSelector } from "react-redux";
+import { sendRequest } from "../../../Services/networkService";
 
 function Intro({ activeTab, setActiveTab, user }) {
 const currentUser = useSelector((state) => state?.user?.userData);
 const isOwner = currentUser.username === user.username;
+
+  const handleCollabRequest = () => {
+    sendRequest(user?.username);
+  };
 
 const tabs = ["Intro", "Projects", "Posts", ...(isOwner ? ["Saved"] : [])];
 
@@ -47,7 +52,7 @@ const tabs = ["Intro", "Projects", "Posts", ...(isOwner ? ["Saved"] : [])];
                   {user?.username}
                 </p>
                 <div className="hidden sm:flex justify-center items-center gap-2">
-                  <CollabButton />
+                  <CollabButton onClick={handleCollabRequest}/>
                 </div>
 
               </div>
