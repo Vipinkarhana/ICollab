@@ -14,7 +14,7 @@ function GroupList() {
   };
 
   return (
-    <div className="space-y-1 py-2 flex flex-col items-center justify-start w-full h-full overflow-y-auto gap-2 scrollbar-thin scrollbar-thumb-violet-300 scrollbar-track-gray-100">
+    <div className=" space-y-1 py-2 flex flex-col items-center justify-start w-full h-full overflow-y-auto gap-2 scrollbar-thin scrollbar-thumb-violet-300 scrollbar-track-gray-100">
       {dummyChatData.map((chat) => {
         const isGroup = !!chat.lastSender;
         const onlineCount =
