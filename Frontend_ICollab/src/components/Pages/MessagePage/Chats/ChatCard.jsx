@@ -40,7 +40,7 @@ const ChatCard = ({
   ) => (
     <div
       onClick={onClick}
-      className="flex w-[95%] h-16 shadow-md items-center justify-between px-4 py-3  hover:bg-violet-200 cursor-pointer transition rounded-xl"
+      className="flex w-[95%] h-16 shadow-md items-center justify-between px-4 py-3  hover:bg-violet-100 cursor-pointer transition rounded-xl"
     >
       <div className="flex items-center gap-4">
         <div className="relative">

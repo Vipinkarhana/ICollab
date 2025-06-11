@@ -23,12 +23,17 @@ const ChatHeader = ({ avatar, name, isGroup, members = [], setViewMode }) => {
       </div>
 
       <div className="flex items-center gap-4 text-gray-600">
-        <button onClick={() => setViewMode("chat")} title="Chat">
-               <MessageSquareText className="w-5 h-5 cursor-pointer hover:text-violet-600" />
+        {isGroup && (
+          <>
+          <button onClick={() => setViewMode("chat")} title="Chat">
+            <MessageSquareText className="w-5 h-5 cursor-pointer hover:text-violet-600" />
         </button>
         <button onClick={() => setViewMode("kanbanBoard")} title="Kanban View">
           <FolderKanban className="w-5 h-5 cursor-pointer hover:text-violet-600" />
         </button>
+        </>
+        )}
+        
         <Video className="w-5 h-5 cursor-pointer hover:text-violet-600" />
         <Phone className="w-5 h-5 cursor-pointer hover:text-violet-600" />
         <Info className="w-5 h-5 cursor-pointer hover:text-violet-600" />
