@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
+import CropperWithZoomButtons from "../../../Common/cropImage";
 
 const avatarsData = [
   { id: 1, image: "https://cdn-icons-png.flaticon.com/512/4140/4140048.png" },
@@ -20,6 +21,9 @@ function ProfilePic({ setActiveTab }) {
   const [showSavedMessage, setShowSavedMessage] = useState(false);
   const [visibleCount, setVisibleCount] = useState(window.innerWidth < 640 ? 1 : 3);
   const fileInputRefs = useRef([]);
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState(null);
+  const [croppingIndex, setCroppingIndex] = useState(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,13 +33,14 @@ function ProfilePic({ setActiveTab }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const visibleAvatars = avatars.slice(startIndex, startIndex + visibleCount);
-
+  // Initialize or update refs array when visible avatars change
   useEffect(() => {
     fileInputRefs.current = visibleAvatars.map(
       (_, i) => fileInputRefs.current[i] ?? React.createRef()
     );
   }, [startIndex, visibleCount]);
+
+  const visibleAvatars = avatars.slice(startIndex, startIndex + visibleCount);
 
   const handlePrev = () => {
     setStartIndex((prev) =>
@@ -45,26 +50,47 @@ function ProfilePic({ setActiveTab }) {
 
   const handleNext = () => {
     setStartIndex((prev) =>
-      prev + visibleCount >= avatars.length ? 0 : prev + 1
+      prev + visibleCount >= avatars.length ? 0 : prev + visibleCount
     );
   };
 
-  const handleImageChange = (e, index) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const updatedAvatars = [...avatars];
-        updatedAvatars[startIndex + index].image = reader.result;
-        setAvatars(updatedAvatars);
-        setSelectedAvatarId(updatedAvatars[startIndex + index].id);
-      };
-      reader.readAsDataURL(file);
+  const triggerFileInput = (index) => {
+    if (fileInputRefs.current[index]?.current) {
+      fileInputRefs.current[index].current.click();
     }
   };
 
-  const triggerFileInput = (index) => {
-    fileInputRefs.current[index].current.click();
+  const handleImageChange = (e, index) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImageToCrop(reader.result); // ✅ base64 image
+      setCroppingIndex(startIndex + index);
+      setCropperOpen(true); // ✅ open cropper
+    };
+    reader.readAsDataURL(file); 
+  }
+};
+
+  const handleCropCancel = () => {
+    setCropperOpen(false);
+    setImageToCrop(null);
+    setCroppingIndex(null);
+  };
+
+  // Important: croppedImage must be a base64 string or URL!
+  const handleCropDone = (croppedImage) => {
+    console.log("Cropped Image:", croppedImage); // Debug: check what is received
+    if (!croppedImage) {
+      alert("Crop failed. Please try again.");
+      return;
+    }
+    const updatedAvatars = [...avatars];
+    updatedAvatars[croppingIndex].image = croppedImage;
+    setAvatars(updatedAvatars);
+    setSelectedAvatarId(updatedAvatars[croppingIndex].id);
+    handleCropCancel();
   };
 
   const handleSaveAvatar = () => {
@@ -72,11 +98,8 @@ function ProfilePic({ setActiveTab }) {
       alert("Please select an avatar first!");
       return;
     }
-
     setShowSavedMessage(true);
-    setTimeout(() => {
-      setShowSavedMessage(false);
-    }, 2500);
+    setTimeout(() => setShowSavedMessage(false), 2500);
   };
 
   return (
@@ -104,7 +127,6 @@ function ProfilePic({ setActiveTab }) {
 
         {/* Avatar Carousel */}
         <div className="relative w-full flex items-center justify-center mb-24">
-          {/* Left Arrow */}
           <button
             onClick={handlePrev}
             className="absolute left-0 sm:left-32 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition"
@@ -112,7 +134,6 @@ function ProfilePic({ setActiveTab }) {
             <ChevronLeft size={24} />
           </button>
 
-          {/* Avatars */}
           <div className="flex flex-row gap-6 px-4 sm:px-12 justify-center items-center w-full max-w-full py-4">
             {visibleAvatars.map((avatar, index) => {
               const isCenter = visibleCount === 1 || index === 1;
@@ -136,14 +157,14 @@ function ProfilePic({ setActiveTab }) {
                       className="absolute top-1 right-1 bg-blue-100 p-3 rounded-full cursor-pointer transition"
                       onClick={() => triggerFileInput(index)}
                     >
-                      <Pencil  className="text-blue-600 w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8" />
+                      <Pencil className="text-blue-600 w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8" />
                     </div>
                   )}
                   <input
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    ref={fileInputRefs.current[index]}
+                    ref={(el) => (fileInputRefs.current[index] = { current: el })}
                     onChange={(e) => handleImageChange(e, index)}
                   />
                 </div>
@@ -151,7 +172,6 @@ function ProfilePic({ setActiveTab }) {
             })}
           </div>
 
-          {/* Right Arrow */}
           <button
             onClick={handleNext}
             className="absolute right-0 sm:right-32 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition"
@@ -160,7 +180,6 @@ function ProfilePic({ setActiveTab }) {
           </button>
         </div>
 
-        {/* ✅ Next Button */}
         <div className="flex justify-end mt-8">
           <button
             onClick={() => setActiveTab("ABOUT")}
@@ -170,6 +189,15 @@ function ProfilePic({ setActiveTab }) {
           </button>
         </div>
       </div>
+
+      {/* Cropper Modal */}
+   {cropperOpen && (
+  <CropperWithZoomButtons
+    imageSrc={imageToCrop}
+    onCancel={handleCropCancel}
+    onCropDone={handleCropDone}
+  />
+)}
     </div>
   );
 }
