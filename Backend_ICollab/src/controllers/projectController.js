@@ -8,6 +8,7 @@ const allowedCategories = require('../../config/category.json');
 const { uploadToR2, deleteFromR2 } = require('../../config/s3');
 const config = require('../../config/config');
 const SavedItem = require('../models/savedItem');
+const Comment = require('../models/comment');
 
 const addProject = async (req, res, next) => {
   let newProject;
@@ -122,26 +123,27 @@ const addProject = async (req, res, next) => {
       const logoFile = Array.isArray(req.files.logo)
         ? req.files.logo[0]
         : req.files.logo;
-      const logoKey = `projects/${newProject._id}/logo-${Date.now()}-${logoFile.originalname}`;
+      const logoKey = `projects/${newProject._id}/logo-${Date.now()}`;
       await uploadToR2(logoKey, logoFile.buffer, logoFile.mimetype);
-      newProject.logo = logoKey;
+      newProject.logo = `${config.S3_PUBLIC_URL}/${logoKey}`;
+      console.log("New Project Logo:", newProject.logo);
     }
 
     const mediaFiles = req.files?.media || [];
-    const mediaKeys = [];
+    const mediaURLs = [];
     for (const mediaFile of mediaFiles) {
-      const mediaKey = `projects/${newProject._id}/media-${Date.now()}-${mediaFile.originalname}`;
+      const mediaKey = `projects/${newProject._id}/media-${Date.now()}`;
       await uploadToR2(mediaKey, mediaFile.buffer, mediaFile.mimetype);
-      mediaKeys.push(mediaKey);
+      mediaURLs.push(`${config.S3_PUBLIC_URL}/${mediaKey}`);
     }
-    newProject.media = mediaKeys;
+    newProject.media = mediaURLs;
 
     // Save project with media/logo keys
     await newProject.save();
 
     res.status(201).json({
       message: 'Project created successfully',
-      data: { projectid: newProject._id },
+      data: { projectid: newProject },
       status: 'success',
     });
   } catch (err) {
@@ -264,8 +266,8 @@ const project = async (req, res, next) => {
       ...project.toObject(),
       collaborator: collaborators,
       isSaved: !!isSaved,
-      logo: generateR2Url(project.logo),
-      media: project.media.map(generateR2Url),
+      logo: project.logo,
+      media: project.media,
     };
     res.status(200).json({
       message: 'Project fetched',
@@ -403,35 +405,41 @@ const fetchUserProjects = async (req, res, next) => {
 
     const rawprojects = await projectModel
       .find({ user: user._id })
-      .populate('user', 'username name profile_pic')
+      .select({_id:1, name:1, tagline:1, technology:1, collaborator:1, category:1, startDate:1, endDate:1, isOngoing:1, createdAt:1, updatedAt:1})
+      // .populate('user', 'username name profile_pic -_id')
       .lean();
 
        // Map each raw project into a “formatted” project, converting logo & media keys → full URLs
     const projects = rawprojects.map((proj) => {
       // a) Turn proj.logo (which might be something like "projects/abc/logo.png")
       //    into a real URL, or null if it’s falsy
-      const fullLogo = proj.logo
+      const {_id,logo, media, ...rest} = proj; // Destructure to remove _id
+      const fullLogo = logo
         ? generateR2Url(proj.logo)
         : null;
 
       // b) Map each element in proj.media (e.g. ["projects/abc/img1.png", ...])
       //    into generateR2Url(...)
-      const fullMediaArray = Array.isArray(proj.media)
+      const fullMediaArray = Array.isArray(media)
         ? proj.media.map((relPath) => generateR2Url(relPath)).filter((u) => u)
         : [];
 
       // c) Return a shallow‐copy of the proj object, but overwrite logo+media
       return {
-        ...proj,
-        logo: fullLogo,
-        media: fullMediaArray,
+        id: _id,
+        // logo: fullLogo,
+        // media: fullMediaArray,
+        ...rest,
       };
     });
 
+// const response = rawprojects.map((project) => (project.toJSON()));
+
+// console.log(response);
     res.status(200).json({
       message: 'User projects fetched successfully',
       status: 'success',
-      data: projects,
+      data: rawprojects,
     });
   } catch (err) {
     next(err);
@@ -655,6 +663,34 @@ const deleteProject = async (req, res, next) => {
     if (!deleteProject) {
       return next(new ApiError(400, 'No such project is available.'));
     }
+    // Delete all comments associated with this project
+    // This will recursively delete all replies as well
+    const deleteComments = async (commentIds) => {
+      // First get all replies
+      const comments = await Comment.find({ _id: { $in: commentIds } });
+      const allReplyIds = comments.flatMap(comment => comment.replies);
+      
+      // Recursively delete replies if they exist
+      if (allReplyIds.length > 0) {
+        await deleteComments(allReplyIds);
+      }
+      
+      // Delete the comments themselves
+      await Comment.deleteMany({ _id: { $in: commentIds } });
+    };
+
+    // Get all top-level comments for the project
+    const topLevelComments = await Comment.find(
+      { project: projectid, parentComment: null },
+      { _id: 1 }
+    );
+    
+    const topLevelCommentIds = topLevelComments.map(c => c._id);
+    
+    // Start recursive deletion
+    if (topLevelCommentIds.length > 0) {
+      await deleteComments(topLevelCommentIds);
+    }
     await SavedItem.updateMany(
       { savedProjects: projectid },
       { $pull: { savedProjects: projectid } }
@@ -828,6 +864,62 @@ const editProject = async (req, res, next) => {
 };
 
 
+const createComment = async(req, res) => {
+   try {
+    const { projectId, content, parentCommentId } = req.body;
+    const user = await userModel.findOne({ username: req.user.username });
+    const userId = user._id;
+
+    // Validate project exists
+    const project = await projectModel.findById(projectId);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+
+    const newComment = new Comment({
+      content,
+      project: projectId,
+      user: userId,
+      parentComment: parentCommentId || null
+    });
+
+    const savedComment = await newComment.save();
+
+    // If it's a reply, add to parent's replies
+    if (parentCommentId) {
+      await Comment.findByIdAndUpdate(
+        parentCommentId,
+        { $push: { replies: savedComment._id } }
+      );
+    }
+
+    res.status(201).json(savedComment);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
+
+
+const getProjectComments = async(req, res) => {
+   try {
+    const { projectId } = req.query;
+
+    const comments = await Comment.find({ project: projectId, parentComment: null })
+      .populate('user', 'username') // Populate user info
+      .populate({
+        path: 'replies',
+        populate: {
+          path: 'user',
+          select: 'username'
+        }
+      })
+      .sort({ createdAt: -1 });
+
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
 module.exports = {
   addProject,
   technologySuggestions,
@@ -844,4 +936,6 @@ module.exports = {
   getCollabRequest,
   deleteProject,
   editProject,
+  createComment,
+  getProjectComments,
 };

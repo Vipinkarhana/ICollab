@@ -1,5 +1,23 @@
 const mongoose = require('mongoose');
 
+const educationSchema = new mongoose.Schema({
+  institution: String,
+  degree: String,
+  fieldOfStudy: String,
+  startDate: Date,
+  endDate: Date,
+  current: Boolean,
+});
+
+const experienceSchema = new mongoose.Schema({
+  company: String,
+  position: String,
+  startDate: Date,
+  endDate: Date,
+  current: Boolean,
+  description: String,
+});
+
 const profileSchema = new mongoose.Schema(
   {
     user: {
@@ -25,6 +43,10 @@ const profileSchema = new mongoose.Schema(
         type: String,
         // required: true
       },
+      city: {
+        type: String,
+        // required: true
+      }
     },
 
     skills: {
@@ -42,6 +64,9 @@ const profileSchema = new mongoose.Schema(
         ref: 'project',
       },
     ],
+    education: [educationSchema],
+    experience: [experienceSchema],
+    resume: String,
   },
   { timestamps: true }
 );

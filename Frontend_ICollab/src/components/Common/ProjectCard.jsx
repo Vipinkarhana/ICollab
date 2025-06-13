@@ -60,6 +60,13 @@ const ProjectCard = ({
   const ownerId = project.user?.id || project?.user; // Handle both populated and unpopulated user
   const isOwner = String(currentUser?.id) === String(ownerId);
 
+
+
+  console.log("Owner ID:", ownerId);
+  console.log("Current User ID:", currentUser?.id);
+
+
+
   const handleDelete = async () => {
     try {
       await deleteProject(project?.id);
