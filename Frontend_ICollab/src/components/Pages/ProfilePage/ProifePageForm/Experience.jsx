@@ -25,7 +25,9 @@ const suggestedSkills = [
 const Experience = ({ setActiveTab, formData, updateField }) => {
   const [selectedRole, setSelectedRole] = useState(formData?.designation || "");
   const [customRole, setCustomRole] = useState("");
-  const [skills, setSkills] = useState(formData?.skills?.length ? formData.skills : ["", "", "", "", ""]);
+  const [skills, setSkills] = useState(
+    formData?.skills?.length ? formData.skills : ["", "", "", "", ""]
+  );
   const [resumeFile, setResumeFile] = useState(null);
   const [error, setError] = useState("");
 
@@ -37,7 +39,10 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
 
   // Sync skills to parent
   useEffect(() => {
-    updateField("skills", skills.filter(skill => skill.trim() !== ""));
+    updateField(
+      "skills",
+      skills.filter((skill) => skill.trim() !== "")
+    );
   }, [skills]);
 
   const handleSkillChange = (index, value) => {
@@ -80,13 +85,17 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
       {/* Role Selection Card */}
       <div className="bg-white p-6 rounded-lg shadow h-auto  w-[18rem] sm:w-full">
         <h2 className="text-2xl font-semibold mb-4">Designation</h2>
-        <p className="text-lg text-gray-700 mb-4">Which of the following describes you best?</p>
+        <p className="text-lg text-gray-700 mb-4">
+          Which of the following describes you best?
+        </p>
         <div className="space-y-3">
           {roles.map((role) => (
             <label
               key={role}
               className={`flex items-center p-3 border rounded-md cursor-pointer transition ${
-                selectedRole === role ? "bg-blue-100 border-blue-500" : "border-gray-300"
+                selectedRole === role
+                  ? "bg-blue-100 border-blue-500"
+                  : "border-gray-300"
               }`}
             >
               <input
@@ -107,7 +116,9 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
           {/* Other option */}
           <label
             className={`flex items-center p-3 border rounded-md cursor-pointer transition ${
-              selectedRole === "Other" ? "bg-blue-100 border-blue-500" : "border-gray-300"
+              selectedRole === "Other"
+                ? "bg-blue-100 border-blue-500"
+                : "border-gray-300"
             }`}
           >
             <input
@@ -139,7 +150,9 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
         <div className="flex flex-col md:flex-row gap-6">
           {/* Skill Inputs */}
           <div className="flex-1 space-y-4">
-            <p className="text-lg text-gray-700 mb-2">Rank your top 5 tech skills</p>
+            <p className="text-lg text-gray-700 mb-2">
+              Rank your top 5 tech skills
+            </p>
             {skills.map((skill, index) => (
               <input
                 key={index}
@@ -188,7 +201,18 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
         >
           {resumeFile ? (
             <>
-              <p className="text-sm font-medium">Uploaded: {resumeFile.name}</p>
+              <p className="text-sm font-medium mb-2">
+                Uploaded: {resumeFile.name}
+              </p>
+
+              <embed
+                src={URL.createObjectURL(resumeFile) + "#page=1"}
+                type="application/pdf"
+                width="100%"
+                height="300px"
+                className="rounded shadow"
+              />
+
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -202,9 +226,12 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
           ) : (
             <p className="text-sm text-center">
               Drop your resume here or{" "}
-              <span className="text-blue-600 underline">Upload from your computer</span>
+              <span className="text-blue-600 underline">
+                Upload from your computer
+              </span>
             </p>
           )}
+
           <input
             type="file"
             accept="application/pdf"
@@ -220,25 +247,25 @@ const Experience = ({ setActiveTab, formData, updateField }) => {
         </p>
       </div>
 
-      <div >
-      <WorkExperienceForm />
+      <div>
+        <WorkExperienceForm />
       </div>
-       {/* Bottom Right Navigation Buttons */}
-       <div className=" bottom-0 sm:mt-[52rem] ">
-       <div className="absolute p-2 right-4 left-4 sm:left-32 sm:right-32 flex flex-row justify-between items-center space-x-4 mt-4">
-        <button
-          onClick={() => setActiveTab("ABOUT")}
-          className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition "
-        >
-          ← Back
-        </button>
-        <button
-          onClick={() => setActiveTab("EDUCATION")}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition "
-        >
-          Next →
-        </button>
-      </div>
+      {/* Bottom Right Navigation Buttons */}
+      <div className=" bottom-0 sm:mt-[52rem] ">
+        <div className="absolute p-2 right-4 left-4 sm:left-32 sm:right-32 flex flex-row justify-between items-center space-x-4 mt-4">
+          <button
+            onClick={() => setActiveTab("ABOUT")}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition "
+          >
+            ← Back
+          </button>
+          <button
+            onClick={() => setActiveTab("EDUCATION")}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition "
+          >
+            Next →
+          </button>
+        </div>
       </div>
     </div>
   );
