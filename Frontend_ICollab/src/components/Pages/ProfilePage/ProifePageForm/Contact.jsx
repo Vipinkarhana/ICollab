@@ -36,22 +36,42 @@ const Contact = ({setActiveTab}) => {
                 />
               </div>
               <div className="border-b border-gray-300" />
-              <div>
-                <label className="block  sm:text-xl text-sm font-medium text-gray-700">City</label>
-                <input
-                  type="text"
-                  className="mt-1 w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
-                  placeholder="e.g. Bangalore"
-                />
-              </div>
-               <div>
-                <label className="block  sm:text-xl text-sm font-medium text-gray-700">State</label>
-                <input
-                  type="text"
-                  className="mt-1 w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
-                  placeholder="e.g. Uttar Pradesh"
-                />
-              </div>
+             {/* City Dropdown */}
+<div>
+  <label className="block sm:text-xl text-sm font-medium text-gray-700">City</label>
+  <select
+    className="mt-1 w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-400"
+    defaultValue=""
+  >
+    <option value="" disabled>Select your city</option>
+    <option value="Delhi">Delhi</option>
+    <option value="Mumbai">Mumbai</option>
+    <option value="Bangalore">Bangalore</option>
+    <option value="Hyderabad">Hyderabad</option>
+    <option value="Kolkata">Kolkata</option>
+    <option value="Chennai">Chennai</option>
+    <option value="Lucknow">Lucknow</option>
+  </select>
+</div>
+
+{/* State Dropdown */}
+<div>
+  <label className="block sm:text-xl text-sm font-medium text-gray-700">State</label>
+  <select
+    className="mt-1 w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-400"
+    defaultValue=""
+  >
+    <option value="" disabled>Select your state</option>
+    <option value="Uttar Pradesh">Uttar Pradesh</option>
+    <option value="Maharashtra">Maharashtra</option>
+    <option value="Karnataka">Karnataka</option>
+    <option value="Tamil Nadu">Tamil Nadu</option>
+    <option value="West Bengal">West Bengal</option>
+    <option value="Telangana">Telangana</option>
+    <option value="Delhi">Delhi</option>
+  </select>
+</div>
+
             </div>
           </section>
 
