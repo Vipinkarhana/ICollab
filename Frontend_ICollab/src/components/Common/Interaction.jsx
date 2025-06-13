@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useDispatch } from 'react-redux';
 import {toggleLike} from "../../Redux/Slices/PostSlice";
 import {
@@ -11,22 +11,46 @@ import {
 } from "lucide-react";
 import ProfilePic from "./ProfilePic";
 
-const Interactions = ({ postId, initialLikes, initialIsLiked, className="" }) => {
+const Interactions = ({
+  postId,
+  initialComments,
+  fetchComments,
+  postComment,
+  postReply,
+  initialLikes,
+  initialIsLiked,
+  className = ""
+}) => {
   const dispatch = useDispatch();
   const [likes, setLikes] = useState(initialLikes);
   const [isLiked, setIsLiked] = useState(initialIsLiked);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(initialComments || []);
   const [commentText, setCommentText] = useState("");
   const [replyText, setReplyText] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
   const commentInputRef = useRef(null);
 
+
+
+   // after mounting, ensure comments are in sync
+  useEffect(() => {
+    if (initialComments) setComments(initialComments);
+  }, [initialComments]);
+
+
+
   // Function to add a new comment
-  const addComment = () => {
-    if (commentText.trim() !== "") {
-      setComments([...comments, { text: commentText, likes: 0, replies: [] }]);
-      setCommentText("");
-    }
+  const addComment = async () => {
+    if (!commentText.trim()) return;
+      try {
+     await postComment(commentText);
+     const updated = await fetchComments();
+     setComments(updated);
+     setCommentText("");
+   } catch (e) {
+     console.error('Could not post comment', e);
+   }
+    
   };
 
   const handleLikeClick = () => {
@@ -43,17 +67,19 @@ const Interactions = ({ postId, initialLikes, initialIsLiked, className="" }) =>
   };
 
   // Function to add a reply to a specific comment
-  const addReply = (index) => {
-    if (replyText[index]?.trim()) {
-      const newComments = [...comments];
-      newComments[index].replies.push({
-        text: replyText[index],
-        likes: 0,
-      });
-      setComments(newComments);
-      setReplyText({ ...replyText, [index]: "" });
-      setReplyingTo(null);
-    }
+  const addReply = async (index) => {
+    const reply = replyText[index]?.trim();
+    if (!reply) return;
+    const parentCommentId = comments[index]._id;
+   try {
+     await postReply(reply, parentCommentId);
+     const updated = await fetchComments();
+     setComments(updated);
+     setReplyText({ ...replyText, [index]: "" });
+     setReplyingTo(null);
+   } catch (e) {
+     console.error('Could not post reply', e);
+   }
   };
 
   return (
@@ -150,7 +176,7 @@ const Interactions = ({ postId, initialLikes, initialIsLiked, className="" }) =>
             <div className="flex items-start  justify-evenly gap-2">
               <ProfilePic className="w-9 h-9 relative " />
               <div className="bg-gray-100 p-3 rounded-lg w-[90%]">
-                <p className="text-sm">{comment.text}</p>
+                <p className="text-sm">{comment.content}</p>
                 <div className="flex items-center text-gray-500 text-xs mt-1 space-x-3">
                   <button className="hover:text-blue-500 flex items-center space-x-1">
                     <ThumbsUp size={14} />
@@ -177,7 +203,7 @@ const Interactions = ({ postId, initialLikes, initialIsLiked, className="" }) =>
                 >
                   <ProfilePic className="w-9 h-9" />
                   <div className="bg-gray-100 p-3 rounded-lg w-[90%]">
-                    <p className="text-sm">{reply.text}</p>
+                    <p className="text-sm">{reply.content}</p>
                     <div className="flex items-center text-gray-500 text-xs mt-1 space-x-3">
                       <button className="hover:text-blue-500 flex items-center space-x-1">
                         <ThumbsUp size={14} />

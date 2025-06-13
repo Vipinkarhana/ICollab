@@ -13,7 +13,7 @@ const ProjectPreviewPage = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -30,6 +30,19 @@ const ProjectPreviewPage = () => {
     fetchProject();
   }, [id]);
 
+
+  useEffect(() => {
+    if (!project) return;
+   // once the project is loaded, fetch its comments
+    (async () => {
+      try {
+        const data = await projectService.getProjectComments(project.id);
+        setComments(data);
+      } catch (e) {
+        console.error('Comments load failed', e);
+      }
+    })();
+  }, [project]);
 
 
   if (loading) return <div>Loading...</div>;
@@ -55,9 +68,26 @@ const ProjectPreviewPage = () => {
         <ProjectPreviewDetail project={project}/>
       </div>
 
-      {/* <div className='bg-white rounded-md shadow-md p-4'>
-        <Interaction className='border-t-0'/>
-      </div> */}
+      {/* Comments section (before MoreProject) */}
+     <div className="bg-white rounded-md shadow-md p-4 mt-8">
+       <Interaction
+         postId={project.id}
+         initialComments={comments}
+         // pass in service methods so Interaction can call them
+         fetchComments={() => projectService.getProjectComments(project.id)}
+         postComment={(content) =>
+           projectService.postProjectComment({ projectId: project.id, content })
+         }
+         postReply={(content, parentId) =>
+           projectService.postProjectReply({
+             projectId: project.id,
+             content,
+             parentCommentId: parentId
+           })
+         }
+       />
+     </div>
+
       <div className="mt-10">
         <MoreProject currentProjectId={project.id}/>
       </div>
