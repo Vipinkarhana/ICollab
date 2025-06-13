@@ -60,6 +60,10 @@ let userschma = mongoose.Schema(
         // delete ret.posts;
         delete ret.createdAt;
         delete ret.updatedAt;
+        // Add full URL for profile picture if it's not the default
+        if (ret.profile_pic && ret.profile_pic !== '/assets/Avatar.png') {
+          ret.profile_pic = `${config.S3_PUBLIC_URL}/${ret.profile_pic}`;
+        }
         return ret;
       },
     },

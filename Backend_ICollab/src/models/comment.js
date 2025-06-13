@@ -1,27 +1,30 @@
 const mongoose = require('mongoose');
 
-let commentschma = mongoose.Schema(
-  {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
-      required: true,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
+const commentSchema = new mongoose.Schema({
+  content: {
+    type: String,
+    required: true,
+    trim: true
   },
-  {
-    timestamps: true,
-    toJSON: {
-      transform: (doc, ret) => {
-        delete ret._id;
-        delete ret.__v;
-        return ret;
-      },
-    },
-  }
-);
+  project: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+    required: true
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    required: true
+  },
+  parentComment: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment',
+    default: null // Null for top-level comments
+  },
+  replies: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment'
+  }]
+}, { timestamps: true });
 
-module.exports = mongoose.model('comment', commentschma);
+module.exports = mongoose.model('Comment', commentSchema);

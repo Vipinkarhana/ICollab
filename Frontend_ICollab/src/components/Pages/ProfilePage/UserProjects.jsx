@@ -32,6 +32,13 @@ function UserProjects() {
       </div>
     );
   }
+
+
+
+  console.log("User Projects Data:", projects);
+
+
+
   return (
     <div className="flex flex-col items-center justify-between gap-12 w-full h-full sm:px-6">
       {/* Skeleton Loading State */}
@@ -52,7 +59,7 @@ function UserProjects() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
             {projects.map((project) => (
               <ProjectCard 
-                key={project._id} 
+                key={project.id} 
                 project={project} 
                 onDelete={handleDeleteProject}
               />

@@ -127,6 +127,8 @@ const ProjectsPage = () => {
       .toString()
       .padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}`;
   };
+   console.log("Ongoing Projects:", ongoingProjects);
+  console.log("Finished Projects:", finishedProjects);
 
   return (
     <div className="min-h-screen flex flex-col  items-center w-full py-6 bg-gray-100  mt-16">
