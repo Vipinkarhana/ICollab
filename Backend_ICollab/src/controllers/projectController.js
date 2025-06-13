@@ -261,10 +261,34 @@ const project = async (req, res, next) => {
         .select('username email profile_pic');
     }
 
+
+     // Helper function to transform _id to id
+    const transformId = (obj) => {
+      if (obj && obj._id) {
+        obj.id = obj._id.toString();
+        delete obj._id;
+      }
+      return obj;
+    };
+
+    // Transform project
+    const projectObj = project.toObject();
+    transformId(projectObj);
+    
+    // Transform user field if populated
+    if (projectObj.user && projectObj.user._id) {
+      transformId(projectObj.user);
+    }
+
+    // Transform collaborators
+    const transformedCollaborators = collaborators.map(collab => {
+      const collabObj = collab.toObject();
+      return transformId(collabObj);
+    });
     
     const formattedProject = {
-      ...project.toObject(),
-      collaborator: collaborators,
+      ...projectObj,
+      collaborator: transformedCollaborators,
       isSaved: !!isSaved,
       logo: project.logo,
       media: project.media,

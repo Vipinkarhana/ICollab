@@ -98,3 +98,36 @@ export const updateProject = async (projectData) => {
     throw err.response?.data || { error: "Project update failed" };
   }
 };
+
+
+// Fetch all top‐level comments + replies for a project
+export const getProjectComments = async (projectId) => {
+  try {
+    const response = await privateAxios.get('/project/getprojectcomments', {
+      params: { projectId }
+    });
+    return response.data;    // assume your controller res.json(comments)
+  } catch (err) {
+    throw new Error(err.response?.data?.error || 'Error fetching comments');
+  }
+};
+
+// Post a brand‐new comment
+export const postProjectComment = async ({ projectId, content }) => {
+  try {
+    const response = await privateAxios.post('/project/createcomment', { projectId, content });
+    return response.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.error || 'Error posting comment');
+  }
+};
+
+// Post a reply to an existing comment
+export const postProjectReply = async ({ projectId, content, parentCommentId }) => {
+  try {
+    const response = await privateAxios.post('/project/createcomment', { projectId, content, parentCommentId });
+    return response.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.error || 'Error posting reply');
+  }
+};
