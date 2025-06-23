@@ -13,6 +13,7 @@ import { fetchMyPosts } from "../../../Redux/Slices/PostSlice";
 import { fetchUserProjectsData } from "../../../Redux/Slices/ProjectSlice";
 import FloatingButtonMenu from "./FloatingButtonMenu";
 import ExperienceDisplay from "./ExperienceDisplay";
+import EducationDisplay from "./EducationDisplay";
 function ProfilePage() {
   const dispatch = useDispatch();
   const { username } = useParams();
@@ -59,6 +60,7 @@ const [activeTab, setActiveTab] = useState(initialTab);
           <Readme paragraph={user?.user?.profile?.about} />
           <ProjectDisplay  username={username} topProjects={user?.user?.profile?.topProjects} />
            <ExperienceDisplay />
+           <EducationDisplay />
         </div>
       )}
     </div>

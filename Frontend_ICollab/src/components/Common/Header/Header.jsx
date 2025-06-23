@@ -13,12 +13,13 @@ import { useEffect, useState } from "react";
 import ProfileDropDown from "./ProfileDropDown/ProfileDropDown";
 import { logoutUser } from "../../../Redux/Slices/UserSlice";
 import ProfilePic from "../ProfilePic";
+import NotificationDropdown from "../../Pages/NotificationPage/NotificationPage";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const Logo = "/icollab.jpeg";
+  const Logo = "/icollab3.png";
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -28,7 +29,7 @@ const Header = () => {
     { icon: <FolderKanban size={20} />, text: "Projects", path: "/project" },
     { icon: <MessageSquare size={20} />, text: "Messaging", path: "/message" },
     { icon: <Sprout size={20} />, text: "Incubators", path: "/incubators" },
-    { icon: <Bell size={20} />, text: "Notifications", path: "#" },
+    // { icon: <Bell size={20} />, text: "Notifications", path: "#" },
   ];
 
   const handleLogout = () => {
@@ -96,6 +97,9 @@ const Header = () => {
               </Link>
             );
           })}
+
+           <NotificationDropdown />
+
           <div className="hidden sm:block -mb-1">
             <ProfileDropDown />
           </div>
