@@ -10,6 +10,8 @@ const {
   deletePost,
   toggleSavePost,
   getSavedPosts,
+  createComment,
+  getPostComments,
 } = require('../controllers/postController');
 const { validatePost } = require('../middlewares/validation');
 const { isloggedin } = require('../middlewares/auth');
@@ -23,5 +25,7 @@ router.post('/editpost', isloggedin, editPost);
 router.post('/deletepost', isloggedin, deletePost);
 router.post('/savepost', isloggedin, toggleSavePost);
 router.get('/savedposts', isloggedin, getSavedPosts);
+router.post('/comment', isloggedin, createComment);
+router.get('/comments', isloggedin, getPostComments);
 
 module.exports = router;

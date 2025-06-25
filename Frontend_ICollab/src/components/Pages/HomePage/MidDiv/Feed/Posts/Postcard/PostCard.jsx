@@ -23,8 +23,10 @@ import {
 import { toggleSaveItemThunk } from "../../../../../../../Redux/Slices/SaveItemSlice";
 import Interaction from "../../../../../../Common/Interaction";
 import { sendRequest } from "../../../../../../../Services/networkService";
+import * as postService from "../../../../../../../Services/postService";
 
 function PostCard({ post }) {
+  const [comments, setComments] = useState([]);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [isConnected, setIsConnected] = useState(!post?.isConnection);
@@ -69,6 +71,18 @@ function PostCard({ post }) {
     setIsConnected(false);
     setIsOpen(false);
   };
+
+  useEffect(() => {
+  const loadComments = async () => {
+    try {
+      const data = await postService.getPostComments(post._id);
+      setComments(data);
+    } catch (e) {
+      console.error('Failed to load comments', e);
+    }
+  };
+  loadComments();
+}, [post._id]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -190,6 +204,18 @@ function PostCard({ post }) {
         <div className="w-full">
           <Interaction
             postId={post._id}
+            initialComments={comments}
+            fetchComments={() => postService.getPostComments(post._id)}
+            postComment={(content) => 
+              postService.postPostComment({ postId: post._id, content })
+            }
+            postReply={(content, parentId) => 
+              postService.postPostReply({ 
+                postId: post._id, 
+                content, 
+                parentCommentId: parentId 
+              })
+            }
             initialLikes={post.likes}
             initialIsLiked={post.isLiked}
           />
