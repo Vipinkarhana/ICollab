@@ -110,7 +110,6 @@ export const getFeed = async (timestamp) => {
 
 export const likeAndUnlikePost = async (postId) => {
     try {
-        console.log("Reached postService");
       const response = await privateAxios.post("posts/likeandunlikepost", {}, {
         params: { postId }
       });
@@ -120,3 +119,42 @@ export const likeAndUnlikePost = async (postId) => {
       return error.response?.data || { error: "Failed to toggle like" };
     }
   };
+
+
+  export const getPostComments = async (postId) => {
+  try {
+    const response = await privateAxios.get('/posts/comments', {
+      params: { postId }
+    });
+    return response.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.error || 'Error fetching comments');
+  }
+};
+
+
+export const postPostComment = async ({ postId, content }) => {
+  try {
+    const response = await privateAxios.post('/posts/comment', {
+      postId,
+      content
+    });
+    return response.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.error || 'Error posting comment');
+  }
+};
+
+
+export const postPostReply = async ({ postId, content, parentCommentId }) => {
+  try {
+    const response = await privateAxios.post('/posts/comment', {
+      postId,
+      content,
+      parentCommentId
+    });
+    return response.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.error || 'Error posting reply');
+  }
+};

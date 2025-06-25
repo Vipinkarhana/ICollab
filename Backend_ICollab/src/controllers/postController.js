@@ -9,6 +9,7 @@ const likeModel = require('../models/likes');
 const { URL } = require('url');
 const { generatePresignedUrl, deleteFromR2 } = require('../../config/s3');
 const SavedItem = require('../models/savedItem');
+const PostComment = require('../models/PostComments');
 
 const addpost = async (req, res, next) => {
   try {
@@ -398,6 +399,62 @@ const getSavedPosts = async (req, res, next) => {
   }
 };
 
+
+
+
+
+const createComment = async (req, res, next) => {
+  try {
+    console.log("Entered createComment");
+    const { postId, content, parentCommentId } = req.body;
+    const username = req.user.username;
+    const user = await userModel.findOne({ username });
+    
+    const newComment = new PostComment({
+      content,
+      post: postId,
+      user: user._id,
+      parentComment: parentCommentId || null
+    });
+
+    const savedComment = await newComment.save();
+
+    // If it's a reply, add to parent's replies
+    if (parentCommentId) {
+      await PostComment.findByIdAndUpdate(
+        parentCommentId,
+        { $push: { replies: savedComment._id } }
+      );
+    }
+
+    res.status(201).json(savedComment);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getPostComments = async (req, res, next) => {
+  try {
+    const { postId } = req.query;
+
+    const comments = await PostComment.find({ post: postId, parentComment: null })
+      .populate('user', 'username profile_pic')
+      .populate({
+        path: 'replies',
+        populate: {
+          path: 'user',
+          select: 'username profile_pic'
+        }
+      });
+
+    res.json(comments);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
 module.exports = {
   addpost,
   getMyPost,
@@ -408,4 +465,6 @@ module.exports = {
   deletePost,
   toggleSavePost,
   getSavedPosts,
+  createComment,
+  getPostComments,
 };
