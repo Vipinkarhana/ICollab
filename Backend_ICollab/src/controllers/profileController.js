@@ -217,14 +217,7 @@ const userProfile = async (req, res, next) => {
       status: 'success',
       data: {
         user: {
-          ...user.toObject(),
-          profile_pic: user.profile_pic === '/assets/Avatar.png' 
-            ? user.profile_pic 
-            : `${config.S3_PUBLIC_URL}/${user.profile_pic}`,
-            profile: {
-            ...user.profile.toObject(),
-            links: user.profile.links || []  // Ensure array response
-          }
+          ...user.toJSON(),
         },
         stats: {
           posts: postCount,

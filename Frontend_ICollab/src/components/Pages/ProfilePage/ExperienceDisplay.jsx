@@ -1,7 +1,7 @@
 import React from "react";
 import { Plus, Pencil } from "lucide-react";
 
-export default function ExperienceDisplay({ submittedExperiences = [] }) {
+export default function ExperienceDisplay({ submittedExperiences = [], isCurrentUser }) {
   const dummyExperiences = [
     {
       role: "Frontend Developer",
@@ -60,14 +60,16 @@ export default function ExperienceDisplay({ submittedExperiences = [] }) {
         <h1 className="text-gray-700 font-semibold text-lg sm:text-2xl md:text-3xl">
           Experience
         </h1>
-        <div className="flex gap-2">
-          <button className="p-2 rounded-full text-purple-700">
-            <Plus size={20} className="sm:size-6" />
-          </button>
-          <button className="p-2 rounded-full text-purple-700">
-            <Pencil size={20} className="sm:size-6" />
-          </button>
-        </div>
+        { isCurrentUser && (
+          <div className="flex gap-2">
+            <button className="p-2 rounded-full text-purple-700">
+              <Plus size={20} className="sm:size-6" />
+            </button>
+            <button className="p-2 rounded-full text-purple-700">
+              <Pencil size={20} className="sm:size-6" />
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="mb-6 border-b border-gray-600" />

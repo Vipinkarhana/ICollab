@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchUserProjectsData } from '../../../Redux/Slices/ProjectSlice';
 import { updateTopProjects } from '../../../Redux/Slices/UserProfileSlice';
 
-const ProjectDisplay = ({ username }) => {
+const ProjectDisplay = ({ username, isCurrentUser }) => {
   const topProjects = useSelector((state) => state?.userProfile?.data?.user?.profile?.topProjects);
   const dispatch = useDispatch();
   const { userProjects, loading, error } = useSelector((state) => state.project);
@@ -46,20 +46,6 @@ const ProjectDisplay = ({ username }) => {
     dispatch(updateTopProjects({ topProjects: updatedPinnedProjects, username }));
   };
 
-  // const handlePinProject = (projectId) => {
-  //   const currentTop = projects?.filter((proj) => proj?.pinned);
-  //   if (currentTop.length >= 3) return;
-  //   const updated = projects?.map((proj) =>
-  //     proj?.id === projectId ? { ...proj, pinned: true } : proj
-  //   );
-  //   setProjects(updated);
-  //   setShowModal(false);
-  //   setSelectedProject(updated.find((proj) => proj?.id === projectId));
-
-  //   const updatedPinnedProjects = updated?.filter((proj) => proj?.pinned)?.map((proj) => proj?.id);
-  //   dispatch(updateTopProjects({ projectIds: updatedPinnedProjects, username }));
-  // };
-
   const handleSelectProject = () => {
     console.log("Selected crds", selectedCards)
     const updatedProjects = projects?.map((proj) =>
@@ -93,7 +79,7 @@ const ProjectDisplay = ({ username }) => {
         <div className="w-full md:w-1/4 border-r pr-4 mb-4 md:mb-0">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-gray-700 font-semibold text-2xl">Top Projects</h2>
-            {topProjects?.length < 3 && (
+            {topProjects?.length < 3 && isCurrentUser && (
               <button
                 onClick={() => setShowModal(true)}
                 className="text-green-600 hover:text-green-800"
@@ -118,17 +104,18 @@ const ProjectDisplay = ({ username }) => {
                   className="w-10 h-10 object-contain"
                 />
                 <span className="font-medium">{project?.name}</span>
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleUnpinProject(project?.id);
-                  }}
-                  className="absolute right-2 text-red-500 hover:bg-gray-200 p-2 rounded-full"
-                  title="Unpin Project"
-                >
-                  <PinOff size={20} />
-                </button>
+                {isCurrentUser && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleUnpinProject(project?.id);
+                    }}
+                    className="absolute right-2 text-red-500 hover:bg-gray-200 p-2 rounded-full"
+                    title="Unpin Project"
+                  >
+                    <PinOff size={20} />
+                  </button>
+                )}
               </div>
             ))}
           </div>

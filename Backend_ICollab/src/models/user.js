@@ -58,7 +58,7 @@ let userschma = mongoose.Schema(
         delete ret.password;
         delete ret.isVerified;
         delete ret.emailToken;
-        // delete ret.posts;
+        delete ret.posts;
         delete ret.createdAt;
         delete ret.updatedAt;
         // Add full URL for profile picture if it's not the default

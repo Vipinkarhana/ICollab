@@ -1,7 +1,7 @@
 import React from "react";
 import { Plus, Pencil } from "lucide-react";
 
-export default function EducationDisplay({ submittedEducation = [] }) {
+export default function EducationDisplay({ submittedEducation = [], isCurrentUser }) {
   const dummyEducation = [
     {
       degreeType: "B.Tech",
@@ -32,14 +32,16 @@ export default function EducationDisplay({ submittedEducation = [] }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-gray-700 font-semibold text-xl sm:text-3xl">Education</h1>
-        <div className="flex gap-2">
-          <button className="p-2 rounded-full text-purple-700">
-            <Plus size={24} />
-          </button>
-          <button className="p-2 rounded-full text-purple-700">
-            <Pencil size={24} />
-          </button>
-        </div>
+        { isCurrentUser && (
+          <div className="flex gap-2">
+            <button className="p-2 rounded-full text-purple-700">
+              <Plus size={24} />
+            </button>
+            <button className="p-2 rounded-full text-purple-700">
+              <Pencil size={24} />
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="mb-6 border-b border-gray-600" />

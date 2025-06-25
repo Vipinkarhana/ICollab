@@ -18,11 +18,13 @@ function ProfilePage() {
   const dispatch = useDispatch();
   const { username } = useParams();
   const location = useLocation();
-const initialTab = location.state?.activeTab || "Intro";
-const [activeTab, setActiveTab] = useState(initialTab);
+  const initialTab = location.state?.activeTab || "Intro";
+  const [activeTab, setActiveTab] = useState(initialTab);
 
 
   const { data: user, loading, error } = useSelector((state) => state?.userProfile);
+  const currentUser = useSelector((state) => state?.user?.userData);
+  const isCurrentUser = username === currentUser?.username;
   // const posts = useSelector((state) => state.post.otherUserPosts);
 
   console.log(user);
@@ -41,7 +43,7 @@ const [activeTab, setActiveTab] = useState(initialTab);
 
   return (
     <div className="w-[99svw] sm:w-[98svw] min-h-screen flex flex-col justify-start items-start m-0 p-0 mt-14">
-      <FloatingButtonMenu  setActiveTab={setActiveTab}/>
+      <FloatingButtonMenu setActiveTab={setActiveTab} />
       <Intro activeTab={activeTab} setActiveTab={setActiveTab} user={user?.user} />
       {activeTab === "Posts" && (
         <div className="w-full p-2 sm:p-4">
@@ -57,10 +59,10 @@ const [activeTab, setActiveTab] = useState(initialTab);
       {activeTab === "Intro" && (
         <div className="w-full p-2 sm:p-4 flex justify-start items-center flex-col gap-4">
           <ProfileStats stats={user?.stats} />
-          <Readme paragraph={user?.user?.profile?.about} />
-          <ProjectDisplay  username={username} topProjects={user?.user?.profile?.topProjects} />
-           <ExperienceDisplay />
-           <EducationDisplay />
+          <Readme paragraph={user?.user?.profile?.about} isCurrentUser={isCurrentUser} />
+          <ProjectDisplay username={username} isCurrentUser={isCurrentUser} />
+          <ExperienceDisplay isCurrentUser={isCurrentUser} />
+          <EducationDisplay isCurrentUser={isCurrentUser} />
         </div>
       )}
     </div>

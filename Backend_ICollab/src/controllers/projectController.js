@@ -208,10 +208,10 @@ const collaboratorSuggestions = async (req, res, next) => {
 };
 
 function generateR2Url(key) {
-      if (!key) return null;
-      const url = `${config.S3_PUBLIC_URL}/${key}`;
-      return url;
-    };
+  if (!key) return null;
+  const url = `${config.S3_PUBLIC_URL}/${key}`;
+  return url;
+};
 
 const project = async (req, res, next) => {
   try {
@@ -262,7 +262,7 @@ const project = async (req, res, next) => {
     }
 
 
-     // Helper function to transform _id to id
+    // Helper function to transform _id to id
     const transformId = (obj) => {
       if (obj && obj._id) {
         obj.id = obj._id.toString();
@@ -274,7 +274,7 @@ const project = async (req, res, next) => {
     // Transform project
     const projectObj = project.toObject();
     transformId(projectObj);
-    
+
     // Transform user field if populated
     if (projectObj.user && projectObj.user._id) {
       transformId(projectObj.user);
@@ -285,7 +285,7 @@ const project = async (req, res, next) => {
       const collabObj = collab.toObject();
       return transformId(collabObj);
     });
-    
+
     const formattedProject = {
       ...projectObj,
       collaborator: transformedCollaborators,
@@ -429,41 +429,20 @@ const fetchUserProjects = async (req, res, next) => {
 
     const rawprojects = await projectModel
       .find({ user: user._id })
-      .select({_id:1, name:1, tagline:1, technology:1, collaborator:1, category:1, startDate:1, endDate:1, isOngoing:1, createdAt:1, updatedAt:1})
+      .select({ _id: 1, name: 1, tagline: 1, technology: 1, collaborator: 1, category: 1, startDate: 1, endDate: 1, isOngoing: 1, createdAt: 1, updatedAt: 1 })
       // .populate('user', 'username name profile_pic -_id')
       .lean();
 
-       // Map each raw project into a “formatted” project, converting logo & media keys → full URLs
-    const projects = rawprojects.map((proj) => {
-      // a) Turn proj.logo (which might be something like "projects/abc/logo.png")
-      //    into a real URL, or null if it’s falsy
-      const {_id,logo, media, ...rest} = proj; // Destructure to remove _id
-      const fullLogo = logo
-        ? generateR2Url(proj.logo)
-        : null;
+    const response = rawprojects.map(({ _id, ...rest }) => ({
+      id: _id,
+      ...rest,
+    }));
 
-      // b) Map each element in proj.media (e.g. ["projects/abc/img1.png", ...])
-      //    into generateR2Url(...)
-      const fullMediaArray = Array.isArray(media)
-        ? proj.media.map((relPath) => generateR2Url(relPath)).filter((u) => u)
-        : [];
-
-      // c) Return a shallow‐copy of the proj object, but overwrite logo+media
-      return {
-        id: _id,
-        // logo: fullLogo,
-        // media: fullMediaArray,
-        ...rest,
-      };
-    });
-
-// const response = rawprojects.map((project) => (project.toJSON()));
-
-// console.log(response);
+    // console.log(response);
     res.status(200).json({
       message: 'User projects fetched successfully',
       status: 'success',
-      data: rawprojects,
+      data: response,
     });
   } catch (err) {
     next(err);
@@ -693,12 +672,12 @@ const deleteProject = async (req, res, next) => {
       // First get all replies
       const comments = await Comment.find({ _id: { $in: commentIds } });
       const allReplyIds = comments.flatMap(comment => comment.replies);
-      
+
       // Recursively delete replies if they exist
       if (allReplyIds.length > 0) {
         await deleteComments(allReplyIds);
       }
-      
+
       // Delete the comments themselves
       await Comment.deleteMany({ _id: { $in: commentIds } });
     };
@@ -708,9 +687,9 @@ const deleteProject = async (req, res, next) => {
       { project: projectid, parentComment: null },
       { _id: 1 }
     );
-    
+
     const topLevelCommentIds = topLevelComments.map(c => c._id);
-    
+
     // Start recursive deletion
     if (topLevelCommentIds.length > 0) {
       await deleteComments(topLevelCommentIds);
@@ -807,44 +786,44 @@ const editProject = async (req, res, next) => {
       if (!isOngoing && !endDate) {
         return next(new ApiError(400, 'End Date is required for non-ongoing projects'));
       }
-      }
-      if (startDate) {
-        project.startDate = startDate;
-      }
-      if (endDate) {
-        project.endDate = endDate;
-      }
-      if (category) {
-        project.category = category;
-      }
-      if (description) {
-        project.description = description;
-      }
-      try{
-    let existingMedia = [];
-    try {
-      if (req.body.existingMedia) {
-        existingMedia = JSON.parse(req.body.existingMedia);
-      }
-    } catch (e) {
-      return next(new ApiError(400, 'Invalid existingMedia format'));
     }
-
-    // Delete media not in existingMedia list
-    const mediaToDelete = project.media.filter(
-      mediaKey => !existingMedia.includes(mediaKey)
-    );
-    
-    await Promise.all(
-      mediaToDelete.map(key => deleteFromR2(key))
-    );
-    
-    // Update project media with kept files
-    project.media = existingMedia;
-      } catch (err) {
-        return next(new ApiError(400, 'Invalid media format'));
+    if (startDate) {
+      project.startDate = startDate;
+    }
+    if (endDate) {
+      project.endDate = endDate;
+    }
+    if (category) {
+      project.category = category;
+    }
+    if (description) {
+      project.description = description;
+    }
+    try {
+      let existingMedia = [];
+      try {
+        if (req.body.existingMedia) {
+          existingMedia = JSON.parse(req.body.existingMedia);
+        }
+      } catch (e) {
+        return next(new ApiError(400, 'Invalid existingMedia format'));
       }
-     if (req.files?.media) {
+
+      // Delete media not in existingMedia list
+      const mediaToDelete = project.media.filter(
+        mediaKey => !existingMedia.includes(mediaKey)
+      );
+
+      await Promise.all(
+        mediaToDelete.map(key => deleteFromR2(key))
+      );
+
+      // Update project media with kept files
+      project.media = existingMedia;
+    } catch (err) {
+      return next(new ApiError(400, 'Invalid media format'));
+    }
+    if (req.files?.media) {
       const mediaFiles = Array.isArray(req.files.media) ? req.files.media : [req.files.media];
       for (const mediaFile of mediaFiles) {
         const mediaKey = `projects/${project._id}/media-${Date.now()}-${mediaFile.originalname}`;
@@ -888,8 +867,8 @@ const editProject = async (req, res, next) => {
 };
 
 
-const createComment = async(req, res) => {
-   try {
+const createComment = async (req, res) => {
+  try {
     const { projectId, content, parentCommentId } = req.body;
     const user = await userModel.findOne({ username: req.user.username });
     const userId = user._id;
@@ -922,8 +901,8 @@ const createComment = async(req, res) => {
 };
 
 
-const getProjectComments = async(req, res) => {
-   try {
+const getProjectComments = async (req, res) => {
+  try {
     const { projectId } = req.query;
 
     const comments = await Comment.find({ project: projectId, parentComment: null })
