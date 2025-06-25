@@ -8,6 +8,7 @@ const allowedCategories = require('../../config/category.json');
 const { uploadToR2, deleteFromR2 } = require('../../config/s3');
 const config = require('../../config/config');
 const SavedItem = require('../models/savedItem');
+const Room = require("../models/Room");
 
 const addProject = async (req, res, next) => {
   let newProject;
@@ -139,11 +140,34 @@ const addProject = async (req, res, next) => {
     // Save project with media/logo keys
     await newProject.save();
 
+
+    const newRoom = await Room.create({
+      project: newProject._id,
+      members: [user._id],
+      channelId: `project-${newProject._id}`,
+    });
+    
+    const defaultGroup = await Group.create({
+      name: "General",
+      room: newRoom._id,
+      members: [user._id],
+      createdBy: user._id,
+      isDefault: true,
+    });
+
+
     res.status(201).json({
-      message: 'Project created successfully',
-      data: { projectid: newProject._id },
+      message: 'Project, Room, and Default Group created successfully',
+      data: {
+        projectId: newProject._id,
+        roomId: newRoom._id,
+        channelId: newRoom.channelId,
+        defaultGroupId: defaultGroup._id,
+      },
       status: 'success',
     });
+
+
   } catch (err) {
     next(err);
     if (newProject) {
