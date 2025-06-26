@@ -4,6 +4,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import useFetchSavedItems from "./Hooks/useFetchSavedItmes";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import StartUp from "./components/Pages/IncubatorsPage/StartUp";
 const HomePage = lazy(() => import("./components/Pages/HomePage/HomePage"));
 const ProfilePage = lazy(() =>
   import("./components/Pages/ProfilePage/ProfilePage")
@@ -73,6 +74,7 @@ function App() {
               <Route path="/project/create" element={<ProjectForm />} />
               <Route path="/projects/edit/:projectId" element={<ProjectForm />} />
               <Route path="/project/:id" element={<ProjectPreviewPage />} />
+                <Route path="/startup" element={<StartUp />} />
             </Route>
 
             {/* Public routes */}
