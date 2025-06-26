@@ -9,8 +9,6 @@ import ProjectDisplay from "./ProjectDisplay";
 import { useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../../../Redux/Slices/UserProfileSlice";
-import { fetchMyPosts } from "../../../Redux/Slices/PostSlice";
-import { fetchUserProjectsData } from "../../../Redux/Slices/ProjectSlice";
 import FloatingButtonMenu from "./FloatingButtonMenu";
 import ExperienceDisplay from "./ExperienceDisplay";
 import EducationDisplay from "./EducationDisplay";
@@ -22,20 +20,16 @@ function ProfilePage() {
   const [activeTab, setActiveTab] = useState(initialTab);
 
 
-  const { data: user, loading, error } = useSelector((state) => state?.userProfile);
+  const { user, stats, loading, error } = useSelector((state) => state?.userProfile);
   const currentUser = useSelector((state) => state?.user?.userData);
   const isCurrentUser = username === currentUser?.username;
   // const posts = useSelector((state) => state.post.otherUserPosts);
 
-  console.log(user);
-
   useEffect(() => {
     if (username) {
       dispatch(fetchUserProfile(username));
-      dispatch(fetchMyPosts(username));
-      dispatch(fetchUserProjectsData(username));
     }
-  }, [dispatch, username]);
+  }, []);
 
   if (loading) return <p>Loading profile...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -44,7 +38,7 @@ function ProfilePage() {
   return (
     <div className="w-[99svw] sm:w-[98svw] min-h-screen flex flex-col justify-start items-start m-0 p-0 mt-14">
       <FloatingButtonMenu setActiveTab={setActiveTab} />
-      <Intro activeTab={activeTab} setActiveTab={setActiveTab} user={user?.user} />
+      <Intro activeTab={activeTab} setActiveTab={setActiveTab} user={user} />
       {activeTab === "Posts" && (
         <div className="w-full p-2 sm:p-4">
           <UserPosts />
@@ -58,8 +52,8 @@ function ProfilePage() {
       )}
       {activeTab === "Intro" && (
         <div className="w-full p-2 sm:p-4 flex justify-start items-center flex-col gap-4">
-          <ProfileStats stats={user?.stats} />
-          <Readme paragraph={user?.user?.profile?.about} isCurrentUser={isCurrentUser} />
+          <ProfileStats stats={stats} />
+          <Readme paragraph={user?.profile?.about} isCurrentUser={isCurrentUser} />
           <ProjectDisplay username={username} isCurrentUser={isCurrentUser} />
           <ExperienceDisplay isCurrentUser={isCurrentUser} />
           <EducationDisplay isCurrentUser={isCurrentUser} />

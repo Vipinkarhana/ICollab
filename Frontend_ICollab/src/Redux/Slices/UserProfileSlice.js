@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getUserProfile } from '../../Services/profileService';
 import { updatePinnedProjects } from '../../Services/projectService';
+import { fetchUserProjects } from '../../Services/projectService';
 
 export const updateTopProjects = createAsyncThunk(
   'userProfile/updateTopProjects',
-  async ({ topProjects, username }, thunkAPI) => {
+  async ({ topProjects }, thunkAPI) => {
     try {
       // Extract project IDs from full project objects
       const projectIds = topProjects?.map((proj) => proj?.id);
@@ -12,8 +13,6 @@ export const updateTopProjects = createAsyncThunk(
       // Send only IDs to backend
       const data = await updatePinnedProjects(projectIds);
 
-      // Return full topProjects to update state
-      console.log("Top Projects in Redux Thunk:", topProjects);
       return topProjects;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -28,9 +27,20 @@ export const fetchUserProfile = createAsyncThunk(
     try {
       const data = await getUserProfile(username);
       return data;
-      console.log(data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchUserProjectsData = createAsyncThunk(
+  'projects/fetchUserProjects',
+  async (username, { rejectWithValue }) => {
+    try {
+      const data = await fetchUserProjects(username); 
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -38,7 +48,9 @@ export const fetchUserProfile = createAsyncThunk(
 const userProfileSlice = createSlice({
   name: 'userProfile',
   initialState: {
-    data: null,
+    user: null,
+    stats: null,
+    projects: null,
     loading: false,
     error: null,
   },
@@ -57,11 +69,24 @@ const userProfileSlice = createSlice({
       })
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.user = action.payload.user;
+        state.stats = action.payload.stats;
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Something went wrong';
+      })
+      .addCase(fetchUserProjectsData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserProjectsData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.projects = action.payload;
+      })
+      .addCase(fetchUserProjectsData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
       .addCase(updateTopProjects.pending, (state) => {
         state.loading = true;
