@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';  // Import Link from react-router-dom
 import Header from '../../Common/Header/Header';  
 import AnimatedCounter from './AnimatedCounter';  
 import TestimonialCard from './TestimonialCard';  
+import IncubatorLanding from './IncubatorLanding';
 
 function LandingPage() {
   const totalPosts = 10000;
@@ -40,6 +41,10 @@ function LandingPage() {
       {/* Animated Counter */}
       <div>
         <AnimatedCounter totalPosts={totalPosts} />
+      </div>
+
+      <div>
+        <IncubatorLanding />
       </div>
 
       {/* Testimonials */}

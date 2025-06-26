@@ -5,6 +5,8 @@ import useFetchSavedItems from "./Hooks/useFetchSavedItmes";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import StartUp from "./components/Pages/IncubatorsPage/StartUp";
+import IncubatorForm from "./components/Pages/LandingPage/IncubatorForm";
+
 const HomePage = lazy(() => import("./components/Pages/HomePage/HomePage"));
 const ProfilePage = lazy(() =>
   import("./components/Pages/ProfilePage/ProfilePage")
@@ -75,6 +77,7 @@ function App() {
               <Route path="/projects/edit/:projectId" element={<ProjectForm />} />
               <Route path="/project/:id" element={<ProjectPreviewPage />} />
                 <Route path="/startup" element={<StartUp />} />
+                  <Route path="/apply-incubator" element={<IncubatorForm />} />
             </Route>
 
             {/* Public routes */}

@@ -34,12 +34,13 @@ const startups = [
 ];
 
 const StartupCard = ({ startup }) => (
-  <div className="bg-white rounded-lg shadow-md p-5 transition-transform duration-300 ease-in-out hover:shadow-lg hover:scale-[1.02] cursor-pointer w-[40%] h-auto">
+  <div className="bg-white rounded-lg shadow-md p-5 transition-transform duration-300 ease-in-out hover:shadow-lg hover:scale-[1.02] cursor-pointer 
+                  w-full sm:w-[90%] md:w-[45%] lg:w-[40%] xl:w-[30%] sm:h-80 h-auto">
     <div className="flex items-center space-x-4 mb-3">
       <div className="bg-gray-200 text-2xl font-bold text-gray-600 w-10 h-10 flex items-center justify-center rounded-full">
         {startup.initial}
       </div>
-      <div className="flex flex-col flex-1 ">
+      <div className="flex flex-col flex-1">
         <h2 className="text-lg font-semibold">{startup.name}</h2>
         <p className="text-sm text-gray-500">{startup.subtitle}</p>
         <hr className="w-full border-t border-gray-300 my-2" />
@@ -53,7 +54,7 @@ const StartupCard = ({ startup }) => (
       <span className="bg-blue-100 px-2 py-1 rounded-full">📈 {startup.stage}</span>
     </div>
 
-    <div className="flex flex-wrap gap-8 mt-4">
+    <div className="flex flex-wrap gap-3 mt-4">
       {startup.tags.map((tag, index) => (
         <span
           key={index}
@@ -67,7 +68,7 @@ const StartupCard = ({ startup }) => (
 );
 
 const StartupCards = () => (
-  <div className="flex flex-wrap gap-6 p-6 bg-gray-50 min-h-screen justify-center">
+  <div className="flex flex-wrap gap-6 p-4 sm:p-6 bg-gray-50 min-h-screen justify-center">
     {startups.map((startup, index) => (
       <StartupCard key={index} startup={startup} />
     ))}

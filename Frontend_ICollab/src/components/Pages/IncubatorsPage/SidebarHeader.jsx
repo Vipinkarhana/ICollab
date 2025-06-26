@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const SidebarHeader = () => {
   return (
-    <aside className="fixed top-0 left-0 w-64 bg-white shadow-md min-h-screen mt-16 p-6">
+    <aside className="fixed top-0 left-0 w-64 bg-white shadow-md min-h-screen mt-16 p-6 h-full ">
       <Link
         to="/"
         className="flex items-center gap-2 text-2xl font-semibold text-blue-600 mb-8"
