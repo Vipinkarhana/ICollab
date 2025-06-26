@@ -26,9 +26,7 @@ function ProfilePage() {
   // const posts = useSelector((state) => state.post.otherUserPosts);
 
   useEffect(() => {
-    if (username) {
       dispatch(fetchUserProfile(username));
-    }
   }, []);
 
   if (loading) return <p>Loading profile...</p>;

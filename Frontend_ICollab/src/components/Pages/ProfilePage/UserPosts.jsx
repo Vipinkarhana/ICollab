@@ -1,16 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMyPosts } from "../../../Redux/Slices/PostSlice";
 import PostCard from "../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
+import { useParams } from "react-router-dom";
+import { fetchUserPostsData } from "../../../Redux/Slices/UserProfileSlice"
 
 function UserPosts() {
   const dispatch = useDispatch();
 
-  const { myPost, loading, error } = useSelector((state) => state.post);
+  const { posts , loading, error } = useSelector((state) => state.userProfile);
+  const { username } = useParams();
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    dispatch(fetchMyPosts());
-  }, [dispatch]);
+    if (!hasFetched.current && username && posts.length === 0) {
+      dispatch(fetchUserPostsData(username));
+    }
+  }, [dispatch, username, posts.length]);
 
   if (loading) {
     return (
@@ -24,7 +29,7 @@ function UserPosts() {
     return <div className="text-center py-4 text-red-500">Error: {error}</div>;
   }
 
-  if (!myPost.length) {
+  if (!posts.length) {
     return (
       <div className="text-center py-4 text-gray-500">
         You haven't posted anything yet.
@@ -37,19 +42,19 @@ function UserPosts() {
     <div className="w-full hidden px-6 py-4 sm:flex justify-evenly gap-6 ">
      
         <div className="flex flex-col gap-3 w-[45svw] ">
-          {myPost
+          {posts
             .filter((_, index) => index % 2 === 0)
             .map((post) => (
-              <div key={post._id}>
+              <div key={post.id}>
                 <PostCard post={post} />
               </div>
             ))}
         </div>
         <div className="flex flex-col gap-3 w-[45svw] ">
-          {myPost
+          {posts
             .filter((_, index) => index % 2 !== 0)
             .map((post) => (
-              <div key={post._id} >
+              <div key={post.id} >
                 <PostCard post={post} />
               </div>
             ))}
@@ -57,8 +62,8 @@ function UserPosts() {
       </div>
       <div className="">
         <div className="flex flex-col gap-3 w-full sm:hidden ">
-          {myPost.map((post) => (
-            <div key={post._id}>
+          {posts.map((post) => (
+            <div key={post.id}>
               <PostCard post={post} />
             </div>
           ))}

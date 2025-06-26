@@ -85,7 +85,7 @@ export const deletePost = async (postid) => {
     }
 }
 
-export const getMyPost = async (username) => {
+export const fetchUserPost = async (username) => {
     try {
       const response = await privateAxios.get(`/posts/mypost/${username}`);
       return response.data;

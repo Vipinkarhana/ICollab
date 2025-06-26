@@ -17,8 +17,7 @@ import Media from "./Media";
 import {
   addDraft,
   openPostModal,
-  removePost,
-  fetchMyPosts,
+  removePost
 } from "../../../../../../../Redux/Slices/PostSlice";
 import { toggleSaveItemThunk } from "../../../../../../../Redux/Slices/SaveItemSlice";
 import Interaction from "../../../../../../Common/Interaction";
@@ -63,7 +62,6 @@ function PostCard({ post }) {
 
   const handleDelete = () => {
     dispatch(removePost({ postid: post._id }));
-    dispatch(fetchMyPosts());
   };
 
   const handleSendRequest = () => {

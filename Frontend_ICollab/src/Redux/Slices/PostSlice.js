@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   addPost,
   getFeed,
-  getMyPost,
   editPost,
   deletePost,
   likeAndUnlikePost,
@@ -86,8 +85,6 @@ export const fetchFeed = createAsyncThunk(
   "post/fetchFeed",
   async (timestamp, { rejectWithValue }) => {
     try {
-      // const state = getState();
-      // const timestamp = state.post.feed.timestamp;
       const response = await getFeed(timestamp);
       if (response.status === "success") {
         return response.data;
@@ -100,25 +97,6 @@ export const fetchFeed = createAsyncThunk(
   }
 );
 
-export const fetchMyPosts = createAsyncThunk(
-  "post/fetchMyPosts",
-  async (username, { rejectWithValue }) => {
-    try {
-      const response = await getMyPost(username);
-      if (response.status === "success") {
-        return response.data;
-      } else {
-        return rejectWithValue(response.message);
-      }
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-
-
-
 const initialState = {
   post: {
     content: "",
@@ -130,8 +108,6 @@ const initialState = {
     timestamp: new Date().getTime(),
     posts: [],
   },
-  myPost: [],
-  savePost: {},
   isStartPostModalOpen: false,
   error: null,
   loading: false,
@@ -158,13 +134,11 @@ const postSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(createPost.fulfilled, (state, action) => {
-      state.myPost = [action.payload, ...state.myPost];
       state.feed.posts = [action.payload, ...state.feed.posts];
       state.post = initialState.post;
     });
     builder.addCase(toggleLike.fulfilled, (state, action) => {
       const { postId, liked } = action.payload;
-    
       // Update feed posts
       state.feed.posts = state.feed.posts.map(post => {
         if (post._id === postId) {
@@ -177,19 +151,7 @@ const postSlice = createSlice({
         return post;
       });
   
-      // Update my posts
-      state.myPost = state.myPost.map(post => {
-        if (post._id === postId) {
-          return { 
-            ...post,
-            likes: liked ? post.likes + 1 : post.likes - 1,
-            isLiked: liked 
-          };
-        }
-        return post;
-      });
     });
-
     builder.addCase(createPost.rejected, (state, action) => {
       state.error = action.payload;
     });
@@ -201,14 +163,6 @@ const postSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(fetchFeed.rejected, (state, action) => {
-      state.error = action.payload;
-    });
-    builder.addCase(fetchMyPosts.fulfilled, (state, action) => {
-      state.myPost = [...action.payload]; // Get All My Posts
-      state.post = initialState.post;
-      state.loading = false;
-    });
-    builder.addCase(fetchMyPosts.rejected, (state, action) => {
       state.error = action.payload;
     });
     builder.addCase(updatePost.pending, (state) => {

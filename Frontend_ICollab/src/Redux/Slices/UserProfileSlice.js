@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getUserProfile } from '../../Services/profileService';
 import { updatePinnedProjects } from '../../Services/projectService';
 import { fetchUserProjects } from '../../Services/projectService';
+import { fetchUserPost } from '../../Services/postService';
 
 export const updateTopProjects = createAsyncThunk(
   'userProfile/updateTopProjects',
@@ -37,8 +38,24 @@ export const fetchUserProjectsData = createAsyncThunk(
   'projects/fetchUserProjects',
   async (username, { rejectWithValue }) => {
     try {
-      const data = await fetchUserProjects(username); 
-      return data.data;
+      const response = await fetchUserProjects(username);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchUserPostsData = createAsyncThunk(
+  "post/fetchUserPostsData",
+  async (username, { rejectWithValue }) => {
+    try {
+      const response = await fetchUserPost(username);
+      if (response.status === "success") {
+        return response.data;
+      } else {
+        return rejectWithValue(response.message);
+      }
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -50,7 +67,8 @@ const userProfileSlice = createSlice({
   initialState: {
     user: null,
     stats: null,
-    projects: null,
+    projects: [],
+    posts: [],
     loading: false,
     error: null,
   },
@@ -88,22 +106,33 @@ const userProfileSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(fetchUserPostsData.pending, (state, action) =>{
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserPostsData.fulfilled, (state, action) => {
+        state.posts = [...action.payload];
+        state.loading = false;
+      })
+      .addCase(fetchUserPostsData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       .addCase(updateTopProjects.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateTopProjects.fulfilled, (state, action) => {
-        state.loading = false;
-        if (state.data?.user?.profile) {
-          console.log("HIT MAIN: ", action.payload);
-          state.data.user.profile.topProjects = action.payload;
-        }
-      })
-      .addCase(updateTopProjects.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || 'Failed to update top projects';
-      });
-  },
+    .addCase(updateTopProjects.fulfilled, (state, action) => {
+      state.loading = false;
+      if (state.data?.user?.profile) {
+        state.data.user.profile.topProjects = action.payload;
+      }
+    })
+    .addCase(updateTopProjects.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload || 'Failed to update top projects';
+    });
+},
 });
 
 export const { clearUserProfile } = userProfileSlice.actions;
