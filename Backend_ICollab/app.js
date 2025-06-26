@@ -21,6 +21,7 @@ var adminPostRouter = require('./src/Admin/routes/postRoute');
 var adminAnalyticsRouter = require('./src/Admin/routes/analyticsRoute');
 var adminNotificationRouter = require('./src/Admin/routes/notificationRoute');
 var savedItemRouter = require('./src/routes/savedItemRoute');
+var roomRouter = require('./src/routes/roomRoute')
 var { router: sseRouter, sendSSE } = require('./src/Admin/routes/sseRoute');
 
 var app = express();
@@ -63,6 +64,7 @@ app.use('/api/announcement', surveyRouter);
 app.use('/api/network', networkRouter);
 app.use('/api/project', projectRouter);
 app.use('/api/saveitems', savedItemRouter);
+app.use('/api/room', roomRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

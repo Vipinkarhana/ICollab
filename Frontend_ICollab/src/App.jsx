@@ -1,8 +1,9 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import useFetchSavedItems from "./Hooks/useFetchSavedItmes";
 import { ToastContainer } from 'react-toastify';
+import { getMyRooms } from "../src/Services/roomService";
 import 'react-toastify/dist/ReactToastify.css';
 const HomePage = lazy(() => import("./components/Pages/HomePage/HomePage"));
 const ProfilePage = lazy(() =>
@@ -45,6 +46,20 @@ const Layout = lazy(() => import("./components/Layout/Layout"));
 const PrivateRoute = lazy(() => import("./utils/PrivateRoute"));
 
 function App() {
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const data = await getMyRooms();
+        setRooms(data);
+      } catch (error) {
+        console.error("Error fetching rooms:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRooms();
+  }, []);
   useFetchSavedItems(); // Fetch saved items on app load
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>

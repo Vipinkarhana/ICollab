@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const roomSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",
@@ -19,16 +24,11 @@ const roomSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    group:[{
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Group",
-          required: true,
-        }],
-    // defaultGroup: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Group",
-    //   required: true,
-    // },
+    defaultGroup: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Group",
+      // required: true,
+    },
   },
   { timestamps: true }
 );

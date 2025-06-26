@@ -10,7 +10,7 @@ export const publicAxios = axios.create({
 });
 
 const privateAxios = axios.create({
-  baseURL: `${import.meta.env.VITE_BACKEND_DOMAIN}/admin/`, 
+  baseURL: `${import.meta.env.VITE_BACKEND_DOMAIN}/api/`, 
   headers: {
     'Content-Type': 'application/json',
   },

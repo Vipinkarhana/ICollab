@@ -9,6 +9,7 @@ const { uploadToR2, deleteFromR2 } = require('../../config/s3');
 const config = require('../../config/config');
 const SavedItem = require('../models/savedItem');
 const Room = require("../models/Room");
+const Group = require("../models/Group");
 
 const addProject = async (req, res, next) => {
   let newProject;
@@ -142,9 +143,11 @@ const addProject = async (req, res, next) => {
 
 
     const newRoom = await Room.create({
+      name: newProject.name,
       project: newProject._id,
       members: [user._id],
       channelId: `project-${newProject._id}`,
+      defaultGroup: null, // Will be set after group creation
     });
     
     const defaultGroup = await Group.create({
@@ -154,6 +157,9 @@ const addProject = async (req, res, next) => {
       createdBy: user._id,
       isDefault: true,
     });
+    // Update the room with the default group ID
+    newRoom.defaultGroup = defaultGroup._id;
+    await newRoom.save();
 
 
     res.status(201).json({
