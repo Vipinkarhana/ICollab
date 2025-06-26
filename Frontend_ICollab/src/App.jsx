@@ -46,20 +46,7 @@ const Layout = lazy(() => import("./components/Layout/Layout"));
 const PrivateRoute = lazy(() => import("./utils/PrivateRoute"));
 
 function App() {
-  useEffect(() => {
-    const fetchRooms = async () => {
-      try {
-        const data = await getMyRooms();
-        setRooms(data);
-      } catch (error) {
-        console.error("Error fetching rooms:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchRooms();
-  }, []);
   useFetchSavedItems(); // Fetch saved items on app load
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>

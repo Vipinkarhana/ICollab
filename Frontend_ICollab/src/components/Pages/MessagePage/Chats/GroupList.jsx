@@ -37,22 +37,22 @@ function GroupList() {
     <div className="space-y-1 py-2 flex flex-col items-center justify-start w-full h-full overflow-y-auto gap-2 scrollbar-thin scrollbar-thumb-violet-300 scrollbar-track-gray-100">
       {rooms.map((chat) => {
         const defaultGroup = chat.groups?.find(
-          (group) => group._id === chat.defaultGroup
+          (group) => group.id === chat.defaultGroup
         );
 
         const subGroupArray = defaultGroup
           ? [
-              {
-                name: defaultGroup.name,
-                avatar: `https://ui-avatars.com/api/?name=${defaultGroup.name}&background=random`,
-                lastMessage: 'Tap to open group',
-                lastSender: '',
-                time: new Date(chat.updatedAt).toLocaleTimeString(),
-                unreadCount: 0,
-                isOnline: false,
-                members: [],
-              },
-            ]
+            {
+              name: defaultGroup.name,
+              avatar: `https://ui-avatars.com/api/?name=${defaultGroup.name}&background=random`,
+              lastMessage: 'Tap to open group',
+              lastSender: '',
+              time: new Date(chat.updatedAt).toLocaleTimeString(),
+              unreadCount: 0,
+              isOnline: false,
+              members: [],
+            },
+          ]
           : [];
 
         const onlineCount = chat.members
@@ -61,7 +61,7 @@ function GroupList() {
 
         return (
           <ChatCard
-            key={chat._id}
+            key={chat.id}
             name={chat.name}
             lastMessage={'Tap to open group'}
             lastSender={''}

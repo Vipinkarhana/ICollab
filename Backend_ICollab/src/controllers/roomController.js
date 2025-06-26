@@ -14,21 +14,31 @@ const getMyRooms = async (req, res, next) => {
     // Fetch groups for each room
     const roomIds = rooms.map((room) => room._id);
     const groups = await Group.find({ room: { $in: roomIds } })
-      .select("name room _id isDefault")
+      .select("name room _id isDefault members").populate({
+        path: "members",
+        select: "name ",
+      })
       .lean();
 
     // Attach groups to rooms
     const groupedByRoom = {};
     for (const group of groups) {
+      const { _id, ...rest } = group;
+      console.log(`Processing group: ${_id} in room: ${rest}`);
       const roomId = group.room.toString();
       if (!groupedByRoom[roomId]) groupedByRoom[roomId] = [];
-      groupedByRoom[roomId].push(group);
+      groupedByRoom[roomId].push({id: _id, ...rest});
     }
 
-    const roomsWithGroups = rooms.map((room) => ({
+    console.log(`Groups grouped by room:`, groupedByRoom);
+
+    const roomsWithGroups = rooms.map(({_id, ...room}) => ({
+      id: _id,
       ...room,
-      groups: groupedByRoom[room._id.toString()] || [],
+      groups: groupedByRoom[_id] || [],
     }));
+
+    console.log(`Rooms fetched for user ${userId}:`, roomsWithGroups);
 
     res.status(200).json({
       message: "Rooms fetched successfully",
