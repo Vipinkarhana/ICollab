@@ -1,26 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProjectCard from "../../Common/ProjectCard";
 import MoreProject from "../../Common/MoreProject";
 import { useParams } from "react-router-dom";
-import CreateProjectButton from "../../Common/CreateProjectButton";
-import { fetchUserProjectsData } from "../../../Redux/Slices/ProjectSlice";
+import { fetchUserProjectsData } from "../../../Redux/Slices/UserProfileSlice"
 import ProjectCardSkeleton from "../../Common/ProjectcardSkeleton";
 
 function UserProjects() {
   const dispatch = useDispatch();
 
-  const { userProjects, loading, error } = useSelector((state) => state.project);
-  
+  const { projects: userProjects, loading, error } = useSelector((state) => state.userProfile);
+
   const projects = userProjects || [];
-   const { username } = useParams();
+  const { username } = useParams();
 
-   useEffect(() => {
-     dispatch(fetchUserProjectsData(username));
-   }, [dispatch, username]);
+  const hasFetched = useRef(false);
 
-   const handleDeleteProject = () => {
-    dispatch(fetchUserProjectsData(username)); // Refresh list after delete
+  useEffect(() => {
+    if (!hasFetched.current && username && projects.length === 0) {
+      dispatch(fetchUserProjectsData(username));
+    }
+  }, [dispatch, username, projects.length]);
+
+
+  const handleDeleteProject = () => {
+    dispatch(fetchUserProjectsData(username));
   };
 
   if (error) return <div className="text-center text-red-500">{error}</div>;
@@ -58,14 +62,13 @@ function UserProjects() {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
             {projects.map((project) => (
-              <ProjectCard 
-                key={project.id} 
-                project={project} 
+              <ProjectCard
+                key={project.id}
+                project={project}
                 onDelete={handleDeleteProject}
               />
             ))}
           </div>
-          <CreateProjectButton />
           <MoreProject />
         </>
       )}
