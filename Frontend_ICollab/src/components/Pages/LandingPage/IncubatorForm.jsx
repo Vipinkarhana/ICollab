@@ -50,15 +50,15 @@ const IncubatorForm = () => {
       description: "Basic information about the incubator and its representative.",
       content: (
         <>
-          <div><Label>Name of Incubator*</Label><Input /></div>
-          <div><Label>Date of Incorporation*</Label><Input type="date" /></div>
-          <div><Label>Name of Representative*</Label><Input /></div>
-          <div><Label>Position of Representative</Label><Input /></div>
-          <div><Label>Email ID*</Label><Input type="email" /></div>
-          <div><Label>Mobile Number*</Label><Input type="tel" /></div>
-          <div><Label>Alternate Email ID</Label><Input type="email" /></div>
-          <div><Label>Alternate Mobile Number</Label><Input type="tel" /></div>
-        </>
+      <div><Label>Name of Incubator*</Label><Input name="nameOfIncubator" value={formData.nameOfIncubator || ""} onChange={handleChange} /></div>
+      <div><Label>Date of Incorporation*</Label><Input type="date" name="dateOfIncorporation" value={formData.dateOfIncorporation || ""} onChange={handleChange} /></div>
+      <div><Label>Name of Representative*</Label><Input name="representativeName" value={formData.representativeName || ""} onChange={handleChange} /></div>
+      <div><Label>Position of Representative</Label><Input name="representativePosition" value={formData.representativePosition || ""} onChange={handleChange} /></div>
+      <div><Label>Email ID*</Label><Input type="email" name="email" value={formData.email || ""} onChange={handleChange} /></div>
+      <div><Label>Mobile Number*</Label><Input type="tel" name="mobile" value={formData.mobile || ""} onChange={handleChange} /></div>
+      <div><Label>Alternate Email ID</Label><Input type="email" name="alternateEmail" value={formData.alternateEmail || ""} onChange={handleChange} /></div>
+      <div><Label>Alternate Mobile Number</Label><Input type="tel" name="alternateMobile" value={formData.alternateMobile || ""} onChange={handleChange} /></div>
+    </>
       )
     },
     {

@@ -3,6 +3,7 @@ import { Rocket, Calendar, Link as LinkIcon, Menu } from "lucide-react";
 import SidebarHeader from "./SidebarHeader";
 import StartupCards from "./StartupCards";
 import UpcomingEvents from "./EventCard";
+import IncubatorCards from "./IncubatorDataCards";
 
 const IncubatorsPage = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -37,7 +38,9 @@ const IncubatorsPage = () => {
             <button onClick={() => setSidebarOpen(true)}>
               <Menu size={24} className="text-gray-700" />
             </button>
-            <h1 className="ml-4 text-lg font-semibold text-gray-800">IncubatorHub</h1>
+            <h1 className="ml-4 text-lg font-semibold text-gray-800">
+              IncubatorHub
+            </h1>
           </div>
 
           <main className="flex-1 max-w-6xl mx-auto px-4 pt-20 pb-10 sm:-mt-14">
@@ -47,7 +50,7 @@ const IncubatorsPage = () => {
               <div className="absolute bottom-[-80px] right-[-30px] w-[250px] h-[250px] bg-white/5 rounded-full pointer-events-none" />
 
               <div className="flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10">
-                <div className="w-20 h-20 bg-white text-blue-800 text-2xl font-bold rounded-full flex items-center justify-center shrink-0">
+                <div className="w-20 h-20 bg-white text-blue-800 text-2xl font-bold rounded-full flex items-center justify-center shrink-0 ml-24 sm:ml-0">
                   IH
                 </div>
                 <div>
@@ -55,10 +58,17 @@ const IncubatorsPage = () => {
                     Innovation Hub Incubator
                   </h1>
                   <div className="flex items-center gap-2 text-white mt-1">
-                    <span>@innovationhub_591bf3908</span>
-                    <a href="#">
-                      <LinkIcon size={16} />
-                    </a>
+                    <span>
+                      <strong>@innovationhub_591bf3908</strong> was incorporated
+                      as an incubator on{" "}
+                      <span className="underline underline-offset-2 font-medium">
+                        {new Date("2017-06-15").toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </span>
                   </div>
                   <p className="mt-2">
                     Building an innovation-driven incubator specializing in IoT
@@ -107,6 +117,8 @@ const IncubatorsPage = () => {
                 <UpcomingEvents />
               </div>
             </div>
+
+            <IncubatorCards />
           </main>
         </div>
       </div>
