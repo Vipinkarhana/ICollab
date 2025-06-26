@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Plus, PinOff, X } from "lucide-react";
 import ProjectCard from "../../Common/ProjectCard";
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUserProjectsData } from '../../../Redux/Slices/ProjectSlice';
 import { updateTopProjects } from '../../../Redux/Slices/UserProfileSlice';
 
 const ProjectDisplay = ({ username, isCurrentUser }) => {
-  const topProjects = useSelector((state) => state?.userProfile?.data?.user?.profile?.topProjects);
+  const topProjects = useSelector((state) => state?.userProfile?.user?.profile?.topProjects);
   const dispatch = useDispatch();
   const { userProjects, loading, error } = useSelector((state) => state.project);
   const { data: profileData } = useSelector((state) => state.userProfile);
