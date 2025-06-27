@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 const IncubatorSchema = new Schema({
   // Basic details
   name:             { type: String, required: true },
+  username:        { type: String, required: true, unique: true },
   incorporatedOn:   { type: Date, required: true },
   representative: {
     name:           { type: String, required: true },
