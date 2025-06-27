@@ -14,12 +14,12 @@ const groupSchema = new mongoose.Schema(
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "user",
       },
     ],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "user",
       required: true,
     },
     isDefault: {

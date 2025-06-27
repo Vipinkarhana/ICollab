@@ -12,8 +12,8 @@ const ChatCard = ({
   isGroup = false,
   onlineCount = 0,
   subGroup = [],
-  onClick = () => {},
-  handleSubGroupClick = () => {},
+  onClick = () => { },
+  handleSubGroupClick = () => { },
 }) => {
   const [showSubgroups, setShowSubgroups] = useState(false);
 
@@ -129,8 +129,9 @@ const ChatCard = ({
                   true,
                   sub.members?.filter((m) => m.isOnline).length || 0,
                   false,
-                  () => handleSubGroupClick(sub)
+                  sub.onClick // ✅ direct handler from GroupList
                 )}
+
               </div>
             ))}
           </div>

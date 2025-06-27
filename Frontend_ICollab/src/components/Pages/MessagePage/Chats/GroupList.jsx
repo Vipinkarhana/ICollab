@@ -2,18 +2,11 @@ import { useState, useEffect } from 'react';
 import ChatCard from './ChatCard';
 import { getMyRooms } from '../../../../Services/roomService';
 
-function GroupList() {
+function GroupList({ handleSubGroupClick }) {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const handleChatClick = (chat) => {
-    console.log('Main chat opened:', chat.name);
-  };
-
-  const handleSubGroupClick = (subgroup) => {
-    console.log('Subgroup opened:', subgroup.name);
-  };
-
+  const [expandedRoomId, setExpandedRoomId] = useState(null);
+  console.log('GroupList rendered with rooms:', rooms);
   useEffect(() => {
     const fetchRooms = async () => {
       try {
@@ -29,51 +22,56 @@ function GroupList() {
     fetchRooms();
   }, []);
 
+  const handleChatClick = (roomId) => {
+    setExpandedRoomId(prev => (prev === roomId ? null : roomId));
+  };
+
+  const handleSubGroupClickLocal = (room, group) => {
+    console.log("group members:", group.members);
+    console.log("room members:", room.members);
+    const payload = {
+      name: group.name,
+      avatar: `https://ui-avatars.com/api/?name=${group.name}&background=random`,
+      isOnline: room.members?.some((m) => m.isOnline),
+      isGroup: true,
+      members: group.members || [],
+      messages: [], // later you can fetch based on roomId & groupId
+    };
+
+    handleSubGroupClick(payload);
+  };
+
   if (loading) {
     return <p className="text-center text-gray-500">Loading chats...</p>;
   }
 
   return (
     <div className="space-y-1 py-2 flex flex-col items-center justify-start w-full h-full overflow-y-auto gap-2 scrollbar-thin scrollbar-thumb-violet-300 scrollbar-track-gray-100">
-      {rooms.map((chat) => {
-        const defaultGroup = chat.groups?.find(
-          (group) => group.id === chat.defaultGroup
-        );
+      {rooms.map((room) => {
+        const subGroupArray =
+          room.groups?.map((group) => ({
+            name: group.name,
+            avatar: `https://ui-avatars.com/api/?name=${group.name}&background=random`,
+            lastMessage: 'Tap to open group',
+            time: new Date(room.updatedAt).toLocaleTimeString(),
+            onClick: () => handleSubGroupClickLocal(room, group), // 👈 this makes subgroups clickable
+          })) || [];
 
-        const subGroupArray = defaultGroup
-          ? [
-            {
-              name: defaultGroup.name,
-              avatar: `https://ui-avatars.com/api/?name=${defaultGroup.name}&background=random`,
-              lastMessage: 'Tap to open group',
-              lastSender: '',
-              time: new Date(chat.updatedAt).toLocaleTimeString(),
-              unreadCount: 0,
-              isOnline: false,
-              members: [],
-            },
-          ]
-          : [];
-
-        const onlineCount = chat.members
-          ? chat.members.filter((m) => m.isOnline).length
-          : 0;
+        const onlineCount = room.members?.filter((m) => m.isOnline).length || 0;
 
         return (
           <ChatCard
-            key={chat.id}
-            name={chat.name}
-            lastMessage={'Tap to open group'}
-            lastSender={''}
-            time={new Date(chat.updatedAt).toLocaleTimeString()}
+            key={room._id}
+            name={room.name}
+            lastMessage="Tap to open group"
+            time={new Date(room.updatedAt).toLocaleTimeString()}
             unreadCount={0}
-            avatar={`https://ui-avatars.com/api/?name=${chat.name}&background=random`}
+            avatar={`https://ui-avatars.com/api/?name=${room.name}&background=random`}
             isOnline={onlineCount > 0}
             isGroup={true}
             onlineCount={onlineCount}
-            subGroup={subGroupArray}
-            onClick={() => handleChatClick(chat)}
-            handleSubGroupClick={handleSubGroupClick}
+            subGroup={expandedRoomId === room._id ? subGroupArray : []} // 👈 show subgroups only if expanded
+            onClick={() => handleChatClick(room._id)} // 👈 expands/collapses
           />
         );
       })}
@@ -82,6 +80,10 @@ function GroupList() {
 }
 
 export default GroupList;
+
+
+
+
 
 
 

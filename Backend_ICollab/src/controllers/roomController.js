@@ -1,6 +1,6 @@
 const Room = require("../models/Room");
 const Group = require("../models/Group");
-
+const user = require("../models/user");
 const getMyRooms = async (req, res, next) => {
   try {
     const userId = req.user.id; // Assuming userId is sent in the request body
@@ -11,14 +11,17 @@ const getMyRooms = async (req, res, next) => {
     const rooms = await Room.find({ members: userId })
       .lean(); // Better performance if you're not modifying documents
 
+    console.log(`Fetched ${rooms} rooms for user ${userId}`);
+
     // Fetch groups for each room
     const roomIds = rooms.map((room) => room._id);
     const groups = await Group.find({ room: { $in: roomIds } })
       .select("name room _id isDefault members").populate({
         path: "members",
-        select: "name ",
+        select: "name -_id",
       })
       .lean();
+    console.log(`Fetched ${groups} groups for user ${userId}`);
 
     // Attach groups to rooms
     const groupedByRoom = {};
