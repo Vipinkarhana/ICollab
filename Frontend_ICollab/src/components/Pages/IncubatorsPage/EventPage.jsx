@@ -62,15 +62,15 @@ const EventsPage = () => {
   const currentEvents = activeTab === "upcoming" ? upcomingEvents : pastEvents;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex w-full">
+    <div className="h-auto bg-gray-50 flex w-full">
       <SidebarHeader />
 
       <div className="flex-1 pt-20 pb-16 px-4 md:px-10 ml-80">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-8 mt-4">
             <div className="border-l-4 border-blue-500 pl-4">
-              <h1 className="text-3xl font-bold text-gray-800">Events</h1>
+              <h1 className="text-4xl font-bold text-gray-800">Events</h1>
               <p className="text-sm text-gray-500">
                 Stay updated with incubator-led programs and networking
                 opportunities.
@@ -139,9 +139,12 @@ const EventsPage = () => {
                     <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
                       RSVP
                     </button>
-                    <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-300">
+                    <Link
+                      to="/event-details"
+                      className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-300"
+                    >
                       View Details
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -151,7 +154,7 @@ const EventsPage = () => {
           {/* Featured Speakers */}
           <div className="mt-20">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">
-              Featured Speakers
+              Top Featured Speakers
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {speakers.map((speaker, index) => (
@@ -178,80 +181,7 @@ const EventsPage = () => {
             </div>
           </div>
 
-        {/* Event Agenda */}
-<div className="mt-20">
-  <h2 className="text-2xl font-bold text-gray-800 mb-8 border-l-4 border-blue-500 pl-4">
-    Event Agenda
-  </h2>
-
-  <div className="relative border-l-4 border-blue-500 pl-6 space-y-10">
-    {[
-      { time: "10:00 AM", title: "Welcome & Registration" },
-      { time: "10:30 AM", title: "Startup Pitches" },
-      { time: "12:00 PM", title: "Panel Discussion - Future of Tech in India" },
-      { time: "1:00 PM", title: "Lunch & Networking" },
-      { time: "2:00 PM", title: "Incubator-Investor Roundtable" },
-      { time: "3:00 PM", title: "Closing Remarks & Certificates" },
-    ].map((item, idx) => (
-      <div key={idx} className="relative group">
-        {/* Circle Dot */}
-        <div className="absolute -left-3 top-1.5 w-6 h-6 rounded-full bg-white border-4 border-blue-600 group-hover:scale-110 transition-transform"></div>
-
-        {/* Card */}
-        <div className="bg-white shadow-md rounded-lg p-5 group-hover:shadow-lg transition">
-          <p className="text-sm text-gray-500 font-semibold">{item.time}</p>
-          <h4 className="text-md md:text-lg font-medium text-gray-800">{item.title}</h4>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-
-
-          {/* Why Should Incubators Attend */}
-          <div className="mt-20">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 border-l-4 border-blue-500 pl-4">
-              Why Should Incubators Attend?
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-blue-50 p-5 rounded-lg shadow-sm">
-                <h4 className="font-semibold text-gray-800 mb-2">
-                  Discover High-Potential Startups
-                </h4>
-                <p className="text-sm text-gray-600">
-                  Find startups that align with your incubator’s mission and
-                  support them early.
-                </p>
-              </div>
-              <div className="bg-blue-50 p-5 rounded-lg shadow-sm">
-                <h4 className="font-semibold text-gray-800 mb-2">
-                  Build Partnerships
-                </h4>
-                <p className="text-sm text-gray-600">
-                  Network with fellow incubators, mentors, and investors for
-                  future collaborations.
-                </p>
-              </div>
-              <div className="bg-blue-50 p-5 rounded-lg shadow-sm">
-                <h4 className="font-semibold text-gray-800 mb-2">
-                  Increase Visibility
-                </h4>
-                <p className="text-sm text-gray-600">
-                  Showcase your incubator in front of a large startup audience
-                  and media coverage.
-                </p>
-              </div>
-              <div className="bg-blue-50 p-5 rounded-lg shadow-sm">
-                <h4 className="font-semibold text-gray-800 mb-2">
-                  Exclusive Access
-                </h4>
-                <p className="text-sm text-gray-600">
-                  Get front-row access to startup pitches, demos, and
-                  closed-door sessions.
-                </p>
-              </div>
-            </div>
-          </div>
+        
 
           {/* Past Event Highlights */}
           <div className="mt-20">

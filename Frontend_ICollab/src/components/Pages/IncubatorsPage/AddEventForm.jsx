@@ -1,258 +1,294 @@
 import React, { useState } from "react";
-import {
-  CalendarDays,
-  Clock,
-  MapPin,
-  Upload,
-  Globe,
-  Users,
-  Tag,
-} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
-const AddEventForm = () => {
-  const [formData, setFormData] = useState({
+const stepVariants = {
+  initial: { opacity: 0, x: 50 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -50 },
+};
+
+const MultiStepEventForm = () => {
+  const [step, setStep] = useState(1);
+  const [data, setData] = useState({
     title: "",
-    description: "",
     type: "",
     date: "",
     time: "",
     location: "",
-    registrationLink: "",
     organizer: "",
     contactEmail: "",
-    tags: [],
-    capacity: "",
-    isPublic: true,
-    banner: null,
+    speakers: [{ name: "", title: "", bio: "", photo: null }],
+    agenda: [{ time: "", title: "" }],
+    attend: [{ heading: "", title: "" }],
   });
 
-  const eventTypes = ["Webinar", "Workshop", "Demo Day", "Networking", "Mentorship"];
-  const tagOptions = ["Startups", "Investors", "Students", "Researchers"];
+  const handleNext = () => setStep((prev) => Math.min(prev + 1, 4));
+  const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
-    if (type === "checkbox") {
-      setFormData((prev) => ({ ...prev, [name]: checked }));
-    } else if (type === "file") {
-      setFormData((prev) => ({ ...prev, banner: files[0] }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleTagToggle = (tag) => {
-    setFormData((prev) => ({
+    const { name, value, type, files } = e.target;
+    setData((prev) => ({
       ...prev,
-      tags: prev.tags.includes(tag)
-        ? prev.tags.filter((t) => t !== tag)
-        : [...prev.tags, tag],
+      [name]: type === "file" ? files[0] : value,
     }));
   };
 
+  const handleSpeakerChange = (i, field, value) => {
+    const updated = [...data.speakers];
+    updated[i][field] = value;
+    setData((prev) => ({ ...prev, speakers: updated }));
+  };
+
+  const addSpeaker = () =>
+    setData((prev) => ({
+      ...prev,
+      speakers: [...prev.speakers, { name: "", title: "", bio: "", photo: null }],
+    }));
+
+  const handleAgendaChange = (i, field, value) => {
+    const updated = [...data.agenda];
+    updated[i][field] = value;
+    setData((prev) => ({ ...prev, agenda: updated }));
+  };
+
+  const addAgendaItem = () =>
+    setData((prev) => ({
+      ...prev,
+      agenda: [...prev.agenda, { time: "", title: "" }],
+    }));
+
+  const handleAttendChange = (i, field, value) => {
+    const updated = [...data.attend];
+    updated[i][field] = value;
+    setData((prev) => ({ ...prev, attend: updated }));
+  };
+
+  const addAttendItem = () =>
+    setData((prev) => ({
+      ...prev,
+      attend: [...prev.attend, { heading: "", title: "" }],
+    }));
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
+    console.log(data);
   };
 
   return (
-    <div className="h-auto w-full mt-8 py-14 px-4 md:px-10">
-      <div className="max-w-5xl mx-auto bg-white p-10 rounded-3xl shadow-xl border border-gray-200">
-        <h2 className="text-4xl font-bold text-gray-800 mb-10 border-l-8 border-blue-600 pl-5">
-          Create a New Event
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <label className="text-sm font-semibold mb-1 block">Event Title</label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                placeholder="Startup Demo Day 2025"
-                className="w-full border px-4 py-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-semibold mb-1 block">Event Type</label>
-              <select
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                className="w-full border px-4 py-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+    <div className="flex justify-center p-4 h-auto w-full mt-12">
+      <form onSubmit={handleSubmit} className="w-full max-w-3xl bg-white p-8 rounded-2xl shadow-lg relative">
+        {/* Stepper */}
+        <div className="flex items-center mb-8 w-[120%]">
+          {["Info", "Speakers", "Agenda", "Attend"].map((_, i) => (
+            <div key={i} className="flex-1 flex items-center">
+              <div
+                className={`w-8 h-8 flex items-center justify-center rounded-full border-2 ${
+                  step - 1 === i ? "border-blue-600 bg-blue-600 text-white" : "border-gray-300 text-gray-600"
+                }`}
               >
-                <option value="">Select type</option>
-                {eventTypes.map((type, i) => (
-                  <option key={i} value={type}>{type}</option>
+                {i + 1}
+              </div>
+              {i < 3 && (
+                <div className={`flex-1 h-0.5 ${step - 1 > i ? "bg-blue-600" : "bg-gray-300"}`}></div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            variants={stepVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.3 }}
+          >
+            <h2 className="text-2xl font-bold mb-4">
+              {["Basic Event Info", "Featured Speakers", "Agenda", "Why Attend"][step - 1]}
+            </h2>
+
+            {step === 1 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {["title", "type", "date", "time", "location", "organizer", "contactEmail"].map((f, i) => (
+                  <div key={i}>
+                    <label className="block text-sm font-medium capitalize">
+                      {f.replace(/([A-Z])/g, " $1")}
+                    </label>
+                    {f === "type" ? (
+                      <select
+                        name="type"
+                        value={data.type}
+                        onChange={handleChange}
+                        className="w-full border px-4 py-2 rounded-lg"
+                        required
+                      >
+                        <option value="">Select</option>
+                        {["Webinar", "Workshop", "Demo Day", "Networking", "Mentorship"].map((o) => (
+                          <option key={o}>{o}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={
+                          f === "date"
+                            ? "date"
+                            : f === "time"
+                            ? "time"
+                            : f === "contactEmail"
+                            ? "email"
+                            : "text"
+                        }
+                        name={f}
+                        value={data[f]}
+                        onChange={handleChange}
+                        className="w-full border px-4 py-2 rounded-lg"
+                        required
+                      />
+                    )}
+                  </div>
                 ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="text-sm font-semibold mb-1 block">Date</label>
-              <div className="relative">
-                <input
-                  type="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  className="w-full border px-4 py-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-                <CalendarDays className="absolute right-3 top-3 text-gray-400" size={18} />
               </div>
-            </div>
+            )}
 
-            <div>
-              <label className="text-sm font-semibold mb-1 block">Time</label>
-              <div className="relative">
-                <input
-                  type="time"
-                  name="time"
-                  value={formData.time}
-                  onChange={handleChange}
-                  className="w-full border px-4 py-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <Clock className="absolute right-3 top-3 text-gray-400" size={18} />
+            {step === 2 && (
+              <div className="space-y-4">
+                {data.speakers.map((s, i) => (
+                  <div key={i} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <input
+                      placeholder="Name"
+                      value={s.name}
+                      onChange={(e) => handleSpeakerChange(i, "name", e.target.value)}
+                      className="border px-4 py-2 rounded-lg h-14"
+                      required
+                    />
+                    <input
+                      placeholder="Title"
+                      value={s.title}
+                      onChange={(e) => handleSpeakerChange(i, "title", e.target.value)}
+                      className="border px-4 py-2 rounded-lg h-14"
+                    />
+                    <input
+                      placeholder="Bio"
+                      value={s.bio}
+                      onChange={(e) => handleSpeakerChange(i, "bio", e.target.value)}
+                      className="border px-4 py-2 rounded-lg h-14"
+                    />
+                    <div className="flex flex-col items-start">
+                      <label className="text-sm font-medium -mt-4">Upload Photo</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleSpeakerChange(i, "photo", e.target.files[0])}
+                        className="border px-4 py-2 rounded-lg h-14 w-40"
+                      />
+                      {s.photo && (
+                        <img
+                          src={URL.createObjectURL(s.photo)}
+                          alt="speaker"
+                          className="w-16 h-16 rounded-full mt-2 object-cover"
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
+                <motion.button type="button" onClick={addSpeaker} className="text-blue-600" whileHover={{ scale: 1.05 }}>
+                  + Add Speaker
+                </motion.button>
               </div>
-            </div>
+            )}
 
-            <div>
-              <label className="text-sm font-semibold mb-1 block">Location</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleChange}
-                  placeholder="Zoom / Venue Address"
-                  className="w-full border px-4 py-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-                <MapPin className="absolute right-3 top-3 text-gray-400" size={18} />
+            {step === 3 && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold">Agenda</h3>
+                {data.agenda.map((a, i) => (
+                  <div key={i} className="flex gap-2 mb-2">
+                    <input
+                      placeholder="Time"
+                      value={a.time}
+                      onChange={(e) => handleAgendaChange(i, "time", e.target.value)}
+                      className="border px-4 py-2 rounded-lg w-1/4"
+                      required
+                    />
+                    <input
+                      placeholder="Activity"
+                      value={a.title}
+                      onChange={(e) => handleAgendaChange(i, "title", e.target.value)}
+                      className="border px-4 py-2 rounded-lg flex-1"
+                      required
+                    />
+                  </div>
+                ))}
+                <motion.button type="button" onClick={addAgendaItem} className="text-blue-600" whileHover={{ scale: 1.05 }}>
+                  + Add Agenda Item
+                </motion.button>
               </div>
+            )}
+
+            {step === 4 && (
+              <div className="space-y-4">
+                {data.attend.map((a, i) => (
+                  <div key={i} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input
+                      name="attendHeading"
+                      placeholder="Section Heading"
+                      value={a.heading}
+                      onChange={(e) => handleAttendChange(i, "heading", e.target.value)}
+                      className="w-full border px-4 py-2 rounded-lg"
+                      required
+                    />
+                    <input
+                      name="attendTitle"
+                      placeholder="Section Title"
+                      value={a.title}
+                      onChange={(e) => handleAttendChange(i, "title", e.target.value)}
+                      className="w-full border px-4 py-2 rounded-lg"
+                      required
+                    />
+                  </div>
+                ))}
+                <motion.button type="button" onClick={addAttendItem} className="text-blue-600" whileHover={{ scale: 1.05 }}>
+                  + Add Attend Item
+                </motion.button>
+              </div>
+            )}
+
+            <div className="flex justify-between mt-8">
+              {step > 1 && (
+                <motion.button
+                  onClick={handleBack}
+                  type="button"
+                  className="px-4 py-2 bg-gray-200 rounded"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  Back
+                </motion.button>
+              )}
+              {step < 4 && (
+                <motion.button
+                  onClick={handleNext}
+                  type="button"
+                  className="px-4 py-2 bg-blue-600 text-white rounded"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  Next
+                </motion.button>
+              )}
+              {step === 4 && (
+                <motion.button
+                  type="submit"
+                  className="px-4 py-2 bg-green-600 text-white rounded"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  Submit
+                </motion.button>
+              )}
             </div>
-
-            <div>
-              <label className="text-sm font-semibold mb-1 block">Registration Link</label>
-              <input
-                type="url"
-                name="registrationLink"
-                value={formData.registrationLink}
-                onChange={handleChange}
-                placeholder="https://..."
-                className="w-full border px-4 py-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold mb-1 block">Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Describe your event in detail..."
-              rows={4}
-              className="w-full border px-4 py-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <label className="text-sm font-semibold mb-1 block">Organizer</label>
-              <input
-                type="text"
-                name="organizer"
-                value={formData.organizer}
-                onChange={handleChange}
-                placeholder="IncubatorHub Ventures"
-                className="w-full border px-4 py-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-semibold mb-1 block">Contact Email</label>
-              <input
-                type="email"
-                name="contactEmail"
-                value={formData.contactEmail}
-                onChange={handleChange}
-                placeholder="contact@incubatorhub.com"
-                className="w-full border px-4 py-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold mb-1 block">Target Audience</label>
-            <div className="flex flex-wrap gap-3 mt-2">
-              {tagOptions.map((tag, i) => (
-                <label key={i} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={formData.tags.includes(tag)}
-                    onChange={() => handleTagToggle(tag)}
-                  />
-                  <span className="px-3 py-1 bg-gray-100 rounded-full font-medium">{tag}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold mb-1 block">Seats / Capacity</label>
-            <input
-              type="number"
-              name="capacity"
-              value={formData.capacity}
-              onChange={handleChange}
-              placeholder="Optional"
-              className="w-full border px-4 py-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold mb-1 block">Event Banner</label>
-            <div className="flex items-center gap-4">
-              <input
-                type="file"
-                name="banner"
-                onChange={handleChange}
-                accept="image/*"
-                className="file:border file:rounded-lg file:px-4 file:py-2 file:bg-blue-600 file:text-white hover:file:bg-blue-700"
-              />
-              <Upload size={20} className="text-gray-500" />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              name="isPublic"
-              checked={formData.isPublic}
-              onChange={handleChange}
-              className="accent-blue-600"
-            />
-            <label className="text-sm text-gray-700">Make this event public</label>
-          </div>
-
-          <div className="text-right">
-            <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg font-semibold shadow-md transition"
-            >
-              Submit Event
-            </button>
-          </div>
-        </form>
-      </div>
+          </motion.div>
+        </AnimatePresence>
+      </form>
     </div>
   );
 };
 
-export default AddEventForm;
+export default MultiStepEventForm;
