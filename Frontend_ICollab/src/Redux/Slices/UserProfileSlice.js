@@ -31,6 +31,13 @@ export const fetchUserProfile = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
+  },{
+    condition: (username, { getState }) => {
+      const state = getState();
+      const { user, lastFetchedUsername } = state.userProfile;
+
+      return !user || lastFetchedUsername !== username;
+    },
   }
 );
 
@@ -42,6 +49,13 @@ export const fetchUserProjectsData = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
+    }
+  },{
+    condition: (username, { getState }) => {
+      const state = getState();
+      const { projects, lastFetchedUsername } = state.userProfile;
+
+      return !projects || lastFetchedUsername !== username;
     }
   }
 );
@@ -59,6 +73,12 @@ export const fetchUserPostsData = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.message);
     }
+  },{
+    condition: (username, { getState }) => {
+      const state = getState();
+      const { posts, lastFetchedUsername } = state;
+      return !posts || lastFetchedUsername !== username;
+    }
   }
 );
 
@@ -67,8 +87,9 @@ const userProfileSlice = createSlice({
   initialState: {
     user: null,
     stats: null,
-    projects: [],
-    posts: [],
+    projects: null,
+    posts: null,
+    lastFetchedUsername: null,
     loading: false,
     error: null,
   },
@@ -87,6 +108,7 @@ const userProfileSlice = createSlice({
       })
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.loading = false;
+        state.lastFetchedUsername = action.payload?.user?.username;
         state.user = action.payload.user;
         state.stats = action.payload.stats;
       })
@@ -106,12 +128,12 @@ const userProfileSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(fetchUserPostsData.pending, (state, action) =>{
+      .addCase(fetchUserPostsData.pending, (state, action) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchUserPostsData.fulfilled, (state, action) => {
-        state.posts = [...action.payload];
+        state.posts = action.payload;
         state.loading = false;
       })
       .addCase(fetchUserPostsData.rejected, (state, action) => {
@@ -122,17 +144,17 @@ const userProfileSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-    .addCase(updateTopProjects.fulfilled, (state, action) => {
-      state.loading = false;
-      if (state.data?.user?.profile) {
-        state.data.user.profile.topProjects = action.payload;
-      }
-    })
-    .addCase(updateTopProjects.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload || 'Failed to update top projects';
-    });
-},
+      .addCase(updateTopProjects.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.data?.user?.profile) {
+          state.data.user.profile.topProjects = action.payload;
+        }
+      })
+      .addCase(updateTopProjects.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to update top projects';
+      });
+  },
 });
 
 export const { clearUserProfile } = userProfileSlice.actions;

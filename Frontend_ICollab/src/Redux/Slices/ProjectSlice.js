@@ -18,21 +18,21 @@ const projectSlice = createSlice({
       state.currentProject = null;
     }
   },
-  extraReducers: (builder) => {
-    builder
-      // .addCase(fetchUserProjectsData.pending, (state) => {
-      //   state.loading = true;
-      //   state.error = null;
-      // })
-      // .addCase(fetchUserProjectsData.fulfilled, (state, action) => {
-      //   state.loading = false;
-      //   state.userProjects = action.payload;
-      // })
-      // .addCase(fetchUserProjectsData.rejected, (state, action) => {
-      //   state.loading = false;
-      //   state.error = action.payload;
-      // });
-  },
+  // extraReducers: (builder) => {
+  //   builder
+  //     // .addCase(fetchUserProjectsData.pending, (state) => {
+  //     //   state.loading = true;
+  //     //   state.error = null;
+  //     // })
+  //     // .addCase(fetchUserProjectsData.fulfilled, (state, action) => {
+  //     //   state.loading = false;
+  //     //   state.userProjects = action.payload;
+  //     // })
+  //     // .addCase(fetchUserProjectsData.rejected, (state, action) => {
+  //     //   state.loading = false;
+  //     //   state.error = action.payload;
+  //     // });
+  // },
 });
 
 export const { setCurrentProject, clearCurrentProject } = projectSlice.actions;

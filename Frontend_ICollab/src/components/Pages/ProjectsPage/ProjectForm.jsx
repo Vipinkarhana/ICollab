@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { addProject, getCollaboratorSuggestions,  updateProject} from "../../../Services/projectService";
+import { addProject, getCollaboratorSuggestions, updateProject } from "../../../Services/projectService";
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
-import { setCurrentProject, clearCurrentProject, fetchUserProjectsData, } from '../../../Redux/Slices/ProjectSlice';
+import { setCurrentProject, clearCurrentProject } from '../../../Redux/Slices/ProjectSlice';
+import { fetchUserProjectsData } from "../../../Redux/Slices/UserProfileSlice";
 
 const ProjectForm = () => {
   const dispatch = useDispatch();
   const { projectId: urlProjectId } = useParams(); // Get project ID from URL
-    const isEditMode = Boolean(urlProjectId);
+  const isEditMode = Boolean(urlProjectId);
   const navigate = useNavigate();
-   const { currentProject, userProjects , loading: projectsLoading } = useSelector((state) => state.project);
-   const username = useSelector((state) => state.user.userData?.username);
-   const [projectId, setProjectId] = useState(urlProjectId || null);
+  const { currentProject, loading: projectsLoading } = useSelector((state) => state.project);
+  const { projects: userProjects } = useSelector((state) => state.userProfile);
+  const username = useSelector((state) => state.user.userData?.username);
+  const [projectId, setProjectId] = useState(urlProjectId || null);
   const [logo, setLogo] = useState(null); // holds the File
   const [removeLogo, setRemoveLogo] = useState(false);
   const [logoPreview, setLogoPreview] = useState(null); // holds the blob-URL
@@ -145,34 +147,34 @@ const ProjectForm = () => {
     }
   };
   function handlePictureChange(e, idx) {
-  const file = e.target.files[0];
-  setPictures((prev) => {
-    const newPictures = [...prev];
-    newPictures[idx] = file ? {
-      file,
-      preview: URL.createObjectURL(file)
-    } : null;
-    return newPictures;
-  });
-}
+    const file = e.target.files[0];
+    setPictures((prev) => {
+      const newPictures = [...prev];
+      newPictures[idx] = file ? {
+        file,
+        preview: URL.createObjectURL(file)
+      } : null;
+      return newPictures;
+    });
+  }
   const handleLogoChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  // Clean up previous preview if it was a blob URL
-  if (logoPreview && logoPreview.startsWith('blob:')) {
-    URL.revokeObjectURL(logoPreview);
-  }
+    // Clean up previous preview if it was a blob URL
+    if (logoPreview && logoPreview.startsWith('blob:')) {
+      URL.revokeObjectURL(logoPreview);
+    }
 
-  setLogo(file);
-  setLogoPreview(URL.createObjectURL(file));
+    setLogo(file);
+    setLogoPreview(URL.createObjectURL(file));
 
-  // Clear removeLogo flag when new file is selected
-  if (isEditMode) {
-    setRemoveLogo(false);
-    document.getElementById('removeLogo').value = 'false';
-  }
-};
+    // Clear removeLogo flag when new file is selected
+    if (isEditMode) {
+      setRemoveLogo(false);
+      document.getElementById('removeLogo').value = 'false';
+    }
+  };
 
   const handleOngoingChange = (e) => {
     setFormData({
@@ -202,7 +204,7 @@ const ProjectForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-useEffect(() => {
+  useEffect(() => {
     if (!isEditMode) return;
 
     // (a) Dispatch the thunk to load all the user’s projects if they haven’t been loaded yet
@@ -233,102 +235,103 @@ useEffect(() => {
     };
   }, [dispatch, isEditMode, urlProjectId]);
 
-// As soon as Redux’s `currentProject` exists, map its fields into formData:
-useEffect(() => {
-  if (isEditMode && currentProject) {
-    // Populate the local form fields from Redux
-    setFormData({
-      projectName: currentProject.name || "",
-      tagline: currentProject.tagline || "",
-      problem: currentProject.problem || "",
-      category: currentProject.category || "",
-      technologies: (currentProject.technology || []).join(", "),
-      links: currentProject.links || "",
-      videoDemo: currentProject.videoLink || "",
-      Challenges: currentProject.challenges || "",
-      startDate: currentProject.startDate
-        ? currentProject.startDate.split("T")[0]
-        : "",
-      endDate: currentProject.endDate
-        ? currentProject.endDate.split("T")[0]
-        : "",
-      isOngoing: !!currentProject.isOngoing,
-    });
+  // As soon as Redux’s `currentProject` exists, map its fields into formData:
+  useEffect(() => {
+    if (isEditMode && currentProject) {
+      // Populate the local form fields from Redux
+      setFormData({
+        projectName: currentProject.name || "",
+        tagline: currentProject.tagline || "",
+        problem: currentProject.problem || "",
+        category: currentProject.category || "",
+        technologies: (currentProject.technology || []).join(", "),
+        links: currentProject.links || "",
+        videoDemo: currentProject.videoLink || "",
+        Challenges: currentProject.challenges || "",
+        startDate: currentProject.startDate
+          ? currentProject.startDate.split("T")[0]
+          : "",
+        endDate: currentProject.endDate
+          ? currentProject.endDate.split("T")[0]
+          : "",
+        isOngoing: !!currentProject.isOngoing,
+      });
 
-    setSelectedCollaborators(
-      (currentProject.collaborator || []).map((c) => {
-        // If collaborator is a string (username)
-        if (typeof c === 'string') {
+      setSelectedCollaborators(
+        (currentProject.collaborator || []).map((c) => {
+          // If collaborator is a string (username)
+          if (typeof c === 'string') {
+            return {
+              id: c, // use username as ID since we don't have actual ID
+              label: c
+            };
+          }
+          // If collaborator is an object (from populated query)
           return {
-            id: c, // use username as ID since we don't have actual ID
-            label: c
+            id: c._id,
+            label: c.username
+          };
+        })
+      );
+
+      // Map existing media URLs into a 5‐slot array:
+      const mediaFiles = (currentProject.media || []).map((url) => {
+        try {
+          const urlObj = new URL(url);
+          const rawKey = urlObj.pathname.startsWith("/")
+            ? urlObj.pathname.slice(1)
+            : urlObj.pathname;
+          return {
+            url,
+            preview: url,
+            file: null,
+            key: rawKey,
+          };
+        } catch {
+          return {
+            file: null,
+            url: url,
+            key: url,
+            preview: url,
           };
         }
-        // If collaborator is an object (from populated query)
-        return {
-          id: c._id,
-          label: c.username
-        };
-      })
-    );
+      });
+      while (mediaFiles.length < 5) {
+        mediaFiles.push(null);
+      }
+      setPictures(mediaFiles);
 
-    // Map existing media URLs into a 5‐slot array:
-    const mediaFiles = (currentProject.media || []).map((url) => {
-try{
-  const urlObj = new URL(url);
-    const rawKey = urlObj.pathname.startsWith("/")
-      ? urlObj.pathname.slice(1)
-      : urlObj.pathname;
-return{
-      url,
-      preview: url,
-      file: null,
-      key: rawKey,
-};
-}catch{
-  return {
-    file: null,
-    url: url,
-    key: url,
-    preview: url,
+      // If there’s already a logo saved in the project, preview it:
+      if (currentProject.logo) {
+        setLogoPreview(currentProject.logo);
+      }
+    }
+  }, [isEditMode, currentProject]);
+
+  const removePicture = (idx) => {
+    setPictures(prev => {
+      const newPictures = [...prev];
+      newPictures[idx] = null;
+      return newPictures;
+    });
   };
-}});
-    while (mediaFiles.length < 5) {
-      mediaFiles.push(null);
-    }
-    setPictures(mediaFiles);
 
-    // If there’s already a logo saved in the project, preview it:
-    if (currentProject.logo) {
-      setLogoPreview(currentProject.logo);
-    }
-  }
-}, [isEditMode, currentProject]);
-
-const removePicture = (idx) => {
-  setPictures(prev => {
-    const newPictures = [...prev];
-    newPictures[idx] = null;
-    return newPictures;
-  });
-};
-
-// Modify handleSubmit to handle both create and update
+  // Modify handleSubmit to handle both create and update
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setIsSubmitting(true);
-    
+
     try {
       const formPayload = new FormData();
 
-       // Add existingMedia field (JSON string of keys to keep)
-    const existingMediaKeys = pictures
-      .filter(pic => pic && pic.key) // Only existing media has key
-      .map(pic => pic.key);
-    formPayload.append("existingMedia", JSON.stringify(existingMediaKeys));
-      
+      // Add existingMedia field (JSON string of keys to keep)
+      const existingMediaKeys = pictures
+        .filter(pic => pic && pic.key) // Only existing media has key
+        .map(pic => pic.key);
+      formPayload.append("existingMedia", JSON.stringify(existingMediaKeys));
+
       // Common fields
       formPayload.append("projectId", projectId);
       formPayload.append("name", formData.projectName);
@@ -338,53 +341,53 @@ const removePicture = (idx) => {
       formPayload.append("links", formData.links);
       formPayload.append("videoLink", formData.videoDemo);
       // split comma-separated techs into individual fields
-        formData.technologies
-          .split(",")
-          .map(t => t.trim())
-          .forEach(tech => formPayload.append("technology", tech));
+      formData.technologies
+        .split(",")
+        .map(t => t.trim())
+        .forEach(tech => formPayload.append("technology", tech));
 
-        // collaborators (preferably by ID, not label)
-        if(selectedCollaborators.length > 0) {
+      // collaborators (preferably by ID, not label)
+      if (selectedCollaborators.length > 0) {
         selectedCollaborators
           .forEach(c => {
             formPayload.append("collaborator", c.label);
-           });
-          } else {
-            // Force an empty “collaborator” field so backend sees it as defined
-            formPayload.append("collaborator", "");
-          }
-        formPayload.append("startDate", formData.startDate);
-        formPayload.append("stillOngoing", formData.isOngoing);
-        if (!formData.isOngoing) {
-          formPayload.append("endDate", formData.endDate);
-        }
-        if (logo) {
-          formPayload.append('logo', logo);
-        }
-        if (isEditMode && !logoPreview) {
-          formPayload.append('removeLogo', 'true');
-        }
-
-        formPayload.append("challenges", formData.Challenges);
-          if (isEditMode) {
-        pictures.forEach((pic) => {
-        if (pic) {
-          if (pic.file) {
-          formPayload.append("media", pic.file); // New file
-        } 
+          });
+      } else {
+        // Force an empty “collaborator” field so backend sees it as defined
+        formPayload.append("collaborator", "");
       }
-});
+      formPayload.append("startDate", formData.startDate);
+      formPayload.append("stillOngoing", formData.isOngoing);
+      if (!formData.isOngoing) {
+        formPayload.append("endDate", formData.endDate);
+      }
+      if (logo) {
+        formPayload.append('logo', logo);
+      }
+      if (isEditMode && !logoPreview) {
+        formPayload.append('removeLogo', 'true');
+      }
+
+      formPayload.append("challenges", formData.Challenges);
+      if (isEditMode) {
+        pictures.forEach((pic) => {
+          if (pic) {
+            if (pic.file) {
+              formPayload.append("media", pic.file); // New file
+            }
+          }
+        });
       } else {
         // New project media handling
         pictures.forEach(pic => {
           if (pic && pic.file) {
-          formPayload.append("media", pic.file);
-        }
+            formPayload.append("media", pic.file);
+          }
         });
       }
 
-      const response = isEditMode 
-        ? await updateProject(formPayload) 
+      const response = isEditMode
+        ? await updateProject(formPayload)
         : await addProject(formPayload);
 
       navigate(isEditMode ? `/project/${projectId}` : '/projects');
@@ -415,9 +418,8 @@ const removePicture = (idx) => {
           name="projectName"
           value={formData.projectName}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${
-            errors.projectName ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full p-2 border ${errors.projectName ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           placeholder="Enter project name"
           required
         />
@@ -447,9 +449,8 @@ const removePicture = (idx) => {
           name="tagline"
           value={formData.tagline}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${
-            errors.tagline ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full p-2 border ${errors.tagline ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           placeholder="Short tagline"
           required
         />
@@ -477,9 +478,8 @@ const removePicture = (idx) => {
           name="problem"
           value={formData.problem}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${
-            errors.problem ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full p-2 border ${errors.problem ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           placeholder="What problem does your project solve?"
           required
         />
@@ -521,12 +521,11 @@ const removePicture = (idx) => {
           name="collaborators"
           value={collaboratorInput}
           onChange={(e) => setCollaboratorInput(e.target.value)}
-          className={`w-full p-2 border ${
-            errors.collaborators ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full p-2 border ${errors.collaborators ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           placeholder="Start typing to see suggestions"
           autoComplete="off"
-          // required
+        // required
         />
 
         {suggestions.length > 0 && (
@@ -556,9 +555,8 @@ const removePicture = (idx) => {
           name="category"
           value={formData.category}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${
-            errors.category ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full p-2 border ${errors.category ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           required
         >
           <option value="">Select a category</option>
@@ -587,13 +585,12 @@ const removePicture = (idx) => {
           name="links"
           value={formData.links}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${
-            errors.links ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full p-2 border ${errors.links ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           placeholder="e.g., https://github.com/myproject, https://myproject.com"
           required
         />
-      
+
         {errors.links && <p className="text-red-500 text-sm">{errors.links}</p>}
       </div>
 
@@ -611,9 +608,8 @@ const removePicture = (idx) => {
           name="videoDemo"
           value={formData.videoDemo}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${
-            errors.videoDemo ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full p-2 border ${errors.videoDemo ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           placeholder="e.g., https://youtube.com/mydemo"
           required
         />
@@ -636,9 +632,8 @@ const removePicture = (idx) => {
           name="technologies"
           value={formData.technologies}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${
-            errors.technologies ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full p-2 border ${errors.technologies ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           placeholder="Technologies used (e.g., React, Node, MongoDB)"
           required
         />
@@ -668,9 +663,8 @@ const removePicture = (idx) => {
           name="Challenges"
           value={formData.Challenges}
           onChange={handleInputChange}
-          className={`w-full p-2 border ${
-            errors.Challenges ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full p-2 border ${errors.Challenges ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           placeholder="Describe any major roadblocks you faced"
           required
         />
@@ -740,105 +734,105 @@ const removePicture = (idx) => {
         <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
           {pictures.map((file, idx) => (
             <div key={idx} className="relative">
-            <label
-              key={idx}
-              className="w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:border-blue-500 hover:bg-gray-50"
-            >
-              {file ? (
-                <img
-                  // src={URL.createObjectURL(file)}
-                  src={file.preview || file.url}
-                  alt="preview"
-                  className="object-cover w-full h-full rounded"
+              <label
+                key={idx}
+                className="w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:border-blue-500 hover:bg-gray-50"
+              >
+                {file ? (
+                  <img
+                    // src={URL.createObjectURL(file)}
+                    src={file.preview || file.url}
+                    alt="preview"
+                    className="object-cover w-full h-full rounded"
+                  />
+                ) : (
+                  "+"
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handlePictureChange(e, idx)}
+                  className="hidden"
                 />
-              ) : (
-                "+"
+              </label>
+              {file && (
+                <button
+                  type="button"
+                  onClick={() => removePicture(idx)}
+                  className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
+                  aria-label="Remove media"
+                >
+                  ×
+                </button>
               )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => handlePictureChange(e, idx)}
-                className="hidden"
-              />
-            </label>
-            {file && (
-        <button
-          type="button"
-          onClick={() => removePicture(idx)}
-          className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
-          aria-label="Remove media"
-        >
-          ×
-        </button>
-      )}
-    </div>
+            </div>
           ))}
         </div>
       </div>
 
-<div>
-  <h2 className="text-3xl font-semibold">Logo</h2>
-  <p className="text-sm text-gray-600 mt-1">
-    {currentProject?.logo ? 'Update' : 'Upload'} Logo for your project (max 1MB)
-  </p>
-  
-  <label className="mt-3 w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:bg-gray-50 hover:border-blue-500 relative">
-    {logoPreview ? (
-      <>
-        <img
-          src={logoPreview}
-          alt="Logo preview"
-          className="object-contain w-full h-full p-1 rounded"
-        />
-        {/* Remove button */}
-        {isEditMode && logoPreview && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              setLogo(null);
-              setLogoPreview(null);
-              // Add hidden input to signal logo removal
-              setRemoveLogo(true);
-              document.getElementById('removeLogo').value = 'true';
-            }}
-            className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
-            aria-label="Remove logo"
-          >
-            ×
-          </button>
+      <div>
+        <h2 className="text-3xl font-semibold">Logo</h2>
+        <p className="text-sm text-gray-600 mt-1">
+          {currentProject?.logo ? 'Update' : 'Upload'} Logo for your project (max 1MB)
+        </p>
+
+        <label className="mt-3 w-36 h-36 border-2 border-dashed flex items-center justify-center rounded cursor-pointer bg-gray-200 text-gray-500 hover:bg-gray-50 hover:border-blue-500 relative">
+          {logoPreview ? (
+            <>
+              <img
+                src={logoPreview}
+                alt="Logo preview"
+                className="object-contain w-full h-full p-1 rounded"
+              />
+              {/* Remove button */}
+              {isEditMode && logoPreview && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setLogo(null);
+                    setLogoPreview(null);
+                    // Add hidden input to signal logo removal
+                    setRemoveLogo(true);
+                    document.getElementById('removeLogo').value = 'true';
+                  }}
+                  className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
+                  aria-label="Remove logo"
+                >
+                  ×
+                </button>
+              )}
+            </>
+          ) : (
+            <span className="text-gray-500 text-2xl">+</span>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            name="logo"
+            onChange={handleLogoChange}
+            className="hidden"
+          />
+        </label>
+
+        {/* Hidden input for removeLogo flag */}
+        {isEditMode && (
+          <input
+            type="hidden"
+            id="removeLogo"
+            name="removeLogo"
+            value="false"
+          />
         )}
-      </>
-    ) : (
-      <span className="text-gray-500 text-2xl">+</span>
-    )}
-    <input
-      type="file"
-      accept="image/*"
-      name="logo"
-      onChange={handleLogoChange}
-      className="hidden"
-    />
-  </label>
-  
-  {/* Hidden input for removeLogo flag */}
-  {isEditMode && (
-    <input
-      type="hidden"
-      id="removeLogo"
-      name="removeLogo"
-      value="false"
-    />
-  )}
-  
-  {/* Show existing logo info in edit mode */}
-  {isEditMode && currentProject?.logo && !logoPreview && (
-    <p className="text-sm text-gray-500 mt-2">
-      Current logo: {currentProject.logo.split('/').pop()}
-    </p>
-  )}
-</div>
+
+        {/* Show existing logo info in edit mode */}
+        {isEditMode && currentProject?.logo && !logoPreview && (
+          <p className="text-sm text-gray-500 mt-2">
+            Current logo: {currentProject.logo.split('/').pop()}
+          </p>
+        )}
+      </div>
       {/* Updated Submit Section */}
       <div className="pt-6">
         {submitError && <div className="text-red-500 mb-4">{submitError}</div>}
