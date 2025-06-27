@@ -6,6 +6,11 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import StartUp from "./components/Pages/IncubatorsPage/StartUp";
 import IncubatorForm from "./components/Pages/LandingPage/IncubatorForm";
+import ProgramsPage from "./components/Pages/IncubatorsPage/ProgramPage";
+import EventsPage from "./components/Pages/IncubatorsPage/Eventpage";
+import AddEventForm from "./components/Pages/IncubatorsPage/AddEventForm";
+
+
 
 const HomePage = lazy(() => import("./components/Pages/HomePage/HomePage"));
 const ProfilePage = lazy(() =>
@@ -77,6 +82,9 @@ function App() {
               <Route path="/projects/edit/:projectId" element={<ProjectForm />} />
               <Route path="/project/:id" element={<ProjectPreviewPage />} />
                 <Route path="/startup" element={<StartUp />} />
+                  <Route path="/programs" element={<ProgramsPage />} />
+                    <Route path="/events" element={<EventsPage />} />
+                          <Route path="/AddEventForm" element={<AddEventForm />} />
                   <Route path="/apply-incubator" element={<IncubatorForm />} />
             </Route>
 
