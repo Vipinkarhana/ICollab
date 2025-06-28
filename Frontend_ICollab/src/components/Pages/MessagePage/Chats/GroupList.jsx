@@ -30,13 +30,14 @@ function GroupList({ handleSubGroupClick }) {
     console.log("group members:", group.members);
     console.log("room members:", room.members);
     const payload = {
-      name: group.name,
-      avatar: `https://ui-avatars.com/api/?name=${group.name}&background=random`,
-      isOnline: room.members?.some((m) => m.isOnline),
-      isGroup: true,
-      members: group.members || [],
-      messages: [], // later you can fetch based on roomId & groupId
-    };
+  name: group.name,
+  avatar: `https://ui-avatars.com/api/?name=${group.name}&background=random`,
+  isOnline: room.members?.some((m) => m.isOnline),
+  isGroup: true,
+  members: group.members || [],
+  channelId: room.channelId, // ✅ This is required for Ably to work
+};
+
 
     handleSubGroupClick(payload);
   };

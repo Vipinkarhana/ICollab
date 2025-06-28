@@ -76,7 +76,6 @@ const MessageList = ({ messages, isGroup }) => {
               />
             );
           })}
-
         </div>
       ))}
       <div ref={bottomRef} />
@@ -85,6 +84,3 @@ const MessageList = ({ messages, isGroup }) => {
 };
 
 export default MessageList;
-
-
-

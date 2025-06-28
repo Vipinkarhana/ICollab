@@ -1,14 +1,26 @@
 import React, { useState } from "react";
 import { Smile, Paperclip, Send } from "lucide-react";
 import EmojiButton from "../../HomePage/MidDiv/Feed/Posts/StartPost/EmojiButton";
-const MessageInput = () => {
+import { getAblyInstance } from "../../../../utils/ablyClient";
+
+const MessageInput = ({ channelId, senderName }) => {
   const [text, setText] = useState("");
 
-  const handleSend = () => {
-    if (text.trim()) {
-      console.log("Send:", text);
-      setText("");
-    }
+  const handleSend = async () => {
+    if (!text.trim()) return;
+
+    const ably = getAblyInstance();
+    if (!ably || !channelId) return;
+
+    const channel = ably.channels.get(channelId);
+
+    await channel.publish("message", {
+      message: text,
+      sender: senderName,
+      timestamp: new Date().toISOString(),
+    });
+
+    setText("");
   };
 
   return (
