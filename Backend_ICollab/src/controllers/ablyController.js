@@ -1,70 +1,38 @@
-require("dotenv").config(); // Ensure .env is loaded
 const Ably = require("ably");
-const Room = require("../models/Room");
 
-const ably = new Ably.Rest(process.env.ABLY_API_KEY);
-
-// ✅ Controller: Generate Ably Token (for user-authorized channels)
+// Generate Ably Token Request
 const generateToken = async (req, res) => {
   try {
-    const userId = req.user.id;
-    console.log("Generating token for user:", userId);
-    console.log("ABLY_API_KEY exists?", !!process.env.ABLY_API_KEY);
+    const clientId = req.user.id; // from isloggedin middleware
 
-    if (!process.env.ABLY_API_KEY) {
-      return res.status(500).json({ error: "ABLY_API_KEY not configured" });
+    if (!clientId) {
+      return res.status(401).json({ error: "Unauthorized: No user ID found" });
     }
 
-    const rooms = await Room.find({ members: userId });
-
-    if (!rooms.length) {
-      return res.status(403).json({ error: "User not part of any rooms" });
+    const apiKey = process.env.ABLY_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "Ably API key is not configured" });
     }
 
-    const capabilities = {};
-    rooms.forEach((room) => {
-      capabilities[room.channelId] = ["subscribe", "publish", "presence"];
-    });
+    console.log("🔐 Generating token for clientId:", clientId);
 
-    ably.auth.createTokenRequest(
-      {
-        clientId: userId,
-        capability: JSON.stringify(capabilities),
-      },
-      (err, tokenRequest) => {
-        if (err) {
-          console.error("Ably Token Creation Error:", err);
-          return res.status(500).json({ error: "Token creation failed" });
-        }
+    const ably = new Ably.Rest({ key: apiKey });
+    console.log("ably",ably)
+    // ably.auth.createTokenRequest({ clientId }, (err, tokenRequest) => {
+    //   if (err) {
+    //     console.error("❌ Error creating Ably token request:", err);
+    //     return res.status(500).json({ error: "Failed to generate token" });
+    //   }
 
-        return res.json(tokenRequest);
-      }
-    );
+    //   console.log("✅ Token created successfully");
+    //   res.status(200).json(tokenRequest);
+    // });
+    const tokendetails=await ably.auth.requestToken({clientId});
+    res.status(200).json(tokendetails);
   } catch (err) {
-    console.error("GenerateToken Crash:", err);
-    return res.status(500).json({ error: "Server error" });
+    console.error("❌ Ably controller error:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-// ✅ Controller: Get Ably Channel History
-const getHistory = async (req, res) => {
-  const { channelId, limit = 50 } = req.query;
-
-  if (!channelId) {
-    return res.status(400).json({ error: "channelId is required" });
-  }
-
-  try {
-    const page = await ably.channels.get(channelId).history({ limit: parseInt(limit) });
-    const messages = page.items.reverse(); // oldest messages first
-    res.json(messages);
-  } catch (err) {
-    console.error("Ably history error:", err);
-    res.status(500).json({ error: "Failed to fetch message history" });
-  }
-};
-
-module.exports = {
-  generateToken,
-  getHistory,
-};
+module.exports = { generateToken };

@@ -4,10 +4,11 @@ import * as Ably from "ably";
 let ablyRealtime = null;
 
 export const initializeAblyClient = async (userToken) => {
+  console.log(userToken);
   if (ablyRealtime) return ablyRealtime;
 
   try {
-    ablyRealtime = new Ably.Realtime.Promise({
+    ablyRealtime = new Ably.Realtime({
       authUrl: "http://localhost:5000/api/ably/token",
       authHeaders: {
         Authorization: `Bearer ${userToken}`,

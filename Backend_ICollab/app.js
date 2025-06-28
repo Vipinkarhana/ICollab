@@ -1,39 +1,40 @@
-require('dotenv').config();
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var cors = require('cors');
-var helmet = require('helmet');
+require('dotenv').config(); // Load env first
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors');
+const helmet = require('helmet');
 const config = require('./config/config');
 const sanitizeInput = require('./src/middlewares/sanitize');
-
-var ApiError = require('./src/utils/ApiError');
 const connectDB = require('./config/DB');
-var indexRouter = require('./src/routes/index');
-var authRouter = require('./src/routes/authRoute');
-var postRouter = require('./src/routes/postRoute');
-var profileRouter = require('./src/routes/profileRoute');
-var surveyRouter = require('./src/routes/surveyRoute');
-var projectRouter = require('./src/routes/projectRoute');
-var adminUserRouter = require('./src/Admin/routes/userRoute');
-var networkRouter = require('./src/routes/network');
-var adminPostRouter = require('./src/Admin/routes/postRoute');
-var adminAnalyticsRouter = require('./src/Admin/routes/analyticsRoute');
-var adminNotificationRouter = require('./src/Admin/routes/notificationRoute');
-var savedItemRouter = require('./src/routes/savedItemRoute');
-var roomRouter = require('./src/routes/roomRoute')
-const ablyRouter = require("./src/routes/ablyRoute");
 
-const {isloggedin} = require('./src/middlewares/auth')
+const ApiError = require('./src/utils/ApiError');
 
-var { router: sseRouter, sendSSE } = require('./src/Admin/routes/sseRoute');
+// Routers
+const indexRouter = require('./src/routes/index');
+const authRouter = require('./src/routes/authRoute');
+const postRouter = require('./src/routes/postRoute');
+const profileRouter = require('./src/routes/profileRoute');
+const surveyRouter = require('./src/routes/surveyRoute');
+const projectRouter = require('./src/routes/projectRoute');
+const adminUserRouter = require('./src/Admin/routes/userRoute');
+const networkRouter = require('./src/routes/network');
+const adminPostRouter = require('./src/Admin/routes/postRoute');
+const adminAnalyticsRouter = require('./src/Admin/routes/analyticsRoute');
+const adminNotificationRouter = require('./src/Admin/routes/notificationRoute');
+const savedItemRouter = require('./src/routes/savedItemRoute');
+const roomRouter = require('./src/routes/roomRoute');
+const ablyRouter = require('./src/routes/ablyRoute');
+const { router: sseRouter } = require('./src/Admin/routes/sseRoute');
 
-var app = express();
+// Create app instance
+const app = express();
 
+// Connect to MongoDB
 connectDB();
 
-// to allow both the frontends to access the backend running on different ports
+// Setup CORS with allowed frontend URLs
 const allowedOrigins = config.FRONTEND_URL.split(',');
 app.use(
   cors({
@@ -48,6 +49,7 @@ app.use(
   })
 );
 
+// Security + Body Parsers
 app.use(sanitizeInput);
 app.use(helmet());
 app.use(logger('dev'));
@@ -56,12 +58,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(config.COOKIE_SECRET));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Routes
 app.use('/', indexRouter);
 app.use('/admin/user', adminUserRouter);
 app.use('/admin/posts', adminPostRouter);
 app.use('/admin/analytics', adminAnalyticsRouter);
 app.use('/admin/notifications', adminNotificationRouter);
 app.use('/sse', sseRouter);
+
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/profile', profileRouter);
@@ -70,26 +74,23 @@ app.use('/api/network', networkRouter);
 app.use('/api/project', projectRouter);
 app.use('/api/saveitems', savedItemRouter);
 app.use('/api/room', roomRouter);
-app.use("/api/ably", ablyRouter);
+app.use('/api/ably', ablyRouter);
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
+// 404 Handler
+app.use((req, res, next) => {
   next(new ApiError(404, "The requested resource couldn't be found"));
 });
 
-// Global Error-Handling Middleware
-const errorHandler = (err, req, res, next) => {
+// Global Error Handler
+app.use((err, req, res, next) => {
   console.error(`Error: ${err.message}`);
   res.status(err.statusCode || 500).json({
     error: {
-      stack: config.NODE_ENV === 'production' ? ' ' : err.stack,
+      stack: config.NODE_ENV === 'production' ? undefined : err.stack,
     },
     message: err.message || 'Internal Server Error',
     status: 'failed',
   });
-};
-
-// Use the error-handling middleware
-app.use(errorHandler);
+});
 
 module.exports = app;

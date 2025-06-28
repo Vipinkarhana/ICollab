@@ -26,7 +26,7 @@ const PrivateRoute = lazy(() => import("./utils/PrivateRoute"));
 function App() {
   useEffect(() => {
     const setupAbly = async () => {
-      const userToken = localStorage.getItem("token");
+      const userToken = localStorage.getItem("accessToken");
       if (userToken) {
         await initializeAblyClient(userToken);
       }
