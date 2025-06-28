@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -6,7 +7,6 @@ var cors = require('cors');
 var helmet = require('helmet');
 const config = require('./config/config');
 const sanitizeInput = require('./src/middlewares/sanitize');
-require('dotenv').config();
 
 var ApiError = require('./src/utils/ApiError');
 const connectDB = require('./config/DB');
@@ -23,7 +23,8 @@ var adminAnalyticsRouter = require('./src/Admin/routes/analyticsRoute');
 var adminNotificationRouter = require('./src/Admin/routes/notificationRoute');
 var savedItemRouter = require('./src/routes/savedItemRoute');
 var roomRouter = require('./src/routes/roomRoute')
-const ablyRouter = require('./src/routes/ably');
+const ablyRouter = require("./src/routes/ablyRoute");
+
 const {isloggedin} = require('./src/middlewares/auth')
 
 var { router: sseRouter, sendSSE } = require('./src/Admin/routes/sseRoute');
@@ -69,8 +70,7 @@ app.use('/api/network', networkRouter);
 app.use('/api/project', projectRouter);
 app.use('/api/saveitems', savedItemRouter);
 app.use('/api/room', roomRouter);
-app.use('/api/ably', isloggedin, ablyRouter);
-
+app.use("/api/ably", ablyRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

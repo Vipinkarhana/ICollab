@@ -8,7 +8,7 @@ export const initializeAblyClient = async (userToken) => {
 
   try {
     ablyRealtime = new Ably.Realtime.Promise({
-      authUrl: "http://localhost:5080/api/ably/token",
+      authUrl: "http://localhost:5000/api/ably/token",
       authHeaders: {
         Authorization: `Bearer ${userToken}`,
       },
