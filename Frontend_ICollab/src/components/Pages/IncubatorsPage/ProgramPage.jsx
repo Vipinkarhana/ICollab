@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import SidebarHeader from "./SidebarHeader";
 import {
   Zap,
@@ -72,24 +72,56 @@ const successStories = [
   },
 ];
 
-const comparisonData = [
+const initialData = [
   ["Duration", "3 Months", "6 Months", "Ongoing"],
   ["Funding", "₹25L", "No", "No"],
-  ["Mentorship", "✔️", "✔️", "✔️"],
-  ["Workspace Access", "✔️", "✔️", "❌"],
-  ["Corporate Connections", "✔️", "❌", "✔️"],
+  ["Mentor Support", true, true, true],
 ];
 
 const ProgramsPage = () => {
+  const [headers, setHeaders] = useState([
+    "Metric",
+    "Seed Accelerator",
+    "Pre-Incubation",
+    "Industry Connect",
+  ]);
+
+  const [rows, setRows] = useState(initialData);
+  const [editCell, setEditCell] = useState({ r: null, c: null });
+  const [adding, setAdding] = useState(false);
+  const [newMetric, setNewMetric] = useState("");
+
+  const handleCellClick = (r, c) => setEditCell({ r, c });
+
+  const handleInputChange = (e, r, c) => {
+    const val =
+      typeof rows[r][c] === "boolean"
+        ? e.target.checked
+        : e.target.value;
+    const updated = [...rows];
+    updated[r][c] = val;
+    setRows(updated);
+  };
+
+  const handleBlur = () => setEditCell({ r: null, c: null });
+  const handleKey = (e) => e.key === "Enter" && handleBlur();
+
+  const addMetric = () => {
+    if (!newMetric.trim()) return;
+    const newRow = [newMetric.trim(), "", "", ""];
+    setRows((prev) => [...prev, newRow]);
+    setNewMetric("");
+    setAdding(false);
+  };
+
+  const isDefaultMetric = (r) => r < initialData.length;
+
   return (
     <div className="min-h-screen bg-gray-50 flex w-full">
-      {/* Sidebar */}
       <SidebarHeader />
-
-      {/* Main Content */}
       <main className="flex-1 pt-20 pb-24 px-4 md:px-10 ml-64">
         <div className="max-w-7xl mx-auto">
-          {/* Heading */}
+
           <section className="mb-12">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 border-l-4 border-blue-600 pl-4">
               Our Incubation Programs
@@ -99,7 +131,6 @@ const ProgramsPage = () => {
             </p>
           </section>
 
-          {/* Program Cards */}
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {programs.map((program, index) => (
               <div
@@ -156,7 +187,6 @@ const ProgramsPage = () => {
             ))}
           </section>
 
-          {/* Success Stories */}
           <section className="mt-20">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">
               Success Stories
@@ -183,31 +213,97 @@ const ProgramsPage = () => {
             </div>
           </section>
 
-          {/* Program Comparison Table */}
+
           <section className="mt-20">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">
-              Compare Our Programs
+            <h2 className="text-3xl font-bold text-gray-800 mb-8 border-l-4 border-blue-600 pl-4">
+              Compare Your Programs
             </h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white rounded-lg shadow-md text-sm text-gray-700">
-                <thead className="bg-blue-100 text-gray-800">
+            <div className="overflow-x-auto animate-fade-in-up">
+              <table className="min-w-full bg-white rounded-xl shadow-lg ring-1 ring-gray-200 text-sm text-gray-800">
+                <thead className="bg-blue-50 text-blue-900 sticky top-0 z-10">
                   <tr>
-                    <th className="text-left p-3">Feature</th>
-                    <th className="text-left p-3">Seed Accelerator</th>
-                    <th className="text-left p-3">Pre-Incubation</th>
-                    <th className="text-left p-3">Industry Connect</th>
+                    {headers.slice(0, 4).map((h, i) => (
+                      <th
+                        key={"header-" + i}
+                        className="text-left px-6 py-4 border-b border-blue-200 text-sm font-semibold uppercase tracking-wide"
+                      >
+                        {h}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
-                <tbody>
-                  {comparisonData.map((row, i) => (
-                    <tr key={i} className="border-t">
-                      {row.map((cell, j) => (
-                        <td key={j} className="p-3">
-                          {cell}
+                <tbody className="divide-y divide-gray-100">
+                  {rows.map((row, r) => (
+                    <tr
+                      key={"row-" + r}
+                      className="hover:bg-blue-50 transition duration-300 ease-in-out"
+                    >
+                      {row.slice(0, 4).map((cell, c) => (
+                        <td
+                          key={"cell-" + r + "-" + c}
+                          className="px-6 py-4 border-r last:border-r-0 align-middle text-sm"
+                          onClick={() =>
+                            (c !== 0 || !isDefaultMetric(r)) && handleCellClick(r, c)
+                          }
+                        >
+                          {editCell.r === r && editCell.c === c ? (
+                            typeof cell === "boolean" ? (
+                              <input
+                                type="checkbox"
+                                checked={cell}
+                                onChange={(e) => handleInputChange(e, r, c)}
+                                onBlur={handleBlur}
+                                className="accent-blue-600 w-4 h-4"
+                                autoFocus
+                              />
+                            ) : (
+                              <input
+                                type="text"
+                                className="w-full border border-blue-300 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                value={cell}
+                                onChange={(e) => handleInputChange(e, r, c)}
+                                onBlur={handleBlur}
+                                onKeyDown={handleKey}
+                                autoFocus
+                              />
+                            )
+                          ) : (
+                            <span
+                              className={
+                                c === 0 ? "font-semibold text-gray-800" : "block text-gray-700"
+                              }
+                            >
+                              {typeof cell === "boolean" ? (cell ? "Yes" : "No") : cell}
+                            </span>
+                          )}
                         </td>
                       ))}
                     </tr>
                   ))}
+
+                  <tr>
+                    <td className="px-6 py-4 border-t" colSpan={4}>
+                      {adding ? (
+                        <input
+                          type="text"
+                          className="w-full border-b border-blue-300 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          placeholder="New metric"
+                          value={newMetric}
+                          onChange={(e) => setNewMetric(e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && addMetric()}
+                          onBlur={addMetric}
+                          autoFocus
+                        />
+                      ) : (
+                        <button
+                          className="text-blue-600 font-medium hover:underline transition duration-200"
+                          onClick={() => setAdding(true)}
+                        >
+                          + Add Metric
+                        </button>
+                      )}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
