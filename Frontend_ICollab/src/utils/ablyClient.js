@@ -9,7 +9,7 @@ export const initializeAblyClient = async (userToken) => {
 
   try {
     ablyRealtime = new Ably.Realtime({
-      authUrl: "http://localhost:5000/api/ably/token",
+      authUrl: `${import.meta.env.VITE_BACKEND_DOMAIN}/api/ably/token`,
       authHeaders: {
         Authorization: `Bearer ${userToken}`,
       },
