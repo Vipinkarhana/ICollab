@@ -34,7 +34,7 @@ const IncubatorsPage = () => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col md:ml-64 w-full">
           {/* Top navbar with Hamburger menu (mobile only) */}
-          <div className="fixed top-0 left-0 right-0 h-16 bg-white shadow-md z-30 flex items-center px-4 md:hidden">
+          <div className="fixed top-0 left-0 right-0 h-16 bg-white shadow-md z-30 flex items-center px-4 md:hidden mt-14">
             <button onClick={() => setSidebarOpen(true)}>
               <Menu size={24} className="text-gray-700" />
             </button>

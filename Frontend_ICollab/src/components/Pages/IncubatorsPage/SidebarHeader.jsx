@@ -11,7 +11,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [
-  { label: "Home", icon: <Home size={18} />, path: "/" },
+  { label: "Home", icon: <Home size={18} />, path: "/incubators" },
   { label: "Startups", icon: <Rocket size={18} />, path: "/startup" },
   { label: "Programs", icon: <Layers size={18} />, path: "/programs" },
   { label: "Resources", icon: <BookOpen size={18} />, path: "/resources" },

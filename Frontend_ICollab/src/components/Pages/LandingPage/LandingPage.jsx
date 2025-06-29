@@ -5,6 +5,7 @@ import Header from '../../Common/Header/Header';
 import AnimatedCounter from './AnimatedCounter';  
 import TestimonialCard from './TestimonialCard';  
 import IncubatorLanding from './IncubatorLanding';
+import StartupLanding from '../IncubatorsPage/StartupLanding';
 
 function LandingPage() {
   const totalPosts = 10000;
@@ -45,6 +46,10 @@ function LandingPage() {
 
       <div>
         <IncubatorLanding />
+      </div>
+
+       <div>
+        <StartupLanding />
       </div>
 
       {/* Testimonials */}

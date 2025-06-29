@@ -10,6 +10,8 @@ import ProgramsPage from "./components/Pages/IncubatorsPage/ProgramPage";
 import EventsPage from "./components/Pages/IncubatorsPage/Eventpage";
 import AddEventForm from "./components/Pages/IncubatorsPage/AddEventForm";
 import ViewDetailsPage from "./components/Pages/IncubatorsPage/ViewDetailPage";
+import ResourcesPage from "./components/Pages/IncubatorsPage/ResourcePageIncubators";
+import ApplyStartup from "./components/Pages/IncubatorsPage/ApplyStartup";
 
 const HomePage = lazy(() => import("./components/Pages/HomePage/HomePage"));
 const ProfilePage = lazy(() =>
@@ -85,10 +87,12 @@ function App() {
               <Route path="/project/:id" element={<ProjectPreviewPage />} />
               <Route path="/startup" element={<StartUp />} />
               <Route path="/programs" element={<ProgramsPage />} />
+               <Route path="/resources" element={<ResourcesPage />} />
               <Route path="/events" element={<EventsPage />} />
               <Route path="/AddEventForm" element={<AddEventForm />} />
               <Route path="/event-details" element={<ViewDetailsPage />} />
               <Route path="/apply-incubator" element={<IncubatorForm />} />
+              <Route path="/apply-startup" element={<ApplyStartup />} />
             </Route>
 
             {/* Public routes */}
