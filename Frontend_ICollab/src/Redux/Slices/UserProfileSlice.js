@@ -42,7 +42,7 @@ export const fetchUserProfile = createAsyncThunk(
 );
 
 export const fetchUserProjectsData = createAsyncThunk(
-  'projects/fetchUserProjects',
+  'userProfile/fetchUserProjects',
   async (username, { rejectWithValue }) => {
     try {
       const response = await fetchUserProjects(username);
@@ -61,7 +61,7 @@ export const fetchUserProjectsData = createAsyncThunk(
 );
 
 export const fetchUserPostsData = createAsyncThunk(
-  "post/fetchUserPostsData",
+  "userProfile/fetchUserPostsData",
   async (username, { rejectWithValue }) => {
     try {
       const response = await fetchUserPost(username);

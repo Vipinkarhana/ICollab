@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
-import { suggestedNetwork } from '../../../Services/networkService';
 import SuggestedNetworkCard from './SuggestedNetworkCard';
+import { fetchSuggestedNetwork } from '../../../Redux/Slices/NetworkSlice';
+import { useSelector, useDispatch } from 'react-redux';
 
 function SuggestedNetwork() {
-  const [people, setPeople] = useState([]);
-
   const [showAll, setShowAll] = useState(false);
   const [collabStatus, setCollabStatus] = useState({});
+  const dispatch = useDispatch();
+
+  const { data: suggestedNetwork, loading } = useSelector((state) => state.network?.suggestedNetwork);
 
   const toggleShowAll = () => setShowAll(!showAll);
 
-  const visiblePeople = showAll ? people : people.slice(0, 6);
+  const visibleNetwork = showAll ? suggestedNetwork : suggestedNetwork?.slice(0, 6);
 
-  // Function to handle button click
   const handleCollabClick = (personId) => {
     setCollabStatus((prevStatus) => ({
       ...prevStatus,
@@ -21,18 +22,8 @@ function SuggestedNetwork() {
   };
 
   useEffect(() => {
-    const fetchNetworkData = async () => {
-      try {
-        const response = await suggestedNetwork();
-        if (response.status === "success") {
-          setPeople(response?.data);
-        }
-      } catch (error) {
-        console.error("Error fetching network data:", error);
-      }
-    };
-    fetchNetworkData();
-  }, []);
+    dispatch(fetchSuggestedNetwork());
+  }, [dispatch]);
 
   return (
     <div className="p-6 rounded-md w-full h-auto bg-white border border-gray-300">
@@ -47,10 +38,14 @@ function SuggestedNetwork() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {visiblePeople.map((person, index) => (
-          <SuggestedNetworkCard key={person.id} person={person} collabStatus={collabStatus} onClick={handleCollabClick} />
+        {visibleNetwork?.map((person, index) => (
+          <SuggestedNetworkCard
+            key={person.id}
+            person={person}
+            collabStatus={collabStatus}
+            onClick={handleCollabClick}
+          />
         ))}
-
       </div>
     </div>
   );

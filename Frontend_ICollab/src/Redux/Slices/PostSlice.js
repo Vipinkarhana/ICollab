@@ -142,15 +142,14 @@ const postSlice = createSlice({
       // Update feed posts
       state.feed.posts = state.feed.posts.map(post => {
         if (post._id === postId) {
-          return { 
+          return {
             ...post,
             likes: liked ? post.likes + 1 : post.likes - 1,
-            isLiked: liked 
+            isLiked: liked
           };
         }
         return post;
       });
-  
     });
     builder.addCase(createPost.rejected, (state, action) => {
       state.error = action.payload;

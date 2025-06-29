@@ -4,31 +4,19 @@ import SuggestedNetwork from "./SuggestedNetwork";
 import ProfileCard from "../HomePage/LeftDiv/ProfileCard";
 import { Users } from "lucide-react";
 import CollaborationRequest from "./CollaborationRequest";
-import {collabRequest} from "../../../Services/networkService";
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchCollaborationRequests } from "../../../Redux/Slices/NetworkSlice";
 import Request from "./Request";
 
 function NetworkPage() {
+  const dispatch = useDispatch();
 
-  const [collaborationRequests, setCollaborationRequests] = useState([]);
+  const { data: collaborationRequests, loading} = useSelector((state) => state.network?.collaborationRequests);
 
   useEffect(() => {
-    const fetchCollaborationRequests = async () => {
-      try {
-        const response = await collabRequest();
-        if (response.status === "success") {
-          setCollaborationRequests(response.data);
-        } else {
-          console.error("Failed to fetch collaboration requests:", response.message);
-        }
-      } catch (error) {
-        console.error("Error fetching collaboration requests:", error);
-      }
-    };
-
-    fetchCollaborationRequests();
-  }
-  , []);
+    dispatch(fetchCollaborationRequests());
+  },[dispatch]);
 
   return (
     <div className="w-full h-auto mt-20 py-1 flex flex-col lg:flex-row justify-center gap-4 px-4">
@@ -42,16 +30,16 @@ function NetworkPage() {
             <p className="text-lg font-semibold">Collaboration Requests</p>
             <div className="relative">
               <Users size={28} />
-              {collaborationRequests.length > 0 && (
+              {collaborationRequests?.length > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs p-1 px-2 rounded-full">
-                  {collaborationRequests.length}
+                  {collaborationRequests?.length}
                 </span>
               )}
             </div>
           </div>
           <div className="h-auto w-full flex flex-col gap-3 overflow-auto">
-            {collaborationRequests.length > 0 ? (
-              collaborationRequests.map((request) => (
+            {collaborationRequests?.length > 0 ? (
+              collaborationRequests?.map((request) => (
                 <CollaborationRequest
                   key={request?.id}
                   profilepic={request?.sender?.profile_pic

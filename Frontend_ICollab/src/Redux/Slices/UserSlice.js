@@ -1,9 +1,6 @@
 import {
   createSlice,
   createAsyncThunk,
-  isPending,
-  isFulfilled,
-  isRejected,
 } from "@reduxjs/toolkit";
 import {
   register,

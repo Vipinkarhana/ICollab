@@ -6,7 +6,8 @@ import userReducer from "./Slices/UserSlice";
 import postReducer from "./Slices/PostSlice";
 import projectReducer from "./Slices/ProjectSlice";
 import userProfileReducer from "./Slices/UserProfileSlice"
-import saveItemReducer from "../Redux/Slices/SaveItemSlice";
+import saveItemReducer from "./Slices/SaveItemSlice";
+import networkReducer from "./Slices/NetworkSlice";
 
 const userPersistConfig = {
   key: "user",
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   project: persistReducer(projectPersistConfig, projectReducer),
   userProfile: userProfileReducer,
   savedItem: saveItemReducer,
+  network: networkReducer,
 });
 
 
