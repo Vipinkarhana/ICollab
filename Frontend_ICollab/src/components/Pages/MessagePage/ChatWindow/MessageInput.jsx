@@ -64,6 +64,12 @@ const MessageInput = ({ channelId, senderName }) => {
           setText(e.target.value);
           publishTyping();
         }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault(); // prevent newline
+            handleSend();
+          }
+        }}
         placeholder="Type a message..."
         className="flex-1 px-4 py-2 border border-gray-300 rounded-full outline-none focus:border-violet-400 text-sm"
       />
