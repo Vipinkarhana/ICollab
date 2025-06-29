@@ -1,4 +1,3 @@
-// ✅ Pages/MessagePage/ChatWindow/MessageInput.jsx
 import React, { useState } from "react";
 import { Smile, Paperclip, Send } from "lucide-react";
 import EmojiButton from "../../HomePage/MidDiv/Feed/Posts/StartPost/EmojiButton";
@@ -24,7 +23,6 @@ const MessageInput = ({ channelId, senderName }) => {
     });
 
     setText("");
-
     await channel.publish("stop_typing", { sender: senderName });
   };
 

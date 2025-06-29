@@ -1,4 +1,3 @@
-// ✅ Pages/MessagePage/ChatWindow/ChatWindow.jsx
 import React, { useEffect, useState } from "react";
 import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
@@ -10,7 +9,7 @@ import { useSelector } from "react-redux";
 const ChatWindow = ({ chatData }) => {
   const [viewMode, setViewMode] = useState("chat");
   const [messages, setMessages] = useState([]);
-  const [typingUser, setTypingUser] = useState("");
+  const [typingUsers, setTypingUsers] = useState([]);
   const currentuser = useSelector((state) => state.user.userData.name);
 
   useEffect(() => {
@@ -49,9 +48,13 @@ const ChatWindow = ({ chatData }) => {
             },
           ]);
         } else if (msg.name === "typing" && msg.data.sender !== currentuser) {
-          setTypingUser(`${msg.data.sender} is typing...`);
+          setTypingUsers((prev) =>
+            prev.includes(msg.data.sender) ? prev : [...prev, msg.data.sender]
+          );
         } else if (msg.name === "stop_typing" && msg.data.sender !== currentuser) {
-          setTypingUser("");
+          setTypingUsers((prev) =>
+            prev.filter((name) => name !== msg.data.sender)
+          );
         }
       };
 
@@ -69,6 +72,7 @@ const ChatWindow = ({ chatData }) => {
 
     if (chatData?.channelId) {
       setMessages([]);
+      setTypingUsers([]);
       setupAbly();
     }
   }, [chatData?.channelId]);
@@ -90,7 +94,7 @@ const ChatWindow = ({ chatData }) => {
         members={chatData.members}
         isGroup={chatData.isGroup}
         setViewMode={setViewMode}
-        typingUser={typingUser}
+        typingUsers={typingUsers}
       />
       {viewMode === "chat" && (
         <>

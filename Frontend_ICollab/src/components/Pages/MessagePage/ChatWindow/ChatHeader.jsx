@@ -1,4 +1,3 @@
-// ✅ Pages/MessagePage/ChatWindow/ChatHeader.jsx
 import React from "react";
 import {
   Video,
@@ -8,7 +7,31 @@ import {
   MessageSquareText,
 } from "lucide-react";
 
-const ChatHeader = ({ avatar, name, isGroup, members = [], setViewMode, typingUser }) => {
+const ChatHeader = ({
+  avatar,
+  name,
+  isGroup,
+  members = [],
+  setViewMode,
+  typingUsers = [],
+}) => {
+  const renderTypingText = () => {
+    if (typingUsers.length === 0) return null;
+
+    const displayNames = typingUsers.slice(0, 2).join(", ");
+    const remaining = typingUsers.length - 2;
+
+    return (
+      <p className="text-xs text-gray-400 italic mt-0.5">
+        {displayNames}
+        {remaining > 0
+          ? ` and ${remaining} other${remaining > 1 ? "s" : ""}`
+          : ""}{" "}
+        {typingUsers.length > 1 ? "are" : "is"} typing...
+      </p>
+    );
+  };
+
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
       <div className="flex items-center gap-3">
@@ -21,9 +44,7 @@ const ChatHeader = ({ avatar, name, isGroup, members = [], setViewMode, typingUs
         </div>
         <div>
           <h2 className="text-sm font-semibold">{name}</h2>
-          {typingUser && (
-            <p className="text-xs text-gray-400 italic mt-0.5">{typingUser}</p>
-          )}
+          {renderTypingText()}
           {isGroup && (
             <p className="text-xs text-violet-500 line-clamp-1 max-w-xs">
               {members.length} member{members.length !== 1 ? "s" : ""}:{" "}
@@ -44,7 +65,6 @@ const ChatHeader = ({ avatar, name, isGroup, members = [], setViewMode, typingUs
             </button>
           </>
         )}
-
         <Video className="w-5 h-5 cursor-pointer hover:text-violet-600" />
         <Phone className="w-5 h-5 cursor-pointer hover:text-violet-600" />
         <Info className="w-5 h-5 cursor-pointer hover:text-violet-600" />
