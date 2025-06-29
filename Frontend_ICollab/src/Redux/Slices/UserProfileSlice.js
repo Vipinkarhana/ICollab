@@ -77,7 +77,7 @@ export const fetchUserPostsData = createAsyncThunk(
     condition: (username, { getState }) => {
       const state = getState();
       const { posts, lastFetchedUsername } = state;
-      return !posts || lastFetchedUsername !== username;
+      return posts === null || lastFetchedUsername !== username;
     }
   }
 );

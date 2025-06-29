@@ -6,14 +6,46 @@ import {
 } from '../../Services/saveItemService';
 
 // Async thunks
-export const fetchSavedPosts = createAsyncThunk('savedItem/fetchSavedPosts', async () => {
-  const data = await getSavedPosts();
-  return data;
+export const fetchSavedPosts = createAsyncThunk(
+  'savedItem/fetchSavedPosts',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getSavedPosts();
+      if (response.status === "success") {
+        return response.data;
+      } else {
+        return rejectWithValue(response.message);
+      }
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },{
+    condition: (_, { getState }) => {
+      const state = getState();
+      const { savedPosts } = state?.savedItem;
+      return savedPosts == null;
+    }
 });
 
-export const fetchSavedProjects = createAsyncThunk('savedItem/fetchSavedProjects', async () => {
-  const data = await getSavedProjects();
-  return data;
+export const fetchSavedProjects = createAsyncThunk(
+  'savedItem/fetchSavedProjects',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getSavedProjects();
+      if (response.status == "success") {
+        return response.data;
+      } else {
+        return rejectWithValue(response.message);
+      }
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },{
+    condition: (_, { getState }) => {
+      const state = getState();
+      const { savedProjects } = state?.savedItem;
+      return savedProjects == null;
+    }
 });
 
 // Toggle Save/Unsave Item thunk
@@ -34,8 +66,8 @@ export const toggleSaveItemThunk = createAsyncThunk(
 const savedItemSlice = createSlice({
   name: 'savedItem',
   initialState: {
-    savedPosts: [],       // Array of full post objects
-    savedProjects: [],    // Array of full project objects (optional)
+    savedPosts: null,
+    savedProjects: null,
     loading: false,
     error: null,
     message: '',
@@ -53,12 +85,12 @@ const savedItemSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchSavedPosts.fulfilled, (state, action) => {
-        state.savedPosts = action.payload.data; // Full post objects
+        state.savedPosts = action.payload;
         state.loading = false;
       })
       .addCase(fetchSavedPosts.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.error;
       })
 
       // Fetch Saved Projects
@@ -67,12 +99,12 @@ const savedItemSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchSavedProjects.fulfilled, (state, action) => {
-        state.savedProjects = action.payload.data;
+        state.savedProjects = action.payload;
         state.loading = false;
       })
       .addCase(fetchSavedProjects.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.error;
       })
 
       // Toggle Save/Unsave Item

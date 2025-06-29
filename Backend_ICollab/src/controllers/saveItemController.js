@@ -68,7 +68,7 @@ const getSavedPosts = async (req, res) => {
     }
 
     res.status(200).json({
-      success: true,
+      status: "success",
       message: 'Saved posts fetched successfully.',
       data: savedItem.posts,
     });
@@ -94,7 +94,7 @@ const getSavedProjects = async (req, res) => {
     }
 
     res.status(200).json({
-      success: true,
+      status: "success",
       message: 'Saved projects fetched successfully.',
       data: savedItem.projects,
     });

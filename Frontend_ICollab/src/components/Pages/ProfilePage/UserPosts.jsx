@@ -12,10 +12,10 @@ function UserPosts() {
   const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (!hasFetched.current && username && posts.length === 0) {
+    if (!hasFetched.current && username && (posts === null || posts?.length === 0)) {
       dispatch(fetchUserPostsData(username));
     }
-  }, [dispatch, username, posts.length]);
+  }, [dispatch, username, posts?.length]);
 
   if (loading) {
     return (
@@ -29,7 +29,7 @@ function UserPosts() {
     return <div className="text-center py-4 text-red-500">Error: {error}</div>;
   }
 
-  if (!posts.length) {
+  if (!posts?.length) {
     return (
       <div className="text-center py-4 text-gray-500">
         You haven't posted anything yet.
@@ -62,7 +62,7 @@ function UserPosts() {
       </div>
       <div className="">
         <div className="flex flex-col gap-3 w-full sm:hidden ">
-          {posts.map((post) => (
+          {posts?.map((post) => (
             <div key={post.id}>
               <PostCard post={post} />
             </div>

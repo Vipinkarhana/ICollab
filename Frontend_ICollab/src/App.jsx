@@ -1,7 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import useFetchSavedItems from "./Hooks/useFetchSavedItmes";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import StartUp from "./components/Pages/IncubatorsPage/StartUp";
@@ -46,7 +45,6 @@ const Layout = lazy(() => import("./components/Layout/Layout"));
 const PrivateRoute = lazy(() => import("./utils/PrivateRoute"));
 
 function App() {
-  useFetchSavedItems(); // Fetch saved items on app load
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <ToastContainer />

@@ -1,12 +1,18 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchSavedPosts, fetchSavedProjects } from "../../../Redux/Slices/SaveItemSlice";
 import PostCard from "../HomePage/MidDiv/Feed/Posts/Postcard/PostCard";
 import ProjectCard from "../../Common/ProjectCard";
 
 function Saved() {
   const [activeTab, setActiveTab] = useState("Posts");
+  const dispatch = useDispatch();
   const savedPosts = useSelector((state) => state.savedItem.savedPosts);
-  // const savePosts = Object.values(savePostsObjects);
+
+  useEffect(() => {
+    dispatch(fetchSavedPosts());
+    dispatch(fetchSavedProjects());
+  }, [dispatch]);
 
   const tabs = ["Posts", "Projects"];
 
@@ -14,7 +20,7 @@ function Saved() {
 
   const renderContent = () => {
     if (activeTab === "Posts") {
-      if (savedPosts.length === 0) {
+      if (savedPosts?.length === 0) {
         return (
           <div className="w-full text-center text-gray-500 py-10 text-xl">
             No saved posts yet.
@@ -28,8 +34,8 @@ function Saved() {
           <div className="hidden md:flex w-full  py-4 justify-evenly gap-6">
             <div className="flex flex-col gap-3 w-[45%]">
               {savedPosts
-                .filter((_, index) => index % 2 === 0)
-                .map((post) => (
+                ?.filter((_, index) => index % 2 === 0)
+                ?.map((post) => (
                   <div key={post._id}>
                     <PostCard post={post} />
                   </div>
@@ -37,8 +43,8 @@ function Saved() {
             </div>
             <div className="flex flex-col gap-3 w-[45%]">
               {savedPosts
-                .filter((_, index) => index % 2 !== 0)
-                .map((post) => (
+                ?.filter((_, index) => index % 2 !== 0)
+                ?.map((post) => (
                   <div key={post._id}>
                     <PostCard post={post} />
                   </div>
@@ -48,7 +54,7 @@ function Saved() {
 
           {/* Mobile/Tablet view (single column) */}
           <div className="flex flex-col gap-4 md:hidden px-1 py-4">
-            {savedPosts.map((post) => (
+            {savedPosts?.map((post) => (
               <div key={post._id}>
                 <PostCard post={post} />
               </div>
@@ -57,7 +63,7 @@ function Saved() {
         </>
       );
     } else if (activeTab === "Projects") {
-      if (savedProjects.length === 0) {
+      if (savedProjects?.length === 0) {
         return (
           <div className="w-full text-center text-gray-500 py-10 text-xl">
             No saved projects yet.
@@ -67,7 +73,7 @@ function Saved() {
 
       return (
         <div className="grid grid-cols-1 px-1 py-4 sm:grid-cols-2 gap-6 ">
-          {savedProjects.map((savedProject) => (
+          {savedProjects?.map((savedProject) => (
             <ProjectCard key={savedProject.id} project={savedProject} />
           ))}
         </div>
@@ -80,7 +86,7 @@ function Saved() {
       <div className="w-full md:w-[90%]">
         {/* Tabs */}
         <div className="flex space-x-0 relative z-10">
-          {tabs.map((tab, index) => {
+          {tabs?.map((tab, index) => {
             const isActive = activeTab === tab;
             const isFirst = index === 0;
 
