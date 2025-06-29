@@ -5,6 +5,7 @@ import MessageInput from "./MessageInput";
 import KanbanBoard from "./KanbanBoard";
 import { getAblyInstance } from "../../../../utils/ablyClient";
 import { useSelector } from "react-redux";
+import EmptyChatPlaceholder from "./EmptyChatPlaceholder";
 
 const ChatWindow = ({ chatData }) => {
   const [viewMode, setViewMode] = useState("chat");
@@ -56,9 +57,7 @@ const ChatWindow = ({ chatData }) => {
 
   if (!chatData) {
     return (
-      <div className="flex items-center justify-center h-full text-gray-500">
-        Select a group to start chatting
-      </div>
+      <EmptyChatPlaceholder/>
     );
   }
 
