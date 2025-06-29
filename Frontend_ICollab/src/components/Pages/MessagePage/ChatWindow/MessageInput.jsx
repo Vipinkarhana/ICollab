@@ -1,7 +1,10 @@
+// ✅ Pages/MessagePage/ChatWindow/MessageInput.jsx
 import React, { useState } from "react";
 import { Smile, Paperclip, Send } from "lucide-react";
 import EmojiButton from "../../HomePage/MidDiv/Feed/Posts/StartPost/EmojiButton";
 import { getAblyInstance } from "../../../../utils/ablyClient";
+
+let typingTimeout;
 
 const MessageInput = ({ channelId, senderName }) => {
   const [text, setText] = useState("");
@@ -21,6 +24,21 @@ const MessageInput = ({ channelId, senderName }) => {
     });
 
     setText("");
+
+    await channel.publish("stop_typing", { sender: senderName });
+  };
+
+  const handleTyping = async () => {
+    const ably = getAblyInstance();
+    if (!ably || !channelId) return;
+
+    const channel = ably.channels.get(channelId);
+    await channel.publish("typing", { sender: senderName });
+
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      channel.publish("stop_typing", { sender: senderName });
+    }, 2000);
   };
 
   return (
@@ -33,7 +51,10 @@ const MessageInput = ({ channelId, senderName }) => {
       </button>
       <input
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={(e) => {
+          setText(e.target.value);
+          handleTyping();
+        }}
         placeholder="Type a message..."
         className="flex-1 px-4 py-2 border border-gray-300 rounded-full outline-none focus:border-violet-400 text-sm"
       />

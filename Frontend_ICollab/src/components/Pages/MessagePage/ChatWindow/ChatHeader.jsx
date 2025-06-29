@@ -1,3 +1,4 @@
+// ✅ Pages/MessagePage/ChatWindow/ChatHeader.jsx
 import React from "react";
 import {
   Video,
@@ -7,8 +8,7 @@ import {
   MessageSquareText,
 } from "lucide-react";
 
-const ChatHeader = ({ avatar, name, isGroup, members = [], setViewMode }) => {
-  console.log(members);
+const ChatHeader = ({ avatar, name, isGroup, members = [], setViewMode, typingUser }) => {
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
       <div className="flex items-center gap-3">
@@ -21,6 +21,9 @@ const ChatHeader = ({ avatar, name, isGroup, members = [], setViewMode }) => {
         </div>
         <div>
           <h2 className="text-sm font-semibold">{name}</h2>
+          {typingUser && (
+            <p className="text-xs text-gray-400 italic mt-0.5">{typingUser}</p>
+          )}
           {isGroup && (
             <p className="text-xs text-violet-500 line-clamp-1 max-w-xs">
               {members.length} member{members.length !== 1 ? "s" : ""}:{" "}
@@ -51,7 +54,3 @@ const ChatHeader = ({ avatar, name, isGroup, members = [], setViewMode }) => {
 };
 
 export default ChatHeader;
-
-
-
-
