@@ -19,22 +19,6 @@ const ChatWindow = ({ chatData }) => {
 
       const channel = ably.channels.get(chatData.channelId);
 
-      await channel.presence.enter();
-
-      try {
-        const page = await channel.history({ limit: 50 });
-        const historyMessages = page.items.reverse().map((msg) => ({
-          message: msg.data.message,
-          sender: msg.data.sender,
-          timestamp: msg.data.timestamp,
-          isSender: msg.data.sender === currentuser,
-          id: msg.id,
-        }));
-        setMessages(historyMessages);
-      } catch (err) {
-        console.error("History load failed:", err);
-      }
-
       const handler = (msg) => {
         if (msg.name === "message") {
           setMessages((prev) => [
@@ -66,7 +50,6 @@ const ChatWindow = ({ chatData }) => {
         channel.unsubscribe("message", handler);
         channel.unsubscribe("typing", handler);
         channel.unsubscribe("stop_typing", handler);
-        channel.presence.leave();
       };
     };
 
