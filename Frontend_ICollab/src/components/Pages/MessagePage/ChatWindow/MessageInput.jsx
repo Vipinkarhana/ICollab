@@ -1,48 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Smile, Paperclip, Send } from "lucide-react";
 import EmojiButton from "../../HomePage/MidDiv/Feed/Posts/StartPost/EmojiButton";
 import { getAblyInstance } from "../../../../utils/ablyClient";
 
-let typingTimeout;
-
 const MessageInput = ({ channelId, senderName }) => {
   const [text, setText] = useState("");
+  const typingSentRef = useRef(false);
+  const typingTimeoutRef = useRef(null);
+  const ablyRef = useRef(getAblyInstance());
+
+  const publishTyping = async () => {
+    const ably = ablyRef.current;
+    if (!ably || !channelId) return;
+
+    const channel = ably.channels.get(channelId);
+
+    if (!typingSentRef.current) {
+      typingSentRef.current = true;
+      await channel.publish("typing", { sender: senderName });
+    }
+
+    clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      channel.publish("stop_typing", { sender: senderName });
+      typingSentRef.current = false;
+    }, 2000);
+  };
 
   const handleSend = async () => {
     if (!text.trim()) return;
 
-    const ably = getAblyInstance();
+    const ably = ablyRef.current;
     if (!ably || !channelId) return;
 
     const channel = ably.channels.get(channelId);
+    const timestamp = new Date().toISOString();
 
     await channel.publish("message", {
       message: text,
       sender: senderName,
-      timestamp: new Date().toISOString(),
+      timestamp,
     });
 
     setText("");
+
+    // Reset typing
+    clearTimeout(typingTimeoutRef.current);
+    typingSentRef.current = false;
     await channel.publish("stop_typing", { sender: senderName });
-  };
-
-  const handleTyping = async () => {
-    const ably = getAblyInstance();
-    if (!ably || !channelId) return;
-
-    const channel = ably.channels.get(channelId);
-    await channel.publish("typing", { sender: senderName });
-
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-      channel.publish("stop_typing", { sender: senderName });
-    }, 2000);
   };
 
   return (
     <div className="border-t border-gray-200 px-4 py-3 flex items-center gap-3 bg-white">
       <button className="text-gray-600 hover:text-violet-600">
-        <EmojiButton onSelectEmoji={(emoji) => setText(text + emoji)} />
+        <EmojiButton onSelectEmoji={(emoji) => setText((prev) => prev + emoji)} />
       </button>
       <button className="text-gray-600 hover:text-violet-600">
         <Paperclip className="w-5 h-5" />
@@ -51,7 +62,7 @@ const MessageInput = ({ channelId, senderName }) => {
         value={text}
         onChange={(e) => {
           setText(e.target.value);
-          handleTyping();
+          publishTyping();
         }}
         placeholder="Type a message..."
         className="flex-1 px-4 py-2 border border-gray-300 rounded-full outline-none focus:border-violet-400 text-sm"

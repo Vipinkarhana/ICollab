@@ -13,52 +13,46 @@ const ChatWindow = ({ chatData }) => {
   const currentuser = useSelector((state) => state.user.userData.name);
 
   useEffect(() => {
-    const setupAbly = async () => {
-      const ably = getAblyInstance();
-      if (!ably || !chatData?.channelId) return;
+    if (!chatData?.channelId) return;
 
-      const channel = ably.channels.get(chatData.channelId);
+    const ably = getAblyInstance();
+    if (!ably) return;
 
-      const handler = (msg) => {
-        if (msg.name === "message") {
-          setMessages((prev) => [
-            ...prev,
-            {
-              message: msg.data.message,
-              sender: msg.data.sender,
-              timestamp: msg.data.timestamp,
-              isSender: msg.data.sender === currentuser,
-              id: msg.id,
-            },
-          ]);
-        } else if (msg.name === "typing" && msg.data.sender !== currentuser) {
-          setTypingUsers((prev) =>
-            prev.includes(msg.data.sender) ? prev : [...prev, msg.data.sender]
-          );
-        } else if (msg.name === "stop_typing" && msg.data.sender !== currentuser) {
-          setTypingUsers((prev) =>
-            prev.filter((name) => name !== msg.data.sender)
-          );
-        }
-      };
+    const channel = ably.channels.get(chatData.channelId);
+    setMessages([]);
+    setTypingUsers([]);
 
-      channel.subscribe(handler);
-      channel.subscribe("typing", handler);
-      channel.subscribe("stop_typing", handler);
+    const handler = (msg) => {
+      const { name, data, id } = msg;
 
-      return () => {
-        channel.unsubscribe("message", handler);
-        channel.unsubscribe("typing", handler);
-        channel.unsubscribe("stop_typing", handler);
-      };
+      if (name === "message") {
+        setMessages((prev) => [
+          ...prev,
+          {
+            message: data.message,
+            sender: data.sender,
+            timestamp: data.timestamp,
+            isSender: data.sender === currentuser,
+            id,
+          },
+        ]);
+      } else if (name === "typing" && data.sender !== currentuser) {
+        setTypingUsers((prev) =>
+          prev.includes(data.sender) ? prev : [...prev, data.sender]
+        );
+      } else if (name === "stop_typing" && data.sender !== currentuser) {
+        setTypingUsers((prev) =>
+          prev.filter((name) => name !== data.sender)
+        );
+      }
     };
 
-    if (chatData?.channelId) {
-      setMessages([]);
-      setTypingUsers([]);
-      setupAbly();
-    }
-  }, [chatData?.channelId]);
+    channel.subscribe(handler);
+
+    return () => {
+      channel.unsubscribe(); // unsubscribes all handlers from this channel
+    };
+  }, [chatData?.channelId, currentuser]);
 
   if (!chatData) {
     return (
