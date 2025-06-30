@@ -81,13 +81,3 @@ function GroupList({ handleSubGroupClick }) {
 }
 
 export default GroupList;
-
-
-
-
-
-
-
-
-
-
