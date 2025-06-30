@@ -38,7 +38,7 @@ const EditIncubatorModal = ({ isOpen, onClose }) => {
 
         {/* Form Content */}
         <div className="px-4 sm:px-6 py-6 -mt-24 w-[110%] sm:w-full -ml-5 sm:ml-0">
-          <IncubatorForm onClose={onClose} submitButtonText="Update Profile" />
+          <IncubatorForm onClose={onClose} submitButtonText="Request Edit" />
         </div>
       </div>
     </div>

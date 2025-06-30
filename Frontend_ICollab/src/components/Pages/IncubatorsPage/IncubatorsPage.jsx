@@ -124,22 +124,19 @@ const IncubatorsPage = () => {
               <h2 className="text-3xl font-semibold flex items-center gap-2">
                 <Rocket /> Featured Startups
               </h2>
-              <div className="mt-4">
+              <div className="-mt-4">
                 <StartupCards />
               </div>
-            </div>
-
-            {/* Upcoming Events */}
-            <div className="sm:-mt-80 ">
+                {/* Upcoming Events */}
+            <div className="sm:-mt-60 ">
               <h2 className="text-3xl font-semibold flex items-center gap-2">
                 <Calendar /> Upcoming Events
               </h2>
-              <div className="flex flex-wrap gap-6 mt-0 ">
+              <div className="flex flex-wrap gap-6  ">
                 <UpcomingEvents />
               </div>
             </div>
-
-            {/* <IncubatorCards /> */}
+            </div>
           </main>
         </div>
       </div>
