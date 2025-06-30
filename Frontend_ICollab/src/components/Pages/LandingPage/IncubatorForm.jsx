@@ -32,10 +32,16 @@ const Section = ({ title, description, children }) => (
   </div>
 );
 
-const IncubatorForm = () => {
+const IncubatorForm = ({ onClose, submitButtonText = "Submit Application" }) => {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
+
+//    const handleSubmit = () => {
+//   localStorage.setItem("incubatorProfile", JSON.stringify(formData));
+//   if (onClose) onClose();   
+//   navigate("/incubators");  
+// };
 
   const next = () => setStep((prev) => Math.min(prev + 1, steps.length - 1));
   const prev = () => setStep((prev) => Math.max(prev - 1, 0));
@@ -250,7 +256,7 @@ const IncubatorForm = () => {
             }}
             className="ml-auto bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium shadow-lg"
           >
-            Submit Application
+          {submitButtonText}
           </button>
         )}
       </div>

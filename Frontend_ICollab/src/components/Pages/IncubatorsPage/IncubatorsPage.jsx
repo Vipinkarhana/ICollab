@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Rocket, Calendar, Link as LinkIcon, Menu } from "lucide-react";
+import { Rocket, Calendar, Link as LinkIcon, Menu, Pencil } from "lucide-react";
 import SidebarHeader from "./SidebarHeader";
 import StartupCards from "./StartupCards";
 import UpcomingEvents from "./EventCard";
 import IncubatorCards from "./IncubatorDataCards";
+import EditIncubatorModal from "./EditIncubatorModal";
 
 const IncubatorsPage = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50 mt-14 flex flex-col">
@@ -46,6 +48,20 @@ const IncubatorsPage = () => {
           <main className="flex-1 max-w-6xl mx-auto px-4 pt-20 pb-10 sm:-mt-14">
             {/* Profile Banner */}
             <div className="relative overflow-hidden rounded-xl p-6 mb-8 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
+              {/* Edit Button in top-right */}
+              <button
+                onClick={() => setIsEditOpen(true)}
+                className="absolute top-4 right-4 sm:bg-white text-blue-700 font-medium sm:px-4 sm:py-2 rounded-md shadow hover:bg-blue-50 transition"
+              >
+                {/* Show text on md and above */}
+                <span className="hidden md:inline">Edit Profile</span>
+
+                {/* Show Pencil icon on small screens */}
+                <span className="md:hidden w-9 h-9 flex items-center justify-center bg-blue-100 rounded-full">
+    <Pencil size={24} className="text-blue-700" />
+  </span>
+              </button>
+
               <div className="absolute top-[-50px] right-[-50px] w-[200px] h-[200px] bg-white/10 rounded-full pointer-events-none" />
               <div className="absolute bottom-[-80px] right-[-30px] w-[250px] h-[250px] bg-white/5 rounded-full pointer-events-none" />
 
@@ -76,6 +92,7 @@ const IncubatorsPage = () => {
                     Our mission is to bridge the gap between research and
                     industry.
                   </p>
+
                   <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
                     <div>
                       <div className="text-xl font-bold">24</div>
@@ -97,9 +114,9 @@ const IncubatorsPage = () => {
                 </div>
               </div>
             </div>
-           
-            <div>
-                <IncubatorCards />
+
+            <div className="-mt-16">
+              <IncubatorCards />
             </div>
 
             {/* Featured Startups */}
@@ -126,6 +143,11 @@ const IncubatorsPage = () => {
           </main>
         </div>
       </div>
+      {/* Modal */}
+      <EditIncubatorModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+      />
     </div>
   );
 };
