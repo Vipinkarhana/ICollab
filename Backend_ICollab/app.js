@@ -26,6 +26,7 @@ const adminNotificationRouter = require('./src/Admin/routes/notificationRoute');
 const savedItemRouter = require('./src/routes/savedItemRoute');
 const roomRouter = require('./src/routes/roomRoute');
 const ablyRouter = require('./src/routes/ablyRoute');
+const groupRouter = require('./src/routes/groupRoute')
 const { router: sseRouter } = require('./src/Admin/routes/sseRoute');
 
 // Create app instance
@@ -75,6 +76,7 @@ app.use('/api/project', projectRouter);
 app.use('/api/saveitems', savedItemRouter);
 app.use('/api/room', roomRouter);
 app.use('/api/ably', ablyRouter);
+app.use('/api/groups', groupRouter);
 
 // 404 Handler
 app.use((req, res, next) => {

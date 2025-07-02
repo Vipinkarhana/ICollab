@@ -107,6 +107,7 @@ const ChatWindow = ({ chatData }) => {
       {showCreateNewGroup && (
         <div className="absolute inset-0 z-50 flex items-center justify-center">
           <CreateNewGroup
+            roomId={chatData.roomid}
             members={chatData.members}
             onClose={() => setShowCreateNewGroup(false)}
           />

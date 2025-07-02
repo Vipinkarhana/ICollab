@@ -1,10 +1,12 @@
 // ✅ CreateGroupPage.jsx
 import React, { useState } from "react";
 import { X } from "lucide-react";
+import { createGroup } from "../../../../Services/groupService"; // adjust path as needed
 
-const CreateNewGroup = ({ members = [], onClose }) => {
+const CreateNewGroup = ({ members = [], roomId, onClose }) => {
   const [groupName, setGroupName] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const toggleMember = (name) => {
     setSelectedMembers((prev) =>
@@ -12,13 +14,28 @@ const CreateNewGroup = ({ members = [], onClose }) => {
     );
   };
 
-  const handleCreate = () => {
-    console.log("Group Created:", groupName, selectedMembers);
-    onClose();
+  const handleCreate = async () => {
+    if (!groupName.trim()) return alert("Group name is required.");
+    if (!selectedMembers.length) return alert("Select at least one member.");
+    setLoading(true);
+    try {
+      await createGroup({
+        name: groupName.trim(),
+        roomId,
+        members: selectedMembers,
+      });
+      alert("Group created successfully!");
+      onClose();
+    } catch (err) {
+      alert(err.message || "Failed to create group.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="  flex items-center justify-center p-4 z-[9999]">
+    <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]">
       <div className="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 space-y-6 relative">
         <button
           onClick={onClose}
@@ -51,8 +68,8 @@ const CreateNewGroup = ({ members = [], onClose }) => {
               <label key={idx} className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={selectedMembers.includes(member.name)}
-                  onChange={() => toggleMember(member.name)}
+                  checked={selectedMembers.includes(member._id)}
+                  onChange={() => toggleMember(member._id)}
                   className="accent-violet-500"
                 />
                 <span className="text-sm text-gray-700">{member.name}</span>
@@ -63,9 +80,10 @@ const CreateNewGroup = ({ members = [], onClose }) => {
 
         <button
           onClick={handleCreate}
-          className="w-full px-4 py-2 bg-violet-500 text-white rounded-md hover:bg-violet-600"
+          disabled={loading}
+          className="w-full px-4 py-2 bg-violet-500 text-white rounded-md hover:bg-violet-600 disabled:opacity-50"
         >
-          Create Group
+          {loading ? "Creating..." : "Create Group"}
         </button>
       </div>
     </div>

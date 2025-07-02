@@ -18,7 +18,7 @@ const getMyRooms = async (req, res, next) => {
     const groups = await Group.find({ room: { $in: roomIds } })
       .select("name room _id isDefault members").populate({
         path: "members",
-        select: "name -_id",
+        select: "name _id",
       })
       .lean();
     console.log(`Fetched ${groups} groups for user ${userId}`);

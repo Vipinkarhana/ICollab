@@ -36,6 +36,7 @@ function GroupList({ handleSubGroupClick }) {
   isGroup: true,
   members: group.members || [],
   channelId: room.channelId, // ✅ This is required for Ably to work
+  roomid : room.id,
 };
 
 
@@ -62,7 +63,7 @@ function GroupList({ handleSubGroupClick }) {
 
         return (
           <ChatCard
-            key={room._id}
+            key={room.id}
             name={room.name}
             lastMessage="Tap to open group"
             time={new Date(room.updatedAt).toLocaleTimeString()}
@@ -71,8 +72,8 @@ function GroupList({ handleSubGroupClick }) {
             isOnline={onlineCount > 0}
             isGroup={true}
             onlineCount={onlineCount}
-            subGroup={expandedRoomId === room._id ? subGroupArray : []} // 👈 show subgroups only if expanded
-            onClick={() => handleChatClick(room._id)} // 👈 expands/collapses
+            subGroup={expandedRoomId === room.id ? subGroupArray : []} // 👈 show subgroups only if expanded
+            onClick={() => handleChatClick(room.id)} // 👈 expands/collapses
           />
         );
       })}

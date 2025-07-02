@@ -31,7 +31,8 @@ const groupSchema = new mongoose.Schema(
 );
 
 
-groupSchema.index({ room: 1});
+groupSchema.index({ name: 1, room: 1 }, { unique: true });
+
 
 // ✅ Optional index to filter groups by member
 // groupSchema.index({ members: 1 });
