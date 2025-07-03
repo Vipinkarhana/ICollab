@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 const startups = [
   {
@@ -33,45 +34,64 @@ const startups = [
   },
 ];
 
-const StartupCard = ({ startup }) => (
-  <div className="bg-white rounded-lg shadow-md p-5 transition-transform duration-300 ease-in-out hover:shadow-lg hover:scale-[1.02] cursor-pointer 
-                  w-full sm:w-[90%] md:w-[45%] lg:w-[40%] xl:w-[30%] sm:h-80 h-auto">
-    <div className="flex items-center space-x-4 mb-3">
-      <div className="bg-gray-200 text-2xl font-bold text-gray-600 w-10 h-10 flex items-center justify-center rounded-full">
+const cardVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.2, duration: 0.5, type: "spring" },
+  }),
+};
+
+const StartupCard = ({ startup, index }) => (
+  <motion.div
+    custom={index}
+    variants={cardVariants}
+    initial="hidden"
+    animate="visible"
+    whileHover={{ scale: 1.03, boxShadow: "0 8px 20px rgba(0,0,0,0.1)" }}
+    className="bg-white rounded-2xl border border-gray-200 p-6 w-full sm:w-[90%] md:w-[45%] lg:w-[40%] xl:w-[30%] cursor-pointer transition-all"
+  >
+    <div className="flex items-center gap-4 mb-4">
+      <div className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xl font-bold w-12 h-12 rounded-full flex items-center justify-center shadow-md">
         {startup.initial}
       </div>
-      <div className="flex flex-col flex-1">
-        <h2 className="text-lg font-semibold">{startup.name}</h2>
+      <div>
+        <h2 className="text-lg font-semibold text-gray-800">{startup.name}</h2>
         <p className="text-sm text-gray-500">{startup.subtitle}</p>
-        <hr className="w-full border-t border-gray-300 my-2" />
       </div>
     </div>
 
-    <p className="text-gray-500 mb-4 text-base">{startup.description}</p>
+    <p className="text-gray-600 text-sm mb-4">{startup.description}</p>
 
-    <div className="flex flex-wrap items-center text-sm text-blue-600 font-medium gap-4 mb-2">
-      <span className="bg-blue-100 px-2 py-1 rounded-full">📅 Founded: {startup.founded}</span>
-      <span className="bg-blue-100 px-2 py-1 rounded-full">📈 {startup.stage}</span>
+    <div className="flex flex-wrap gap-3 text-sm text-blue-700 font-medium mb-2">
+      <span className="bg-blue-50 px-3 py-1 rounded-full">Founded: {startup.founded}</span>
+      <span className="bg-blue-50 px-3 py-1 rounded-full">{startup.stage}</span>
     </div>
 
-    <div className="flex flex-wrap gap-3 mt-4">
-      {startup.tags.map((tag, index) => (
+    <div className="flex flex-wrap gap-2 mt-4">
+      {startup.tags.map((tag, i) => (
         <span
-          key={index}
-          className="bg-blue-100 text-blue-600 text-xs font-medium px-2 py-1 rounded-full"
+          key={i}
+          className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full"
         >
           {tag}
         </span>
       ))}
     </div>
-  </div>
+  </motion.div>
 );
 
 const StartupCards = () => (
-  <div className="flex flex-wrap gap-6 p-4 sm:p-6 bg-gray-50 min-h-screen justify-center">
-    {startups.map((startup, index) => (
-      <StartupCard key={index} startup={startup} />
-    ))}
+  <div className="bg-gray-50 py-12 px-4 sm:px-8 min-h-screen">
+    <div className="max-w-7xl mx-auto">
+    
+      <div className="flex flex-wrap justify-center gap-8">
+        {startups.map((startup, index) => (
+          <StartupCard key={index} startup={startup} index={index} />
+        ))}
+      </div>
+    </div>
   </div>
 );
 

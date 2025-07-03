@@ -24,7 +24,7 @@ const events = [
 ];
 
 const EventCard = ({ event }) => (
-  <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col sm:flex-row w-full max-w-md">
+  <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col sm:flex-row w-full max-w-md sm:-mt-8">
     {/* Date Block */}
     <div className="bg-blue-600 text-white flex flex-col items-center justify-center px-4 py-6">
       <div className="text-2xl font-bold leading-none">{event.date}</div>

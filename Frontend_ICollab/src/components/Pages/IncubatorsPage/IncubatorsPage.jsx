@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Rocket, Calendar, Link as LinkIcon, Menu } from "lucide-react";
+import { Rocket, Calendar, Link as LinkIcon, Sidebar, Menu } from "lucide-react";
 import SidebarHeader from "./SidebarHeader";
 import StartupCards from "./StartupCards";
 import UpcomingEvents from "./EventCard";
@@ -45,9 +45,9 @@ const IncubatorsPage = () => {
 
   if(status === 'approved'){
   return (
-    <div className="min-h-screen bg-gray-50 mt-14 flex flex-col">
+    <div className="h-auto bg-gray-50 mt-14 flex flex-col ">
       {/* Layout: Sidebar + Main Content */}
-      <div className="flex flex-1 relative">
+      <div className="flex flex-1">
         {/* Sidebar */}
         <div className="md:block hidden">
           <SidebarHeader />
@@ -87,6 +87,7 @@ const IncubatorsPage = () => {
           <main className="flex-1 max-w-6xl mx-auto px-4 pt-20 pb-10 sm:-mt-14">
             {/* Profile Banner */}
             <div className="relative overflow-hidden rounded-xl p-6 mb-8 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
+              {/* Decorative Circles */}
               <div className="absolute top-[-50px] right-[-50px] w-[200px] h-[200px] bg-white/10 rounded-full pointer-events-none" />
               <div className="absolute bottom-[-80px] right-[-30px] w-[250px] h-[250px] bg-white/5 rounded-full pointer-events-none" />
 
@@ -99,16 +100,16 @@ const IncubatorsPage = () => {
                     {incubator.nameOfIncubator || "Unnamed Incubator"}
                   </h1>
                   <div className="flex items-center gap-2 text-white mt-1">
-                    <span>
-                      <strong>@{incubatorData.username}</strong> was incorporated
-                      as an incubator on{" "}
+                    <span><strong>@{incubatorData.username}</strong></span>
+                     <a href="#"><LinkIcon size={16} /></a> 
+                     <span>was incorporated an incubator on{" "}</span>
                       <span className="underline underline-offset-2 font-medium">
                         {new Date(incubatorData.incorporatedOn).toLocaleDateString("en-GB", {
                           day: "2-digit",
                           month: "long",
                           year: "numeric",
                         })}
-                      </span>
+                      
                     </span>
                   </div>
                   <p className="mt-2">
@@ -142,26 +143,39 @@ const IncubatorsPage = () => {
                 <IncubatorCards/>
 
             {/* Featured Startups */}
-            <div className="mb-12">
-              <h2 className="text-3xl font-semibold flex items-center gap-2">
+            <section className="mb-8 ">
+              <h2 className="text-2xl font-semibold flex items-center gap-2">
                 <Rocket /> Featured Startups
               </h2>
-              <div className="mt-4">
+              <div className="flex flex-row-1 sm:flex-row-2 lg:flex-row-3 gap-4 mt-4">
+                {/* Add startup cards here */}
                 <StartupCards />
               </div>
-            </div>
+              <a
+                href="startups.html"
+                className="block mt-4 text-blue-600 hover:underline"
+              >
+                View All Startups →
+              </a>
+            </section>
 
             {/* Upcoming Events */}
-            <div className="sm:-mt-80 ">
-              <h2 className="text-3xl font-semibold flex items-center gap-2">
+            <div>
+              <h2 className="text-2xl font-semibold flex items-center gap-2">
                 <Calendar /> Upcoming Events
               </h2>
-              <div className="flex flex-wrap gap-6 mt-0 ">
+              <div className="flex flex-row-1 sm:flex-row-2 lg:flex-row-3 gap-6 ">
                 <UpcomingEvents />
               </div>
+              {/* <div className="mt-6">
+                <a
+                  href="#"
+                  className="text-blue-600 hover:underline text-sm font-medium"
+                >
+                  View All Events →
+                </a>
+              </div> */}
             </div>
-
-            {/* <IncubatorCards /> */}
           </main>
         </div>
       </div>

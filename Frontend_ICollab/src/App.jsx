@@ -2,8 +2,8 @@ import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import useFetchSavedItems from "./Hooks/useFetchSavedItmes";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import StartUp from "./components/Pages/IncubatorsPage/StartUp";
 import IncubatorForm from "./components/Pages/LandingPage/IncubatorForm";
 import ProgramsPage from "./components/Pages/IncubatorsPage/ProgramPage";
@@ -80,17 +80,9 @@ function App() {
               <Route path="/incubators" element={<IncubatorsPage />} />
               <Route path="/project" element={<ProjectPage />} />
               <Route path="/project/create" element={<ProjectForm />} />
-              <Route
-                path="/projects/edit/:projectId"
-                element={<ProjectForm />}
-              />
+              <Route path="/projects/edit/:projectId" element={<ProjectForm />} />
               <Route path="/project/:id" element={<ProjectPreviewPage />} />
-              <Route path="/startup" element={<StartUp />} />
-              <Route path="/programs" element={<ProgramsPage />} />
-              <Route path="/events" element={<EventsPage />} />
-              <Route path="/AddEventForm" element={<AddEventForm />} />
-              <Route path="/event-details" element={<ViewDetailsPage />} />
-              <Route path="/apply-incubator" element={<IncubatorForm />} />
+                <Route path="/startup" element={<StartUp />} />
             </Route>
 
             {/* Public routes */}
