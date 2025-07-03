@@ -7,36 +7,7 @@ import {
   Handshake,
   Calendar as CalIcon,
 } from "lucide-react";
-
-const defaultIncubatorData = {
-  nameOfIncubator: "TechNest Innovations",
-  representativeName: "Aarav Malhotra",
-  representativePosition: "CEO",
-  email: "aarav@technest.com",
-  mobile: "9876543210",
-  alternateEmail: "contact@technest.com",
-  alternateMobile: "9812345678",
-  address: "Plot 42, Knowledge Park, Sector 126",
-  state: "Uttar Pradesh",
-  city: "Noida",
-  pinCode: "201301",
-  totalIncubated: "45",
-  totalGraduated: "30",
-  followOnInvestments: "18",
-  survivalRate: "82%",
-  infraSupport: "Co-working space, testing lab, meeting rooms",
-  investedStartups: "12",
-  grantSupport: "22",
-  totalInvestmentRaised: "360",
-  totalCorpus: "150",
-  highRevenueStartups: "5",
-  ipRegistered: "16",
-  mentoringHours: "10 hrs/month/startup",
-  eventsOrganized: "Annual Startup Conclave, Innovation Week",
-  industryPrograms: "Corporate Connect with Infosys & TCS",
-  otherSupport: "Legal, marketing and GTM mentoring",
-  referralSource: "Through LinkedIn",
-};
+import { useIncubator } from "../../Common/IncubatorContext";
 
 const InfoGroup = ({ icon: Icon, title, items }) => (
   <div className="bg-white rounded-2xl shadow-md hover:shadow-xl p-6 border border-gray-200 transition duration-300 group relative overflow-hidden">
@@ -51,7 +22,7 @@ const InfoGroup = ({ icon: Icon, title, items }) => (
       {items.map(({ label, value }) => (
         <div key={label}>
           <span className="font-semibold text-gray-600">{label}:</span>{" "}
-          <span className="text-gray-800">{value ? value : "N/A"}</span>
+          <span className="text-gray-800">{value || "N/A"}</span>
         </div>
       ))}
     </div>
@@ -59,7 +30,46 @@ const InfoGroup = ({ icon: Icon, title, items }) => (
 );
 
 const IncubatorCards = () => {
-  const incubator = defaultIncubatorData;
+  // const incubator = defaultIncubatorData;
+
+  //  const storedData = localStorage.getItem("incubatorProfile");
+  // const incubator = storedData ? JSON.parse(storedData) : defaultIncubatorData;
+
+
+
+
+
+
+  const { incubatorData } = useIncubator(); // Get data from context
+  const incubator = incubatorData?.incubator || {};
+
+  
+
+
+
+  if (incubator.status === 'pending') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center p-8 bg-white rounded-xl shadow-lg max-w-md">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Under Approval
+          </h2>
+          <p className="text-gray-600">
+            Your incubator profile is currently under review. You'll gain full
+            access once approved.
+            Please check back later or contact support for more information.
+            Also, please keep checking your email for updates on your application.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+
+
+
+
 
   return (
     <div className="min-h-screen px-6 py-20">

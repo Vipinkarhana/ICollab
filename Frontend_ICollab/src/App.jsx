@@ -10,6 +10,7 @@ import ProgramsPage from "./components/Pages/IncubatorsPage/ProgramPage";
 import EventsPage from "./components/Pages/IncubatorsPage/Eventpage";
 import AddEventForm from "./components/Pages/IncubatorsPage/AddEventForm";
 import ViewDetailsPage from "./components/Pages/IncubatorsPage/ViewDetailPage";
+import { IncubatorProvider } from './components/Common/IncubatorContext';
 
 const HomePage = lazy(() => import("./components/Pages/HomePage/HomePage"));
 const ProfilePage = lazy(() =>
@@ -56,6 +57,7 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <ToastContainer />
+      <IncubatorProvider>
       <Router>
         {/* Wrap Routes with Suspense to handle loading fallback */}
         <Suspense
@@ -98,6 +100,7 @@ function App() {
           </Routes>
         </Suspense>
       </Router>
+      </IncubatorProvider>
     </GoogleOAuthProvider>
   );
 }
