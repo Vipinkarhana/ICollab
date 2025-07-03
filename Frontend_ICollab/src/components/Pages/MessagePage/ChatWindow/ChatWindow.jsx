@@ -23,7 +23,8 @@ const ChatWindow = ({ chatData }) => {
     const ably = getAblyInstance();
     if (!ably) return;
 
-    const channel = ably.channels.get(chatData.channelId);
+    const messageChannel = ably.channels.get(`chat/${chatData?.channelId}`);
+    const typingChannel = ably.channels.get(`presense/${chatData?.channelId}`)
     setMessages([]);
     setTypingUsers([]);
 
@@ -52,10 +53,12 @@ const ChatWindow = ({ chatData }) => {
       }
     };
 
-    channel.subscribe(handler);
+    messageChannel.subscribe(handler);
+    typingChannel.subscribe(handler);
 
     return () => {
-      channel.unsubscribe();
+      messageChannel.detach();
+      typingChannel.detach();
     };
   }, [chatData?.channelId, currentuser]);
 
@@ -81,7 +84,9 @@ const ChatWindow = ({ chatData }) => {
           <>
             <MessageList messages={messages} isGroup={chatData.isGroup} />
             <MessageInput
-              channelId={chatData.channelId}
+              channelId={chatData?.channelId}
+              groupId = {chatData?.groupId}
+              roomId = {chatData?.roomId}
               senderName={currentuser}
             />
           </>

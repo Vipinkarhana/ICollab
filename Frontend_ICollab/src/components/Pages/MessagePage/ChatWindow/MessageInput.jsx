@@ -3,7 +3,7 @@ import { Smile, Paperclip, Send } from "lucide-react";
 import EmojiButton from "../../HomePage/MidDiv/Feed/Posts/StartPost/EmojiButton";
 import { getAblyInstance } from "../../../../utils/ablyClient";
 
-const MessageInput = ({ channelId, senderName }) => {
+const MessageInput = ({ channelId, groupId, roomId, senderName }) => {
   const [text, setText] = useState("");
   const typingSentRef = useRef(false);
   const typingTimeoutRef = useRef(null);
@@ -13,16 +13,25 @@ const MessageInput = ({ channelId, senderName }) => {
     const ably = ablyRef.current;
     if (!ably || !channelId) return;
 
-    const channel = ably.channels.get(channelId);
+    const typingChannel = ably.channels.get(`presense/${channelId}`);
+
+    if (typingChannel.state !== 'attached') {
+      try {
+        await typingChannel.attach();
+      } catch (err) {
+        console.error('Failed to attach typing channel:', err);
+        return;
+      }
+    }
 
     if (!typingSentRef.current) {
       typingSentRef.current = true;
-      await channel.publish("typing", { sender: senderName });
+      await typingChannel.publish('typing', { sender: senderName });
     }
 
     clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
-      channel.publish("stop_typing", { sender: senderName });
+      typingChannel.publish('stop_typing', { sender: senderName });
       typingSentRef.current = false;
     }, 2000);
   };
@@ -33,21 +42,43 @@ const MessageInput = ({ channelId, senderName }) => {
     const ably = ablyRef.current;
     if (!ably || !channelId) return;
 
-    const channel = ably.channels.get(channelId);
+    const messageChannel = ably.channels.get(`chat/${channelId}`);
+
+    if (messageChannel.state !== 'attached') {
+      try {
+        await messageChannel.attach();
+      } catch (err) {
+        console.error('Failed to attach message channel:', err);
+        return;
+      }
+    }
+
     const timestamp = new Date().toISOString();
 
-    await channel.publish("message", {
+    await messageChannel.publish('message', {
       message: text,
       sender: senderName,
+      groupId,
+      roomId,
       timestamp,
     });
 
-    setText("");
+    setText('');
 
-    // Reset typing
     clearTimeout(typingTimeoutRef.current);
     typingSentRef.current = false;
-    await channel.publish("stop_typing", { sender: senderName });
+
+    // Also notify stop_typing on typing channel
+    const typingChannel = ably.channels.get(`presense/${channelId}`);
+    if (typingChannel.state !== 'attached') {
+      try {
+        await typingChannel.attach();
+      } catch (err) {
+        console.error('Failed to attach typing channel:', err);
+        return;
+      }
+    }
+    await typingChannel.publish('stop_typing', { sender: senderName });
   };
 
   return (

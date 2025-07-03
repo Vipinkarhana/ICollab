@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
+    "job": "nodemon ./src/jobs/MessageQueue.js",
     "format": "prettier --write .",
     "unused": "depcheck"
   },
@@ -12,6 +13,7 @@
     "@aws-sdk/client-s3": "^3.743.0",
     "@aws-sdk/s3-request-presigner": "^3.743.0",
     "ably": "^2.10.0",
+    "amqplib": "^0.10.8",
     "axios": "^1.7.9",
     "backend-icollab": "file:",
     "bcryptjs": "^2.4.3",

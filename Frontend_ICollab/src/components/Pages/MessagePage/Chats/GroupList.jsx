@@ -27,17 +27,16 @@ function GroupList({ handleSubGroupClick }) {
   };
 
   const handleSubGroupClickLocal = (room, group) => {
-    console.log("group members:", group.members);
-    console.log("room members:", room.members);
     const payload = {
-  name: group.name,
-  avatar: `https://ui-avatars.com/api/?name=${group.name}&background=random`,
-  isOnline: room.members?.some((m) => m.isOnline),
-  isGroup: true,
-  members: group.members || [],
-  channelId: room.channelId, // ✅ This is required for Ably to work
-  roomid : room.id,
-};
+      name: group.name,
+      avatar: `https://ui-avatars.com/api/?name=${group.name}&background=random`,
+      isOnline: room.members?.some((m) => m.isOnline),
+      isGroup: true,
+      members: group.members || [],
+      channelId: room.channelId, // ✅ This is required for Ably to work
+      roomId: room.id,
+      groupId: group.id
+    };
 
 
     handleSubGroupClick(payload);
