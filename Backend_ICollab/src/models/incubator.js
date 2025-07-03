@@ -36,7 +36,6 @@ const IncubatorSchema = new Schema({
     corpusAllocatedMillion: { type: Number, default: 0 }
   },
   mentoringSupport: {
-    paidMentors:        { type: Number, default: 0 },
     startupsAbove2Cr:   { type: Number, default: 0 },
     ipRegistered:       { type: Number, default: 0 },
     avgMentorHoursPerMonth: { type: Number, default: 0 }

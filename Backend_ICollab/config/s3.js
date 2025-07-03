@@ -2,6 +2,7 @@ const {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommand,
 } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const { v4: uuidv4 } = require('uuid');
@@ -16,6 +17,10 @@ const s3 = new S3Client({
   },
 });
 
+function generatePublicUrl(key) {
+  return `${config.S3_PUBLIC_URL}/${key}`;
+}
+
 const uploadToR2 = async (key, buffer, contentType) => {
   const command = new PutObjectCommand({
     Bucket: config.S3_BUCKET_NAME,
@@ -24,19 +29,18 @@ const uploadToR2 = async (key, buffer, contentType) => {
     ContentType: contentType,
   });
   await s3.send(command);
-  return key;
+  return generatePublicUrl(key);
 };
 
 const deleteFromR2 = async (fileUrl) => {
   try {
-    // console.log("Reached Delete in R2");
+    // Extract key from URL
     // const urlObj = new URL(fileUrl);
-    // const encodedkey = urlObj.pathname.substring(1); // Remove leading "/"
-    // const key = decodeURIComponent(encodedkey);
-    // console.log("Reached Delete in R2");
+    // const key = urlObj.pathname.substring(1); // Remove leading "/"
+    const key = fileUrl.replace(`${config.S3_PUBLIC_URL}/`, '');
     const command = new DeleteObjectCommand({
       Bucket: config.S3_BUCKET_NAME,
-      Key: fileUrl,
+      Key: key,
     });
 
     await s3.send(command);
@@ -57,4 +61,21 @@ async function generatePresignedUrl(filename, contentType) {
   return signedUrl;
 }
 
-module.exports = { generatePresignedUrl, deleteFromR2, uploadToR2 };
+
+async function generateDownloadUrl(fileUrl, expiresIn = 3600) {
+  const key = extractKeyFromUrl(fileUrl);
+  const command = new GetObjectCommand({
+    Bucket: config.S3_BUCKET_NAME,
+    Key: key,
+  });
+
+  return getSignedUrl(s3, command, { expiresIn });
+}
+
+// Add helper to extract key from URL
+function extractKeyFromUrl(fileUrl) {
+  const urlObj = new URL(fileUrl);
+  return urlObj.pathname.substring(1);
+}
+
+module.exports = { generatePresignedUrl, deleteFromR2, uploadToR2, generateDownloadUrl , extractKeyFromUrl, generatePublicUrl };

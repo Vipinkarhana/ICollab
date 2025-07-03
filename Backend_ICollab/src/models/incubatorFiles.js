@@ -43,10 +43,6 @@ const FileSchema = new Schema({
     type: String,
     required: true
   },
-  paid_mentors: {
-    type: String,
-    required: true
-  },
   startups_above_2cr: {
     type: String,
     required: true
