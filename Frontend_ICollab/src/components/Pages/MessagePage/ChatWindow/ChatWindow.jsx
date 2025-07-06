@@ -8,31 +8,59 @@ import { useSelector } from "react-redux";
 import EmptyChatPlaceholder from "./EmptyChatPlaceholder";
 import GroupSettingsPanel from "./GroupSettingsPanel";
 import CreateNewGroup from "./CreateNewGroup";
+import { fetchMessagesByGroup } from "../../../../Services/messageService";
 
 const ChatWindow = ({ chatData }) => {
   const [viewMode, setViewMode] = useState("chat");
-  const [messages, setMessages] = useState([]);
+  const [initialMessages, setInitialMessages] = useState([]);
+  const [realtimeMessages, setRealtimeMessages] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
   const [showGroupSettings, setShowGroupSettings] = useState(false);
   const [showCreateNewGroup, setShowCreateNewGroup] = useState(false);
   const currentuser = useSelector((state) => state.user.userData.name);
 
+  // ✅ Fetch messages from backend (once per group)
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!chatData?.groupId) return;
+      try {
+        const messages = await fetchMessagesByGroup(chatData.groupId);
+        const formatted = messages.map((msg) => ({
+          message: msg.text,
+          sender: msg.sender.name || msg.sender,
+          timestamp: msg.createdAt,
+          isSender: msg.sender.name === currentuser,
+          id: msg._id,
+        }));
+        setInitialMessages(formatted);
+      } catch (err) {
+        console.error("Failed to fetch messages", err);
+      }
+    };
+
+    fetchMessages();
+  }, [chatData?.groupId]);
+
+  // ✅ Setup Ably real-time message + typing listener
   useEffect(() => {
     if (!chatData?.channelId) return;
 
     const ably = getAblyInstance();
     if (!ably) return;
 
-    const messageChannel = ably.channels.get(`chat/${chatData?.channelId}`);
-    const typingChannel = ably.channels.get(`presense/${chatData?.channelId}`)
-    setMessages([]);
+    const messageChannel = ably.channels.get(`chat/${chatData.channelId}`);
+    const typingChannel = ably.channels.get(`presense/${chatData.channelId}`);
+
+    setRealtimeMessages([]);
     setTypingUsers([]);
 
     const handler = (msg) => {
       const { name, data, id } = msg;
 
       if (name === "message") {
-        setMessages((prev) => [
+        if (data.groupId !== chatData.groupId) return; // ✅ Only allow messages for current group
+
+        setRealtimeMessages((prev) => [
           ...prev,
           {
             message: data.message,
@@ -47,9 +75,7 @@ const ChatWindow = ({ chatData }) => {
           prev.includes(data.sender) ? prev : [...prev, data.sender]
         );
       } else if (name === "stop_typing" && data.sender !== currentuser) {
-        setTypingUsers((prev) =>
-          prev.filter((name) => name !== data.sender)
-        );
+        setTypingUsers((prev) => prev.filter((name) => name !== data.sender));
       }
     };
 
@@ -60,11 +86,11 @@ const ChatWindow = ({ chatData }) => {
       messageChannel.detach();
       typingChannel.detach();
     };
-  }, [chatData?.channelId, currentuser]);
+  }, [chatData?.channelId, chatData?.groupId, currentuser]);
 
-  if (!chatData) {
-    return <EmptyChatPlaceholder />;
-  }
+  if (!chatData) return <EmptyChatPlaceholder />;
+
+  const allMessages = [...initialMessages, ...realtimeMessages];
 
   return (
     <div className="relative w-full h-full bg-violet-50 overflow-hidden">
@@ -82,11 +108,11 @@ const ChatWindow = ({ chatData }) => {
 
         {viewMode === "chat" && (
           <>
-            <MessageList messages={messages} isGroup={chatData.isGroup} />
+            <MessageList messages={allMessages} isGroup={chatData.isGroup} />
             <MessageInput
               channelId={chatData?.channelId}
-              groupId = {chatData?.groupId}
-              roomId = {chatData?.roomId}
+              groupId={chatData?.groupId}
+              roomId={chatData?.roomId}
               senderName={currentuser}
             />
           </>
@@ -95,7 +121,6 @@ const ChatWindow = ({ chatData }) => {
         {viewMode === "kanbanBoard" && <KanbanBoard />}
       </div>
 
-      {/* Overlays: absolutely positioned to float above layout */}
       {showGroupSettings && (
         <div className="absolute top-0 right-0 z-50 h-full">
           <GroupSettingsPanel
@@ -112,7 +137,7 @@ const ChatWindow = ({ chatData }) => {
       {showCreateNewGroup && (
         <div className="absolute inset-0 z-50 flex items-center justify-center">
           <CreateNewGroup
-            roomId={chatData.roomid}
+            roomId={chatData.roomId}
             members={chatData.members}
             onClose={() => setShowCreateNewGroup(false)}
           />
