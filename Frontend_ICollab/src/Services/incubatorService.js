@@ -28,3 +28,22 @@ export const getCurrentIncubator = async () => {
     throw error;
   }
 };
+
+export const getProgramsCount = async () => {
+  try {
+    const response = await privateAxios.get('/incubator/programs/count');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+// Add this function
+export const getMyPrograms = async () => {
+  try {
+    const response = await privateAxios.get('/incubator/myprograms');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
