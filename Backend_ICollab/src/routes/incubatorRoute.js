@@ -31,6 +31,7 @@ const {
   updateProgram,
   deleteProgram,
   createEvent,
+  getProgramsCount,
 } = require('../controllers/incubatorController');
 
 
@@ -42,5 +43,6 @@ router.put('/updateprogram/:id', isloggedin, updateProgram);
 router.put('/deleteprogram', isloggedin, deleteProgram);
 router.get('/myprograms', isloggedin, getMyPrograms);
 router.post('/createevent', isloggedin, eventUpload.fields([ { name: 'eventBanner', maxCount: 1 }, { name: 'speakerPhotos', maxCount: 10 } ]), createEvent);
+router.get('/programs/count', isloggedin, getProgramsCount);
 
 module.exports = router;

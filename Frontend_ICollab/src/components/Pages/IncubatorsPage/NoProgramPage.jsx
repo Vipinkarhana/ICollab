@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import SidebarHeader from "./SidebarHeader";
 import { Rocket, Calendar, CheckCircle, Zap, Plus, X } from "lucide-react";
 import { motion } from "framer-motion";
+import { useIncubator } from '../../Common/IncubatorContext';
+import { createProgram } from '../../../Services/incubatorService';
 
 const ProgramsPage = () => {
+  const { addProgram } = useIncubator();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -44,12 +47,20 @@ const ProgramsPage = () => {
     setAdditionalFeatures((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const finalData = { ...formData, additionalFeatures };
-    console.log("Program Submitted:", finalData);
-    setIsModalOpen(false);
+    try {
+      const response = await createProgram(finalData);
+      addProgram(response.program); // Add to context
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Failed to create program:', error);
+      // Handle error (show toast, etc.)
+    }
   };
+
+  
 
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-white to-blue-50">

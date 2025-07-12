@@ -5,6 +5,7 @@ import useFetchSavedItems from "./Hooks/useFetchSavedItmes";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import StartUp from "./components/Pages/IncubatorsPage/StartUp";
+import Programs from "./components/Pages/IncubatorsPage/ProgramPage";
 import IncubatorForm from "./components/Pages/LandingPage/IncubatorForm";
 import ProgramsPage from "./components/Pages/IncubatorsPage/ProgramPage";
 import EventsPage from "./components/Pages/IncubatorsPage/Eventpage";
@@ -82,7 +83,8 @@ function App() {
               <Route path="/project/create" element={<ProjectForm />} />
               <Route path="/projects/edit/:projectId" element={<ProjectForm />} />
               <Route path="/project/:id" element={<ProjectPreviewPage />} />
-                <Route path="/startup" element={<StartUp />} />
+              <Route path="/startup" element={<StartUp />} />
+              <Route path="/programs" element={<Programs />} />
             </Route>
 
             {/* Public routes */}

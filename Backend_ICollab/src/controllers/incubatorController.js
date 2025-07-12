@@ -402,6 +402,16 @@ exports.getMyPrograms = async (req, res) => {
   }
 };
 
+exports.getProgramsCount = async (req, res) => {
+  try {
+    // const incubatorId = req.user.id;
+    const incubatorId = '68650f9a0f6178d623074b2a'; // For testing
+    const count = await Program.countDocuments({ incubator: incubatorId });
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get programs count' });
+  }
+};
 
 
 
